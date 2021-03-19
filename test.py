@@ -1,4 +1,4 @@
-import template_engine_c as template_engine
+import template_engine as template_engine
 
 templates_dir_path = 'templates'
 
@@ -13,7 +13,7 @@ compiled = template_engine.compileTemplate(
 	cached_templates=cached_templates # {} by default
 )
 # writing to file so you can simply read it
-with open('compiled.c', 'w', encoding='utf-8') as f:
+with open('compiled.py', 'w', encoding='utf-8') as f:
 	f.write(compiled)
 exit()
 

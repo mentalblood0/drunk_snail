@@ -135,7 +135,7 @@ def fixIndent(lines_without_semicolon, initial_indent=0):
 def joinAdditions(lines_with_fixed_indent):
 	joined = '\n'.join(lines_with_fixed_indent)
 	while True:
-		subed = re.sub(r"\n(\t*)(r.*)'''\n\1result \+= '''", r'\n\1\2', joined)
+		subed = re.sub(r"\n(\t*)(r.*)'''\n\1result \+= f'''", r'\n\1\2', joined)
 		if subed != joined:
 			joined = subed
 		else:

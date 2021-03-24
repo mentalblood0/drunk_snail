@@ -6,6 +6,16 @@ templates_dir_path = 'templates'
 cached_templates = template_engine.cacheTemplates(templates_dir_path)
 
 # will generate function definition code
+import cProfile
+cProfile.run('''
+for i in range(1000):
+	template_engine.compileTemplate(
+		name='Notification',
+		function_name='testFunction', # will set 'compile<name>Template' if not specified
+		templates_dir_path=templates_dir_path, # 'templates' by default
+		cached_templates=cached_templates # {} by default
+	)
+''')
 compiled = template_engine.compileTemplate(
 	name='Notification',
 	function_name='testFunction', # will set 'compile<name>Template' if not specified
@@ -15,7 +25,7 @@ compiled = template_engine.compileTemplate(
 # writing to file so you can simply read it
 with open('compiled.py', 'w', encoding='utf-8') as f:
 	f.write(compiled)
-exit()
+# exit()
 
 # will define function called 'testFunction', which takes dict with parameters and returns filled template string
 exec(compiled)
@@ -116,12 +126,12 @@ params = {
 # 	} for i in range(10)]
 # }
 
-import cProfile
-cProfile.run('''
-for i in range(1000):
-	testFunction(params)
-''')
-exit()
+# import cProfile
+# cProfile.run('''
+# for i in range(1000):
+# 	testFunction(params)
+# ''')
+# exit()
 
 # geting filled template
 result = testFunction(params)

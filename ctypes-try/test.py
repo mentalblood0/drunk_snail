@@ -124,11 +124,32 @@ params = {
 	} for i in range(10)]
 }
 
+def dictToString(d, prefix=''):
+	result = ''
+	for key, value in d.items():
+		result += toString(value, f'{prefix}->{key}')
+	return result
+
+def listToString(l, prefix=''):
+	return ''.join([toString(l[i], f'{prefix}->{i}') for i in range(len(l))])
+
+to_string_methods = {
+	dict: dictToString,
+	list: listToString,
+	str: lambda s, prefix: f'{prefix}=\'{s}\'\n'
+}
+
+def toString(something, prefix=''):
+	return to_string_methods[type(something)](something, prefix)
+
+# print(toString(d(), 'params'))
+# exit()
+
 import cProfile
 import json
 cProfile.run('''
 for i in range(1000):
-	py_object(d())
+	toString(d())
 ''')
 exit()
 

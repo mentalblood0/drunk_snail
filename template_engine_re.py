@@ -46,7 +46,7 @@ def parseLine(line, tags, operators):
 	}
 	return result
 
-def replaceCommands(parsed_line, way_to_subparams=[], templates_dir_path=None, cached_templates=None):
+def replaceCommands(parsed_line, way_to_subparams=[]):
 	result = ''
 	last_index = 0
 	optional = True
@@ -57,16 +57,10 @@ def replaceCommands(parsed_line, way_to_subparams=[], templates_dir_path=None, c
 			if o == 'optional':
 				current_command_is_optional = True
 			elif o == 'param':
-				result += f"{{{c['var']}}}"
+				result += '{%s}' % c['var']
 			elif o == 'ref':
 				indent_here = countIndent(result, len(result))
-				compiled_subtemplate_text = compileTemplate(
-					c['var'],
-					root=False,
-					way_to_subparams=way_to_subparams,
-					templates_dir_path=templates_dir_path,
-					cached_templates=cached_templates
-				)
+				compiled_subtemplate_text = compileTemplate(c['var'], root=False, way_to_subparams=way_to_subparams)
 				result += addIndent(compiled_subtemplate_text, indent_here, dont_indent_lines_started_by=['#'])
 		last_index = c['end']
 		if not current_command_is_optional:
@@ -77,18 +71,32 @@ def replaceCommands(parsed_line, way_to_subparams=[], templates_dir_path=None, c
 def getUniqueVarsNames(parsed_line):
 	return list(set([c['var'] for c in parsed_line['commands']]))
 
-def processLine(line, tags, operators, way_to_subparams=[], templates_dir_path=None, cached_templates=None):
+def processLine(line, tags, operators, way_to_subparams=[]):
 	parsed = parseLine(line, tags, operators)
 	unique_vars_names = getUniqueVarsNames(parsed)
 	if len(unique_vars_names) == 0:
 		return line
-	line_with_vars, optional = replaceCommands(parsed, way_to_subparams + [unique_vars_names[0]], templates_dir_path, cached_templates)
+	line_with_vars, optional = replaceCommands(parsed, way_to_subparams + [unique_vars_names[0]])
 	str_way_to_params = 'params' if (len(way_to_subparams) == 0) else way_to_subparams[-1]
-	optional_command_conditional_prefix = f'# if \'{unique_vars_names[0]}\' in {str_way_to_params}:\n' if optional else ''
-	optional_command_conditional_postfix = '\n# end' if optional else ''
+	optional_command_conditional_prefix = '# if \'%s\' in %s:\n' % (
+		unique_vars_names[0],
+		str_way_to_params
+	) if optional else ''
+	optional_command_conditional_postfix = '\n# endif' if optional else ''
 	if len(unique_vars_names) == 1:
-		value_by_key = f'{str_way_to_params}[\'{unique_vars_names[0]}\']'
-		return f'{optional_command_conditional_prefix}# for {unique_vars_names[0]} in ([None] if ((not {str_way_to_params}) or (not \'{unique_vars_names[0]}\' in {str_way_to_params})) else ({value_by_key} if type({value_by_key}) == list else [{value_by_key}])):\n{line_with_vars}\n# end{optional_command_conditional_postfix}'
+		value_by_key = '%s[\'%s\']' % (str_way_to_params, unique_vars_names[0])
+		return '%s# for %s in ([None] if ((not %s) or (not \'%s\' in %s)) else (%s if type(%s) == list else [%s])):\n%s\n# endfor%s' % (
+			optional_command_conditional_prefix,
+			unique_vars_names[0],
+			str_way_to_params,
+			unique_vars_names[0],
+			str_way_to_params,
+			value_by_key,
+			value_by_key,
+			value_by_key,
+			line_with_vars,
+			optional_command_conditional_postfix
+		)
 	else:
 		return '%s# for %s in %s:\n%s\n# endfor%s' % (
 			optional_command_conditional_prefix,
@@ -101,20 +109,20 @@ def processLine(line, tags, operators, way_to_subparams=[], templates_dir_path=N
 def quoteLines(processed_lines):
 	result = []
 	for line in processed_lines:
-		if line[0] == '#':
+		if line.startswith('#'):
 			result.append(line)
 		else:
-			result.append(f"result += f'''{line}\\n'''")
+			result.append("result += f'''%s\\n'''" % line)
 	return result
 
 def removeSemicolons(quoted_lines):
-	return [(line[1:].strip() if line[0] == '#' else line) for line in quoted_lines]
+	return [(line[len('#'):].strip() if line.startswith('#') else line) for line in quoted_lines]
 
 def fixIndent(lines_without_semicolon, initial_indent=0):
 	result = []
 	current_indent = initial_indent
 	for line in lines_without_semicolon:
-		if line[-3:] == 'end':
+		if line.endswith('end'):
 			current_indent -= 1
 			continue
 		elif line.endswith(':'):
@@ -125,19 +133,29 @@ def fixIndent(lines_without_semicolon, initial_indent=0):
 	return result
 
 def joinAdditions(lines_with_fixed_indent):
-	prev_line_indent = None
-	current_line_indent = None
-	for i in range(len(lines_with_fixed_indent)):
-		current_line_indent = 0
-		for c in lines_with_fixed_indent[i]:
-			if c == '\t':
-				current_line_indent += 1
-			else:
-				break
-		if current_line_indent == prev_line_indent:
-			lines_with_fixed_indent[i-1] = lines_with_fixed_indent[:-3]
-			lines_with_fixed_indent[i] = lines_with_fixed_indent[i][current_line_indent + len("result += '''")]
-	return lines_with_fixed_indent
+	joined = '\n'.join(lines_with_fixed_indent)
+	while True:
+		subed = re.sub(r"\n(\t*)(r.*)'''\n\1result \+= f'''", r'\n\1\2', joined)
+		if subed != joined:
+			joined = subed
+		else:
+			break
+	return joined.split('\n')
+
+expressions_to_compile_template = [(
+		r'^(?!.*<!-- *\(param|ref\)\S* *-->)(.*)',
+		r"result += '''\1'''"
+	),(
+		r"'''\nresult \+= '''",
+		r'\\n'
+	),(
+		r'(\t*.*)<!-- *\(param\)(\S*) *-->(.*)',
+		r"for \2 in ([None] if ((not Header) or (not '\2' in Header)) else (Header['\2'] if type(Header['\2']) == list else [Header['\2']])):\nresult += '''\1{\2}\3'''\nend"
+	),(
+		r'(\t*.*)<!-- *\(ref\)(\S*) *-->(.*)',
+		lambda m: m.group(1) + compileTemplate(m.group(2)) + m.group(3)
+	)
+]
 
 def compileTemplate(
 	name,
@@ -150,32 +168,10 @@ def compileTemplate(
 	way_to_subparams=[]
 ):
 	template_file_text = getTemplateText(name, templates_dir_path, cached_templates)
-	processed_lines = []
-	for line in template_file_text.split('\n'):
-		processed_lines += processLine(
-			line,
-			tags,
-			operators,
-			way_to_subparams=way_to_subparams,
-			templates_dir_path=templates_dir_path,
-			cached_templates=cached_templates
-		).split('\n')
-	if root:
-		for i in range(len(processed_lines)):
-			striped = processed_lines[i].strip()
-			if striped[0] == '#':
-				processed_lines[i] = striped
-		quoted_lines = quoteLines(processed_lines)
-		lines_without_semicolon = removeSemicolons(quoted_lines)
-		lines_with_fixed_indent = fixIndent(lines_without_semicolon, initial_indent=1)
-		lines_with_joined_additions = joinAdditions(lines_with_fixed_indent)
-		function_name = function_name or f'fill{name}Template'
-		result = [
-			f'def {function_name}(params):',
-				'\tresult = \'\''
-		] + 	lines_with_joined_additions + [
-				'\treturn result'
-		]
-	else:
-		result = processed_lines
-	return '\n'.join(result)
+	result = template_file_text
+	for exp in expressions_to_compile_template:
+		result = re.sub(exp[0], exp[1], result, flags=re.MULTILINE)
+		# print(result)
+		# print('------------------------------------------')
+	result = '\n'.join(fixIndent(result.split('\n')))
+	return result

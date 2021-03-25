@@ -1,20 +1,100 @@
 
 C:\Users\Necheporenko_s_iu\repositories\two_servers\template_engine\c_version>gcc main.c -Wall -Wextra   & a.exe
+0.045000
+result:
+print(f'''?xml version="1.0"?>''')
 
-<?xml version="1.0"?>
-<
-	no keywords->data[(int)'o']->last_inclusion
-soapenv:Envelope <!-- (ref)namespaces -->>
-	
-	line before open tag ([22:40]): '<soapenv:Envelope '
-<!-- (ref)Header -->
-	<soapenv:Body wsu:Id="string">
-	
-	line before open tag ([66:67]): '	'
-	<soapenv:Notification>
-			<not:Event><!-- (param)notification_text --></not:Event>
-	
-	line before open tag ([145:159]): '			<not:Event>'
-	</soapenv:Notification>
-	</soapenv:Body>
-</soapenv:Envelope>
+print(f'''soapenv:Header>''')
+print(f'''<add:Addressing wsu:Id="AddressingHeader">''')
+print(f'''	<add:LifecycleInfo>''')
+print(f'''		<add:LifecycleID>{lifecycle_id}</add:LifecycleID>''')
+print(f'''	</add:LifecycleInfo>''')
+print(f'''	<add:To>{addressing_to}</add:To>''')
+print(f'''	<add:From>''')
+print(f'''		<add:Address>{from_address}</add:Address>''')
+print(f'''	</add:From>''')
+print(f'''	<add:ReplyTo>''')
+print(f'''		<add:Address>{reply_to_address}</add:Address>''')
+print(f'''		<add:ServiceName>{service_name}</add:ServiceName>''')
+print(f'''	</add:ReplyTo>''')
+print(f'''	<add:MessageID>{message_id}</add:MessageID>''')
+print(f'''</add:Addressing>''')
+print(f'''oas:Security>''')
+print(f'''<wsu:Timestamp wsu:Id="string">''')
+print(f'''	<wsu:Created wsu:Id="string">{created}</wsu:Created>''')
+print(f'''	<wsu:Expires wsu:Id="string">{expires}</wsu:Expires>''')
+print(f'''</wsu:Timestamp>''')
+print(f'''<xd:Signature wsu:Id="string">''')
+print(f'''	<xd:SignedInfo wsu:Id="string">''')
+print(f'''xd:CanonicalizationMethod xd1:Algorithm="http://www.w3.org/2010/xml-c14n2">''')
+print(f'''<x-:IgnoreComments>{ignore_comments}</x-:IgnoreComments>''')
+print(f'''<x-:TrimTextNodes>{trim_text_nodes}</x-:TrimTextNodes>''')
+print(f'''<x-:PrefixRewrite>{prefix_rewrite}</x-:PrefixRewrite>''')
+print(f'''<x-:QNameAware>''')
+print(f'''	<x-:Element x-:Name="string" x-:NS="{qname_aware_element}"/>''')
+print(f'''	<x-:XPathElement x-:Name="string" x-:NS="{qname_aware_xpath_element}"/>''')
+print(f'''	<x-:QualifiedAttr x-:Name="string" x-:NS="{qname_aware_qualified_attr}"/>''')
+print(f'''	<x-:UnqualifiedAttr x-:Name="string" x-:ParentName="string" x-:ParentNS="{qname_aware_unqualified_attr}"/>''')
+print(f'''</x-:QNameAware>''')
+
+print(f'''		<xd:SignatureMethod xd:Algorithm="urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-512"/>''')
+print(f'''xd:Reference wsu:Id="string">''')
+print(f'''<xd:Transforms>''')
+print(f'''	<xd:Transform xd:Algorithm="http://www.w3.org/2010/xmldsig2#transform">''')
+print(f'''		<xd1:Selection xd1:URI="http://www.test.com/gero/nimborum" xd1:Algorithm="http://www.w3.org/2010/xmldsig2#xml"/>''')
+print(f'''		<xd1:Canonicalization xd1:Algorithm="http://www.w3.org/2010/xml-c14n2">''')
+print(f'''			<x-:IgnoreComments>{ignore_comments}</x-:IgnoreComments>''')
+print(f'''			<x-:TrimTextNodes>{trim_text_nodes}</x-:TrimTextNodes>''')
+print(f'''			<x-:PrefixRewrite>{prefix_rewrite}</x-:PrefixRewrite>''')
+print(f'''			<x-:QNameAware>''')
+print(f'''				<x-:Element x-:Name="string" x-:NS="{qname_aware_element}"/>''')
+print(f'''				<x-:XPathElement x-:Name="string" x-:NS="{qname_aware_xpath_element}"/>''')
+print(f'''				<x-:QualifiedAttr x-:Name="string" x-:NS="{qname_aware_qualified_attr}"/>''')
+print(f'''				<x-:UnqualifiedAttr x-:Name="string" x-:ParentName="string" x-:ParentNS="{qname_aware_unqualified_attr}"/>''')
+print(f'''			</x-:QNameAware>''')
+print(f'''		</xd1:Canonicalization>''')
+print(f'''		<xd1:Verifications>''')
+print(f'''			<xd1:Verification xd1:DigestDataLength="32"/>''')
+print(f'''		</xd1:Verifications>''')
+print(f'''	</xd:Transform>''')
+print(f'''</xd:Transforms>''')
+print(f'''<xd:DigestMethod xd:Algorithm="{digest_method}"/>''')
+print(f'''<xd:DigestValue>{digest_value}</xd:DigestValue>''')
+
+print(f'''	</xd:SignedInfo>''')
+print(f'''	<xd:SignatureValue>{signature_value}</xd:SignatureValue>''')
+print(f'''	<xd:KeyInfo wsu:Id="string">''')
+print(f'''		<xd:X509Data>''')
+print(f'''			<xd:X509Certificate>{certificate}</xd:X509Certificate>''')
+print(f'''		</xd:X509Data>''')
+print(f'''	</xd:KeyInfo>''')
+print(f'''</xd:Signature>''')
+print(f'''xe:EncryptedKey wsu:Id="string">''')
+print(f'''<xe:EncryptionMethod xe:Algorithm="{encryption_method}"/>''')
+print(f'''<xe:KeyInfo wsu:Id="string">''')
+print(f'''	<xd:X509Data>''')
+print(f'''		<xd:X509Certificate>{x509_certificate}</xd:X509Certificate>''')
+print(f'''		<xd:X509SKI>{x509_ski}</xd:X509SKI>''')
+print(f'''xd:X509IssuerSerial>''')
+print(f'''<xd:X509IssuerName>{name}</xd:X509IssuerName>''')
+print(f'''<xd:X509Serial>{serial}</xd:X509Serial>''')
+
+print(f'''	</xd:X509Data>''')
+print(f'''</xe:KeyInfo>''')
+print(f'''<xe:CipherData>''')
+print(f'''	<xe:CipherValue>{cipher_value}</xe:CipherValue>''')
+print(f'''</xe:CipherData>''')
+print(f'''<xe:ReferenceList>''')
+
+print(f'''</xe:ReferenceList>''')
+
+
+
+print(f'''<soapenv:Body wsu:Id="string">''')
+print(f'''	<soapenv:Notification>''')
+print(f'''		<not:Event>{notification_text}</not:Event>''')
+print(f'''	</soapenv:Notification>''')
+print(f'''</soapenv:Body>''')
+
+compile_calls 9009
+end

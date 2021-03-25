@@ -19,6 +19,7 @@ typedef struct Tree {
 
 Tree* createTree() {
 	struct Tree* tree = malloc(sizeof(struct Tree));
+	tree->root.value = NULL;
 	tree->root.children = calloc(ALPHABET_SIZE, sizeof(TreeNode*));
 	return tree;
 }
@@ -59,8 +60,8 @@ int treeInsert(Tree* tree, const char *word, char *description) {
 	}
 
 	int description_len = (int)strlen(description);
-	node->value = malloc(description_len + 1);
-	strncpy(node->value, description, description_len + 1);
+	node->value = malloc(sizeof(char) * (description_len + 1));
+	strncpy_s(node->value, sizeof(char) * (description_len + 1), description, description_len);
 	return true;
 }
 

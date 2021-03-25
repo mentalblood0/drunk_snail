@@ -1,0 +1,20 @@
+
+C:\Users\Necheporenko_s_iu\repositories\two_servers\template_engine\c_version>gcc main.c -Wall -Wextra   & a.exe
+
+<?xml version="1.0"?>
+<
+	no keywords->data[(int)'o']->last_inclusion
+soapenv:Envelope <!-- (ref)namespaces -->>
+	
+	line before open tag ([22:40]): '<soapenv:Envelope '
+<!-- (ref)Header -->
+	<soapenv:Body wsu:Id="string">
+	
+	line before open tag ([66:67]): '	'
+	<soapenv:Notification>
+			<not:Event><!-- (param)notification_text --></not:Event>
+	
+	line before open tag ([145:159]): '			<not:Event>'
+	</soapenv:Notification>
+	</soapenv:Body>
+</soapenv:Envelope>

@@ -62,30 +62,72 @@ Tree* cacheTemplates(char* templates_dir_path) {
 	return tree;
 }
 
+typedef struct KeywordData {
+	char *last_inclusion;
+	int length;
+	char last_symbol;
+} KeywordData;
+
+typedef struct Keywords {
+	Tree *tree;
+	KeywordData **data;
+} Keywords;
+
+Keywords* createKeywordsData(int number_of_keywords) {
+	Keywords *result = malloc(sizeof(Keywords));
+	result->tree = createTree();
+	result->data = calloc(number_of_keywords, sizeof(KeywordData*));
+	return result;
+}
+
+void addKeyword(Keywords *keywords, char *keyword, char symbol) {
+	char *value_to_insert = malloc(sizeof(char) * 2);
+	value_to_insert[0] = symbol;
+	value_to_insert[1] = 0;
+	treeInsert(keywords->tree, keyword, value_to_insert);
+
+	KeywordData *data = malloc(sizeof(KeywordData));
+	data->last_inclusion = NULL;
+	char *k = keyword;
+	for (; *k; k++);
+	data->length = k - keyword;
+	data->last_symbol = *k;
+	keywords->data[(int)symbol] = data;
+}
+
 #define compile_chunk_size 10000
 #define compile_buf_size 10000
 
-char* compile(char *s, Tree *keywords_tree) {
+char* compile(char *s, Keywords *keywords) {
 	char *result = malloc(sizeof(char) * compile_chunk_size);
 	char *c = s;
-	char **last_keywords_indexes = calloc(128, sizeof(char*));
-	last_keywords_indexes[(int)'l'] = s;
-	TreeNode *n = &keywords_tree->root;
+	keywords->data[(int)'n']->last_inclusion = s;
+	TreeNode *n = &keywords->tree->root;
 	for (; *c; c++) {
+		printf("%c", *c);
 		if (n->children[(int)*c])
 			n = n->children[(int)*c];
 		else {
 			if (n->value) {
-				last_keywords_indexes[(int)n->value[0]] = c;
 				if (n->value[0] == 'n') {
-					if (last_keywords_indexes[(int)'o']) {
-						*(last_keywords_indexes[(int)'o'] - 1) = 0;
-						printf("|%s|\n", last_keywords_indexes[(int)'l']);
-						*(last_keywords_indexes[(int)'o'] - 1) = '-';
-					}
+					char *open_last = keywords->data[(int)'o']->last_inclusion;
+					if (open_last) {
+						char *prev_line_break = keywords->data[(int)'n']->last_inclusion;
+						// char *line_break = c - 1;
+						char *line_before_open_tag_start = prev_line_break + 1;
+						char *line_before_open_tag_end = open_last;
+						if (line_before_open_tag_start <= line_before_open_tag_end) {
+							char temp = *line_before_open_tag_end;
+							*line_before_open_tag_end = 0;
+							printf("\n\tline before open tag ([%I64d:%I64d]): '%s'\n", line_before_open_tag_start - s, line_before_open_tag_end - s, line_before_open_tag_start);
+							*line_before_open_tag_end = temp;
+						}
+					} else printf("\n\tno keywords->data[(int)'o']->last_inclusion\n");
 				}
+				KeywordData *current_keyword_data = keywords->data[(int)n->value[0]];
+				current_keyword_data->last_inclusion = c - current_keyword_data->length;
 			}
-			n = &keywords_tree->root;
+			n = &keywords->tree->root;
 		}
 
 	}
@@ -94,17 +136,17 @@ char* compile(char *s, Tree *keywords_tree) {
 
 int main (void) {
 	Tree *templates_tree = cacheTemplates("../templates");
-	printf("%s\n", dictionaryLookup(templates_tree, "Notification"));
+	// printf("%s\n", dictionaryLookup(templates_tree, "Notification"));
 
-	Tree *keywords_tree = createTree();
-	treeInsert(keywords_tree, "\n", "n");
-	treeInsert(keywords_tree, "<!--", "o");
-	treeInsert(keywords_tree, "-->", "c");
-	treeInsert(keywords_tree, "(param)", "p");
-	treeInsert(keywords_tree, "(ref)", "r");
+	Keywords *keywords = createKeywordsData(5);
+	addKeyword(keywords, "\n", 'n');
+	addKeyword(keywords, "<!--", 'o');
+	addKeyword(keywords, "-->", 'c');
+	addKeyword(keywords, "(param)", 'p');
+	addKeyword(keywords, "(ref)", 'r');
 
 	printf("\n");
-	compile(dictionaryLookup(templates_tree, "Notification"), keywords_tree);
+	compile(dictionaryLookup(templates_tree, "Notification"), keywords);
 
 	return 0;
 }

@@ -1,1 +1,1 @@
-gcc main.c -Wall -Wextra & a.exe
+gcc main.c -O3 -Wall -Wextra & a.exe & python test.py

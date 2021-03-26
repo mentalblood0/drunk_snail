@@ -27,31 +27,31 @@ char* readFile(char *file_path) {
 	FILE* fp = NULL;
 	fopen_s(&fp, file_path, "r");
 	if (fp != NULL) {
-	    /* Go to the end of the file. */
-	    if (fseek(fp, 0L, SEEK_END) == 0) {
-	        /* Get the size of the file. */
-	        long bufsize = ftell(fp);
-	        if (bufsize == -1) {
-	        	return NULL;
-	        }
+		/* Go to the end of the file. */
+		if (fseek(fp, 0L, SEEK_END) == 0) {
+			/* Get the size of the file. */
+			long bufsize = ftell(fp);
+			if (bufsize == -1) {
+				return NULL;
+			}
 
-	        /* Allocate our buffer to that size. */
-	        source = malloc(sizeof(char) * (bufsize + 1));
+			/* Allocate our buffer to that size. */
+			source = malloc(sizeof(char) * (bufsize + 3));
 
-	        /* Go back to the start of the file. */
-	        if (fseek(fp, 0L, SEEK_SET) != 0) {
-	        	return NULL;
-	        }
+			/* Go back to the start of the file. */
+			if (fseek(fp, 0L, SEEK_SET) != 0) {
+				return NULL;
+			}
 
-	        /* Read the entire file into memory. */
-	        size_t newLen = fread(source, sizeof(char), bufsize, fp);
-	        if ( ferror( fp ) != 0 ) {
-	            return NULL;
-	        } else {
-	            source[newLen++] = '\0'; /* Just to be safe. */
-	        }
-	    }
-	    fclose(fp);
+			/* Read the entire file into memory. */
+			size_t newLen = fread(source, sizeof(char), bufsize, fp);
+			if ( ferror( fp ) != 0 ) {
+				return NULL;
+			} else {
+				source[newLen++] = '\0'; /* Just to be safe. */
+			}
+		}
+		fclose(fp);
 	}
 	return source;
 }
@@ -113,33 +113,104 @@ void addKeyword(Keywords *keywords, char *keyword, char symbol) {
 	keywords->data[(int)symbol] = data;
 }
 
-#define compile__chunk_size 10000
-#define compile__memcpy(src_start, src_end) {memcpy(result_end, src_start, src_end - src_start); result_end += src_end - src_start;}
+#define compile__chunk_size 40000
+#define compile__memcpy(src_start, src_end) {memcpy(result_end, src_start, sizeof(char) * (src_end - src_start)); result_end += src_end - src_start;}
 
-char *compile__print_left_part = "print(f'''";
-char *compile__print_right_part = "''')\n";
-#define compile__cpy_print_left_part() {memcpy(result_end, compile__print_left_part, 10); result_end += 10;}
-#define compile__cpy_print_right_part() {memcpy(result_end, compile__print_right_part, 5); result_end += 5;}
+char *compile__print_left_part = "result += f'''";
+char *compile__print_right_part = "'''\n";
+#define compile__cpy_print_left_part() {memcpy(result_end, compile__print_left_part, sizeof(char) * 14); result_end += 14;}
+#define compile__cpy_print_right_part() {memcpy(result_end, compile__print_right_part, sizeof(char) * 4); result_end += 4;}
 #define compile__cpy_one(c) {*result_end = c; result_end++;}
 
-int printFromTo(char *s, char *from_p, char *to_p, char *comment) {
+char *compile__for_strings[11] = {
+	"for ",
+	" in ([None] if ((not ",
+	") or (not '",
+	"' in ",
+	")) else (",
+	"['",
+	"'] if type(",
+	"['",
+	"']) == list else [",
+	"['",
+	"']])):\n"
+};
+int compile__for_lengths[11] = {4, 21, 11, 5, 9, 2, 11, 2, 18, 2, 7};
+#define compile__for_memcpy(i) compile__memcpy(compile__for_strings[i], compile__for_strings[i] + compile__for_lengths[i]);
+
+// char temp = *param_name_end;
+// 	*param_name_end = '\0';
+// 	result_end += sprintf(result_end, "for %s in ([None] if ((not %s) or (not '%s' in %s)) else (%s['%s'] if type(%s['%s']) == list else [%s['%s']])):", param_name_start, template_name, param_name_start, template_name, template_name, param_name_start, template_name, param_name_start, template_name, param_name_start);
+// 	*param_name_end = temp;
+
+#define compile__cpy_for(param_name_start, param_name_end) {\
+	compile__for_memcpy(0); compile__memcpy(param_name_start, param_name_end);\
+	compile__for_memcpy(1); compile__memcpy(template_name, template_name_end);\
+	compile__for_memcpy(2); compile__memcpy(param_name_start, param_name_end);\
+	compile__for_memcpy(3); compile__memcpy(template_name, template_name_end);\
+	compile__for_memcpy(4); compile__memcpy(template_name, template_name_end);\
+	compile__for_memcpy(5); compile__memcpy(param_name_start, param_name_end);\
+	compile__for_memcpy(6); compile__memcpy(template_name, template_name_end);\
+	compile__for_memcpy(7); compile__memcpy(param_name_start, param_name_end);\
+	compile__for_memcpy(8); compile__memcpy(template_name, template_name_end);\
+	compile__for_memcpy(9); compile__memcpy(param_name_start, param_name_end);\
+	compile__for_memcpy(10);\
+}
+
+char *compile__def_strings[3] = {"def render", "Template(", "):\n\tresult = ''\n"};
+int compile__def_lengths[3] = {10, 9, 16};
+#define compile__def_memcpy(i) compile__memcpy(compile__def_strings[i], compile__def_strings[i] + compile__def_lengths[i])
+
+#define compile__cpy_def() {\
+	compile__def_memcpy(0); compile__memcpy(template_name, template_name_end);\
+	compile__def_memcpy(1); compile__memcpy(template_name, template_name_end);\
+	compile__def_memcpy(2);\
+}
+
+char *compile__if_strings[3] = {"if '", "' in ", ":\n"};
+int compile__if_lengths[3] = {4, 5, 2};
+#define compile__if_memcpy(i) compile__memcpy(compile__if_strings[i], compile__if_strings[i] + compile__if_lengths[i])
+
+#define compile__cpy_if(param_name_start, param_name_end) {\
+	compile__if_memcpy(0); compile__memcpy(param_name_start, param_name_end);\
+	compile__if_memcpy(1); compile__memcpy(template_name, template_name_end);\
+	compile__if_memcpy(2);\
+}
+
+char *compile__return = "\treturn result\n";
+int compile__return_length = 15;
+
+int printFromTo(char *s, char *from_p, char *to_p, char *comment, char *template_name) {
 	if (from_p > to_p) return 0;
 	char temp = *to_p;
 	*to_p = 0;
-	printf("\n____%s ([%I64d:%I64d]): \"%s\"\n", comment, from_p - s, to_p - s, from_p);
+	printf("____%s____%s ([%I64d:%I64d]): \"%s\"\n", template_name, comment, from_p - s, to_p - s, from_p);
 	*to_p = temp;
 	return 1;
 }
 
+void addTabs(char **s_end, int n) {
+	for (; n; n--) {
+		**s_end = '\t';
+		(*s_end)++;
+	}
+}
+
 int compile_calls = 0;
 
-char* compile(char *s, Keywords *keywords, Tree *templates_tree) {
+char* compile(char *template_name, Keywords *keywords, Tree *templates_tree, int inner_tabs_number, char *prefix_start, char *prefix_end, char *postfix_start, char *postfix_end, int tabs_number, int depth) {
+	char *s = dictionaryLookup(templates_tree, template_name);
 	compile_calls += 1;
 	char *result;
 	while (!(result = malloc(sizeof(char) * compile__chunk_size)));
 	char *result_end = result;
 	char *c = s;
+	char *template_name_end = template_name;
+	for (; *template_name_end; template_name_end++);
+	if (!depth)
+		compile__cpy_def();
 	int tag_on_this_line = 0;
+	int optional = 0;
 	keywords->data[(int)'n']->last_inclusion = s;
 	TreeNode *n = &keywords->tree->root;
 	for (; *c; c++) {
@@ -147,61 +218,15 @@ char* compile(char *s, Keywords *keywords, Tree *templates_tree) {
 			n = n->children[(int)*c];
 		else {
 			if (n->value) {
-				if (n->value[0] == 'o')
+				if ((n->value[0] == 'r') || (n->value[0] == 'p'))
 					tag_on_this_line = 1;
+				if (n->value[0] == '?')
+					optional = 1;
 				if (n->value[0] == 'n') {
 					if (tag_on_this_line) {
-						char *open_last = keywords->data[(int)'o']->last_inclusion;
-						// BEFORE
-						char *prev_line_break = keywords->data[(int)'n']->last_inclusion;
-						char *line_before_open_tag_start = prev_line_break + 1;
-						char *line_before_open_tag_end = open_last;
-						if (line_before_open_tag_start <= line_before_open_tag_end) {
-							// AFTER
-							KeywordData *close_data = keywords->data[(int)'c'];
-							char *close_last = close_data->last_inclusion;
-							char *line_after_close_tag_start = close_last + close_data->length;
-							char *line_after_close_tag_end = c - 1;
-							// PARAM
-							KeywordData *param_data = keywords->data[(int)'p'];
-							char *param_last = param_data->last_inclusion;
-							if (param_last) {
-								char *param_name_start = param_last + param_data->length;
-								char *param_name_end = param_name_start;
-								for (; *param_name_end != ' '; param_name_end++);
-
-								compile__cpy_print_left_part();
-								compile__memcpy(line_before_open_tag_start, line_before_open_tag_end);
-								compile__cpy_one('{');
-								compile__memcpy(param_name_start, param_name_end);
-								compile__cpy_one('}');
-								compile__memcpy(line_after_close_tag_start, line_after_close_tag_end);
-								compile__cpy_print_right_part();
-							}
-							// REF
-							KeywordData *ref_data = keywords->data[(int)'r'];
-							char *ref_last = ref_data->last_inclusion;
-							if (ref_last) {
-								char *ref_name_start = ref_last + ref_data->length;
-								char *ref_name_end = ref_name_start;
-								for (; *ref_name_end != ' '; ref_name_end++);
-
-								char temp = *ref_name_end;
-								*ref_name_end = 0;
-								char *subtemplate_text = compile(dictionaryLookup(templates_tree, ref_name_start), keywords, templates_tree);
-								*ref_name_end = temp;
-								compile__memcpy(subtemplate_text, subtemplate_text + strlen(subtemplate_text));
-								compile__cpy_one('\n');
-							}
-						}
-						tag_on_this_line = 0;
+						#include "processLineWithTag.c"
 					} else {
-						char *prev_line_break = keywords->data[(int)'n']->last_inclusion;
-						char *line_start = prev_line_break + 1;
-						char *line_end = c - 1;
-						compile__cpy_print_left_part();
-						compile__memcpy(line_start, line_end);
-						compile__cpy_print_right_part();
+						#include "processLineWithoutTag.c"
 					}
 					keywords->data[(int)'p']->last_inclusion = NULL;
 					keywords->data[(int)'r']->last_inclusion = NULL;
@@ -214,8 +239,15 @@ char* compile(char *s, Keywords *keywords, Tree *templates_tree) {
 			n = &keywords->tree->root;
 		}
 	}
+	if (tag_on_this_line) {
+		#include "processLineWithTag.c"
+	} else {
+		#include "processLineWithoutTag.c"
+	}
+	if (!depth)
+		compile__memcpy(compile__return, compile__return + compile__return_length);
 	*result_end = 0;
-	result = (char*)realloc(result, sizeof(char) * (strlen(result) + 1));
+	result = (char*)realloc(result, sizeof(char) * (result_end - result + 1));
 	return result;
 }
 
@@ -223,23 +255,32 @@ int main (void) {
 	Tree *templates_tree = cacheTemplates("C:\\Users\\Necheporenko_s_iu\\repositories\\two_servers\\template_engine\\templates");
 	// printf("%s\n", dictionaryLookup(templates_tree, "Notification"));
 
-	Keywords *keywords = createKeywordsData(5);
+	Keywords *keywords = createKeywordsData(128);
 	addKeyword(keywords, "\n", 'n');
 	addKeyword(keywords, "<!--", 'o');
 	addKeyword(keywords, "-->", 'c');
 	addKeyword(keywords, "(param)", 'p');
 	addKeyword(keywords, "(ref)", 'r');
+	addKeyword(keywords, "(optional)", '?');
 
 	// int i = 0;
 	// clock_t t = clock();
 	// for (; i < 1000; i++)
-	// 	free(compile(dictionaryLookup(templates_tree, "Notification"), keywords, templates_tree));
+	// 	free(compile("Notification", keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0));
 	// t = clock() - t;
 	// printf("%f\n", ((double)t) / CLOCKS_PER_SEC);
 
-	printf("result:\n%s\n", compile(dictionaryLookup(templates_tree, "Notification"), keywords, templates_tree));
-	printf("compile_calls %d\n", compile_calls);
-	printf("end\n");
+	char *compiled = compile("Notification", keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0);
+	int compiled_length = strlen(compiled);
+	FILE *f = fopen("compiled.py", "w");
+	if (f != NULL) {
+		printf("writing %d chars\n", compiled_length);
+		fwrite(compiled, sizeof(char), compiled_length, f);
+	}
+
+	// printf("%s\n", compile("Notification", keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0));
+	// printf("compile_calls %d\n", compile_calls);
+	// printf("end\n");
 
 	return 0;
 }

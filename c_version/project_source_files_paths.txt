@@ -1,2 +1,0 @@
-C:\Users\Necheporenko_s_iu\repositories\two_servers\template_engine\c_version\main.c
-C:\Users\Necheporenko_s_iu\repositories\two_servers\template_engine\c_version\prefix_tree.c

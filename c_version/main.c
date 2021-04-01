@@ -24,50 +24,56 @@ void* _realloc(void *p, size_t size) {
 
 char* readFile(char *file_path) {
 	char *source = NULL;
-	FILE* fp = NULL;
-	fopen_s(&fp, file_path, "r");
-	if (fp != NULL) {
+	FILE* f = NULL;
+	fopen_s(&f, file_path, "r");
+	if (f != NULL) {
 		/* Go to the end of the file. */
-		if (fseek(fp, 0L, SEEK_END) == 0) {
+		if (fseek(f, 0L, SEEK_END) == 0) {
 			/* Get the size of the file. */
-			long bufsize = ftell(fp);
+			long bufsize = ftell(f);
 			if (bufsize == -1) {
+				fclose(f);
+				return NULL;
+			}
+
+			/* Go back to the start of the file. */
+			if (fseek(f, 0L, SEEK_SET) != 0) {
+				fclose(f);
 				return NULL;
 			}
 
 			/* Allocate our buffer to that size. */
 			source = malloc(sizeof(char) * (bufsize + 3));
 
-			/* Go back to the start of the file. */
-			if (fseek(fp, 0L, SEEK_SET) != 0) {
-				return NULL;
-			}
-
 			/* Read the entire file into memory. */
-			size_t newLen = fread(source, sizeof(char), bufsize, fp);
-			if ( ferror( fp ) != 0 ) {
+			size_t newLen = fread(source, sizeof(char), bufsize, f);
+			if ( ferror( f ) != 0 ) {
+				free(source);
+				fclose(f);
 				return NULL;
 			} else {
 				source[newLen++] = '\0'; /* Just to be safe. */
 			}
 		}
-		fclose(fp);
+		fclose(f);
 	}
 	return source;
 }
+
+#define cacheTemplates__file_path_length 128
 
 Tree* cacheTemplates(char* templates_dir_path) {
 	Tree *tree = createTree();
 	DIR *d = opendir(templates_dir_path);
 	if (d != NULL) {
 		struct dirent *entry;
-		char file_path[128];
+		char file_path[cacheTemplates__file_path_length];
 		while (1) {
 			entry = readdir(d);
 			if (entry) {
 				char* extension = getExtension(entry->d_name);
 				if (!strcmp(extension, "xml") || !strcmp(extension, "txt")) {
-					snprintf(file_path, 128, "%s\\%s", templates_dir_path, entry->d_name);
+					snprintf(file_path, cacheTemplates__file_path_length, "%s\\%s", templates_dir_path, entry->d_name);
 					*(extension - 1) = 0;
 					treeInsert(tree, entry->d_name, readFile(file_path));
 				}
@@ -157,14 +163,13 @@ int compile__for_lengths[11] = {4, 21, 11, 5, 9, 2, 11, 2, 18, 2, 7};
 	compile__for_memcpy(10);\
 }
 
-char *compile__def_strings[3] = {"def render", "Template(", "):\n\tresult = ''\n"};
-int compile__def_lengths[3] = {10, 9, 16};
+char *compile__def_strings[2] = {"def render(", "):\n\tresult = ''\n"};
+int compile__def_lengths[2] = {11, 16};
 #define compile__def_memcpy(i) compile__memcpy(compile__def_strings[i], compile__def_strings[i] + compile__def_lengths[i])
 
 #define compile__cpy_def() {\
 	compile__def_memcpy(0); compile__memcpy(template_name, template_name_end);\
-	compile__def_memcpy(1); compile__memcpy(template_name, template_name_end);\
-	compile__def_memcpy(2);\
+	compile__def_memcpy(1);\
 }
 
 char *compile__if_strings[3] = {"if '", "' in ", ":\n"};
@@ -251,8 +256,41 @@ char* compile(char *template_name, Keywords *keywords, Tree *templates_tree, int
 	return result;
 }
 
+#define compileTemplates__file_path_length 128
+
+void compileTemplates(char *templates_dir_path, char *compiled_dir_path, Keywords *keywords, Tree *templates_tree) {
+	DIR *d = opendir(templates_dir_path);
+	if (d != NULL) {
+		struct dirent *entry;
+		char file_path[compileTemplates__file_path_length];
+		char compiled_path[compileTemplates__file_path_length];
+		while (1) {
+			entry = readdir(d);
+			if (entry) {
+				char* extension = getExtension(entry->d_name);
+				if (!strcmp(extension, "xml") || !strcmp(extension, "txt")) {
+					snprintf(file_path, compileTemplates__file_path_length, "%s\\%s", templates_dir_path, entry->d_name);
+					*(extension - 1) = 0;
+					char *compiled = compile(entry->d_name, keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0);
+					size_t compiled_length = strlen(compiled);
+					snprintf(compiled_path, compileTemplates__file_path_length, "%s\\%s.py", compiled_dir_path, entry->d_name);
+					FILE *f = fopen(compiled_path, "w");
+					if (f != NULL) {
+						printf("%s -> %s (%I64d chars)\n", file_path, compiled_path, compiled_length);
+						fwrite(compiled, sizeof(char), compiled_length, f);
+					}
+					fclose(f);
+				}
+			}
+			else
+				break;
+		}
+		closedir(d);
+	}
+}
+
 int main (void) {
-	Tree *templates_tree = cacheTemplates("C:\\Users\\Necheporenko_s_iu\\repositories\\two_servers\\template_engine\\templates");
+	Tree *templates_tree = cacheTemplates("C:\\Users\\Necheporenko_s_iu\\repositories\\two_servers\\templates");
 	// printf("%s\n", dictionaryLookup(templates_tree, "Notification"));
 
 	Keywords *keywords = createKeywordsData(128);
@@ -263,6 +301,13 @@ int main (void) {
 	addKeyword(keywords, "(ref)", 'r');
 	addKeyword(keywords, "(optional)", '?');
 
+	compileTemplates(
+		"C:\\Users\\Necheporenko_s_iu\\repositories\\two_servers\\templates",
+		"C:\\Users\\Necheporenko_s_iu\\repositories\\two_servers\\compiled_templates",
+		keywords,
+		templates_tree
+	);
+
 	// int i = 0;
 	// clock_t t = clock();
 	// for (; i < 1000; i++)
@@ -270,17 +315,13 @@ int main (void) {
 	// t = clock() - t;
 	// printf("%f\n", ((double)t) / CLOCKS_PER_SEC);
 
-	char *compiled = compile("Notification", keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0);
-	int compiled_length = strlen(compiled);
-	FILE *f = fopen("compiled.py", "w");
-	if (f != NULL) {
-		printf("writing %d chars\n", compiled_length);
-		fwrite(compiled, sizeof(char), compiled_length, f);
-	}
-
-	// printf("%s\n", compile("Notification", keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0));
-	// printf("compile_calls %d\n", compile_calls);
-	// printf("end\n");
+	// char *compiled = compile("Notification", keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0);
+	// int compiled_length = strlen(compiled);
+	// FILE *f = fopen("compiled.py", "w");
+	// if (f != NULL) {
+	// 	printf("writing %d chars\n", compiled_length);
+	// 	fwrite(compiled, sizeof(char), compiled_length, f);
+	// }
 
 	return 0;
 }

@@ -88,12 +88,20 @@ void clearTree(Tree*tree) {
 	}
 }
 
-// void printNode(TreeNode *node) {
-// 	printf("%s\n", );
+// char** getAll(TreeNode *node, char ***result) {
+	
+// 	if (node->value) {
+
+// 	}
+// 	TreeNode *child = node->children;
+// 	for (; child - node->children < ALPHABET_SIZE; child++) {
+
+// 	}
 // }
 
-// void printTree(Tree*tree) {
-
+// char** getAll(Tree *tree) {
+// 	char ***result = malloc(sizeof(char**));
+// 	return getAll(tree->root, result);
 // }
 
 char* treeGet(TreeNode *node, const char *word) {

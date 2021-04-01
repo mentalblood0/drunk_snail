@@ -1,0 +1,4 @@
+
+C:\Users\Necheporenko_s_iu\repositories\two_servers\template_engine\c_version>gcc main.c -O3 -Wall -Wextra   & a.exe   & python test.py 
+0.328000
+writing 23431 chars

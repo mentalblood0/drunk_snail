@@ -62,6 +62,11 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		// for (; *subtemplate_prefix_start == '\t'; subtemplate_prefix_start++);
 		if (subtemplate_prefix_start != line_before_open_tag_start)
 			subtemplate_prefix_start--;
+		if (optional) {
+			addTabs(&result_end, tabs_number);
+			compile__cpy_if(ref_name_start, ref_name_end);
+			tabs_number++;
+		}
 		char *subtemplate_text = compile(
 			ref_name_start,
 			keywords,
@@ -78,6 +83,8 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		addTabs(&result_end, tabs_number);
 		compile__cpy_for(ref_name_start, ref_name_end);
 		compile__memcpy(subtemplate_text, subtemplate_text + strlen(subtemplate_text));
+		if (optional)
+			tabs_number--;
 	}
 }
 tag_on_this_line = 0;

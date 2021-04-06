@@ -12,7 +12,7 @@
 			<!-- (ref)Reference -->
 		</xd:SignedInfo>
 		<xd:SignatureValue><!-- (param)signature_value --></xd:SignatureValue>
-		<xd:KeyInfo wsu:Id="string">
+		<xd:KeyInfo wsu:Id="x509Cert">
 			<xd:X509Data>
 				<xd:X509Certificate><!-- (param)certificate --></xd:X509Certificate>
 			</xd:X509Data>

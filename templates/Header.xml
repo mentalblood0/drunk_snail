@@ -3,15 +3,12 @@
 		<add:LifecycleInfo>
 			<add:LifecycleID><!-- (param)lifecycle_id --></add:LifecycleID>
 		</add:LifecycleInfo>
-		<!--1 or more repetitions:-->
 		<add:To><!-- (param)addressing_to --></add:To>
 		<add:From>
 			<add:Address><!-- (param)from_address --></add:Address>
 		</add:From>
-		<!--Optional:-->
 		<add:ReplyTo>
 			<add:Address><!-- (param)reply_to_address --></add:Address>
-			<!--Optional:-->
 			<add:ServiceName><!-- (param)service_name --></add:ServiceName>
 		</add:ReplyTo>
 		<add:MessageID><!-- (param)message_id --></add:MessageID>

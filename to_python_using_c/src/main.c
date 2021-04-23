@@ -229,11 +229,7 @@ char* compile(char *template_name, Keywords *keywords, Tree *templates_tree, int
 				if (n->value[0] == '?')
 					optional = 1;
 				if (n->value[0] == 'n') {
-					if (tag_on_this_line) {
-						#include "processLineWithTag.c"
-					} else {
-						#include "processLineWithoutTag.c"
-					}
+					#include "processLine.c"
 					keywords->data[(int)'p']->last_inclusion = NULL;
 					keywords->data[(int)'r']->last_inclusion = NULL;
 					++c;
@@ -245,11 +241,7 @@ char* compile(char *template_name, Keywords *keywords, Tree *templates_tree, int
 			n = &keywords->tree->root;
 		}
 	}
-	if (tag_on_this_line) {
-		#include "processLineWithTag.c"
-	} else {
-		#include "processLineWithoutTag.c"
-	}
+	#include "processLine.c"
 	if (!depth)
 		compile__memcpy(compile__return, compile__return + compile__return_length);
 	*result_end = 0;
@@ -291,9 +283,11 @@ void compileTemplates(char *templates_dir_path, char *compiled_dir_path, Keyword
 }
 
 int main (void) {
-	Tree *templates_tree = cacheTemplates("C:\\Users\\Necheporenko_s_iu\\repositories\\two_servers\\templates");
-	// printf("%s\n", dictionaryLookup(templates_tree, "Notification"));
+	char *input_dir = "..\\..\\templates";
+	char *output_dir = "..\\compiled_templates";
 
+	Tree *templates_tree = cacheTemplates(input_dir);
+	
 	Keywords *keywords = createKeywordsData(128);
 	addKeyword(keywords, "\n", 'n');
 	addKeyword(keywords, "<!--", 'o');
@@ -303,26 +297,11 @@ int main (void) {
 	addKeyword(keywords, "(optional)", '?');
 
 	compileTemplates(
-		"C:\\Users\\Necheporenko_s_iu\\repositories\\two_servers\\templates",
-		"C:\\Users\\Necheporenko_s_iu\\repositories\\two_servers\\compiled_templates",
+		input_dir,
+		output_dir,
 		keywords,
 		templates_tree
 	);
-
-	// int i = 0;
-	// clock_t t = clock();
-	// for (; i < 1000; i++)
-	// 	free(compile("Notification", keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0));
-	// t = clock() - t;
-	// printf("%f\n", ((double)t) / CLOCKS_PER_SEC);
-
-	// char *compiled = compile("Notification", keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0);
-	// int compiled_length = strlen(compiled);
-	// FILE *f = fopen("compiled.py", "w");
-	// if (f != NULL) {
-	// 	printf("writing %d chars\n", compiled_length);
-	// 	fwrite(compiled, sizeof(char), compiled_length, f);
-	// }
 
 	return 0;
 }

@@ -1,35 +1,8 @@
-from ctypes import *
+import os
+os.sys.path.append('..')
+from compiled_templates import Notification
 
-ctypes_type_from_python_type = {
-	str: c_wchar_p,
-	bytes: c_char_p,
-	int: c_int,
-	float: c_float
-}
-
-def dictToStructure(d, root=True):
-	fields = []
-	for key, value in d.items():
-		if type(value) == dict:
-			substructure_def = dictToStructure(value, root=False)
-			value_c_type = POINTER(substructure_def)
-			substructure = substructure_def(**value)
-			d[key] = pointer(substructure)
-		elif type(value) == list:
-			example_element = value[0]
-			if type(example_element) == dict:
-				substructure_def = dictToStructure(value, root=False)
-		else:
-			value_c_type = ctypes_type_from_python_type[type(value)]
-		fields.append((
-			key,
-			value_c_type
-		))
-	class Dict(Structure):
-		_fields_ = fields
-	return Dict if not root else Dict(**d)
-
-d = lambda: {
+params = {
 	'Header': {
 		'lifecycle_id': '1000230022021021800000002',
 		'addressing_to': [
@@ -107,63 +80,9 @@ d = lambda: {
 			],
 		}
 	},
-	'notification_text': ['обработано', 'lalala']
+	'notification_text': 'обработано'
 }
 
-import random
-import string
-
-def randomString(n):
-	return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
-
-params = {
-	'TableRow': [{
-		'TableData': [{
-			'data': randomString(8)
-		} for i in range(1000)]
-	} for i in range(10)]
-}
-
-def dictToString(d, prefix=''):
-	result = ''
-	for key, value in d.items():
-		result += toString(value, f'{prefix}->{key}')
-	return result
-
-def listToString(l, prefix=''):
-	return ''.join([toString(l[i], f'{prefix}->{i}') for i in range(len(l))])
-
-to_string_methods = {
-	dict: dictToString,
-	list: listToString,
-	str: lambda s, prefix: f'{prefix}=\'{s}\'\n'
-}
-
-def toString(something, prefix=''):
-	return to_string_methods[type(something)](something, prefix)
-
-# print(toString(d(), 'params'))
-# exit()
-
-import cProfile
-import json
-cProfile.run('''
-for i in range(1000):
-	toString(d())
-''')
-exit()
-
-lib = cdll['./test.so']
-
-printSimpleStruct = lib['printSimpleStruct']
-printSimpleStruct.argtypes = [c_void_p]
-
-# import cProfile
-
-# cProfile.run('''
-# for i in range(1000):
-# 	dictToStructure(d());
-# ''')
-
-dict_struct = dictToStructure(d())
-printSimpleStruct(byref(dict_struct))
+result = Notification.render(params)
+with open('result.xml', 'w', encoding='utf8') as f:
+	f.write(result)

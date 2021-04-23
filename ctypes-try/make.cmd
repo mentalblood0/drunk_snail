@@ -1,1 +1,0 @@
-cd .. & python test.py & cd ctypes-example-master & gcc -shared -fPIC ..\compiled.c -o test.so & python test.py

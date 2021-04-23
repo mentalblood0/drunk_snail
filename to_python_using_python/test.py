@@ -1,5 +1,22 @@
-from compiled import *
+import main as template_engine
 
+templates_dir_path = '../templates'
+
+# will preload templates from specified directory
+cached_templates = template_engine.cacheTemplates(templates_dir_path)
+
+# will generate function definition code
+compiled = template_engine.compileTemplate(
+	name='Notification',
+	function_name='testFunction', # will set 'compile<name>Template' if not specified
+	templates_dir_path=templates_dir_path, # 'templates' by default
+	cached_templates=cached_templates # {} by default
+)
+
+# will define function called 'testFunction', which takes dict with parameters and returns filled template string
+exec(compiled)
+
+# params to pass to function
 params = {
 	'Header': {
 		'lifecycle_id': '1000230022021021800000002',
@@ -81,6 +98,9 @@ params = {
 	'notification_text': 'обработано'
 }
 
-result = renderNotificationTemplate(params)
-with open('result.xml', 'w') as f:
+# geting filled template
+result = testFunction(params)
+
+# writing to file so you can simply read it
+with open('result.xml', 'w', encoding='utf-8') as f:
 	f.write(result)

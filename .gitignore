@@ -1,3 +1,5 @@
+*.exe
 __pycache__
 .vs
 include
+/to_python_using_c/compiled_templates/*

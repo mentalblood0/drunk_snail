@@ -283,18 +283,24 @@ void compileTemplates(char *templates_dir_path, char *compiled_dir_path, Keyword
 }
 
 int main (void) {
-	char *input_dir = "..\\..\\templates";
-	char *output_dir = "..\\compiled_templates";
+	char *input_dir = "..\\templates";
+	char *output_dir = "compiled_templates";
+
+	char *open_tag = "<!--";
+	char *close_tag = "-->";
+	char *param_operator = "(param)";
+	char *ref_operator = "(ref)";
+	char *optional_operator = "(optional)";
 
 	Tree *templates_tree = cacheTemplates(input_dir);
 	
 	Keywords *keywords = createKeywordsData(128);
 	addKeyword(keywords, "\n", 'n');
-	addKeyword(keywords, "<!--", 'o');
-	addKeyword(keywords, "-->", 'c');
-	addKeyword(keywords, "(param)", 'p');
-	addKeyword(keywords, "(ref)", 'r');
-	addKeyword(keywords, "(optional)", '?');
+	addKeyword(keywords, open_tag, 'o');
+	addKeyword(keywords, close_tag, 'c');
+	addKeyword(keywords, param_operator, 'p');
+	addKeyword(keywords, ref_operator, 'r');
+	addKeyword(keywords, optional_operator, '?');
 
 	compileTemplates(
 		input_dir,

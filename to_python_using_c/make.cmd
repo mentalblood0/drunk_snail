@@ -1,1 +1,1 @@
-@ gcc src/main.c -O3 -Wall -Wextra && a.exe && cd test && python test.py && cd ..
+gcc src/main.c -O3 -Wall -Wextra && a.exe && cd test && python test.py && cd ..

@@ -320,5 +320,7 @@ int main (int argc, char *argv[]) {
 		templates_tree
 	);
 
+	printf("done\n");
+
 	return 0;
 }

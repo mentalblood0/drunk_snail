@@ -20,4 +20,17 @@ About resulted Python function parameters:
 * Key-Value might be name and value of `param`(s)
 * Key-Value might be name and parameters of `ref`(s)
 
-Tests are provided
+
+
+Command line arguments for C version (defaults):
+
+```bash
+-i ..\\templates
+-o compiled_templates
+-e xml txt
+-open_tag "<!--"
+-close_tag "-->"
+-param_operator (param)
+-ref_operator (ref)
+-optional_operator (optional)
+```

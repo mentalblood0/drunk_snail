@@ -1,1 +1,1 @@
-gcc src/main.c -O3 -Wall -Wextra && a.exe && cd test && python test.py && cd ..
+gcc src/main.c -O3 -Wall -Wextra && a.exe -i ..\\templates -o compiled_templates -e xml txt -open_tag "<!--" -close_tag "-->" -param_perator (param) -ref_operator (ref) -optional_operator (optional) && cd test && python test.py && cd ..

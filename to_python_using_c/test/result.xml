@@ -5,17 +5,14 @@
 			<add:LifecycleInfo>
 				<add:LifecycleID>1000230022021021800000002</add:LifecycleID>
 			</add:LifecycleInfo>
-			<!--1 or more repetitions:-->
 			<add:To>100000003</add:To>
 			<add:To>100000004</add:To>
 			<add:To>100000005</add:To>
 			<add:From>
 				<add:Address>http://www.any.com/circum/regemque</add:Address>
 			</add:From>
-			<!--Optional:-->
 			<add:ReplyTo>
 				<add:Address>http://www.test.com/foedere/ferant</add:Address>
-				<!--Optional:-->
 				<add:ServiceName>qname</add:ServiceName>
 			</add:ReplyTo>
 			<add:MessageID>1000000032021021800005059</add:MessageID>

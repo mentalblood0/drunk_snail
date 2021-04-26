@@ -3,15 +3,7 @@
 #include <dirent.h>
 #include <time.h>
 #include "prefix_tree.c"
-
-char* getExtension(char* file_name) {
-	char* c = file_name;
-	for (; *c; c++)
-		continue;
-	for (; *c != '.'; c--)
-		continue;
-	return ++c;
-}
+#include "argparse.c"
 
 void* _realloc(void *p, size_t size) {
 	void *result;
@@ -27,42 +19,53 @@ char* readFile(char *file_path) {
 	FILE* f = NULL;
 	fopen_s(&f, file_path, "r");
 	if (f != NULL) {
-		/* Go to the end of the file. */
 		if (fseek(f, 0L, SEEK_END) == 0) {
-			/* Get the size of the file. */
 			long bufsize = ftell(f);
 			if (bufsize == -1) {
 				fclose(f);
 				return NULL;
 			}
-
-			/* Go back to the start of the file. */
 			if (fseek(f, 0L, SEEK_SET) != 0) {
 				fclose(f);
 				return NULL;
 			}
 
-			/* Allocate our buffer to that size. */
 			source = malloc(sizeof(char) * (bufsize + 3));
 
-			/* Read the entire file into memory. */
 			size_t newLen = fread(source, sizeof(char), bufsize, f);
 			if ( ferror( f ) != 0 ) {
 				free(source);
 				fclose(f);
 				return NULL;
-			} else {
-				source[newLen++] = '\0'; /* Just to be safe. */
-			}
+			} else
+				source[newLen++] = '\0';
 		}
 		fclose(f);
 	}
 	return source;
 }
 
+char* getExtension(char* file_name) {
+	char *c = file_name;
+	for (; *c; c++)
+		continue;
+	for (; *c != '.'; c--)
+		if (c == file_name)
+			return NULL;
+	return ++c;
+}
+
+int strInList(char* str, char* list[]) {
+	char **l = list;
+	for (; **l != 0; l++)
+		if (!strcmp(str, *l))
+			return 1;
+	return 0;
+}
+
 #define cacheTemplates__file_path_length 128
 
-Tree* cacheTemplates(char* templates_dir_path) {
+Tree* cacheTemplates(char* templates_dir_path, char* extensions[]) {
 	Tree *tree = createTree();
 	DIR *d = opendir(templates_dir_path);
 	if (d != NULL) {
@@ -72,11 +75,11 @@ Tree* cacheTemplates(char* templates_dir_path) {
 			entry = readdir(d);
 			if (entry) {
 				char* extension = getExtension(entry->d_name);
-				if (!strcmp(extension, "xml") || !strcmp(extension, "txt")) {
-					snprintf(file_path, cacheTemplates__file_path_length, "%s\\%s", templates_dir_path, entry->d_name);
-					*(extension - 1) = 0;
-					treeInsert(tree, entry->d_name, readFile(file_path));
-				}
+				if (!strInList(extension, extensions))
+					continue;
+				snprintf(file_path, cacheTemplates__file_path_length, "%s\\%s", templates_dir_path, entry->d_name);
+				*(extension - 1) = 0;
+				treeInsert(tree, entry->d_name, readFile(file_path));
 			}
 			else
 				break;
@@ -206,6 +209,10 @@ int compile_calls = 0;
 
 char* compile(char *template_name, Keywords *keywords, Tree *templates_tree, int inner_tabs_number, char *prefix_start, char *prefix_end, char *postfix_start, char *postfix_end, int tabs_number, int depth) {
 	char *s = dictionaryLookup(templates_tree, template_name);
+	if (!s) {
+		printf("Can not compile template \"%s\": no such file\n", template_name);
+		exit(1);
+	}
 	compile_calls += 1;
 	char *result;
 	while (!(result = malloc(sizeof(char) * compile__chunk_size)));
@@ -282,17 +289,21 @@ void compileTemplates(char *templates_dir_path, char *compiled_dir_path, Keyword
 	}
 }
 
-int main (void) {
-	char *input_dir = "..\\templates";
-	char *output_dir = "compiled_templates";
+char *main__default_extensions[] = {"xml", "txt", ""};
 
-	char *open_tag = "<!--";
-	char *close_tag = "-->";
-	char *param_operator = "(param)";
-	char *ref_operator = "(ref)";
-	char *optional_operator = "(optional)";
+int main (int argc, char *argv[]) {
+	char *input_dir = getStrArg("i", "..\\templates", argc, argv);
+	char *output_dir = getStrArg("o", "compiled_templates", argc, argv);
+	
+	char **extensions = getListArg("e", main__default_extensions, argc, argv);
 
-	Tree *templates_tree = cacheTemplates(input_dir);
+	char *open_tag = getStrArg("open_tag", "<!--", argc, argv);
+	char *close_tag = getStrArg("close_tag", "-->", argc, argv);
+	char *param_operator = getStrArg("param_operator", "(param)", argc, argv);
+	char *ref_operator = getStrArg("ref_operator", "(ref)", argc, argv);
+	char *optional_operator = getStrArg("optional_operator", "(optional)", argc, argv);
+
+	Tree *templates_tree = cacheTemplates(input_dir, extensions);
 	
 	Keywords *keywords = createKeywordsData(128);
 	addKeyword(keywords, "\n", 'n');

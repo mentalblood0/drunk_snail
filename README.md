@@ -33,7 +33,7 @@ Command line arguments for C version (defaults):
 -optional_operator (optional)
 ```
 
-## Examples
+### Examples
 
 * `templates` -- templates examples
 * `test.py` -- example of using compiled template

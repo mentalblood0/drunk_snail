@@ -20,8 +20,6 @@ About resulted Python function parameters:
 * Key-Value might be name and value of `param`(s)
 * Key-Value might be name and parameters of `ref`(s)
 
-
-
 Command line arguments for C version (defaults):
 
 ```bash
@@ -34,3 +32,8 @@ Command line arguments for C version (defaults):
 -ref_operator (ref)
 -optional_operator (optional)
 ```
+
+## Examples
+
+* `templates` -- templates examples
+* `test.py` -- example of using compiled template

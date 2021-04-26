@@ -1,3 +1,5 @@
+// -bool_arg_name -str_arg_name some_string -list_arg_name some list values
+
 #include <string.h>
 
 int getBoolArg(char *name, int argc, char *argv[]) {
@@ -20,7 +22,7 @@ char* getStrArg(char *name, char *default_value, int argc, char *argv[]) {
 char** getListArg(char *name, char **default_value, int argc, char *argv[]) {
 	int found = 0;
 	int values_number = 0;
-	int allocated = 10;
+	int allocated = 2;
 	char **result = malloc(sizeof(char*) * allocated);
 	int i = 0;
 	for (; i < argc; i++)

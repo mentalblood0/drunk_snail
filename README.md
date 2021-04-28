@@ -12,6 +12,7 @@ About syntax:
 * You can set your own bounding
 * `<!-- (ref)AnotherTemplateName -->` includes template(s) with name "AnotherTemplateName"
 * `<!-- (param)some_param_name -->` includes param value(s)
+* `(optional)` skips line if no param/template_name provided
 
 About resulted Python function parameters:
 

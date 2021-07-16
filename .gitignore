@@ -1,5 +1,7 @@
-*.exe
 __pycache__
-.vs
-include
-/to_python_using_c/compiled_templates/*
+example.c
+a.exe
+dist
+*egg-info*
+compiled_templates/*
+test.py

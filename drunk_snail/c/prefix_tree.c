@@ -24,17 +24,7 @@ Tree* createTree() {
 	return tree;
 }
 
-void printInvalidWord(const char *word, int index) {
-	printf("  word: \"%s\"\n", word);
-	printf("         ");
-	int i = 0;
-	for (; i < index; i++)
-		printf(" ");
-	printf("^\n");
-}
-
 int treeInsert(Tree* tree, const char *word, char *description) {
-	// printf("%s: %s\n", word, description);
 	TreeNode *node = &tree->root;
 	int i;
 	int word_len = (int)strlen(word);
@@ -42,9 +32,6 @@ int treeInsert(Tree* tree, const char *word, char *description) {
 		int letter = (int)word[i];
 		if (letter == -1) {
 			// invalid character in the string, cannot be inserted into the tree
-			printf("failed to insert due to invalid character in word\n");
-			printInvalidWord(word, i);
-			printf("  description: \"%s\"\n", description);
 			return false;
 		}
 
@@ -88,22 +75,6 @@ void clearTree(Tree*tree) {
 	}
 }
 
-// char** getAll(TreeNode *node, char ***result) {
-	
-// 	if (node->value) {
-
-// 	}
-// 	TreeNode *child = node->children;
-// 	for (; child - node->children < ALPHABET_SIZE; child++) {
-
-// 	}
-// }
-
-// char** getAll(Tree *tree) {
-// 	char ***result = malloc(sizeof(char**));
-// 	return getAll(tree->root, result);
-// }
-
 char* treeGet(TreeNode *node, const char *word) {
 	int i;
 	int word_len = (int)strlen(word);
@@ -124,7 +95,6 @@ char* dictionaryLookup(Tree*tree, const char *word) {
 	for (i = 0; i < word_len; i++) {
 		int letter = (int)word[i];
 		if (letter == -1) {
-			printInvalidWord(word, i);
 			return NULL;
 		}
 	}

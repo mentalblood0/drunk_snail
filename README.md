@@ -2,41 +2,78 @@
 
 [![forthebadge](https://forthebadge.com/images/badges/made-with-c.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/powered-by-black-magic.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/ages-18.svg)](https://forthebadge.com)
 
-Template engine
 
-* Has two implementations: C and Python
+
+* Template engine
 * Compiles templates to Python functions
+* Customizable syntax
 
-About syntax:
 
-* All is text
-* Except what is bounded by xml comment parentheses
-* You can set your own bounding
-* `<!-- (ref)AnotherTemplateName -->` includes template(s) with name "AnotherTemplateName"
-* `<!-- (param)some_param_name -->` includes param value(s)
-* `(optional)` skips line if no param/template_name provided
 
-About resulted Python function parameters:
-
-* It is a dictionary
-* Values might be lists (try or see test result)
-* Key-Value might be name and value of `param`(s)
-* Key-Value might be name and parameters of `ref`(s)
-
-Command line arguments for C version (defaults):
+## Installation
 
 ```bash
--i ..\\templates
--o compiled_templates
--e xml txt
--open_tag "<!--"
--close_tag "-->"
--param_operator (param)
--ref_operator (ref)
--optional_operator (optional)
+pip install drunk-snail-mentalblood
 ```
 
-### Examples
 
-* `templates` -- templates examples
-* `test.py` -- example of using compiled template
+
+## Usage
+
+### From code
+
+```python
+from drunk_snail import *
+
+# default arguments
+compileTemplates(
+    input_dir='templates', 
+    output_dir='compiled_templates',
+    open_tag='<!--',
+    close_tag='-->',
+    param_operator='(param)',
+    ref_operator='(ref)',
+    optional_operator='(optional)',
+    log=0 # set 1 to enable logging to stdout
+)
+```
+
+### From command line
+
+```bash
+python -m drunk_snail -h
+```
+
+
+
+## Syntax
+
+With default compilation parameters:
+
+* `<!-- (ref)AnotherTemplateName -->` includes template(s) with name "AnotherTemplateName"
+* `<!-- (param)some_param_name -->` includes param value(s)
+* `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
+* `<!-- (optional)(param)some_param_name -->` skips line if no param provided
+
+Examples can be found in git repository in `templates` directory
+
+
+
+## Resulted Python code
+
+For template `name.xml` there will be compiled template `name.py`:
+
+```python
+def render(name):
+    result = ''
+    # barely readeble but fast code here
+    return result
+```
+
+Parameters (`name` in example):
+
+* It is a dictionary
+* **Values might be lists**, so corresponding ref/param will be rendered for every value
+* Key-value might be name and value of `param`
+* Key-value might be name and parameters of `ref`
+* There can be no key-value for `ref` or `param` that is `optional`

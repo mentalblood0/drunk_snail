@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <sys/types.h>
-#include <dirent.h>
 #include <time.h>
-#include "prefix_tree.c"
-#include "argparse.c"
 
 void* _realloc(void *p, size_t size) {
 	void *result;
@@ -65,7 +62,7 @@ int strInList(char* str, char* list[]) {
 
 #define cacheTemplates__file_path_length 128
 
-Tree* cacheTemplates(char* templates_dir_path, char* extensions[]) {
+Tree* cacheTemplates(char* templates_dir_path) {
 	Tree *tree = createTree();
 	DIR *d = opendir(templates_dir_path);
 	if (d != NULL) {
@@ -73,16 +70,16 @@ Tree* cacheTemplates(char* templates_dir_path, char* extensions[]) {
 		char file_path[cacheTemplates__file_path_length];
 		while (1) {
 			entry = readdir(d);
-			if (entry) {
+			if (!entry)
+				break;
+			if (entry->d_type == DT_REG) {
 				char* extension = getExtension(entry->d_name);
-				if (!strInList(extension, extensions))
-					continue;
-				snprintf(file_path, cacheTemplates__file_path_length, "%s\\%s", templates_dir_path, entry->d_name);
+				// if (!strInList(extension, extensions))
+				// 	continue;
+				snprintf(file_path, cacheTemplates__file_path_length, "%s/%s", templates_dir_path, entry->d_name);
 				*(extension - 1) = 0;
 				treeInsert(tree, entry->d_name, readFile(file_path));
 			}
-			else
-				break;
 		}
 		closedir(d);
 	}
@@ -189,15 +186,6 @@ int compile__if_lengths[4] = {3, 6, 5, 2};
 char *compile__return = "\treturn result\n";
 int compile__return_length = 15;
 
-int printFromTo(char *s, char *from_p, char *to_p, char *comment, char *template_name) {
-	if (from_p > to_p) return 0;
-	char temp = *to_p;
-	*to_p = 0;
-	printf("____%s____%s ([%I64d:%I64d]): \"%s\"\n", template_name, comment, from_p - s, to_p - s, from_p);
-	*to_p = temp;
-	return 1;
-}
-
 void addTabs(char **s_end, int n) {
 	for (; n; n--) {
 		**s_end = '\t';
@@ -208,9 +196,10 @@ void addTabs(char **s_end, int n) {
 int compile_calls = 0;
 
 char* compile(char *template_name, Keywords *keywords, Tree *templates_tree, int inner_tabs_number, char *prefix_start, char *prefix_end, char *postfix_start, char *postfix_end, int tabs_number, int depth) {
+	printf("compile %s\n", template_name);
 	char *s = dictionaryLookup(templates_tree, template_name);
 	if (!s) {
-		printf("Can not compile template \"%s\": no such file\n", template_name);
+		printf("Can not compile template \"%s\": no corresponding file found\n", template_name);
 		exit(1);
 	}
 	compile_calls += 1;
@@ -258,7 +247,13 @@ char* compile(char *template_name, Keywords *keywords, Tree *templates_tree, int
 
 #define compileTemplates__file_path_length 128
 
-void compileTemplates(char *templates_dir_path, char *compiled_dir_path, Keywords *keywords, Tree *templates_tree) {
+void compileTemplates_(
+	char *templates_dir_path, 
+	char *compiled_dir_path, 
+	Keywords *keywords, 
+	Tree *templates_tree,
+	int log
+) {
 	DIR *d = opendir(templates_dir_path);
 	if (d != NULL) {
 		struct dirent *entry;
@@ -266,44 +261,46 @@ void compileTemplates(char *templates_dir_path, char *compiled_dir_path, Keyword
 		char compiled_path[compileTemplates__file_path_length];
 		while (1) {
 			entry = readdir(d);
-			if (entry) {
-				char* extension = getExtension(entry->d_name);
-				if (!strcmp(extension, "xml") || !strcmp(extension, "txt")) {
-					snprintf(file_path, compileTemplates__file_path_length, "%s\\%s", templates_dir_path, entry->d_name);
-					*(extension - 1) = 0;
-					char *compiled = compile(entry->d_name, keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0);
-					size_t compiled_length = strlen(compiled);
-					snprintf(compiled_path, compileTemplates__file_path_length, "%s\\%s.py", compiled_dir_path, entry->d_name);
-					FILE *f = fopen(compiled_path, "w");
-					if (f != NULL) {
-						printf("%s -> %s (%I64d chars)\n", file_path, compiled_path, compiled_length);
-						fwrite(compiled, sizeof(char), compiled_length, f);
-					}
-					fclose(f);
-				}
-			}
-			else
+			if (!entry)
 				break;
+			if (entry->d_type == DT_REG) {
+				char* extension = getExtension(entry->d_name);
+				snprintf(file_path, compileTemplates__file_path_length, "%s/%s", templates_dir_path, entry->d_name);
+				*(extension - 1) = 0;
+				char *compiled = compile(entry->d_name, keywords, templates_tree, 0, NULL, NULL, NULL, NULL, 1, 0);
+				size_t compiled_length = strlen(compiled);
+				snprintf(compiled_path, compileTemplates__file_path_length, "%s/%s.py", compiled_dir_path, entry->d_name);
+				FILE *f = fopen(compiled_path, "w");
+				if (f != NULL) {
+					if (log) {
+						printf("%s -> %s (%I64d chars)\n", file_path, compiled_path, compiled_length);
+					}
+					fwrite(compiled, sizeof(char), compiled_length, f);
+				}
+				fclose(f);
+			}
 		}
 		closedir(d);
 	}
 }
 
-char *main__default_extensions[] = {"xml", "txt", ""};
+// char *main__default_extensions[] = {"xml", "txt", ""};
 
-int main (int argc, char *argv[]) {
-	char *input_dir = getStrArg("i", "..\\templates", argc, argv);
-	char *output_dir = getStrArg("o", "compiled_templates", argc, argv);
-	
-	char **extensions = getListArg("e", main__default_extensions, argc, argv);
+void compileTemplates (
+	char *input_dir,
+	char *output_dir,
+	// char **extensions,
+	char *open_tag,
+	char *close_tag,
+	char *param_operator,
+	char *ref_operator,
+	char *optional_operator,
+	int log
+) {
 
-	char *open_tag = getStrArg("open_tag", "<!--", argc, argv);
-	char *close_tag = getStrArg("close_tag", "-->", argc, argv);
-	char *param_operator = getStrArg("param_operator", "(param)", argc, argv);
-	char *ref_operator = getStrArg("ref_operator", "(ref)", argc, argv);
-	char *optional_operator = getStrArg("optional_operator", "(optional)", argc, argv);
+	printf("compileTemplates\n");
 
-	Tree *templates_tree = cacheTemplates(input_dir, extensions);
+	Tree *templates_tree = cacheTemplates(input_dir);
 	
 	Keywords *keywords = createKeywordsData(128);
 	addKeyword(keywords, "\n", 'n');
@@ -313,14 +310,12 @@ int main (int argc, char *argv[]) {
 	addKeyword(keywords, ref_operator, 'r');
 	addKeyword(keywords, optional_operator, '?');
 
-	compileTemplates(
+	compileTemplates_(
 		input_dir,
 		output_dir,
 		keywords,
-		templates_tree
+		templates_tree,
+		log
 	);
 
-	printf("done\n");
-
-	return 0;
 }

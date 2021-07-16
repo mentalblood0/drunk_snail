@@ -17,7 +17,6 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		char *param_name_end = param_name_start;
 		for (; *param_name_end != ' '; param_name_end++);
 
-		// printFromTo(s, param_name_start, param_name_end, "PARAM", template_name);
 		if (optional) {
 			addTabs(&result_end, tabs_number);
 			compile__cpy_if(param_name_start, param_name_end);
@@ -52,7 +51,6 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		char *ref_name_end = ref_name_start;
 		for (; *ref_name_end != ' '; ref_name_end++);
 
-		// printFromTo(s, ref_name_start, ref_name_end, "REF", template_name);
 		char temp = *ref_name_end;
 		*ref_name_end = 0;
 		// compile__cpy_for(ref_name_start, ref_name_end);
@@ -77,7 +75,8 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			line_after_close_tag_start,
 			line_after_close_tag_end,
 			tabs_number + 1,
-			depth + 1
+			depth + 1,
+			log
 		);
 		*ref_name_end = temp;
 		addTabs(&result_end, tabs_number);

@@ -14,7 +14,7 @@ if __name__ == '__main__':
 		version='1.0',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
-		long_description_content_type='text/markdown'
+		long_description_content_type='text/markdown',
 		author='mentalblood',
 		author_email='neceporenkostepan@gmail.com',
 		maintainer='mentalblood',

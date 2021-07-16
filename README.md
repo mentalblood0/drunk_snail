@@ -13,7 +13,7 @@
 ## Installation
 
 ```bash
-pip install drunk-snail-mentalblood
+pip install drunk-snail
 ```
 
 

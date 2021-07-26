@@ -1,30 +1,40 @@
-from . import compileTemplates
+from .common import *
 
+import os
 import argparse
 
 
 
-parser = argparse.ArgumentParser(description='Compile templates')
+parser = argparse.ArgumentParser(description='Compile and manage templates')
 
-for e in [
-	('-i',	'--input_dir',			False, 'Path to templates directory',			'templates'			),
-	('-o',	'--output_dir',			False, 'Path to output directory',				'compiled_templates'),
-	('-ot',	'--open_tag',			False, 'String treated as open tag',			'<--'				),
-	('-ct',	'--close_tag',			False, 'String treated as close tag',			'-->'				),
-	('-po',	'--param_operator',		False, 'String treated as param operator',		'(param)'			),
-	('-ro', '--ref_operator',		False, 'String treated as reference operator',	'(ref)'				),
-	('-oo',	'--optional_operator',	False, 'String treated as optional operator',	'(optional)'		),
-]:
-	parser.add_argument(
-	e[0],			e[1],		required=e[2],			help=e[3],						default=e[4],
-		type=str,
-	)
+subparsers = parser.add_subparsers(title='subcommands')
+
+
+main_module_name = os.path.basename(os.path.dirname(__file__))
+subcommands_list = [
+	'compile'
+]
+for c in subcommands_list:
+	command_module = importlib.import_module(f'{main_module_name}.subcommands.{c}')
+	command_parser = subparsers.add_parser(c, description=command_module.description)
+	command_parser.set_defaults(handle=command_module.handle)
+	for a in command_module.args:
+		short_name = a[0]
+		long_name = a[1]
+		try:
+			choices = a[5]
+		except:
+			choices = None
+		command_parser.add_argument(
+			short_name,
+			long_name,
+			required=a[2],
+			help=a[3],
+			default=a[4],
+			type=str,
+			choices=choices
+		)
 
 args = parser.parse_args()
-args_dict = {
-	name: getattr(args, name)
-	for name in dir(args) if not name.startswith('_')
-}
 
-
-compileTemplates(**args_dict, log=0)
+args.handle(args)

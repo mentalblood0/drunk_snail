@@ -1,1 +1,4 @@
-__all__ = ['compileTemplates']
+__all__ = [
+	'compileTemplates',
+	'importCompiledTemplates'
+]

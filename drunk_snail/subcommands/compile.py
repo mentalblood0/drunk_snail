@@ -5,7 +5,7 @@ description = 'Compile templates'
 args = [
 	('-i',	'--input_dir',			False, 'Path to templates directory',			'templates'			),
 	('-o',	'--output_dir',			False, 'Path to output directory',				'compiled_templates'),
-	('-ot',	'--open_tag',			False, 'String treated as open tag',			'<--'				),
+	('-ot',	'--open_tag',			False, 'String treated as open tag',			'<!--'				),
 	('-ct',	'--close_tag',			False, 'String treated as close tag',			'-->'				),
 	('-po',	'--param_operator',		False, 'String treated as param operator',		'(param)'			),
 	('-ro', '--ref_operator',		False, 'String treated as reference operator',	'(ref)'				),

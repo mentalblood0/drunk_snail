@@ -1,6 +1,6 @@
-from .common import *
-
 import os
+
+from .common import *
 
 
 

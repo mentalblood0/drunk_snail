@@ -1,6 +1,7 @@
-from distutils.core import setup, Extension
 import os
 import glob
+from distutils.core import setup, Extension
+
 
 
 if __name__ == '__main__':
@@ -12,7 +13,7 @@ if __name__ == '__main__':
 
 	setup(
 		name='drunk_snail',
-		version='1.5',
+		version='1.6',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',

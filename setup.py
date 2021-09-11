@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
 	setup(
 		name='drunk_snail',
-		version='1.6',
+		version='2.0',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',

@@ -1,6 +1,7 @@
 from drunk_snail_c import addTemplate as _addTemplate
 
 
+
 def addTemplate(name, file_path):
 	
 	with open(file_path) as f:

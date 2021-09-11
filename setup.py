@@ -26,8 +26,8 @@ if __name__ == '__main__':
 		packages=['drunk_snail', 'drunk_snail.subcommands'],
 		ext_modules=[
 			Extension(
-				'compileTemplates',
-				['drunk_snail/c/compileTemplates.c']
+				'drunk_snail_c',
+				['drunk_snail/c/drunk_snail_c.c']
 			)
 		],
 		data_files=glob.glob('drunk_snail/c/*')

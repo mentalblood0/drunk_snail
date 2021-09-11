@@ -65,7 +65,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			compile__cpy_if(ref_name_start, ref_name_end);
 			tabs_number++;
 		}
-		char *subtemplate_text = compile(
+		char *subtemplate_text = compile_(
 			ref_name_start,
 			keywords,
 			templates_tree,

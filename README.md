@@ -46,7 +46,7 @@ compileTemplates(
 python -m drunk_snail -h
 ```
 
-### Version 2.1
+### Version 2.1+
 
 Compiling files:
 

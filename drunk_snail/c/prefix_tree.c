@@ -46,6 +46,10 @@ int treeInsert(Tree* tree, const char *word, char *description) {
 		}
 	}
 
+	if (node->value) {
+		free(node->value);
+	}
+
 	int description_len = (int)strlen(description);
 	node->value = malloc(sizeof(char) * (description_len + 1));
 	strncpy_s(node->value, sizeof(char) * (description_len + 1), description, description_len);

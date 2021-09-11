@@ -20,7 +20,9 @@ pip install drunk-snail
 
 ## Usage
 
-### From code
+### Version 1.6
+
+#### From code
 
 ```python
 from drunk_snail import *
@@ -38,10 +40,42 @@ compileTemplates(
 )
 ```
 
-### From command line
+#### From command line
 
 ```bash
 python -m drunk_snail -h
+```
+
+### Version 2.1
+
+Compiling files:
+
+```python
+from drunk_snail import *
+
+# referenced in template 'EncryptedKey'
+addTemplate('IssuerSerial', 'templates/IssuerSerial.xml')
+addTemplate('DataReference', 'templates/DataReference.xml')
+
+addTemplate('EncryptedKey', 'templates/EncryptedKey.xml')
+
+result = compile('EncryptedKey') # returns resulted function text
+```
+
+Compiling strings:
+
+```python
+from drunk_snail import *
+
+# referenced in template 'EncryptedKey'
+addTemplate('IssuerSerial', 'templates/IssuerSerial.xml')
+addTemplate('DataReference', 'templates/DataReference.xml')
+
+with open('templates/EncryptedKey.xml') as f:
+    s = f.read()
+
+# second argument is resulted function name (default is '_temp')
+result = compileString(s, 'EncryptedKey')
 ```
 
 

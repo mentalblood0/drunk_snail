@@ -4,8 +4,8 @@ from drunk_snail import setKeyword, addTemplate, compileString
 
 def test_basic():
 
-	setKeyword('open_tag', '((')
-	setKeyword('close_tag', '))')
+	setKeyword('open_tag', '(')
+	setKeyword('close_tag', ')')
 	setKeyword('param_operator', '[purum]')
 	setKeyword('optional_operator', '{optionalno}')
 

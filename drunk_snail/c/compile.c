@@ -48,6 +48,7 @@ char* compile_(
 	int tag_on_this_line = 0;
 	int optional = 0;
 	int child_exists = 0;
+	int potential_keyword_length = 0;
 
 	keywords->data[(int)'n']->last_inclusion = s;
 	TreeNode *n = &keywords->tree->root;
@@ -58,6 +59,7 @@ char* compile_(
 			if (n->children[(int)*c]) {
 				n = n->children[(int)*c];
 				child_exists = 1;
+				++potential_keyword_length;
 			}
 			else {
 				child_exists = 0;
@@ -81,6 +83,10 @@ char* compile_(
 						#include "processLine.c"
 						keywords->data[(int)'p']->last_inclusion = NULL;
 						keywords->data[(int)'r']->last_inclusion = NULL;
+						// ++c;
+					}
+
+					if (potential_keyword_length == 1) {
 						++c;
 					}
 
@@ -91,6 +97,7 @@ char* compile_(
 				}
 
 			n = &keywords->tree->root;
+			potential_keyword_length = 0;
 
 		}
 

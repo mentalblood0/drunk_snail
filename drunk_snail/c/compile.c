@@ -69,7 +69,7 @@ char* compile_(
 			if (n)
 				if (n->value) {
 
-					printf("n->value == '%s'\n", n->value);
+					printf("%s", n->value);
 
 					if ((n->value[0] == 'r') || (n->value[0] == 'p'))
 						tag_on_this_line = 1;
@@ -104,6 +104,7 @@ char* compile_(
     *result_end = 0;
 	result = (char*)realloc(result, sizeof(char) * (result_end - result + 1));
 	
+	printf("\n");
     return result;
 
 }

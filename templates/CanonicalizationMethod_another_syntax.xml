@@ -1,12 +1,12 @@
 <xd:CanonicalizationMethod xd1:Algorithm="http://www.w3.org/2010/xml-c14n2">
-	<x-:IgnoreComments><!-- [purum]ignore_comments --></x-:IgnoreComments>
-	<x-:TrimTextNodes><!-- [purum]trim_text_nodes --></x-:TrimTextNodes>
-	<x-:PrefixRewrite><!-- [purum]prefix_rewrite --></x-:PrefixRewrite>
+	<x-:IgnoreComments>(( [purum]ignore_comments ))</x-:IgnoreComments>
+	<x-:TrimTextNodes>(( [purum]trim_text_nodes ))</x-:TrimTextNodes>
+	<x-:PrefixRewrite>(( [purum]prefix_rewrite ))</x-:PrefixRewrite>
 	<x-:QNameAware>
 		<!--You have a CHOICE of the next 4 items at this level-->
-		<x-:Element x-:Name="string" x-:NS="<!-- {optionalno}[purum]qname_aware_element -->"/>
-		<x-:XPathElement x-:Name="string" x-:NS="<!-- {optionalno}[purum]qname_aware_xpath_element -->"/>
-		<x-:QualifiedAttr x-:Name="string" x-:NS="<!-- {optionalno}[purum]qname_aware_qualified_attr -->"/>
-		<x-:UnqualifiedAttr x-:Name="string" x-:ParentName="string" x-:ParentNS="<!-- {optional}[purum]qname_aware_unqualified_attr -->"/>
+		<x-:Element x-:Name="string" x-:NS="(( {optionalno}[purum]qname_aware_element ))"/>
+		<x-:XPathElement x-:Name="string" x-:NS="(( {optionalno}[purum]qname_aware_xpath_element ))"/>
+		<x-:QualifiedAttr x-:Name="string" x-:NS="(( {optionalno}[purum]qname_aware_qualified_attr ))"/>
+		<x-:UnqualifiedAttr x-:Name="string" x-:ParentName="string" x-:ParentNS="(( {optional}[purum]qname_aware_unqualified_attr ))"/>
 	</x-:QNameAware>
 </xd:CanonicalizationMethod>

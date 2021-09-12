@@ -1,6 +1,7 @@
 __all__ = [
+	'compile',
+	'setKeyword',
 	'getRenderer',
 	'addTemplate',
-	'compile',
 	'importCompiledTemplates'
 ]

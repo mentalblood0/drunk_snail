@@ -8,6 +8,8 @@
 #include "prefix_tree.c"
 
 #include "Keywords.c"
+#include "addKeyword.c"
+#include "removeKeyword.c"
 #include "addTemplate.c"
 #include "compile.c"
 

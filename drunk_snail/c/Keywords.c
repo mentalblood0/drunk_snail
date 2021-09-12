@@ -22,24 +22,4 @@ Keywords* createKeywordsData(int number_of_keywords) {
 }
 
 
-void addKeyword(Keywords *keywords, char *keyword, char symbol) {
-
-	char *value_to_insert = malloc(sizeof(char) * 2);
-	value_to_insert[0] = symbol;
-	value_to_insert[1] = 0;
-	treeInsert(keywords->tree, keyword, value_to_insert);
-
-	KeywordData *data = malloc(sizeof(KeywordData));
-	data->last_inclusion = NULL;
-
-	char *k = keyword;
-	for (; *k; k++);
-	data->length = (int)(k - keyword);
-	data->last_symbol = *k;
-
-	keywords->data[(int)symbol] = data;
-
-}
-
-
 Keywords *_keywords;

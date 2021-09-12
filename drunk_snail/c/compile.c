@@ -24,6 +24,8 @@ char* compile_(
 	int log
 ) {
 
+	printf("compiling template\"%s\"\n", template_name);
+	
 	char *s = dictionaryLookup(templates_tree, template_name);
 	if (!s) {
 		if (log)
@@ -45,37 +47,48 @@ char* compile_(
 
 	int tag_on_this_line = 0;
 	int optional = 0;
+	int child_exists = 0;
 
 	keywords->data[(int)'n']->last_inclusion = s;
 	TreeNode *n = &keywords->tree->root;
 
 	for (; *c; c++) {
 
-		if (n->children[(int)*c])
-			n = n->children[(int)*c];
-
-		else {
-
-			if (n->value) {
-
-				if ((n->value[0] == 'r') || (n->value[0] == 'p'))
-					tag_on_this_line = 1;
-
-				if (n->value[0] == '?')
-					optional = 1;
-
-				if (n->value[0] == 'n') {
-					#include "processLine.c"
-					keywords->data[(int)'p']->last_inclusion = NULL;
-					keywords->data[(int)'r']->last_inclusion = NULL;
-					++c;
-				}
-
-				KeywordData *current_keyword_data = keywords->data[(int)n->value[0]];
-				current_keyword_data->last_inclusion = c - current_keyword_data->length;
-				--c;
-
+		if (n) {
+			if (n->children[(int)*c]) {
+				n = n->children[(int)*c];
+				child_exists = 1;
 			}
+			else {
+				child_exists = 0;
+			}
+		}
+
+		if (!child_exists) {
+
+			if (n)
+				if (n->value) {
+
+					printf("n->value == '%s'\n", n->value);
+
+					if ((n->value[0] == 'r') || (n->value[0] == 'p'))
+						tag_on_this_line = 1;
+
+					if (n->value[0] == '?')
+						optional = 1;
+
+					if (n->value[0] == 'n') {
+						#include "processLine.c"
+						keywords->data[(int)'p']->last_inclusion = NULL;
+						keywords->data[(int)'r']->last_inclusion = NULL;
+						++c;
+					}
+
+					KeywordData *current_keyword_data = keywords->data[(int)n->value[0]];
+					current_keyword_data->last_inclusion = c - current_keyword_data->length;
+					--c;
+
+				}
 
 			n = &keywords->tree->root;
 

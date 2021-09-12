@@ -83,16 +83,14 @@ char* compile_(
 						#include "processLine.c"
 						keywords->data[(int)'p']->last_inclusion = NULL;
 						keywords->data[(int)'r']->last_inclusion = NULL;
-						// ++c;
-					}
-
-					if (potential_keyword_length == 1) {
 						++c;
 					}
 
 					KeywordData *current_keyword_data = keywords->data[(int)n->value[0]];
 					current_keyword_data->last_inclusion = c - current_keyword_data->length;
-					--c;
+					if ((potential_keyword_length != 1) || (n->value[0] == 'n')) {
+						--c;
+					}
 
 				}
 

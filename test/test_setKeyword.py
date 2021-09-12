@@ -13,7 +13,7 @@ def test_basic():
 		s = f.read()
 	
 	result = compileString(s, 'CanonicalizationMethod')
-	with open('CanonicalizationMethod_another_syntax_result.py', 'w') as f:
+	with open('test/CanonicalizationMethod_another_syntax_result.py', 'w') as f:
 		f.write(result)
 	with open('test/CanonicalizationMethod_correct_result.py') as f:
 		correct_result = f.read()

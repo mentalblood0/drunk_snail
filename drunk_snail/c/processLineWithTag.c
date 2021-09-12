@@ -2,12 +2,12 @@ char *open_last = keywords->data[(int)'o']->last_inclusion;
 // ------------------ BEFORE ------------------
 char *prev_line_break = keywords->data[(int)'n']->last_inclusion;
 char *line_before_open_tag_start = prev_line_break;
-char *line_before_open_tag_end = open_last-1;
+char *line_before_open_tag_end = open_last;
 if (line_before_open_tag_start <= line_before_open_tag_end) {
 	// ------------------ AFTER ------------------
 	KeywordData *close_data = keywords->data[(int)'c'];
 	char *close_last = close_data->last_inclusion;
-	char *line_after_close_tag_start = close_last + close_data->length-1;
+	char *line_after_close_tag_start = close_last + close_data->length;
 	char *line_after_close_tag_end = (*(c - 1) == '\n') ? c - 1 : c;
 	// ------------------ PARAM ------------------
 	KeywordData *param_data = keywords->data[(int)'p'];

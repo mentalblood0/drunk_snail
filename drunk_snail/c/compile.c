@@ -10,6 +10,8 @@ void addTabs(char **s_end, int n) {
 }
 
 
+#define compile__initial_chunk_size 65536
+
 char* compile_(
 	char *template_name,
 	Keywords *keywords,
@@ -32,10 +34,9 @@ char* compile_(
 	}
 
 	char *result;
-	while (!(result = malloc(sizeof(char) * compile__chunk_size)));
+	size_t current_result_size = compile__initial_chunk_size;
+	while (!(result = malloc(sizeof(char) * compile__initial_chunk_size)));
 	char *result_end = result;
-
-	char *c = s;
 
 	char *template_name_end = template_name;
 	for (; *template_name_end; template_name_end++);
@@ -45,52 +46,45 @@ char* compile_(
 
 	int tag_on_this_line = 0;
 	int optional = 0;
-	int child_exists = 0;
 	int potential_keyword_length = 0;
 
 	keywords->data[(int)'n']->last_inclusion = s;
 	TreeNode *n = &keywords->tree->root;
 
+	char *c = s;
 	for (; *c; c++) {
 
-		if (n) {
-			if (n->children[(int)*c]) {
-				n = n->children[(int)*c];
-				child_exists = 1;
-				++potential_keyword_length;
-			}
-			else {
-				child_exists = 0;
-			}
+		if (n->children[(int)*c]) {
+			n = n->children[(int)*c];
+			++potential_keyword_length;
 		}
+		else {
 
-		if (!child_exists) {
+			if (n->value) {
 
-			if (n)
-				if (n->value) {
+				if ((n->value[0] == 'r') || (n->value[0] == 'p'))
+					tag_on_this_line = 1;
 
-					if ((n->value[0] == 'r') || (n->value[0] == 'p'))
-						tag_on_this_line = 1;
+				if (n->value[0] == '?')
+					optional = 1;
 
-					if (n->value[0] == '?')
-						optional = 1;
-
-					if (n->value[0] == 'n') {
-						#include "processLine.c"
-						keywords->data[(int)'p']->last_inclusion = NULL;
-						keywords->data[(int)'r']->last_inclusion = NULL;
-						keywords->data[(int)'?']->last_inclusion = NULL;
-						optional = 0;
-						++c;
-					}
-
-					KeywordData *current_keyword_data = keywords->data[(int)n->value[0]];
-					current_keyword_data->last_inclusion = c - current_keyword_data->length;
-					if ((potential_keyword_length != 1) || (n->value[0] == 'n')) {
-						--c;
-					}
-
+				if (n->value[0] == 'n') {
+					
+					#include "processLine.c"
+					
+					keywords->data[(int)'p']->last_inclusion = NULL;
+					keywords->data[(int)'r']->last_inclusion = NULL;
+					keywords->data[(int)'?']->last_inclusion = NULL;
+					optional = 0;
+					
+					++c;
+				
 				}
+
+				KeywordData *current_keyword_data = keywords->data[(int)n->value[0]];
+				current_keyword_data->last_inclusion = c - current_keyword_data->length;
+
+			}
 
 			n = &keywords->tree->root;
 			if (n->children[(int)*c])

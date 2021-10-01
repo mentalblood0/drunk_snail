@@ -40,16 +40,24 @@ def test_one_character_keywords():
 	assert result == correct_result
 
 
-# def test_with_references():
+def test_with_references_one_character_keywords():
 
-# 	addTemplate('IssuerSerial', 'templates/IssuerSerial.xml')
-# 	addTemplate('DataReference', 'templates/DataReference.xml')
+	setKeyword('open_tag', '(')
+	setKeyword('close_tag', ')')
+	setKeyword('param_operator', '$')
+	setKeyword('optional_operator', '?')
+	setKeyword('ref_operator', '~')
 
-# 	with open('templates/EncryptedKey.xml') as f:
-# 		s = f.read()
+	addTemplate('IssuerSerial', 'templates/IssuerSerial_another_syntax__one_character_keywords.xml')
+	addTemplate('DataReference', 'templates/DataReference_another_syntax__one_character_keywords.xml')
+
+	with open('templates/EncryptedKey_another_syntax__one_character_keywords.xml') as f:
+		s = f.read()
 	
-# 	result = compileString(s, 'EncryptedKey')
-# 	with open('test/EncryptedKey_correct_result.py') as f:
-# 		correct_result = f.read()
+	result = compileString(s, 'EncryptedKey')
+	with open('tests/EncryptedKey_another_syntax__one_character_keywords_result.py', 'w') as f:
+		f.write(result)
+	with open('tests/EncryptedKey_correct_result.py') as f:
+		correct_result = f.read()
 	
-# 	assert result == correct_result
+	assert result == correct_result

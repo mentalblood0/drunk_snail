@@ -78,6 +78,30 @@ with open('templates/EncryptedKey.xml') as f:
 result = compileString(s, 'EncryptedKey')
 ```
 
+### Version 2.6
+
+Setting keywords to use in templates compilation:
+
+````python
+setKeyword('open_tag', '(')
+setKeyword('close_tag', ')')
+setKeyword('param_operator', '$')
+setKeyword('optional_operator' '?')
+setKeyword('ref_operator', '~')
+
+# Of course, keywords might consists of more than one character
+# For example, here is defaults:
+setKeyword('open_tag', '<!--')
+setKeyword('close_tag', '-->')
+setKeyword('param_operator', '(param)')
+setKeyword('optional_operator' '(optional)')
+setKeyword('ref_operator', '(ref)')
+````
+
+**Attention**: if there references to other templates, these templates must have the same syntax as root template
+
+In the future I'm going to add the ability to use different syntaxes for templates that references each other
+
 
 
 ## Syntax

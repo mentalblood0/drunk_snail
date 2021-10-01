@@ -12,9 +12,8 @@ def render(CanonicalizationMethod):
 	if CanonicalizationMethod and 'qname_aware_element' in CanonicalizationMethod:
 		for qname_aware_element in ([None] if ((not CanonicalizationMethod) or (not 'qname_aware_element' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_element'] if type(CanonicalizationMethod['qname_aware_element']) == list else [CanonicalizationMethod['qname_aware_element']])):
 			result += f'''		<x-:Element x-:Name="string" x-:NS="{qname_aware_element}"/>\n'''
-	if CanonicalizationMethod and 'qname_aware_xpath_element' in CanonicalizationMethod:
-		for qname_aware_xpath_element in ([None] if ((not CanonicalizationMethod) or (not 'qname_aware_xpath_element' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_xpath_element'] if type(CanonicalizationMethod['qname_aware_xpath_element']) == list else [CanonicalizationMethod['qname_aware_xpath_element']])):
-			result += f'''		<x-:XPathElement x-:Name="string" x-:NS="{qname_aware_xpath_element}"/>\n'''
+	for qname_aware_xpath_element in ([None] if ((not CanonicalizationMethod) or (not 'qname_aware_xpath_element' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_xpath_element'] if type(CanonicalizationMethod['qname_aware_xpath_element']) == list else [CanonicalizationMethod['qname_aware_xpath_element']])):
+		result += f'''		<x-:XPathElement x-:Name="string" x-:NS="{qname_aware_xpath_element}"/>\n'''
 	if CanonicalizationMethod and 'qname_aware_qualified_attr' in CanonicalizationMethod:
 		for qname_aware_qualified_attr in ([None] if ((not CanonicalizationMethod) or (not 'qname_aware_qualified_attr' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_qualified_attr'] if type(CanonicalizationMethod['qname_aware_qualified_attr']) == list else [CanonicalizationMethod['qname_aware_qualified_attr']])):
 			result += f'''		<x-:QualifiedAttr x-:Name="string" x-:NS="{qname_aware_qualified_attr}"/>\n'''

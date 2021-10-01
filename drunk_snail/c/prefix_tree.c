@@ -86,6 +86,7 @@ int treeRemove(Tree* tree, const char *word) {
 
 	if (node->value) {
 		free(node->value);
+		node->value = NULL;
 	}
 
 	return true;

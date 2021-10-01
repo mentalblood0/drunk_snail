@@ -23,16 +23,14 @@ def render(EncryptedKey):
 	result += f'''		</xd:X509Data>\n'''
 	result += f'''	</xe:KeyInfo>\n'''
 	result += f'''	<xe:CipherData>\n'''
-	if EncryptedKey and 'cipher_value' in EncryptedKey:
-		for cipher_value in ([None] if ((not EncryptedKey) or (not 'cipher_value' in EncryptedKey)) else (EncryptedKey['cipher_value'] if type(EncryptedKey['cipher_value']) == list else [EncryptedKey['cipher_value']])):
-			result += f'''		<xe:CipherValue>{cipher_value}</xe:CipherValue>\n'''
+	for cipher_value in ([None] if ((not EncryptedKey) or (not 'cipher_value' in EncryptedKey)) else (EncryptedKey['cipher_value'] if type(EncryptedKey['cipher_value']) == list else [EncryptedKey['cipher_value']])):
+		result += f'''		<xe:CipherValue>{cipher_value}</xe:CipherValue>\n'''
 	result += f'''	</xe:CipherData>\n'''
 	result += f'''	<xe:ReferenceList>\n'''
 	result += f'''		<!--1 or more repetitions:-->\n'''
-	if EncryptedKey and 'DataReference' in EncryptedKey:
-		for DataReference in ([None] if ((not EncryptedKey) or (not 'DataReference' in EncryptedKey)) else (EncryptedKey['DataReference'] if type(EncryptedKey['DataReference']) == list else [EncryptedKey['DataReference']])):
-			for uri in ([None] if ((not DataReference) or (not 'uri' in DataReference)) else (DataReference['uri'] if type(DataReference['uri']) == list else [DataReference['uri']])):
-				result += f'''		<xe:DataReference xe:URI="{uri}"/>\n'''
+	for DataReference in ([None] if ((not EncryptedKey) or (not 'DataReference' in EncryptedKey)) else (EncryptedKey['DataReference'] if type(EncryptedKey['DataReference']) == list else [EncryptedKey['DataReference']])):
+		for uri in ([None] if ((not DataReference) or (not 'uri' in DataReference)) else (DataReference['uri'] if type(DataReference['uri']) == list else [DataReference['uri']])):
+			result += f'''		<xe:DataReference xe:URI="{uri}"/>\n'''
 	result += f'''	</xe:ReferenceList>\n'''
 	result += f'''</xe:EncryptedKey>\n'''
 	return result

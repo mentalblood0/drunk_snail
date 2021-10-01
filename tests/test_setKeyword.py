@@ -13,9 +13,9 @@ def test_basic():
 		s = f.read()
 	
 	result = compileString(s, 'CanonicalizationMethod')
-	with open('test/CanonicalizationMethod_another_syntax_result.py', 'w') as f:
+	with open('tests/CanonicalizationMethod_another_syntax_result.py', 'w') as f:
 		f.write(result)
-	with open('test/CanonicalizationMethod_correct_result.py') as f:
+	with open('tests/CanonicalizationMethod_correct_result.py') as f:
 		correct_result = f.read()
 	
 	assert result == correct_result

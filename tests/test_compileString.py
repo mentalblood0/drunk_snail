@@ -8,7 +8,7 @@ def test_basic():
 		s = f.read()
 	
 	result = compileString(s, 'CanonicalizationMethod')
-	with open('test/CanonicalizationMethod_correct_result.py') as f:
+	with open('tests/CanonicalizationMethod_correct_result.py') as f:
 		correct_result = f.read()
 	
 	assert result == correct_result
@@ -23,7 +23,7 @@ def test_with_references():
 		s = f.read()
 	
 	result = compileString(s, 'EncryptedKey')
-	with open('test/EncryptedKey_correct_result.py') as f:
+	with open('tests/EncryptedKey_correct_result.py') as f:
 		correct_result = f.read()
 	
 	assert result == correct_result

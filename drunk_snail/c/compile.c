@@ -23,8 +23,6 @@ char* compile_(
 	int depth,
 	int log
 ) {
-
-	printf("compiling template\"%s\"\n", template_name);
 	
 	char *s = dictionaryLookup(templates_tree, template_name);
 	if (!s) {
@@ -71,8 +69,6 @@ char* compile_(
 			if (n)
 				if (n->value) {
 
-					printf("%s", n->value);
-
 					if ((n->value[0] == 'r') || (n->value[0] == 'p'))
 						tag_on_this_line = 1;
 
@@ -83,6 +79,8 @@ char* compile_(
 						#include "processLine.c"
 						keywords->data[(int)'p']->last_inclusion = NULL;
 						keywords->data[(int)'r']->last_inclusion = NULL;
+						keywords->data[(int)'?']->last_inclusion = NULL;
+						optional = 0;
 						++c;
 					}
 
@@ -95,6 +93,9 @@ char* compile_(
 				}
 
 			n = &keywords->tree->root;
+			if (n->children[(int)*c])
+				n = n->children[(int)*c];
+			
 			potential_keyword_length = 0;
 
 		}
@@ -109,7 +110,6 @@ char* compile_(
     *result_end = 0;
 	result = (char*)realloc(result, sizeof(char) * (result_end - result + 1));
 	
-	printf("\n");
     return result;
 
 }

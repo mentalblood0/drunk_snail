@@ -62,13 +62,13 @@ char* compile_(
 
 			if (n->value) {
 
-				if ((n->value[0] == 'r') || (n->value[0] == 'p'))
+				if ((((char*)n->value)[0] == 'r') || (((char*)n->value)[0] == 'p'))
 					tag_on_this_line = 1;
 
-				if (n->value[0] == '?')
+				if (((char*)n->value)[0] == '?')
 					optional = 1;
 
-				if (n->value[0] == 'n') {
+				if (((char*)n->value)[0] == 'n') {
 					
 					#include "processLine.c"
 					
@@ -81,7 +81,7 @@ char* compile_(
 				
 				}
 
-				KeywordData *current_keyword_data = keywords->data[(int)n->value[0]];
+				KeywordData *current_keyword_data = keywords->data[(int)((char*)n->value)[0]];
 				current_keyword_data->last_inclusion = c - current_keyword_data->length;
 
 			}

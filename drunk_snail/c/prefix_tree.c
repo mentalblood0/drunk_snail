@@ -2,14 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_WORD_SIZE 32
 #define ALPHABET_SIZE 128
 
 #define false 0
 #define true 1
 
 typedef struct TreeNode {
-	char *value;
+	void *value;
 	struct TreeNode **children;
 } TreeNode;
 

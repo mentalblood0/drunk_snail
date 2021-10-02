@@ -4,47 +4,47 @@
 
 #define ALPHABET_SIZE 128
 
-#define false 0
-#define true 1
+
 
 typedef struct TreeNode {
 	void *value;
 	struct TreeNode **children;
 } TreeNode;
 
+
 typedef struct Tree {
 	TreeNode root;
 } Tree;
 
+
 Tree* createTree() {
-	struct Tree* tree = malloc(sizeof(struct Tree));
+	Tree *tree = malloc(sizeof(Tree));
 	tree->root.value = NULL;
 	tree->root.children = calloc(ALPHABET_SIZE, sizeof(TreeNode*));
 	return tree;
 }
 
-int treeInsert(Tree* tree, const char *word, char *description) {
+
+int treeInsert(Tree* tree, char *word, char *description) {
 	
 	TreeNode *node = &tree->root;
-	int i;
-	int word_len = (int)strlen(word);
+	char *c = NULL;
 	
-	for (i = 0; i < word_len; i++) {
-		int letter = (int)word[i];
-		if (letter == -1) {
-			// invalid character in the string, cannot be inserted into the tree
-			return false;
-		}
+	for (c = word; *c; c++) {
+
+		if ((int)(*c) == -1)
+			return 1;
 
 		TreeNode *parent = node;
-		node = node->children[letter];
+		node = node->children[(int)(*c)];
 
 		if (!node) {
 			node = malloc(sizeof(TreeNode));
 			node->value = NULL;
 			node->children = calloc(ALPHABET_SIZE, sizeof(TreeNode*));
-			parent->children[letter] = node;
+			parent->children[(int)(*c)] = node;
 		}
+	
 	}
 
 	if (node->value) {
@@ -55,31 +55,25 @@ int treeInsert(Tree* tree, const char *word, char *description) {
 	node->value = malloc(sizeof(char) * (description_len + 1));
 	strncpy_s(node->value, sizeof(char) * (description_len + 1), description, description_len);
 	
-	return true;
+	return 0;
 
 }
 
 
-int treeRemove(Tree* tree, const char *word) {
+int treeRemove(Tree* tree, char *word) {
 	
 	TreeNode *node = &tree->root;
-	int i;
-	int word_len = (int)strlen(word);
+	char *c = NULL;
 	
-	for (i = 0; i < word_len; i++) {
+	for (c = word; *c; c++) {
 	
-		int letter = (int)word[i];
-		if (letter == -1) {
-			// invalid character in the string, cannot be inserted into the tree
-			return false;
-		}
+		if ((int)(*c) == -1)
+			return 1;
 
 		TreeNode *parent = node;
-		node = node->children[letter];
-
-		if (!node) {
-			return true;
-		}
+		node = node->children[(int)(*c)];
+		if (!node)
+			return 0;
 
 	}
 
@@ -88,60 +82,64 @@ int treeRemove(Tree* tree, const char *word) {
 		node->value = NULL;
 	}
 
-	return true;
+	return 0;
 
 }
 
 
 void freeNodes(TreeNode *node) {
-	if (node == NULL) return;
+
+	if (node == NULL)
+		return;
 	
 	free(node->value);
-	TreeNode** children = node->children;
-	int i = 0;
-	for (; i < ALPHABET_SIZE; i++) {
-		if (children[i] == NULL) continue;
-		freeNodes(children[i]);
-	}
+	
+	TreeNode **children = node->children;
+
+	int i;
+	for (i = 0; i < ALPHABET_SIZE; i++)
+		if (children[i] != NULL)
+			freeNodes(children[i]);
+	
 	free(children);
 	free(node);
+
 }
 
-void clearTree(Tree*tree) {
-	int i = 0;
-	for (; i < ALPHABET_SIZE; i++) {
-		if (tree->root.children[i] == NULL) continue;
-		freeNodes(tree->root.children[i]);
-		tree->root.children[i] = NULL;
-	}
-}
 
-char* treeGet(TreeNode *node, const char *word) {
+void clearTree(Tree *tree) {
+	
 	int i;
-	int word_len = (int)strlen(word);
-	for (i = 0; i < word_len; i++) {
-		int letter = (int)word[i];
-		if (letter == -1)
+	
+	for (i = 0; i < ALPHABET_SIZE; i++)
+		if (tree->root.children[i] != NULL) {
+			freeNodes(tree->root.children[i]);
+			tree->root.children[i] = NULL;
+		}
+
+}
+
+
+void* treeGet(TreeNode *node, char *word) {
+
+	char *c = NULL;
+	
+	for (c = word; *c; c++) {
+
+		if ((int)(*c) == -1)
 			return NULL;
-		node = node->children[letter];
+		
+		node = node->children[(int)(*c)];
 		if (!node)
 			return NULL;
+	
 	}
+
 	return node->value;
+
 }
 
-char* dictionaryLookup(Tree *tree, const char *word) {
 
-	int i;
-	int word_len = (int)strlen(word);
-	for (i = 0; i < word_len; i++) {
-		int letter = (int)word[i];
-		if (letter == -1) {
-			return NULL;
-		}
-	}
-
-	char *description = treeGet(&tree->root, word);
-	return description;
-	
+void* dictionaryLookup(Tree *tree, char *word) {
+	return treeGet(&tree->root, word);
 }

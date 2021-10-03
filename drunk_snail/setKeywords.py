@@ -1,5 +1,6 @@
+from functools import singledispatch
+
 from drunk_snail_c import addKeyword as _addKeyword, removeKeyword as _removeKeyword
-from time import sleep
 
 
 
@@ -33,5 +34,22 @@ def setKeyword(template_name, type, keyword):
 	return True
 
 
+@singledispatch
+def setKeywords(arg, keywords):
+	pass
+
+@setKeywords.register
+def _(arg: str, keywords):
+	for type, keyword in keywords.items():
+		setKeyword(arg, type, keyword)
+
+
+@setKeywords.register
+def _(arg: list, keywords):
+	for template_name in arg:
+		for type, keyword in keywords.items():
+			setKeyword(template_name, type, keyword)
+
+
 import sys
-sys.modules[__name__] = setKeyword
+sys.modules[__name__] = setKeywords

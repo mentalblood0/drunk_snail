@@ -46,7 +46,7 @@ compileTemplates(
 python -m drunk_snail -h
 ```
 
-### Version 2.1+
+### Versions 2.1, 2.6
 
 Compiling files:
 
@@ -102,6 +102,48 @@ setKeyword('ref_operator', '(ref)')
 
 In the future I'm going to add the ability to use different syntaxes for templates that references each other
 
+### Version 3.0
+
+Adding templates:
+
+```python
+from drunk_snail import *
+
+addTemplate(
+    'CanonicalizationMethod', # name
+    'templates/CanonicalizationMethod_another_syntax.xml', # file path
+    { # custom keywords (optional)
+        'open_tag': '(',
+        'close_tag': ')',
+        'param_operator': '[purum]',
+        'optional_operator': '{optionalno}'
+    }
+)
+```
+
+Setting template-specific keywords:
+
+```python
+from drunk_snail import *
+
+addTemplate('IssuerSerial', 'templates/IssuerSerial_another_syntax__one_character_keywords.xml')
+addTemplate('EncryptedKey', 'templates/EncryptedKey_another_syntax__one_character_keywords.xml')
+
+one_character_keywords = {
+    'open_tag': '(',
+    'close_tag': ')',
+    'param_operator': '$',
+    'optional_operator': '?',
+    'ref_operator': '~'
+}
+
+setKeywords('EncryptedKey', one_character_keywords)
+setKeywords('IssuerSerial', one_character_keywords)
+
+# or:
+setKeywords(['EncryptedKey', 'IssuerSerial'], one_character_keywords)
+```
+
 
 
 ## Syntax
@@ -114,6 +156,21 @@ With default compilation parameters:
 * `<!-- (optional)(param)some_param_name -->` skips line if no param provided
 
 Examples can be found in git repository in `templates` directory
+
+Default keywords:
+
+```python
+{
+    'open_tag': '<!--',
+    'close_tag': '-->',
+    'param_operator': '(param)',
+    'optional_operator': '(optional)',
+    'ref_operator': '(ref)',
+    'line_break': '\n'
+}
+```
+
+
 
 
 

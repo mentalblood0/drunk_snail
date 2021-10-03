@@ -25,12 +25,12 @@ Tree* createTree() {
 }
 
 
-int treeInsert(Tree* tree, char *word, char *description) {
+int treeInsert(Tree* tree, char *key, void *value) {
 	
 	TreeNode *node = &tree->root;
 	char *c = NULL;
 	
-	for (c = word; *c; c++) {
+	for (c = key; *c; c++) {
 
 		if ((int)(*c) == -1)
 			return 1;
@@ -50,10 +50,7 @@ int treeInsert(Tree* tree, char *word, char *description) {
 	if (node->value) {
 		free(node->value);
 	}
-
-	int description_len = (int)strlen(description);
-	node->value = malloc(sizeof(char) * (description_len + 1));
-	strncpy_s(node->value, sizeof(char) * (description_len + 1), description, description_len);
+	node->value = value;
 	
 	return 0;
 

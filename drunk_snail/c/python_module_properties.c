@@ -17,14 +17,6 @@ static struct PyModuleDef drunk_snail_c_module = {
 PyMODINIT_FUNC PyInit_drunk_snail_c(void) {
 
 	_templates = createTree();
-
-	_keywords = createKeywordsData(128);
-	addKeyword_(_keywords, "\n",			'n');
-	addKeyword_(_keywords, "<!--",			'o');
-	addKeyword_(_keywords, "-->",			'c');
-	addKeyword_(_keywords, "(param)",		'p');
-	addKeyword_(_keywords, "(ref)",			'r');
-	addKeyword_(_keywords, "(optional)",	'?');
 	
 	return PyModule_Create(&drunk_snail_c_module);
 

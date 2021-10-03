@@ -1,4 +1,4 @@
-int removeKeyword_(Keywords *keywords, char *keyword) {
+int removeKeywordByKeywords(Keywords *keywords, char *keyword) {
 
 	char *value = dictionaryLookup(keywords->tree, keyword);
 	if (value == NULL) {
@@ -14,19 +14,29 @@ int removeKeyword_(Keywords *keywords, char *keyword) {
 }
 
 
+int removeKeywordByTemplateName(char *template_name, char *keyword) {
+
+	Template *template = dictionaryLookup(_templates, template_name);
+	Keywords *keywords = template->keywords;
+
+	return removeKeywordByKeywords(template->keywords, keyword);
+
+}
+
+
 static PyObject *removeKeyword (
 	PyObject *self,
 	PyObject *args
 ) {
 
-	char *keyword;
+	char *template_name, *keyword;
 	
-	if (!PyArg_ParseTuple(args, "s", &keyword)) {
+	if (!PyArg_ParseTuple(args, "ss", &template_name, &keyword)) {
 		return PyLong_FromLong(1);
 	}
 
-	removeKeyword_(_keywords, keyword);
+	int result = removeKeywordByTemplateName(template_name, keyword);
 
-	return PyLong_FromLong(0);
+	return PyLong_FromLong(result);
 
 }

@@ -14,7 +14,6 @@ void addTabs(char **s_end, int n) {
 
 char* compile_(
 	char *template_name,
-	Keywords *keywords,
 	Tree *templates_tree,
 	int inner_tabs_number,
 	char *prefix_start,
@@ -25,13 +24,17 @@ char* compile_(
 	int depth,
 	int log
 ) {
+
+	Template *template = dictionaryLookup(templates_tree, template_name);
 	
-	char *s = dictionaryLookup(templates_tree, template_name);
+	char *s = template->text;
 	if (!s) {
 		if (log)
 			printf("Can not compile template \"%s\": no corresponding file found\n", template_name);
 		return NULL;
 	}
+
+	Keywords *keywords = template->keywords;
 
 	char *result;
 	size_t current_result_size = compile__initial_chunk_size;
@@ -98,13 +101,13 @@ char* compile_(
 
 	#include "processLine.c"
 	
-    if (!depth)
+	if (!depth)
 		compile__memcpy(compile__return, compile__return + compile__return_length);
 	
-    *result_end = 0;
+	*result_end = 0;
 	result = (char*)realloc(result, sizeof(char) * (result_end - result + 1));
 	
-    return result;
+	return result;
 
 }
 
@@ -115,18 +118,17 @@ static PyObject *compile (
 ) {
 
 	char *name;
-    int log;
+	int log;
 	
 	if (!PyArg_ParseTuple(args, "si", &name, &log)) {
 		return PyLong_FromLong(1);
 	}
 
 	char *result = compile_(
-        name,
-        _keywords, 
-        _templates,
-        0, NULL, NULL, NULL, NULL, 1, 0, log
-    );
+		name,
+		_templates,
+		0, NULL, NULL, NULL, NULL, 1, 0, log
+	);
 
 	return PyUnicode_FromString(result);
 

@@ -1,4 +1,5 @@
 from drunk_snail_c import addKeyword as _addKeyword, removeKeyword as _removeKeyword
+from time import sleep
 
 
 
@@ -18,7 +19,7 @@ syntax = {
 }
 
 
-def setKeyword(type, keyword):
+def setKeyword(template_name, type, keyword):
 
 	if not type in syntax:
 		return False
@@ -26,8 +27,8 @@ def setKeyword(type, keyword):
 	old_value = syntax[type].value
 	syntax[type].value = keyword
 
-	_removeKeyword(old_value)
-	_addKeyword(syntax[type].value, syntax[type].symbol)
+	_removeKeyword(template_name, old_value)
+	_addKeyword(template_name, syntax[type].value, syntax[type].symbol)
 
 	return True
 

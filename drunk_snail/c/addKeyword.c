@@ -1,19 +1,9 @@
-void addKeyword_(Keywords *keywords, char *keyword, char symbol) {
+void addKeywordByTemplateName(char *template_name, char *keyword, char symbol) {
 
-	char *value_to_insert = malloc(sizeof(char) * 2);
-	value_to_insert[0] = symbol;
-	value_to_insert[1] = 0;
-	treeInsert(keywords->tree, keyword, value_to_insert);
+	Template *template = dictionaryLookup(_templates, template_name);
+	Keywords *keywords = template->keywords;
 
-	KeywordData *data = malloc(sizeof(KeywordData));
-	data->last_inclusion = NULL;
-
-	char *k = keyword;
-	for (; *k; k++);
-	data->length = (int)(k - keyword);
-	data->last_symbol = *k;
-
-	keywords->data[(int)symbol] = data;
+	addKeywordByKeywords(template->keywords, keyword, symbol);
 
 }
 
@@ -24,14 +14,15 @@ static PyObject *addKeyword (
 ) {
 
 	char 
+		*template_name,
 		*keyword, 
-		*value;
+		*symbol;
 	
-	if (!PyArg_ParseTuple(args, "ss", &keyword, &value)) {
+	if (!PyArg_ParseTuple(args, "sss", &template_name, &keyword, &symbol)) {
 		return PyLong_FromLong(1);
 	}
 
-	addKeyword_(_keywords, keyword, value[0]);
+	addKeywordByTemplateName(template_name, keyword, symbol[0]);
 
 	return PyLong_FromLong(0);
 

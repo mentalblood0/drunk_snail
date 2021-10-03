@@ -67,7 +67,6 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		}
 		char *subtemplate_text = compile_(
 			ref_name_start,
-			keywords,
 			templates_tree,
 			depth,
 			subtemplate_prefix_start,

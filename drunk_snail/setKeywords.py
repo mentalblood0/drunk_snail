@@ -1,23 +1,8 @@
 from functools import singledispatch
 
+from .keywords import *
 from drunk_snail_c import addKeyword as _addKeyword, removeKeyword as _removeKeyword
 
-
-
-class Keyword:
-
-	def __init__(self, value, symbol):
-		self.value = value
-		self.symbol = symbol
-
-
-syntax = {
-	'open_tag':				Keyword('<!--', 'o'),
-	'close_tag':			Keyword('-->', 'c'),
-	'param_operator':		Keyword('(param)', 'p'),
-	'ref_operator':			Keyword('(ref)', 'r'),
-	'optional_operator':	Keyword('(optional)', '?')
-}
 
 
 def setKeyword(template_name, type, keyword):
@@ -37,6 +22,7 @@ def setKeyword(template_name, type, keyword):
 @singledispatch
 def setKeywords(arg, keywords):
 	pass
+
 
 @setKeywords.register
 def _(arg: str, keywords):

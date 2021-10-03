@@ -2,12 +2,13 @@
 
 #include <time.h>
 #include <stdio.h>
+#include <string.h>
 #include <Python.h>
 #include <sys/types.h>
 
 #include "prefix_tree.c"
 
-#include "Keywords.c"
+#include "keywords.c"
 #include "addTemplate.c"
 #include "addKeyword.c"
 #include "removeKeyword.c"

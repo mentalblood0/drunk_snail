@@ -7,7 +7,7 @@ typedef struct Template {
 } Template;
 
 
-void addTemplate_(char *name, char *text, Tree *cache) {
+void addTemplate_(char *name, char *text) {
 	
 	Template *template = malloc(sizeof(Template));
 
@@ -21,9 +21,9 @@ void addTemplate_(char *name, char *text, Tree *cache) {
 		template->text[i] = text[i];
 	}
 	
-	template->keywords = createDefaultKeywords();
+	template->keywords = createKeywords(128);
 	
-	treeInsert(cache, name, template);
+	treeInsert(_templates, name, template);
 
 }
 
@@ -41,7 +41,7 @@ static PyObject *addTemplate (
 		return PyLong_FromLong(1);
 	}
 
-	addTemplate_(name, template, _templates);
+	addTemplate_(name, template);
 
 	return PyLong_FromLong(0);
 

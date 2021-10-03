@@ -40,19 +40,3 @@ void addKeywordByKeywords(Keywords *keywords, char *keyword, char symbol) {
 	keywords->data[(int)symbol] = data;
 
 }
-
-
-Keywords* createDefaultKeywords() {
-
-	Keywords *keywords = createKeywords(128);
-	
-	addKeywordByKeywords(keywords, "\n",			'n');
-	addKeywordByKeywords(keywords, "<!--",			'o');
-	addKeywordByKeywords(keywords, "-->",			'c');
-	addKeywordByKeywords(keywords, "(param)",		'p');
-	addKeywordByKeywords(keywords, "(ref)",			'r');
-	addKeywordByKeywords(keywords, "(optional)",	'?');
-
-	return keywords;
-
-}

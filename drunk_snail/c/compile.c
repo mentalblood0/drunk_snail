@@ -15,6 +15,7 @@ void addTabs(char **s_end, int n) {
 char* compile_(
 	char *template_name,
 	Tree *templates_tree,
+	char **buf,
 	int inner_tabs_number,
 	char *prefix_start,
 	char *prefix_end,
@@ -37,8 +38,12 @@ char* compile_(
 	Keywords *keywords = template->keywords;
 
 	char *result;
-	size_t current_result_size = compile__initial_chunk_size;
-	while (!(result = malloc(sizeof(char) * compile__initial_chunk_size)));
+	if (buf != NULL) {
+		result = *buf;
+	}
+	else {
+		while (!(result = malloc(sizeof(char) * compile__initial_chunk_size)));
+	}
 	char *result_end = result;
 
 	char *template_name_end = template_name;
@@ -101,11 +106,14 @@ char* compile_(
 
 	#include "processLine.c"
 	
-	if (!depth)
+	if (!depth) {
 		compile__memcpy(compile__return, compile__return + compile__return_length);
-	
-	*result_end = 0;
-	result = (char*)realloc(result, sizeof(char) * (result_end - result + 1));
+		*result_end = 0;
+		result = (char*)realloc(result, sizeof(char) * (result_end - result + 1));
+	}
+
+	if (buf != NULL)
+		*buf = result_end;
 	
 	return result;
 
@@ -127,6 +135,7 @@ static PyObject *compile (
 	char *result = compile_(
 		name,
 		_templates,
+		NULL,
 		0, NULL, NULL, NULL, NULL, 1, 0, log
 	);
 

@@ -1,4 +1,5 @@
-from drunk_snail import setKeywords, addTemplate, compile
+from drunk_snail import Template
+from drunk_snail.sources import FileSource
 
 
 
@@ -13,9 +14,9 @@ one_character_keywords = {
 
 def test_basic():
 	
-	addTemplate(
+	canonicalization_method = Template(
 		'CanonicalizationMethod', 
-		'templates/CanonicalizationMethod_another_syntax.xml', 
+		FileSource('templates/CanonicalizationMethod_another_syntax.xml'), 
 		{
 			'open_tag': '(',
 			'close_tag': ')',
@@ -24,7 +25,7 @@ def test_basic():
 		}
 	)
 	
-	result = compile('CanonicalizationMethod')
+	result = canonicalization_method.compiled
 	with open('tests/CanonicalizationMethod_another_syntax_result.py', 'w') as f:
 		f.write(result)
 	with open('tests/CanonicalizationMethod_correct_result.py') as f:
@@ -35,13 +36,13 @@ def test_basic():
 
 def test_one_character_keywords():
 	
-	addTemplate(
+	canonicalization_method = Template(
 		'CanonicalizationMethod', 
-		'templates/CanonicalizationMethod_another_syntax__one_character_keywords.xml', 
+		FileSource('templates/CanonicalizationMethod_another_syntax__one_character_keywords.xml'), 
 		one_character_keywords
 	)
 	
-	result = compile('CanonicalizationMethod')
+	result = canonicalization_method.compiled
 	with open('tests/CanonicalizationMethod_another_syntax__one_character_keywords_result.py', 'w') as f:
 		f.write(result)
 	with open('tests/CanonicalizationMethod_correct_result.py') as f:
@@ -52,13 +53,14 @@ def test_one_character_keywords():
 
 def test_with_references_one_character_keywords():
 	
-	addTemplate('IssuerSerial', 'templates/IssuerSerial_another_syntax__one_character_keywords.xml')
-	addTemplate('DataReference', 'templates/DataReference.xml')
-	addTemplate('EncryptedKey', 'templates/EncryptedKey_another_syntax__one_character_keywords.xml')
+	issuer_serial = Template('IssuerSerial', FileSource('templates/IssuerSerial_another_syntax__one_character_keywords.xml'))
+	Template('DataReference', FileSource('templates/DataReference.xml'))
+	encrypted_key = Template('EncryptedKey', FileSource('templates/EncryptedKey_another_syntax__one_character_keywords.xml'))
 	
-	setKeywords(['EncryptedKey', 'IssuerSerial'], one_character_keywords)
+	issuer_serial.setKeywords(one_character_keywords)
+	encrypted_key.setKeywords(one_character_keywords)
 	
-	result = compile('EncryptedKey')
+	result = encrypted_key.compiled
 	with open('tests/EncryptedKey_another_syntax__one_character_keywords_result.py', 'w') as f:
 		f.write(result)
 	with open('tests/EncryptedKey_correct_result.py') as f:

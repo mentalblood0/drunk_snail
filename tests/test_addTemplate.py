@@ -1,6 +1,7 @@
-from drunk_snail import addTemplate
+from drunk_snail import Template
+from drunk_snail.sources import FileSource
 
 
 
 def test_basic():
-    assert addTemplate('CanonicalizationMethod', 'templates/CanonicalizationMethod.xml') == None
+    assert Template('CanonicalizationMethod', FileSource('templates/CanonicalizationMethod.xml'))

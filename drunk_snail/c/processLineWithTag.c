@@ -13,6 +13,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 	KeywordData *param_data = keywords->data[(int)'p'];
 	char *param_last = param_data->last_inclusion;
 	if (param_last) {
+
 		char *param_name_start = param_last + param_data->length;
 		char *param_name_end = param_name_start;
 		for (; *param_name_end != ' '; param_name_end++);
@@ -47,6 +48,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 	KeywordData *ref_data = keywords->data[(int)'r'];
 	char *ref_last = ref_data->last_inclusion;
 	if (ref_last) {
+
 		char *ref_name_start = ref_last + ref_data->length;
 		char *ref_name_end = ref_name_start;
 		for (; *ref_name_end != ' '; ref_name_end++);

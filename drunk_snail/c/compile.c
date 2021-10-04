@@ -84,13 +84,14 @@ char* compile_(
 					keywords->data[(int)'r']->last_inclusion = NULL;
 					keywords->data[(int)'?']->last_inclusion = NULL;
 					optional = 0;
-					
-					++c;
 				
 				}
 
 				KeywordData *current_keyword_data = keywords->data[(int)((char*)n->value)[0]];
-				current_keyword_data->last_inclusion = c - current_keyword_data->length;
+				if (((char*)n->value)[0] == 'n')
+					current_keyword_data->last_inclusion = c + 1 - current_keyword_data->length;
+				else
+					current_keyword_data->last_inclusion = c - current_keyword_data->length;
 
 			}
 

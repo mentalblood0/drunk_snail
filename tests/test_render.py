@@ -41,20 +41,20 @@ def test_ref():
 		keywords
 	)
 
-	greeting = Template(
+	Template(
 		'greeting', 
 		StringSource('Hello, ( $name )!\n( ~addition )!\n'), 
 		keywords
 	)
 	
-	assert greeting({
+	assert Template('greeting')({
 		'name': 'username',
 		'addition': {
 			'action': 'eat'
 		}
 	}) == 'Hello, username!\nNice to eat you!\n'
 
-	result = greeting({
+	result = Template('greeting')({
 		'name': 'username',
 		'addition': [{
 			'action': 'meet'

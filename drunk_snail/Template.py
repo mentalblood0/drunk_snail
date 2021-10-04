@@ -2,10 +2,20 @@ from types import ModuleType
 
 import drunk_snail_c
 from .keywords import *
+from . import templates
+from .sources import StringSource
 
 
 
-class Template:
+def Template(name, *args, **kwargs):
+
+	if not name in templates:
+		templates[name] = _Template(name, *args, **kwargs)
+
+	return templates[name]
+
+
+class _Template:
 
 	def __init__(self, name, source, keywords=default_keywords):
 		

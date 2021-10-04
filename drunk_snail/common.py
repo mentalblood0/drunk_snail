@@ -9,3 +9,7 @@ def importModuleFromPath(name, path):
 	spec.loader.exec_module(module)
 
 	return module
+
+
+def singleton(c):
+	return c()

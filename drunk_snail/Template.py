@@ -1,3 +1,5 @@
+from types import ModuleType
+
 import drunk_snail_c
 from .keywords import *
 
@@ -13,6 +15,7 @@ class Template:
 
 		self._text = None
 		self._compiled = None
+		self._function = None
 
 		self.load()
 	
@@ -35,6 +38,20 @@ class Template:
 			self.load()
 		
 		return self._text
+	
+	@property
+	def function(self):
+
+		assert self.compiled != None
+
+		if not self._function:
+			compiled_function = compile(self._compiled, '', 'exec')
+			temp_module = ModuleType('temp_module')
+			exec(compiled_function, temp_module.__dict__)
+
+			self._function = getattr(temp_module, 'render')
+		
+		return self._function
 	
 	def load(self):
 
@@ -74,6 +91,9 @@ class Template:
 
 		for type_, keyword in keywords.items():
 			self._setKeyword(self.name, type_, keyword)
+	
+	def __call__(self, parameters):
+		return self.function(parameters)
 
 
 

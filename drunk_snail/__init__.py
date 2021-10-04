@@ -3,5 +3,6 @@ __all__ = [
 	'setKeywords',
 	'getRenderer',
 	'addTemplate',
-	'importCompiledTemplates'
+	'importCompiledTemplates',
+	'Template'
 ]

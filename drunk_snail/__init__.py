@@ -4,5 +4,7 @@ __all__ = [
 	'getRenderer',
 	'addTemplate',
 	'importCompiledTemplates',
-	'Template'
+	'Template',
+	'Source',
+	'sources'
 ]

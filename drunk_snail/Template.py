@@ -5,22 +5,24 @@ from .keywords import *
 
 class Template:
 
-	def __init__(self, name, file_path, keywords=default_keywords):
+	def __init__(self, name, source, keywords=default_keywords):
 		
 		self._name = name
-		self._file_path = file_path
+		self._source = source
 		self._keywords = default_keywords | keywords
 
 		self._text = None
 		self._compiled = None
+
+		self.load()
 	
 	@property
 	def name(self):
 		return self._name
 	
 	@property
-	def file_path(self):
-		return self._file_path
+	def source(self):
+		return self._source
 	
 	@property
 	def keywords(self):
@@ -36,8 +38,7 @@ class Template:
 	
 	def load(self):
 
-		with open(self.file_path) as f:
-			self._text = f.read()
+		self._text = self.source.get()
 	
 		drunk_snail_c.addTemplate(self.name, self._text)
 		self.setKeywords(self.keywords)

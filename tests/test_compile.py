@@ -1,11 +1,11 @@
-from drunk_snail import addTemplate, compile, Template
+from drunk_snail import Template
+from drunk_snail.sources import FileSource
 
 
 
 def test_basic():
 	
-	# addTemplate('CanonicalizationMethod', 'templates/CanonicalizationMethod.xml')
-	t = Template('CanonicalizationMethod', 'templates/CanonicalizationMethod.xml')
+	t = Template('CanonicalizationMethod', FileSource('templates/CanonicalizationMethod.xml'))
 	
 	result = t.compiled
 	with open('tests/CanonicalizationMethod_result.py', 'w') as f:
@@ -18,11 +18,11 @@ def test_basic():
 
 def test_with_references():
 
-	addTemplate('EncryptedKey', 'templates/EncryptedKey.xml')
-	addTemplate('IssuerSerial', 'templates/IssuerSerial.xml')
-	addTemplate('DataReference', 'templates/DataReference.xml')
+	encrypted_key = Template('EncryptedKey', FileSource('templates/EncryptedKey.xml'))
+	issuer_serial = Template('IssuerSerial', FileSource('templates/IssuerSerial.xml'))
+	data_reference = Template('DataReference', FileSource('templates/DataReference.xml'))
 
-	result = compile('EncryptedKey')
+	result = encrypted_key.compiled
 	with open('tests/EncryptedKey_result.py', 'w') as f:
 		f.write(result)
 	with open('tests/EncryptedKey_correct_result.py') as f:

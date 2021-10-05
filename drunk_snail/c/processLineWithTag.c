@@ -1,6 +1,6 @@
 // ------------------ BEFORE ------------------
 char *prev_line_break = keywords->data[(int)'n']->last_inclusion;
-char *line_before_open_tag_start = prev_line_break;
+char *line_before_open_tag_start = prev_line_break+1;
 char *line_before_open_tag_end = open_;
 if (line_before_open_tag_start <= line_before_open_tag_end) {
 	// ------------------ AFTER ------------------

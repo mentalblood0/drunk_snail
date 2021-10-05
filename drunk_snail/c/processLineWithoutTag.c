@@ -1,5 +1,5 @@
 char *prev_line_break = keywords->data[(int)'n']->last_inclusion;
-char *line_start = prev_line_break;
+char *line_start = prev_line_break+1;
 char *line_end = (*(c - 1) == '\n') ? c - 1 : c;
 addTabs(&result_end, tabs_number);
 compile__cpy_print_left_part();

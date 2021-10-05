@@ -34,6 +34,7 @@ char* compile_(
 			printf("Can not compile template \"%s\": no corresponding file found\n", template_name);
 		return NULL;
 	}
+	fprintf(stderr, "compile_:\n%s\n", s);
 
 	Keywords *keywords = template->keywords;
 
@@ -55,55 +56,17 @@ char* compile_(
 	int optional = 0;
 	int potential_keyword_length = 0;
 
-	keywords->data[(int)'n']->last_inclusion = s;
+	keywords->data[(int)'n']->last_inclusion = s-1;
 	TreeNode *n = &keywords->tree->root;
 
 	char *c = s;
 	for (; *c; c++) {
-
-		if (n->children[(int)*c]) {
-			n = n->children[(int)*c];
-			++potential_keyword_length;
-		}
-		else {
-
-			if (n->value) {
-
-				if (((char*)n->value)[0] == '?')
-					optional = 1;
-
-				if (((char*)n->value)[0] == 'n') {
-					
-					#include "processLine.c"
-					
-					keywords->data[(int)'o']->last_inclusion = NULL;
-					keywords->data[(int)'c']->last_inclusion = NULL;
-					keywords->data[(int)'p']->last_inclusion = NULL;
-					keywords->data[(int)'r']->last_inclusion = NULL;
-					keywords->data[(int)'?']->last_inclusion = NULL;
-					optional = 0;
-				
-				}
-
-				KeywordData *current_keyword_data = keywords->data[(int)((char*)n->value)[0]];
-				if (((char*)n->value)[0] == 'n')
-					current_keyword_data->last_inclusion = c + 1 - current_keyword_data->length;
-				else
-					current_keyword_data->last_inclusion = c - current_keyword_data->length;
-
-			}
-
-			n = &keywords->tree->root;
-			if (n->children[(int)*c])
-				n = n->children[(int)*c];
-			
-			potential_keyword_length = 0;
-
-		}
-
+		#include "processCharacter.c"
 	}
 
-	#include "processLine.c"
+	if (*(c-1) != '\n') {
+		#include "processLine.c"
+	}
 	
 	if (!depth) {
 		compile__memcpy(compile__return, compile__return + compile__return_length);
@@ -114,6 +77,8 @@ char* compile_(
 	if (buf != NULL)
 		*buf = result_end;
 	
+	fprintf(stderr, "compile_ result:\n%s\n", result);
+
 	return result;
 
 }

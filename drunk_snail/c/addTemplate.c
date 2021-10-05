@@ -39,8 +39,6 @@ static PyObject *addTemplate (
 	if (!PyArg_ParseTuple(args, "ss", &name, &template))
 		return PyLong_FromLong(1);
 
-	fprintf(stderr, "addTemplate %s %s\n", name, template);
-
 	addTemplate_(name, template);
 
 	return PyLong_FromLong(0);

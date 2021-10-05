@@ -21,6 +21,8 @@ def test_basic():
 		'some_param': 'lalala'
 	}) == 'lalala\n'
 
+test_basic()
+
 
 def test_list():
 

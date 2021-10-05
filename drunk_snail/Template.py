@@ -26,8 +26,8 @@ class _Template:
 		self._function = None
 
 		text = self.source.get()
-		if text[-1] != '\n':
-			text += '\n'
+		# if text[-1] != '\n':
+		# 	text += '\n'
 		drunk_snail_c.addTemplate(self.name, text)
 
 		for type, keyword in self.keywords.items():
@@ -87,12 +87,18 @@ class _Template:
 	
 	def __str__(self):
 		return self.text
+	
+	def __len__(self):
+		return len(self.text)
 
 	def __eq__(self, other):
 		return (
 			isinstance(other, self.__class__)
 			and str(other) == str(self)
 		)
+	
+	def __dir__(self):
+		return ['name', 'source', 'keywords', 'text', 'compiled']
 
 
 

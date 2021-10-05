@@ -84,6 +84,15 @@ class _Template:
 	
 	def __repr__(self):
 		return f"(name='{self.name}', source={self.source}, keywords={self.keywords})"
+	
+	def __str__(self):
+		return self.text
+
+	def __eq__(self, other):
+		return (
+			isinstance(other, self.__class__)
+			and str(other) == str(self)
+		)
 
 
 

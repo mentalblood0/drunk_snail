@@ -1,8 +1,7 @@
 from types import ModuleType
 
 import drunk_snail_c
-from .keywords import *
-from . import templates
+from . import templates, syntax, default_keywords
 
 
 
@@ -25,7 +24,25 @@ class _Template:
 		self._compiled = None
 		self._function = None
 
-		self.load()
+		drunk_snail_c.addTemplate(
+			self.name, 
+			self.source.get()
+		)
+		self.setKeywords(self.keywords)
+	
+	def reload(self, source=None, keywords=None):
+
+		print('reload')
+
+		drunk_snail_c.removeTemplate(self.name)
+		
+		self.__init__(
+			self.name, 
+			source or self.source, 
+			keywords or self.keywords
+		)
+
+		print('reload ok')
 	
 	@property
 	def name(self):
@@ -41,70 +58,46 @@ class _Template:
 	
 	@property
 	def text(self):
-
-		result = drunk_snail_c.getTemplate(self.name)
-		if result == None:
-			self.load()
-			result = drunk_snail_c.getTemplate(self.name)
-		
-		return result
+		return drunk_snail_c.getTemplate(self.name)
 	
 	@property
-	def function(self):
+	def compiled(self):
 
-		assert self.compiled != None
+		print('self.compiled')
+
+		if self._compiled == None:
+			print('compiling template')
+			self._compiled = drunk_snail_c.compile(self.name, 0)
+			print('compiled template')
+		
+		return self._compiled
+	
+	def setKeywords(self, keywords):
+
+		for type, keyword in keywords.items():
+			
+			if not type in syntax:
+				return False
+
+			old_value = syntax[type].value
+			syntax[type].value = keyword
+
+			drunk_snail_c.removeKeyword(self.name, old_value)
+			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
+	
+	def __call__(self, parameters):
+
+		print('__call__')
 
 		if not self._function:
-			compiled_function = compile(self._compiled, '', 'exec')
+			
+			compiled_function = compile(self.compiled, '', 'exec')
 			temp_module = ModuleType('temp_module')
 			exec(compiled_function, temp_module.__dict__)
 
 			self._function = getattr(temp_module, 'render')
 		
-		return self._function
-	
-	def load(self):
-	
-		drunk_snail_c.addTemplate(
-			self.name, 
-			self.source.get()
-		)
-		self.setKeywords(self.keywords)
-	
-	@property
-	def compiled(self):
-
-		if self._compiled == None:
-			self.compile()
-		
-		return self._compiled
-
-	def compile(self):
-
-		assert self.text != None
-		
-		self._compiled = drunk_snail_c.compile(self.name, 0)
-
-	def _setKeyword(self, template_name, type, keyword):
-
-		if not type in syntax:
-			return False
-
-		old_value = syntax[type].value
-		syntax[type].value = keyword
-
-		drunk_snail_c.removeKeyword(template_name, old_value)
-		drunk_snail_c.addKeyword(template_name, syntax[type].value, syntax[type].symbol)
-
-		return True
-	
-	def setKeywords(self, keywords):
-
-		for type_, keyword in keywords.items():
-			self._setKeyword(self.name, type_, keyword)
-	
-	def __call__(self, parameters):
-		return self.function(parameters)
+		return self._function(parameters)
 	
 	def __repr__(self):
 		return f"(name='{self.name}', source={self.source}, keywords={self.keywords})"

@@ -1,5 +1,6 @@
 __all__ = [
 	'Template',
 	'Source',
-	'sources'
+	'sources',
+	'default_keywords'
 ]

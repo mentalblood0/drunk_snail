@@ -23,7 +23,7 @@ if __name__ == '__main__':
 		maintainer_email='neceporenkostepan@gmail.com',
 		keywords=['template', 'engine', 'fast'],
 		url='https://github.com/MentalBlood/drunk_snail',
-		packages=['drunk_snail', 'drunk_snail.subcommands'],
+		packages=['drunk_snail', 'drunk_snail.subcommands', 'drunk_snail.sources'],
 		ext_modules=[
 			Extension(
 				'drunk_snail_c',

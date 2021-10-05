@@ -1,4 +1,4 @@
 __all__ = [
-    'FileSource',
-    'StringSource'
+	'FileSource',
+	'StringSource'
 ]

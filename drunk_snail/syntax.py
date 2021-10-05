@@ -1,11 +1,6 @@
-class Keyword:
-
-	def __init__(self, value, symbol):
-		self.value = value
-		self.symbol = symbol
+from . import Keyword
 
 
-#defaults
 
 syntax = {
 	'open_tag':				Keyword('<!--', 'o'),
@@ -16,7 +11,7 @@ syntax = {
 	'line_break':			Keyword('\n', 'n')
 }
 
-default_keywords = {
-	name: keyword.value
-	for name, keyword in syntax.items()
-}
+
+
+import sys
+sys.modules[__name__] = syntax

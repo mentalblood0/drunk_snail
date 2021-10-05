@@ -17,9 +17,8 @@ void addTemplate_(char *name, char *text) {
 
 	template->text = malloc(sizeof(char) * text_length);
 	int i = 0;
-	for (i = 0; i < text_length; i++) {
+	for (i = 0; i < text_length; i++)
 		template->text[i] = text[i];
-	}
 	
 	template->keywords = createKeywords(128);
 	
@@ -37,9 +36,10 @@ static PyObject *addTemplate (
 		*name, 
 		*template;
 	
-	if (!PyArg_ParseTuple(args, "ss", &name, &template)) {
+	if (!PyArg_ParseTuple(args, "ss", &name, &template))
 		return PyLong_FromLong(1);
-	}
+
+	fprintf(stderr, "addTemplate %s %s\n", name, template);
 
 	addTemplate_(name, template);
 

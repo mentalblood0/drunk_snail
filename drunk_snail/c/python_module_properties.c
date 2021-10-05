@@ -4,6 +4,7 @@ static PyMethodDef methods[] = {
 	{"addTemplate",		addTemplate,	METH_VARARGS,	"Add template in order to compile or use in compiling of other templates"},
 	{"compile",			compile,		METH_VARARGS,	"Compile added template"},
 	{"getTemplate",		getTemplate,	METH_VARARGS,	"Get template text by name"},
+	{"removeTemplate",	removeTemplate,	METH_VARARGS,	"Remove template by name"},
 	{NULL, NULL, 0, NULL}
 };
 

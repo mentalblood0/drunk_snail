@@ -52,7 +52,6 @@ char* compile_(
 	if (!depth)
 		compile__cpy_def();
 
-	int tag_on_this_line = 0;
 	int optional = 0;
 	int potential_keyword_length = 0;
 
@@ -70,9 +69,6 @@ char* compile_(
 
 			if (n->value) {
 
-				if ((((char*)n->value)[0] == 'r') || (((char*)n->value)[0] == 'p'))
-					tag_on_this_line = 1;
-
 				if (((char*)n->value)[0] == '?')
 					optional = 1;
 
@@ -80,6 +76,8 @@ char* compile_(
 					
 					#include "processLine.c"
 					
+					keywords->data[(int)'o']->last_inclusion = NULL;
+					keywords->data[(int)'c']->last_inclusion = NULL;
 					keywords->data[(int)'p']->last_inclusion = NULL;
 					keywords->data[(int)'r']->last_inclusion = NULL;
 					keywords->data[(int)'?']->last_inclusion = NULL;

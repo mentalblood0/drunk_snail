@@ -1,4 +1,5 @@
 from types import ModuleType
+from functools import cached_property
 
 import drunk_snail_c
 from . import templates, syntax, default_keywords
@@ -20,15 +21,23 @@ class _Template:
 		self._name = name
 		self._source = source
 		self._keywords = default_keywords | keywords
-
-		self._compiled = None
 		self._function = None
 
 		text = self.source.get()
 		if text[-1] != '\n':
 			text += '\n'
 		drunk_snail_c.addTemplate(self.name, text)
-		self.setKeywords(self.keywords)
+
+		for type, keyword in self.keywords.items():
+			
+			if not type in syntax:
+				return False
+
+			old_value = syntax[type].value
+			syntax[type].value = keyword
+
+			drunk_snail_c.removeKeyword(self.name, old_value)
+			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
 	
 	def reload(self, source=None, keywords=None):
 
@@ -58,35 +67,17 @@ class _Template:
 	
 	@property
 	def compiled(self):
-
-		if self._compiled == None:
-			self._compiled = drunk_snail_c.compile(self.name, 0)
-		
-		return self._compiled
-	
-	def setKeywords(self, keywords):
-
-		for type, keyword in keywords.items():
-			
-			if not type in syntax:
-				return False
-
-			old_value = syntax[type].value
-			syntax[type].value = keyword
-
-			drunk_snail_c.removeKeyword(self.name, old_value)
-			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
+		return drunk_snail_c.compile(self.name, 0)
 	
 	def __call__(self, parameters):
 
 		if not self._function:
-			
 			compiled_function = compile(self.compiled, '', 'exec')
 			temp_module = ModuleType('temp_module')
 			exec(compiled_function, temp_module.__dict__)
 
 			self._function = getattr(temp_module, 'render')
-		
+
 		return self._function(parameters)
 	
 	def __repr__(self):

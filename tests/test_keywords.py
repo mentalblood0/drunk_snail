@@ -53,12 +53,17 @@ def test_one_character_keywords():
 
 def test_with_references_one_character_keywords():
 	
-	issuer_serial = Template('IssuerSerial', FileSource('templates/IssuerSerial_another_syntax__one_character_keywords.xml'))
+	issuer_serial = Template(
+		'IssuerSerial', 
+		FileSource('templates/IssuerSerial_another_syntax__one_character_keywords.xml'),
+		one_character_keywords
+	)
 	Template('DataReference', FileSource('templates/DataReference.xml'))
-	encrypted_key = Template('EncryptedKey', FileSource('templates/EncryptedKey_another_syntax__one_character_keywords.xml'))
-	
-	issuer_serial.setKeywords(one_character_keywords)
-	encrypted_key.setKeywords(one_character_keywords)
+	encrypted_key = Template(
+		'EncryptedKey', 
+		FileSource('templates/EncryptedKey_another_syntax__one_character_keywords.xml'),
+		one_character_keywords
+	)
 	
 	result = encrypted_key.compiled
 	with open('tests/EncryptedKey_another_syntax__one_character_keywords_result.py', 'w') as f:

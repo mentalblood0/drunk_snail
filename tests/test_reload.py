@@ -29,7 +29,7 @@ def test_basic():
 		'y': 2
 	}) == '<!-- (param)x -->\n2\n'
 
-	t.reload(keywords=default_keywords)
+	t = Template('test_render', keywords=default_keywords)
 	assert t({
 		'x': 1,
 		'y': 2

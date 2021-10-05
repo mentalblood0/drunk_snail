@@ -1,5 +1,4 @@
 from types import ModuleType
-from functools import cached_property
 
 import drunk_snail_c
 from . import templates, syntax, default_keywords
@@ -10,6 +9,9 @@ def Template(name, *args, **kwargs):
 
 	if not name in templates:
 		templates[name] = _Template(name, *args, **kwargs)
+	else:
+		if args or kwargs:
+			templates[name].reload(*args, **kwargs)
 
 	return templates[name]
 

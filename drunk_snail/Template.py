@@ -32,8 +32,6 @@ class _Template:
 	
 	def reload(self, source=None, keywords=None):
 
-		print('reload')
-
 		drunk_snail_c.removeTemplate(self.name)
 		
 		self.__init__(
@@ -41,8 +39,6 @@ class _Template:
 			source or self.source, 
 			keywords or self.keywords
 		)
-
-		print('reload ok')
 	
 	@property
 	def name(self):
@@ -63,12 +59,8 @@ class _Template:
 	@property
 	def compiled(self):
 
-		print('self.compiled')
-
 		if self._compiled == None:
-			print('compiling template')
 			self._compiled = drunk_snail_c.compile(self.name, 0)
-			print('compiled template')
 		
 		return self._compiled
 	
@@ -86,8 +78,6 @@ class _Template:
 			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
 	
 	def __call__(self, parameters):
-
-		print('__call__')
 
 		if not self._function:
 			

@@ -24,10 +24,10 @@ class _Template:
 		self._compiled = None
 		self._function = None
 
-		drunk_snail_c.addTemplate(
-			self.name, 
-			self.source.get()
-		)
+		text = self.source.get()
+		if text[-1] != '\n':
+			text += '\n'
+		drunk_snail_c.addTemplate(self.name, text)
 		self.setKeywords(self.keywords)
 	
 	def reload(self, source=None, keywords=None):

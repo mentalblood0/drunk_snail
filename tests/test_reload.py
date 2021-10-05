@@ -15,7 +15,7 @@ def test_basic():
 	
 	t = Template(
 		'test_render', 
-		StringSource('( $some_param )\n'), 
+		StringSource('( $some_param )'), 
 		keywords
 	)
 
@@ -23,7 +23,7 @@ def test_basic():
 		'some_param': 'lalala'
 	}) == 'lalala\n'
 
-	t.reload(source=StringSource('<!-- (param)x -->\n( $y )\n'))
+	t.reload(source=StringSource('<!-- (param)x -->\n( $y )'))
 	assert t({
 		'x': 1,
 		'y': 2

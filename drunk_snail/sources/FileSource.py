@@ -10,6 +10,10 @@ class FileSource(Source):
 	def get(self):
 		with open(self.path) as f:
 			return f.read()
+	
+	@property
+	def id(self):
+		return self.path
 
 
 

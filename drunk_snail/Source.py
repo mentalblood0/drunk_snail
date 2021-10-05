@@ -7,6 +7,13 @@ class Source(metaclass=ABCMeta):
 	@abstractmethod
 	def get(self):
 		pass
+	
+	@abstractmethod
+	def id(self):
+		pass
+
+	def __repr__(self):
+		return f"({self.id})"
 
 
 

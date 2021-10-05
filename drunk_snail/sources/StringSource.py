@@ -9,6 +9,10 @@ class StringSource(Source):
 	
 	def get(self):
 		return self.string
+	
+	@property
+	def id(self):
+		return f"'{self.string}'"
 
 
 

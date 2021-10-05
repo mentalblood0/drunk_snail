@@ -105,6 +105,9 @@ class _Template:
 	
 	def __call__(self, parameters):
 		return self.function(parameters)
+	
+	def __repr__(self):
+		return f"(name='{self.name}', source={self.source}, keywords={self.keywords})"
 
 
 

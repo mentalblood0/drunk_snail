@@ -3,7 +3,6 @@ from types import ModuleType
 import drunk_snail_c
 from .keywords import *
 from . import templates
-from .sources import StringSource
 
 
 
@@ -23,7 +22,6 @@ class _Template:
 		self._source = source
 		self._keywords = default_keywords | keywords
 
-		self._text = None
 		self._compiled = None
 		self._function = None
 
@@ -44,10 +42,12 @@ class _Template:
 	@property
 	def text(self):
 
-		if self._text == None:
+		result = drunk_snail_c.getTemplate(self.name)
+		if result == None:
 			self.load()
+			result = drunk_snail_c.getTemplate(self.name)
 		
-		return self._text
+		return result
 	
 	@property
 	def function(self):
@@ -64,10 +64,11 @@ class _Template:
 		return self._function
 	
 	def load(self):
-
-		self._text = self.source.get()
 	
-		drunk_snail_c.addTemplate(self.name, self._text)
+		drunk_snail_c.addTemplate(
+			self.name, 
+			self.source.get()
+		)
 		self.setKeywords(self.keywords)
 	
 	@property

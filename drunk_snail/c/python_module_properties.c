@@ -3,6 +3,7 @@ static PyMethodDef methods[] = {
 	{"removeKeyword",	removeKeyword,	METH_VARARGS,	"Remove keyword in order to customize syntax"},
 	{"addTemplate",		addTemplate,	METH_VARARGS,	"Add template in order to compile or use in compiling of other templates"},
 	{"compile",			compile,		METH_VARARGS,	"Compile added template"},
+	{"getTemplate",		getTemplate,	METH_VARARGS,	"Get template text by name"},
 	{NULL, NULL, 0, NULL}
 };
 

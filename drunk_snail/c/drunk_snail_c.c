@@ -10,6 +10,7 @@
 
 #include "keywords.c"
 #include "addTemplate.c"
+#include "getTemplate.c"
 #include "addKeyword.c"
 #include "removeKeyword.c"
 #include "compile.c"

@@ -13,7 +13,7 @@ void addTemplate_(char *name, char *text) {
 
 	char *t;
 	for (t = text; *t; t++);
-	int text_length = t - text + 1;
+	size_t text_length = t - text + 1;
 
 	template->text = malloc(sizeof(char) * text_length);
 	int i = 0;

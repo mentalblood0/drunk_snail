@@ -31,7 +31,6 @@ class _Template_proxy:
 		
 		return result
 
-
 	def __getattribute__(self, name):
 
 		if name in ['_actual_template_name', '_actual_template']:
@@ -70,7 +69,11 @@ class __Template:
 		self._function = None
 
 		text = self.source.get()
-		self._buffer_size = len(text) * 5
+		if hasattr(self, '_buffer_size'):
+			self._buffer_size = max(self._buffer_size, len(text) * 5)
+		else:
+			self._buffer_size = len(text) * 5
+		
 		drunk_snail_c.addTemplate(self.name, text)
 
 		for type, keyword in self.keywords.items():

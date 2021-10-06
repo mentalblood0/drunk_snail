@@ -21,5 +21,5 @@ def render(CanonicalizationMethod):
 		for qname_aware_unqualified_attr in ([None] if ((not CanonicalizationMethod) or (not 'qname_aware_unqualified_attr' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_unqualified_attr'] if type(CanonicalizationMethod['qname_aware_unqualified_attr']) == list else [CanonicalizationMethod['qname_aware_unqualified_attr']])):
 			result += f'''		<x-:UnqualifiedAttr x-:Name="string" x-:ParentName="string" x-:ParentNS="{qname_aware_unqualified_attr}"/>\n'''
 	result += f'''	</x-:QNameAware>\n'''
-	result += f'''</xd:CanonicalizationMethod>\n'''
+	result += f'''</xd:CanonicalizationMethod>'''
 	return result

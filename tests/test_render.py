@@ -72,7 +72,7 @@ def test_ref():
 		'addition': {
 			'action': 'eat'
 		}
-	}) == 'Hello, username!\nNice to eat you!'
+	}) == 'Hello, username!\nNice to eat you!\n'
 
 	print(Template('greeting').compiled)
 

@@ -19,8 +19,8 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			compile__cpy_if(param_name_start, param_name_end);
 			tabs_number++;
 		}
-		if (!*c || !*(c-1)) { /* processing last line */
-			compile__cpy_last_for(param_name_start, param_name_end);
+		if ((!*c || !*(c-1)) && !depth) { /* processing last line */
+			compile__cpy_last_for(param_name_start, param_name_end)
 		}
 		else {
 			addTabs(&result_end, tabs_number);

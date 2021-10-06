@@ -32,5 +32,5 @@ def render(EncryptedKey):
 		for uri in ([None] if ((not DataReference) or (not 'uri' in DataReference)) else (DataReference['uri'] if type(DataReference['uri']) == list else [DataReference['uri']])):
 			result += f'''		<xe:DataReference xe:URI="{uri}"/>\n'''
 	result += f'''	</xe:ReferenceList>\n'''
-	result += f'''</xe:EncryptedKey>\n'''
+	result += f'''</xe:EncryptedKey>'''
 	return result

@@ -22,7 +22,7 @@ def test_basic():
 
 	assert t({
 		'some_param': 'lalala'
-	}) == 'lalala\n'
+	}) == 'lalala'
 
 	# assert False
 
@@ -31,11 +31,11 @@ def test_basic():
 	assert t({
 		'x': 1,
 		'y': 2
-	}) == '<!-- (param)x -->\n2\n'
+	}) == '<!-- (param)x -->\n2'
 
 	t = Template('test_render', keywords=default_keywords)
 	print(t.compiled)
 	assert t({
 		'x': 1,
 		'y': 2
-	}) == '1\n( $y )\n'
+	}) == '1\n( $y )'

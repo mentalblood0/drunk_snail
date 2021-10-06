@@ -26,8 +26,6 @@ class _Template:
 		self._function = None
 
 		text = self.source.get()
-		# if text[-1] != '\n':
-		# 	text += '\n'
 		drunk_snail_c.addTemplate(self.name, text)
 
 		for type, keyword in self.keywords.items():
@@ -71,7 +69,7 @@ class _Template:
 	def compiled(self):
 		return drunk_snail_c.compile(self.name, 0)
 	
-	def __call__(self, parameters):
+	def __call__(self, parameters={}):
 
 		if not self._function:
 			compiled_function = compile(self.compiled, '', 'exec')

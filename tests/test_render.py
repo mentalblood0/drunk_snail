@@ -15,13 +15,23 @@ def test_basic():
 	
 	assert Template(
 		'test', 
-		StringSource('( $some_param )\n'), 
+		StringSource('( $x )'), 
 		keywords
 	)({
-		'some_param': 'lalala'
+		'x': 'lalala'
+	}) == 'lalala'
+
+	assert Template(
+		'test', 
+		StringSource('( $x )\n')
+	)({
+		'x': 'lalala'
 	}) == 'lalala\n'
 
-test_basic()
+	assert Template(
+		'test', 
+		StringSource('lalala')
+	)({}) == 'lalala'
 
 
 def test_list():
@@ -29,6 +39,14 @@ def test_list():
 	assert Template(
 		'test', 
 		StringSource('( $some_param )\n'), 
+		keywords
+	)({
+		'some_param': ['1', '2', '3']
+	}) == '1\n2\n3\n'
+
+	assert Template(
+		'test', 
+		StringSource('( $some_param )'), 
 		keywords
 	)({
 		'some_param': ['1', '2', '3']
@@ -54,7 +72,9 @@ def test_ref():
 		'addition': {
 			'action': 'eat'
 		}
-	}) == 'Hello, username!\nNice to eat you!\n'
+	}) == 'Hello, username!\nNice to eat you!'
+
+	print(Template('greeting').compiled)
 
 	result = Template('greeting')({
 		'name': 'username',

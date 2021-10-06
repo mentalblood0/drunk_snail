@@ -10,7 +10,6 @@ if (
 		(ref_ && (ref_ > open_) && (ref_ < close_))
 	)
 ) {
-	fprintf(stderr, "processLineWithTag\n");
 	#include "processLineWithTag.c"
 } else {
 	#include "processLineWithoutTag.c"

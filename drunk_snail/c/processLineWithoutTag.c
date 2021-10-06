@@ -9,6 +9,8 @@ if (prefix_start)
 compile__memcpy(line_start, line_end);
 if (postfix_start)
 	compile__memcpy(postfix_start, postfix_end);
-compile__cpy_one('\\');
-compile__cpy_one('n');
+if (*c && *(c-1)) { /* processing not last line */
+	compile__cpy_one('\\');
+	compile__cpy_one('n');
+}
 compile__cpy_print_right_part();

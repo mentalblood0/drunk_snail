@@ -1,4 +1,4 @@
-#include "output_aliases.c"
+#include "./output_aliases/main.c"
 
 
 
@@ -34,7 +34,6 @@ char* compile_(
 			printf("Can not compile template \"%s\": no corresponding file found\n", template_name);
 		return NULL;
 	}
-	fprintf(stderr, "compile_:\n%s\n", s);
 
 	Keywords *keywords = template->keywords;
 
@@ -69,15 +68,13 @@ char* compile_(
 	}
 	
 	if (!depth) {
-		compile__memcpy(compile__return, compile__return + compile__return_length);
+		compile__cpy_return();
 		*result_end = 0;
 		result = (char*)realloc(result, sizeof(char) * (result_end - result + 1));
 	}
 
 	if (buf != NULL)
 		*buf = result_end;
-	
-	fprintf(stderr, "compile_ result:\n%s\n", result);
 
 	return result;
 

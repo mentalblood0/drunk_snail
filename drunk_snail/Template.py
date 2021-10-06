@@ -8,15 +8,57 @@ from . import templates, syntax, default_keywords
 def Template(name, *args, **kwargs):
 
 	if not name in templates:
-		templates[name] = _Template(name, *args, **kwargs)
+		templates[name] = __Template(name, *args, **kwargs)
 	else:
 		if args or kwargs:
 			templates[name].reload(*args, **kwargs)
 
-	return templates[name]
+	return _Template_proxy(name)
 
 
-class _Template:
+class _Template_proxy:
+
+	def __init__(self, name, *args, **kwargs):
+		self._actual_template_name = name
+	
+	@property
+	def _actual_template(self):
+		
+		try:
+			result = templates[self._actual_template_name]
+		except IndexError:
+			raise IndexError(f"Template '{self._actual_template_name}' not exists (seems to be deleted)")
+		
+		return result
+
+
+	def __getattribute__(self, name):
+
+		if name in ['_actual_template_name', '_actual_template']:
+			return super().__getattribute__(name)
+
+		return getattr(self._actual_template, name)
+	
+	def __call__(self, *args, **kwargs):
+		return self._actual_template(*args, **kwargs)
+	
+	def __repr__(self):
+		return self._actual_template.__repr__()
+	
+	def __str__(self):
+		return self._actual_template.__str__()
+	
+	def __len__(self):
+		return self._actual_template.__len__()
+	
+	def __eq__(self, other):
+		return self._actual_template.__eq__(other)
+	
+	def __dir__(self):
+		return self._actual_template.__dir__()
+
+
+class __Template:
 
 	def __init__(self, name, source, keywords=default_keywords):
 		

@@ -23,6 +23,8 @@ class _Template:
 		self._name = name
 		self._source = source
 		self._keywords = default_keywords | keywords
+
+		self._compiled = None
 		self._function = None
 
 		text = self.source.get()
@@ -69,15 +71,17 @@ class _Template:
 	@property
 	def compiled(self):
 		
-		while True:
-			result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
-			if result == 2:
-				self._buffer_size *= 2
-				# raise Exception('Error while compiling: buffer overflow')
-			else:
-				break
+		if not self._compiled:
+			while True:
+				result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
+				if result == 2:
+					self._buffer_size *= 2
+					# raise Exception('Error while compiling: buffer overflow')
+				else:
+					break
+			self._compiled = result
 		
-		return result
+		return self._compiled
 	
 	def __call__(self, parameters={}):
 

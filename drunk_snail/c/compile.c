@@ -10,12 +10,11 @@ void addTabs(char **s_end, int n) {
 }
 
 
-#define compile__initial_chunk_size 65536
-
 char* compile_(
 	char *template_name,
 	Tree *templates_tree,
 	char **buf,
+	int buffer_size,
 	int inner_tabs_number,
 	char *prefix_start,
 	char *prefix_end,
@@ -27,13 +26,13 @@ char* compile_(
 ) {
 
 	Template *template = dictionaryLookup(templates_tree, template_name);
-	
-	char *s = template->text;
-	if (!s) {
+	if (template == NULL) {
 		if (log)
-			printf("Can not compile template \"%s\": no corresponding file found\n", template_name);
+			printf("Can not compile template \"%s\": not loaded\n", template_name);
 		return NULL;
 	}
+	
+	char *s = template->text;
 
 	Keywords *keywords = template->keywords;
 
@@ -42,7 +41,7 @@ char* compile_(
 		result = *buf;
 	}
 	else {
-		while (!(result = malloc(sizeof(char) * compile__initial_chunk_size)));
+		while (!(result = malloc(sizeof(char) * buffer_size)));
 	}
 	char *result_end = result;
 
@@ -56,6 +55,11 @@ char* compile_(
 	int potential_keyword_length = 0;
 
 	keywords->data[(int)'n']->last_inclusion = s-1;
+	keywords->data[(int)'o']->last_inclusion = NULL;
+	keywords->data[(int)'c']->last_inclusion = NULL;
+	keywords->data[(int)'p']->last_inclusion = NULL;
+	keywords->data[(int)'r']->last_inclusion = NULL;
+	keywords->data[(int)'?']->last_inclusion = NULL;
 	TreeNode *n = &keywords->tree->root;
 
 	char *c = s;
@@ -88,17 +92,22 @@ static PyObject *compile (
 
 	char *name;
 	int log;
+	int buffer_size;
 	
-	if (!PyArg_ParseTuple(args, "si", &name, &log)) {
+	if (!PyArg_ParseTuple(args, "sii", &name, &buffer_size, &log)) {
 		return PyLong_FromLong(1);
 	}
 
 	char *result = compile_(
 		name,
 		_templates,
-		NULL,
+		NULL, buffer_size,
 		0, NULL, NULL, NULL, NULL, 1, 0, log
 	);
+
+	if (result == NULL) {
+		return PyLong_FromLong(2);
+	}
 
 	return PyUnicode_FromString(result);
 

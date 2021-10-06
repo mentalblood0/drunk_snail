@@ -14,7 +14,7 @@ keywords = {
 def test_basic():
 	
 	assert Template(
-		'test', 
+		'test_render_basic', 
 		StringSource('( $x )'), 
 		keywords
 	)({
@@ -22,14 +22,14 @@ def test_basic():
 	}) == 'lalala'
 
 	assert Template(
-		'test', 
+		'test_render_basic', 
 		StringSource('( $x )\n')
 	)({
 		'x': 'lalala'
 	}) == 'lalala\n'
 
 	assert Template(
-		'test', 
+		'test_render_basic', 
 		StringSource('lalala')
 	)({}) == 'lalala'
 
@@ -37,7 +37,7 @@ def test_basic():
 def test_list():
 
 	assert Template(
-		'test', 
+		'test_render_list', 
 		StringSource('( $some_param )\n'), 
 		keywords
 	)({
@@ -45,7 +45,7 @@ def test_list():
 	}) == '1\n2\n3\n'
 
 	assert Template(
-		'test', 
+		'test_render_list', 
 		StringSource('( $some_param )'), 
 		keywords
 	)({
@@ -86,3 +86,20 @@ def test_ref():
 	})
 	print(result)
 	assert result == 'Hello, username!\nNice to meet you!\nNice to eat you!\n'
+
+
+def test_buf_overflow():
+
+	t1 = Template(
+		'test_buf_overflow_1', 
+		StringSource(' ' * 1000),
+		keywords
+	)
+
+	t2 = Template(
+		'test_buf_overflow_2', 
+		StringSource('( ~test_buf_overflow_1 )'),
+		keywords
+	)
+
+	assert t2.compiled

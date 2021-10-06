@@ -26,6 +26,7 @@ class _Template:
 		self._function = None
 
 		text = self.source.get()
+		self._buffer_size = len(text) * 5
 		drunk_snail_c.addTemplate(self.name, text)
 
 		for type, keyword in self.keywords.items():
@@ -67,7 +68,16 @@ class _Template:
 	
 	@property
 	def compiled(self):
-		return drunk_snail_c.compile(self.name, 0)
+		
+		while True:
+			result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
+			if result == 2:
+				self._buffer_size *= 2
+				# raise Exception('Error while compiling: buffer overflow')
+			else:
+				break
+		
+		return result
 	
 	def __call__(self, parameters={}):
 

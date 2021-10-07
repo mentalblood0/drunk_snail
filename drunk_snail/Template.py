@@ -24,16 +24,14 @@ class _Template_proxy:
 	@property
 	def _actual_template(self):
 		
-		try:
-			result = templates[self._actual_template_name]
-		except IndexError:
-			raise IndexError(f"Template '{self._actual_template_name}' not exists (seems to be deleted)")
+		if not self._actual_template_name in templates:
+			raise KeyError(f"Template '{self._actual_template_name}' not exists (seems to be deleted)")
 		
-		return result
+		return templates[self._actual_template_name]
 
 	def __getattribute__(self, name):
 
-		if name in ['_actual_template_name', '_actual_template']:
+		if name in ['_actual_template_name', '_actual_template', 'delete']:
 			return super().__getattribute__(name)
 
 		return getattr(self._actual_template, name)
@@ -55,6 +53,12 @@ class _Template_proxy:
 	
 	def __dir__(self):
 		return self._actual_template.__dir__()
+	
+	def delete(self):
+		try:
+			self._actual_template.__del__()
+		except KeyError:
+			pass
 
 
 class _Template:
@@ -160,10 +164,24 @@ class _Template:
 			and str(other) == str(self)
 		)
 	
+	def __del__(self):
+
+		if not self._name in templates:
+			return
+
+		if hasattr(self.source, 'stopWatch'):
+			self.source.stopWatch()
+		
+		drunk_snail_c.removeTemplate(self._name)
+		
+		del templates[self.name]
+
+		print(f"del '{self.name}' => templates left: {templates.keys()}")
+	
 	def __dir__(self):
 		return [
 			'name', 'source', 'keywords', 'text', 'compiled', 
-			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__'
+			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__'
 		]
 
 

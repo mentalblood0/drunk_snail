@@ -1,3 +1,4 @@
+import pytest
 from drunk_snail import Template
 from drunk_snail.sources import StringSource
 
@@ -27,3 +28,14 @@ def test_dir():
 
 	for name in dir(t):
 		assert name.startswith('__') or not name.startswith('_')
+
+
+def test_del():
+
+	t1 = Template('test_sugar_del', StringSource(s))
+	t2 = Template('test_sugar_del', StringSource(s))
+
+	t1.delete()
+
+	with pytest.raises(KeyError):
+		t2.text

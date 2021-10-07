@@ -42,9 +42,12 @@ for i in range(experiments_number):
 	t[-1]._actual_template._compiled = None
 	overall_time += timeit('t[-1].compiled', globals=globals(), number=1)
 
-lines_number = t[-1].compiled.count('\n')
+f_size = len(t[-1].compiled)
+f_lines_number = t[-1].compiled.count('\n')
+mean_time = overall_time / experiments_number
 
 print(f"Experiments number: {experiments_number}")
-print(f"Overall time: {overall_time}")
-print(f"Mean time: {overall_time / experiments_number}")
-print(f"Resulted function size: {len(t[-1].compiled)} characters in {lines_number} lines")
+print(f"Overall time: {overall_time}s")
+print(f"Mean time: {mean_time}s")
+print(f"Resulted function size: {f_size} characters in {f_lines_number} lines")
+print(f"Compilation speed: {f_size / mean_time / 1024 / 1024} MB/s")

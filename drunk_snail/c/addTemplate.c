@@ -11,14 +11,9 @@ void addTemplate_(char *name, char *text) {
 	
 	Template *template = malloc(sizeof(Template));
 
-	char *t;
-	for (t = text; *t; t++);
-	size_t text_length = t - text + 1;
-
+	int text_length = strlen(text) + 1;
 	template->text = malloc(sizeof(char) * text_length);
-	int i = 0;
-	for (i = 0; i < text_length; i++)
-		template->text[i] = text[i];
+	strncpy(template->text, text, text_length);
 	
 	template->keywords = createKeywords(128);
 	

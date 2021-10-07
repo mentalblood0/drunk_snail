@@ -73,7 +73,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 				templates_tree,
 				&result_end,
 				buffer_size - (result_end - result + 2),
-				depth,
+				0,
 				subtemplate_prefix_start,
 				line_before_open_tag_end,
 				line_after_close_tag_start,
@@ -82,12 +82,13 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 				depth + 1,
 				log
 			);
+			*ref_name_end = temp;
 			if (subtemplate_compile_result == NULL) {
-				if (!depth)
+				if (!depth) {
 					free(result);
+				}
 				return NULL;
 			}
-			*ref_name_end = temp;
 			if (optional)
 				tabs_number--;
 		}

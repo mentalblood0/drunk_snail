@@ -175,8 +175,6 @@ class _Template:
 		drunk_snail_c.removeTemplate(self._name)
 		
 		del templates[self.name]
-
-		print(f"del '{self.name}' => templates left: {templates.keys()}")
 	
 	def __dir__(self):
 		return [

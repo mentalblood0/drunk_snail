@@ -38,4 +38,7 @@ def test_del():
 	t1.delete()
 
 	with pytest.raises(KeyError):
+		t1.text
+	
+	with pytest.raises(KeyError):
 		t2.text

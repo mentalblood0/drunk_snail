@@ -12,7 +12,7 @@ subparsers = parser.add_subparsers(title='subcommands')
 
 main_module_name = os.path.basename(os.path.dirname(__file__))
 subcommands_list = [
-	'compile'
+	'render'
 ]
 for c in subcommands_list:
 	command_module = importlib.import_module(f'{main_module_name}.subcommands.{c}')

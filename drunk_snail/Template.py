@@ -59,6 +59,7 @@ class _Template_proxy:
 			self._actual_template.__del__()
 		except KeyError:
 			pass
+		
 
 
 class _Template:

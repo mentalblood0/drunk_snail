@@ -8,7 +8,7 @@ from . import templates, syntax, default_keywords
 def Template(name, *args, **kwargs):
 
 	if not name in templates:
-		templates[name] = __Template(name, *args, **kwargs)
+		templates[name] = _Template(name, *args, **kwargs)
 	else:
 		if args or kwargs:
 			templates[name].reload(*args, **kwargs)
@@ -18,7 +18,7 @@ def Template(name, *args, **kwargs):
 
 class _Template_proxy:
 
-	def __init__(self, name, *args, **kwargs):
+	def __init__(self, name):
 		self._actual_template_name = name
 	
 	@property
@@ -57,7 +57,7 @@ class _Template_proxy:
 		return self._actual_template.__dir__()
 
 
-class __Template:
+class _Template:
 
 	def __init__(self, name, source, keywords=default_keywords):
 		
@@ -86,10 +86,17 @@ class __Template:
 
 			drunk_snail_c.removeKeyword(self.name, old_value)
 			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
+		
+		if hasattr(self.source, 'startWatch'):
+			self.source.startWatch(onChange=self.reload)
 	
 	def reload(self, source=None, keywords=None):
 
 		drunk_snail_c.removeTemplate(self.name)
+
+		if source:
+			if hasattr(self.source, 'stopWatch'):
+				self.source.stopWatch()
 		
 		self.__init__(
 			self.name, 
@@ -121,7 +128,6 @@ class __Template:
 				result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
 				if result == 2:
 					self._buffer_size *= 2
-					# raise Exception('Error while compiling: buffer overflow')
 				else:
 					break
 			self._compiled = result
@@ -132,7 +138,7 @@ class __Template:
 
 		if not self._function:
 			compiled_function = compile(self.compiled, '', 'exec')
-			temp_module = ModuleType('temp_module')
+			temp_module = ModuleType('')
 			exec(compiled_function, temp_module.__dict__)
 
 			self._function = getattr(temp_module, 'render')
@@ -155,7 +161,10 @@ class __Template:
 		)
 	
 	def __dir__(self):
-		return ['name', 'source', 'keywords', 'text', 'compiled']
+		return [
+			'name', 'source', 'keywords', 'text', 'compiled', 
+			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__'
+		]
 
 
 

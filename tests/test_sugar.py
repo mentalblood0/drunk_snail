@@ -25,4 +25,5 @@ def test_dir():
 	
 	t = Template('test_sugar_dir', StringSource(s))
 
-	assert dir(t) == sorted(['name', 'source', 'keywords', 'text', 'compiled'])
+	for name in dir(t):
+		assert name.startswith('__') or not name.startswith('_')

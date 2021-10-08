@@ -14,7 +14,7 @@ keywords = {
 def test_basic():
 	
 	t = Template(
-		'test_render', 
+		'test_reload_basic', 
 		StringSource('( $some_param )'), 
 		keywords
 	)
@@ -33,9 +33,38 @@ def test_basic():
 		'y': 2
 	}) == '<!-- (param)x -->\n2'
 
-	t = Template('test_render', keywords=default_keywords)
+	t = Template('test_reload_basic', keywords=default_keywords)
 	print(t.compiled)
 	assert t({
 		'x': 1,
 		'y': 2
 	}) == '1\n( $y )'
+
+
+def test_ref():
+
+	t1 = Template(
+		'test_reload_ref_1', 
+		StringSource('( $p )'), 
+		keywords
+	)
+
+	t2 = Template(
+		'test_reload_ref_2', 
+		StringSource('( ~test_reload_ref_1 )'), 
+		keywords
+	)
+
+	assert t2({
+		'test_reload_ref_1': {
+			'p': 1
+		}
+	}) == '1\n'
+
+	Template(t1.name, StringSource('__( $p )__'))
+
+	assert t2({
+		'test_reload_ref_1': {
+			'p': 1
+		}
+	}) == '__1__\n'

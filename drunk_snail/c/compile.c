@@ -14,7 +14,7 @@ char* compile_(
 	char *template_name,
 	Tree *templates_tree,
 	char **buf,
-	int buffer_size,
+	__int64 buffer_size,
 	int inner_tabs_number,
 	char *prefix_start,
 	char *prefix_end,
@@ -54,6 +54,7 @@ char* compile_(
 	int optional = 0;
 	int potential_keyword_length = 0;
 
+	clearRefs(template);
 	keywords->data[(int)'n']->last_inclusion = s-1;
 	keywords->data[(int)'o']->last_inclusion = NULL;
 	keywords->data[(int)'c']->last_inclusion = NULL;

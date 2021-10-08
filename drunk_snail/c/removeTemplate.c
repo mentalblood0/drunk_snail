@@ -12,8 +12,11 @@ int removeTemplate_(char *name) {
 	for (i = 0; i < 128; i++)
 		if (*(keywords->data + i) != NULL)
 			free(*(keywords->data + i));
-	
+
 	free(keywords->data);
+
+	clearRefs(template);
+	free(template->refs);
 
 	treeRemove(_templates, name);
 

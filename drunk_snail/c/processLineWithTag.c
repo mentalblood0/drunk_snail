@@ -52,6 +52,8 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			char *ref_name_end = ref_name_start;
 			for (; *ref_name_end != ' '; ref_name_end++);
 
+			addRef(template, ref_name_start, ref_name_end - ref_name_start);
+
 			char temp = *ref_name_end;
 			*ref_name_end = 0;
 			keywords->data[(int)'p']->last_inclusion = NULL;

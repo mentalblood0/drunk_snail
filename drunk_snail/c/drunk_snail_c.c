@@ -11,6 +11,7 @@
 #include "keywords.c"
 #include "addTemplate.c"
 #include "getTemplate.c"
+#include "getTemplateRefs.c"
 #include "removeTemplate.c"
 #include "addKeyword.c"
 #include "removeKeyword.c"

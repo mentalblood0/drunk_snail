@@ -1,3 +1,4 @@
+from threading import Lock
 from types import ModuleType
 
 import drunk_snail_c
@@ -55,16 +56,20 @@ class _Template_proxy:
 		return self._actual_template.__dir__()
 	
 	def delete(self):
-		try:
-			self._actual_template.__del__()
-		except KeyError:
-			pass
+		with self._actual_template._lock:
+			try:
+				self._actual_template.__del__()
+			except KeyError:
+				pass
 		
 
 
 class _Template:
 
 	def __init__(self, name, source, keywords=default_keywords):
+
+		if not hasattr(self, '_lock'):
+			self._lock = Lock()
 		
 		self._name = name
 		self._source = source
@@ -97,17 +102,19 @@ class _Template:
 	
 	def reload(self, source=None, keywords=None):
 
-		drunk_snail_c.removeTemplate(self.name)
+		with self._lock:
 
-		if source:
-			if hasattr(self.source, 'stopWatch'):
-				self.source.stopWatch()
-		
-		self.__init__(
-			self.name, 
-			source or self.source, 
-			keywords or self.keywords
-		)
+			drunk_snail_c.removeTemplate(self.name)
+
+			if source:
+				if hasattr(self.source, 'stopWatch'):
+					self.source.stopWatch()
+			
+			self.__init__(
+				self.name, 
+				source or self.source, 
+				keywords or self.keywords
+			)
 	
 	@property
 	def name(self):
@@ -127,15 +134,17 @@ class _Template:
 	
 	@property
 	def compiled(self):
+
+		with self._lock:
 		
-		if not self._compiled:
-			while True:
-				result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
-				if result == 2:
-					self._buffer_size *= 2
-				else:
-					break
-			self._compiled = result
+			if not self._compiled:
+				while True:
+					result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
+					if result == 2:
+						self._buffer_size *= 2
+					else:
+						break
+				self._compiled = result
 		
 		return self._compiled
 	

@@ -1,3 +1,3 @@
 rd /s /q dist drunk_snail\drunk_snail.egg-info
 py -m build -n && ^
-pip install --force-reinstall dist\drunk_snail-4.0-cp39-cp39-win_amd64.whl
+py -m pip install --force-reinstall dist\drunk_snail-4.0-cp310-cp310-win_amd64.whl

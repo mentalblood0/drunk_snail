@@ -55,7 +55,7 @@ void addTemplate_(char *name, char *text) {
 	
 	template->keywords = createKeywords(128);
 
-	template->refs = malloc(sizeof(char*) * addTemplate__initial_refs_number_allocated);
+	template->refs = calloc(addTemplate__initial_refs_number_allocated, sizeof(char*));
 	template->refs_number_allocated = addTemplate__initial_refs_number_allocated;
 	template->refs_number = 0;
 	

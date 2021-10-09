@@ -24,7 +24,7 @@ static PyObject *getTemplateRefs (
 	if (result == NULL)
 		return Py_None;
 	
-	PyObject* result_converted = PyList_New(0);
+	PyObject *result_converted = PyList_New(0);
 	for (; *result; ++result)
 		PyList_Append(result_converted, PyUnicode_FromString(*result));
 

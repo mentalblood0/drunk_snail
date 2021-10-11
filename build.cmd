@@ -1,3 +1,3 @@
-rd /s /q dist drunk_snail\drunk_snail.egg-info
-py -m build -n && ^
-py -m pip install --force-reinstall dist\drunk_snail-4.0-cp310-cp310-win_amd64.whl
+rd /s /q -rf dist broker_tester\broker_tester.egg-info
+py -m build -n
+py -m pip install --force-reinstall dist\broker_tester-0.1.0-py3-none-any.whl

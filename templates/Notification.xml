@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<soapenv:Envelope <!-- (ref)namespaces -->>
-	<!-- (ref)Header -->
-	<soapenv:Body wsu:Id="string">
-		<soapenv:Notification>
-			<not:Event><!-- (param)notification_text --></not:Event>
-		</soapenv:Notification>
-	</soapenv:Body>
-</soapenv:Envelope>

@@ -1,0 +1,4 @@
+<xd:X509IssuerSerial>
+	<xd:X509IssuerName>( $name )</xd:X509IssuerName>
+	<xd:X509Serial>( $serial )</xd:X509Serial>
+</xd:X509IssuerSerial>

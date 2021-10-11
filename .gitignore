@@ -1,3 +1,7 @@
 __pycache__
+example.c
+a.exe
 dist
 *egg-info*
+compiled_templates/*
+test.py

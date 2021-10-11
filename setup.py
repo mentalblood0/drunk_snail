@@ -1,5 +1,6 @@
 import os
-from distutils.core import setup
+import glob
+from distutils.core import setup, Extension
 
 
 
@@ -11,11 +12,23 @@ if __name__ == '__main__':
 			long_description = f.read()
 
 	setup(
-		name='broker_tester',
-		version='0.1.0',
-		description='Tester for broker services',
+		name='drunk_snail',
+		version='4.0',
+		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
 		author='mentalblood',
-		packages=['broker_tester', 'broker_tester.subcommands']
+		author_email='neceporenkostepan@gmail.com',
+		maintainer='mentalblood',
+		maintainer_email='neceporenkostepan@gmail.com',
+		keywords=['template', 'engine', 'fast'],
+		url='https://github.com/MentalBlood/drunk_snail',
+		packages=['drunk_snail', 'drunk_snail.subcommands', 'drunk_snail.sources'],
+		ext_modules=[
+			Extension(
+				'drunk_snail_c',
+				['drunk_snail/c/drunk_snail_c.c']
+			)
+		],
+		data_files=glob.glob('drunk_snail/c/*.c') + glob.glob('drunk_snail/c/output_aliases/*.c')
 	)

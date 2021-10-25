@@ -7,7 +7,7 @@
 * Template engine
 * Compiles templates to Python functions
 * Customizable syntax
-* Auto-reload template on file change
+* Auto-reload template on file change (WARNING: cascade recompiling is not implemented yet)
 
 
 

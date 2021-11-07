@@ -52,10 +52,11 @@ def watchFile(path, onChange):
 
 class FileSource(Source):
 
-	def __init__(self, path):
+	def __init__(self, path, watch=True):
 
 		self.path = path
 		self._stopObserver = None
+		self._watch = watch
 	
 	def get(self):
 
@@ -63,7 +64,8 @@ class FileSource(Source):
 			return f.read()
 	
 	def startWatch(self, onChange):
-		self._stopObserver = watchFile(self.path, onChange)
+		if self._watch:
+			self._stopObserver = watchFile(self.path, onChange)
 	
 	def stopWatch(self):
 	

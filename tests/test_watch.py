@@ -23,3 +23,23 @@ def test_basic():
 
 	del t
 	os.remove(file_path)
+
+
+def test_disable_watch():
+
+	file_path = 'test_watch_temp_file.txt'
+
+	with open(file_path, 'w') as f:
+		f.write('<!-- (param)x -->')
+	
+	t = Template('test_watch_basic', FileSource(file_path, watch=False))
+	assert t({'x': 'a'}) == 'a'
+
+	with open(file_path, 'a') as f:
+		f.write('\n<!-- (param)y -->')
+	
+	sleep(1)
+	assert t({'x': 'a', 'y': 'b'}) == 'a'
+
+	del t
+	os.remove(file_path)

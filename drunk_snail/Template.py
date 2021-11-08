@@ -142,6 +142,10 @@ class _Template:
 		
 		return self._compiled
 	
+	@property
+	def refs(self):
+		return drunk_snail_c.getTemplateRefs(self.name)
+	
 	def __call__(self, parameters={}):
 
 		if not self._function:

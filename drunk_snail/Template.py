@@ -97,8 +97,7 @@ class _Template:
 			drunk_snail_c.removeKeyword(self.name, old_value)
 			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
 		
-		if hasattr(self.source, 'startWatch'):
-			self.source.startWatch(onChange=self.reload)
+		self.source.onChange = self.reload
 	
 	def reload(self, source=None, keywords=None):
 

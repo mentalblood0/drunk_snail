@@ -59,16 +59,20 @@ class FileSource(Source):
 		self._watch = watch
 	
 	def get(self):
-
 		with open(self.path) as f:
 			return f.read()
+	
+	def onChange_setter(self, value):
+		
+		self.stopWatch()
+		self.startWatch(value)
 	
 	def startWatch(self, onChange):
 		if self._watch:
 			self._stopObserver = watchFile(self.path, onChange)
 	
 	def stopWatch(self):
-	
+		
 		if self._stopObserver:
 			self._stopObserver()
 			self._stopObserver = None

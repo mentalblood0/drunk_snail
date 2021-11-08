@@ -195,3 +195,74 @@ Parameters (`name` in example):
 * Key-value might be name and value of `param`
 * Key-value might be name and parameters of `ref`
 * There can be no key-value for `ref` or `param` that is `optional`
+
+
+
+## Testing
+
+Can be done using `pytest`:
+
+```bash
+pip install --upgrade drunk_snail
+git clone https://github.com/MentalBlood/drunk_snail
+cd drunk_snail
+pytest
+```
+
+
+
+## Benchmarking
+
+One simple yet massive benchmark is available:
+
+```bash
+pip install --upgrade drunk_snail
+git clone https://github.com/MentalBlood/drunk_snail
+cd drunk_snail
+cd benchmarks
+python benchmark_compile.py
+```
+
+It creates `15` (`folding_depth`) templates:
+
+```
+<!-- (param)x -->
+```
+
+```
+<!-- (ref)benchmark_compile_0 -->
+<!-- (param)x -->
+```
+
+```
+<!-- (ref)benchmark_compile_0 -->
+<!-- (ref)benchmark_compile_1 -->
+<!-- (param)x -->
+```
+
+```
+<!-- (ref)benchmark_compile_1 -->
+<!-- (ref)benchmark_compile_2 -->
+<!-- (param)x -->
+```
+
+...
+
+```
+<!-- (ref)benchmark_compile_12 -->
+<!-- (ref)benchmark_compile_13 -->
+<!-- (param)x -->
+```
+
+And then compiles the last one `10 000` times to get more accurate time as mean
+
+It's sample output is:
+
+```
+Experiments number: 10000
+Overall time: 12.62425719993189s
+Mean time: 0.001262425719993189s
+Resulted function size: 841572 characters in 4795 lines
+Compilation speed: 635.7487724592388 MB/s
+```
+

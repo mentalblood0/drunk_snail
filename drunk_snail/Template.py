@@ -98,13 +98,19 @@ class _Template:
 			drunk_snail_c.removeKeyword(self.name, old_value)
 			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
 	
-	def reload(self, source=None, keywords=None):
+	def reload(self, source=None, keywords=None, _not_reload={}):
 
 		with self._lock:
 
-			for t in templates.values():
+			for name in templates:
+				
+				if name in _not_reload:
+					continue
+				_not_reload[name] = True
+				
+				t = templates[name]
 				if self.name in t.refs:
-					t.reload()
+					t.reload(_not_reload=_not_reload)
 
 			drunk_snail_c.removeTemplate(self.name)
 			

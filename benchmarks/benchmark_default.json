@@ -1,6 +1,6 @@
 {
 	"compile_sharpener::one": {
-		"__n__": 1000,
+		"__n__": 10000,
 		"keywords": {
 			"open_tag": "<!--",
 			"close_tag": "-->",

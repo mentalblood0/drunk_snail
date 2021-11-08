@@ -117,6 +117,38 @@ except KeyError:
 
 This example is available as is in `tests/example.py` and as test in `tests/test_render.py::test_readme_example`
 
+Also cascade reloading is available:
+
+```python
+t1 = Template(
+    't1', 
+    StringSource('( $p )'), 
+    keywords
+)
+
+t2 = Template(
+    't2', 
+    StringSource('( ~t1 )'), 
+    keywords
+)
+
+assert t2({
+    't1': {
+        'p': 1
+    }
+}) == '1\n'
+
+Template(t1.name, StringSource('__( $p )__'))
+
+assert t2({
+    't1': {
+        'p': 1
+    }
+}) == '__1__\n'
+```
+
+This works for auto reload on file change too
+
 
 
 ## Syntax

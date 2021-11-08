@@ -32,7 +32,7 @@ def test_disable_watch():
 	with open(file_path, 'w') as f:
 		f.write('<!-- (param)x -->')
 	
-	t = Template('test_watch_basic', FileSource(file_path, watch=False))
+	t = Template('test_watch_disable_watch', FileSource(file_path, watch=False))
 	assert t({'x': 'a'}) == 'a'
 
 	with open(file_path, 'a') as f:

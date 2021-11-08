@@ -78,6 +78,7 @@ class _Template:
 		self._compiled = None
 		self._function = None
 
+		self.source.onChange = self.reload
 		text = self.source.get()
 		if hasattr(self, '_buffer_size'):
 			self._buffer_size = max(self._buffer_size, len(text) * 5)
@@ -96,18 +97,12 @@ class _Template:
 
 			drunk_snail_c.removeKeyword(self.name, old_value)
 			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
-		
-		self.source.onChange = self.reload
 	
 	def reload(self, source=None, keywords=None):
 
 		with self._lock:
 
 			drunk_snail_c.removeTemplate(self.name)
-
-			if source:
-				if hasattr(self.source, 'stopWatch'):
-					self.source.stopWatch()
 			
 			self.__init__(
 				self.name, 

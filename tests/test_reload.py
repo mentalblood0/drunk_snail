@@ -69,3 +69,27 @@ def test_ref():
 			'p': 1
 		}
 	}) == '__1__\n'
+
+def test_cascade():
+
+	t1 = Template(
+		'test_reload_cascade_1', 
+		StringSource('( $p )'), 
+		keywords
+	)
+
+	t2 = Template(
+		'test_reload_cascade_2', 
+		StringSource('( ~test_reload_cascade_1 )'), 
+		keywords
+	)
+
+	t3 = Template(
+		'test_reload_cascade_3', 
+		StringSource('( ~test_reload_cascade_1 )\n( ~test_reload_cascade_2 )'), 
+		keywords
+	)
+
+	assert t1.reload(source=StringSource('__( $p )__')) == 1
+	assert t2.compiled and (t1.reload(source=StringSource('__( $p )__')) == 2)
+	assert t3.compiled and (t1.reload(source=StringSource('__( $p )__')) == 3)

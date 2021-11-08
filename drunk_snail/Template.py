@@ -108,10 +108,8 @@ class _Template:
 
 			_not_reload[self.name] = True
 
-			for name in templates:
+			for name in filter(lambda t: t not in _not_reload, templates):
 				
-				if name in _not_reload:
-					continue
 				_not_reload[name] = True
 				
 				t = templates[name]
@@ -119,7 +117,6 @@ class _Template:
 					reloaded_number += t.reload(_not_reload=_not_reload)
 
 			drunk_snail_c.removeTemplate(self.name)
-			
 			self.__init__(
 				self.name, 
 				source or self.source, 

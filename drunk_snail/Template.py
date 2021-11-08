@@ -102,6 +102,10 @@ class _Template:
 
 		with self._lock:
 
+			for t in templates.values():
+				if self.name in t.refs:
+					t.reload()
+
 			drunk_snail_c.removeTemplate(self.name)
 			
 			self.__init__(

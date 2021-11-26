@@ -57,12 +57,12 @@ int treeInsert(Tree* tree, char *key, void *value) {
 }
 
 
-int treeRemove(Tree* tree, char *word) {
+int treeRemove(Tree* tree, char *key) {
 	
 	TreeNode *node = &tree->root;
 	char *c = NULL;
 	
-	for (c = word; *c; c++) {
+	for (c = key; *c; c++) {
 	
 		if ((int)(*c) == -1)
 			return 1;
@@ -117,11 +117,11 @@ void clearTree(Tree *tree) {
 }
 
 
-void* treeGet(TreeNode *node, char *word) {
+void* treeGet(TreeNode *node, char *key) {
 
 	char *c = NULL;
 	
-	for (c = word; *c; c++) {
+	for (c = key; *c; c++) {
 
 		if ((int)(*c) == -1)
 			return NULL;
@@ -137,6 +137,6 @@ void* treeGet(TreeNode *node, char *word) {
 }
 
 
-void* dictionaryLookup(Tree *tree, char *word) {
-	return treeGet(&tree->root, word);
+void* dictionaryLookup(Tree *tree, char *key) {
+	return treeGet(&tree->root, key);
 }

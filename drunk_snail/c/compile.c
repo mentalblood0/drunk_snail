@@ -14,7 +14,7 @@ char* compile_(
 	char *template_name,
 	Tree *templates_tree,
 	char **buf,
-	__int64 buffer_size,
+	int buffer_size,
 	int inner_tabs_number,
 	char *prefix_start,
 	char *prefix_end,

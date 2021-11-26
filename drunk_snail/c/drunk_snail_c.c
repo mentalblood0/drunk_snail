@@ -8,7 +8,7 @@
 
 #include "prefix_tree.c"
 
-#include "keywords.c"
+#include "Keywords.c"
 #include "addTemplate.c"
 #include "getTemplate.c"
 #include "getTemplateRefs.c"

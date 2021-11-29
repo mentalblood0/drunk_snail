@@ -108,6 +108,35 @@ def test_buf_overflow():
     assert t2.compiled
 
 
+def test_consicutive_lines():
+
+    t1 = Template(
+        'test_consicutive_lines_1',
+        StringSource('a')
+    )
+
+    t2 = Template(
+        'test_consicutive_lines_2',
+        StringSource('b')
+    )
+
+    t3 = Template(
+        'test_consicutive_lines_3',
+        StringSource('''
+<-- (optional)(ref)test_consicutive_lines_1 -->
+<-- (optional)(ref)test_consicutive_lines_2 -->
+''')
+    )
+
+    assert t3({
+        'test_consicutive_lines_1': {},
+        'test_consicutive_lines_2': {}
+    }) == '''
+a
+b
+'''
+
+
 def test_readme_example():
 
     # Attention! Only one operator (param or ref) on line

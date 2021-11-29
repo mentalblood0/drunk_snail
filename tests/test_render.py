@@ -123,17 +123,18 @@ def test_consicutive_lines():
     t3 = Template(
         'test_consicutive_lines_3',
         StringSource('''
-\t<!-- (optional)(ref)test_consicutive_lines_1 -->
-\t<!-- (optional)(ref)test_consicutive_lines_2 -->
+	<!-- (optional)(ref)test_consicutive_lines_1 -->
+	<!-- (optional)(ref)test_consicutive_lines_2 -->
 ''')
     )
 
-    assert t3({
+    result = t3({
         'test_consicutive_lines_1': {},
         'test_consicutive_lines_2': {}
-    }) == '''
-\ta
-\tb
+    })
+    assert result == '''
+    a
+    b
 '''
 
 

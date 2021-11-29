@@ -27,8 +27,7 @@ char* compile_(
 
 	Template *template = dictionaryLookup(templates_tree, template_name);
 	if (template == NULL) {
-		if (log)
-			printf("Can not compile template \"%s\": not loaded\n", template_name);
+		printf("Can not compile template \"%s\": not loaded\n", template_name);
 		return NULL;
 	}
 	

@@ -80,6 +80,8 @@ class _Template:
 
 		self.source.onChange = self.reload
 		text = self.source.get()
+		text = text.replace('\t', '    ')
+		text = text.replace('\r\n', '\n')
 		if hasattr(self, '_buffer_size'):
 			self._buffer_size = max(self._buffer_size, len(text) * 5)
 		else:

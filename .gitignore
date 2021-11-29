@@ -6,3 +6,6 @@ dist
 compiled_templates/*
 test.py
 build.cmd
+templates_
+compiled_templates_
+compileTemplates

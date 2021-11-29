@@ -123,8 +123,8 @@ def test_consicutive_lines():
     t3 = Template(
         'test_consicutive_lines_3',
         StringSource('''
-<-- (optional)(ref)test_consicutive_lines_1 -->
-<-- (optional)(ref)test_consicutive_lines_2 -->
+<!-- (optional)(ref)test_consicutive_lines_1 -->
+<!-- (optional)(ref)test_consicutive_lines_2 -->
 ''')
     )
 

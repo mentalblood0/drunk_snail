@@ -52,10 +52,11 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			char *ref_name_end = ref_name_start;
 			for (; *ref_name_end != ' '; ref_name_end++);
 
-			char temp = *ref_name_end;
-			*ref_name_end = 0;
+			char *ref_name = malloc(sizeof(char) * (ref_name_end - ref_name_start + 1));
+			memcpy(ref_name, ref_name_start, ref_name_end - ref_name_start);
+			ref_name[ref_name_end - ref_name_start] = 0;
 
-			addRef(template, ref_name_start, ref_name_end - ref_name_start);
+			addRef(template, ref_name, ref_name_end - ref_name_start);
 
 			keywords->data[(int)'p']->last_inclusion = NULL;
 			keywords->data[(int)'r']->last_inclusion = NULL;
@@ -67,12 +68,11 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 				compile__cpy_if(ref_name_start, ref_name_end);
 				tabs_number++;
 			}
-			*ref_name_end = temp;
 			addTabs(&result_end, tabs_number);
 			compile__cpy_for(ref_name_start, ref_name_end);
-			*ref_name_end = 0;
+			
 			char *subtemplate_compile_result = compile_(
-				ref_name_start,
+				ref_name,
 				templates_tree,
 				&result_end,
 				buffer_size - (result_end - result + 2),
@@ -85,7 +85,8 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 				depth + 1,
 				log
 			);
-			*ref_name_end = temp;
+			free(ref_name);
+
 			if (subtemplate_compile_result == NULL) {
 				if (!depth) {
 					free(result);
@@ -94,6 +95,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			}
 			if (optional)
 				tabs_number--;
+		
 		}
 	}
 }

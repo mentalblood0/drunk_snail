@@ -123,8 +123,8 @@ def test_consicutive_lines():
     t3 = Template(
         'test_consicutive_lines_3',
         StringSource('''
-	<!-- (optional)(ref)test_consicutive_lines_1 -->
-	<!-- (optional)(ref)test_consicutive_lines_2 -->
+\t<!-- (optional)(ref)test_consicutive_lines_1 -->
+\t<!-- (optional)(ref)test_consicutive_lines_2 -->
 ''')
     )
 
@@ -133,9 +133,25 @@ def test_consicutive_lines():
         'test_consicutive_lines_2': {}
     })
     assert result == '''
-    a
-    b
+\ta
+\tb
 '''
+
+
+def test_addressing():
+
+    for name in [
+        'Reference',
+        'RelatesTo',
+        'ReplyTo',
+        'Relations',
+        'Addressing'
+    ]:
+        path = f"templates_/{name}.xml"
+        Template(name, FileSource(path))
+    
+    result = Template('Addressing').compiled
+    assert not '(optional)(ref)ReplyTo' in result
 
 
 def test_readme_example():

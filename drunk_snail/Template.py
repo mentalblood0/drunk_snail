@@ -150,14 +150,12 @@ class _Template:
 		
 			if not self._compiled:
 				while True:
-					print('COMPILE')
 					result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
 					if result == 2:
 						self._buffer_size *= 2
 					else:
 						break
 				self._compiled = result
-				print('END COMPILE')
 		
 		return self._compiled
 	

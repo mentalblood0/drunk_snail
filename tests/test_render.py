@@ -138,20 +138,20 @@ def test_consicutive_lines():
 '''
 
 
-def test_addressing():
+# def test_addressing():
 
-    for name in [
-        'Reference',
-        'RelatesTo',
-        'ReplyTo',
-        'Relations',
-        'Addressing'
-    ]:
-        path = f"templates_/{name}.xml"
-        Template(name, FileSource(path))
+#     for name in [
+#         'Reference',
+#         'RelatesTo',
+#         'ReplyTo',
+#         'Relations',
+#         'Addressing'
+#     ]:
+#         path = f"templates_/{name}.xml"
+#         Template(name, FileSource(path))
     
-    result = Template('Addressing').compiled
-    assert not '(optional)(ref)ReplyTo' in result
+#     result = Template('Addressing').compiled
+#     assert not '(optional)(ref)ReplyTo' in result
 
 
 def test_readme_example():

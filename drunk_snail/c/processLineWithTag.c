@@ -71,7 +71,8 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			addTabs(&result_end, tabs_number);
 			compile__cpy_for(ref_name_start, ref_name_end);
 			
-			char *subtemplate_compile_result = compile_(
+			compile_(
+				compilation_result,
 				ref_name,
 				templates_tree,
 				&result_end,
@@ -87,11 +88,11 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			);
 			free(ref_name);
 
-			if (subtemplate_compile_result == NULL) {
+			if (compilation_result->code != 0) {
 				if (!depth) {
 					free(result);
 				}
-				return NULL;
+				return;
 			}
 			if (optional)
 				tabs_number--;

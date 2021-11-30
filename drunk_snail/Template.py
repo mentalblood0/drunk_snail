@@ -147,12 +147,16 @@ class _Template:
 		with self._lock:
 		
 			if not self._compiled:
+				
 				while True:
-					result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
-					if result == 2:
+					code, message, result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
+					if code == 2:
 						self._buffer_size *= 2
+					elif code != 0:
+						raise Exception(message)
 					else:
 						break
+				
 				self._compiled = result
 		
 		return self._compiled

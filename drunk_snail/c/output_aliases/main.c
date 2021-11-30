@@ -1,3 +1,4 @@
+#include "compile__compilation_result.c"
 #include "compile__memcpy.c"
 
 #include "compile__cpy_print.c"

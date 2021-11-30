@@ -10,7 +10,8 @@ void addTabs(char **s_end, int n) {
 }
 
 
-char* compile_(
+void compile_(
+	CompilationResult *compilation_result,
 	char *template_name,
 	Tree *templates_tree,
 	char **buf,
@@ -27,8 +28,15 @@ char* compile_(
 
 	Template *template = dictionaryLookup(templates_tree, template_name);
 	if (template == NULL) {
-		printf("Can not compile template \"%s\": not loaded\n", template_name);
-		return NULL;
+		compilation_result->code = 1;
+		compilation_result->message = malloc(sizeof(char) * 256);
+		snprintf(
+			compilation_result->message, 
+			256, 
+			"Can not compile template \"%s\": not loaded\n", 
+			template_name
+		);
+		return;
 	}
 	
 	char *s = template->text;
@@ -80,7 +88,10 @@ char* compile_(
 	if (buf != NULL)
 		*buf = result_end;
 
-	return result;
+	compilation_result->code = 0;
+	if (!depth)
+		compilation_result->result = result;
+	return;
 
 }
 
@@ -95,20 +106,32 @@ static PyObject *compile (
 	int buffer_size;
 	
 	if (!PyArg_ParseTuple(args, "sii", &name, &buffer_size, &log)) {
-		return PyLong_FromLong(1);
+		return PyLong_FromLong(-1);
 	}
 
-	char *result = compile_(
+	CompilationResult *compilation_result = malloc(sizeof(CompilationResult) * 1);
+	compilation_result->code = 0;
+	compilation_result->message = NULL;
+	compilation_result->result = NULL;
+	compile_(
+		compilation_result,
 		name,
 		_templates,
 		NULL, buffer_size,
 		0, NULL, NULL, NULL, NULL, 1, 0, log
 	);
 
-	if (result == NULL) {
-		return PyLong_FromLong(2);
-	}
+	PyObject *t = PyTuple_New(3);
+	PyTuple_SetItem(t, 0, PyLong_FromLong(compilation_result->code));
+	if (compilation_result->message)
+		PyTuple_SetItem(t, 1, PyUnicode_FromString(compilation_result->message));
+	else
+		PyTuple_SetItem(t, 1, PyUnicode_FromString(""));
+	if (compilation_result->result)
+		PyTuple_SetItem(t, 2, PyUnicode_FromString(compilation_result->result));
+	else
+		PyTuple_SetItem(t, 2, PyUnicode_FromString(""));
 
-	return PyUnicode_FromString(result);
+	return t;
 
 }

@@ -3,7 +3,8 @@
         if (!depth) {\
             free(result);\
         }\
-        return NULL;\
+        compilation_result->code = 2;\
+        return;\
     }\
     memcpy(result_end, src_start, sizeof(char) * (src_end - src_start));\
     result_end += src_end - src_start;\

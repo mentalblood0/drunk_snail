@@ -8,20 +8,23 @@ from drunk_snail.sources import FileSource
 
 def test_many():
 
-	templates = []
+	args = []
 	for path in glob.iglob('templates_/**.*', recursive=True):
 		
 		name = path.split('\\')[1].split('.')[0]
+		args.append((name, FileSource(path, watch=False)))
 
-		templates.append(
-			Template(name, FileSource(path, watch=False))
+	for i in range(10):
+
+		templates = [
+			Template(*a)
+			for a in args
+		]
+
+		for t in templates:
+			t.compiled
+		
+		ThreadPool(len(templates)).map(
+			lambda t: t.delete(),
+			templates
 		)
-
-	for t in templates:
-		print(t.source.path)
-		t.compiled
-	
-	ThreadPool(len(templates)).map(
-		lambda t: t.delete(),
-		templates
-	)

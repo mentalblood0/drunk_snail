@@ -33,11 +33,11 @@ static PyObject *removeTemplate (
 	char *name;
 	
 	if (!PyArg_ParseTuple(args, "s", &name))
-		return Py_False;
+		Py_RETURN_FALSE;
 
 	if (removeTemplate_(name))
-		return Py_False;
+		Py_RETURN_FALSE;
 
-	return Py_True;
+	Py_RETURN_TRUE;
 
 }

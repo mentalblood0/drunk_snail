@@ -94,23 +94,23 @@ class _Template:
 		
 		self.source.onChange = self.reload
 	
-	def reload(self, source=None, keywords=None, _not_reload=None):
+	def reload(self, source=None, keywords=None, checked=None):
 
-		_not_reload = _not_reload or {}
-
+		checked = checked or {}
 		reloaded_number = 1
 
-		with self._lock:
+		with self.lock:
 
-			_not_reload[self.name] = True
+			checked[self.name] = True
 
-			for name in filter(lambda t: t not in _not_reload, templates):
+			for name in templates:
+				if name not in checked:
 				
-				_not_reload[name] = True
-				
-				t = templates[name]
-				if self.name in t.refs:
-					reloaded_number += t.reload(_not_reload=_not_reload)
+					checked[name] = True
+					
+					t = templates[name]
+					if self.name in t.refs:
+						reloaded_number += t.reload(checked=checked)
 
 			drunk_snail_c.removeTemplate(self.name)
 			self.__init__(
@@ -139,9 +139,13 @@ class _Template:
 		return drunk_snail_c.getTemplate(self.name)
 	
 	@property
+	def lock(self):
+		return self._lock
+	
+	@property
 	def compiled(self):
 
-		with self._lock:
+		with self.lock:
 		
 			if not self._compiled:
 				
@@ -190,7 +194,7 @@ class _Template:
 	
 	def __del__(self):
 	
-		with self._lock:
+		with self.lock:
 
 			there_was_template = drunk_snail_c.removeTemplate(self.name)
 

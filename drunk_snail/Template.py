@@ -64,7 +64,7 @@ class _Template_proxy:
 
 class _Template:
 
-	def __init__(self, name, source, keywords=default_keywords):
+	def __init__(self, name, source, keywords=default_keywords, initial_buffer_size=None):
 
 		if not hasattr(self, '_lock'):
 			self._lock = Lock()
@@ -76,12 +76,8 @@ class _Template:
 		self._compiled = None
 		self._function = None
 
-		self.source.onChange = self.reload
 		text = self.source.get()
-		if hasattr(self, '_buffer_size'):
-			self._buffer_size = max(self._buffer_size, len(text) * 5) or 1
-		else:
-			self._buffer_size = len(text) * 5 or 1
+		self._buffer_size = initial_buffer_size or len(text) * 5 or 1
 		
 		drunk_snail_c.addTemplate(self.name, text)
 
@@ -95,6 +91,8 @@ class _Template:
 
 			drunk_snail_c.removeKeyword(self.name, old_value)
 			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
+		
+		self.source.onChange = self.reload
 	
 	def reload(self, source=None, keywords=None, _not_reload=None):
 
@@ -118,7 +116,8 @@ class _Template:
 			self.__init__(
 				self.name, 
 				source or self.source, 
-				keywords or self.keywords
+				keywords or self.keywords,
+				self._buffer_size
 			)
 		
 		return reloaded_number

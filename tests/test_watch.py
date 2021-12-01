@@ -18,7 +18,11 @@ def test_basic():
 	with open(file_path, 'a') as f:
 		f.write('\n<!-- (param)y -->')
 	
-	sleep(1)
+	for i in range(100):
+		if t({'x': 'a', 'y': 'b'}) == 'a\nb':
+			break
+		sleep(0.01)
+	
 	assert t({'x': 'a', 'y': 'b'}) == 'a\nb'
 
 	del t
@@ -38,7 +42,11 @@ def test_disable_watch():
 	with open(file_path, 'a') as f:
 		f.write('\n<!-- (param)y -->')
 	
-	sleep(1)
+	for i in range(100):
+		if t({'x': 'a', 'y': 'b'}) == 'a':
+			break
+		sleep(0.01)
+	
 	assert t({'x': 'a', 'y': 'b'}) == 'a'
 
 	del t

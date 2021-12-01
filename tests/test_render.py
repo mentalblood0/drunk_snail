@@ -233,7 +233,13 @@ def test_readme_example():
 	# any file content change triggers template reload:
 	with open(file_path, 'w') as f:
 		f.write(description_with_default_keywords)
-	sleep(1)
+	
+	for i in range(100):
+		if d(parameters['Description']) == '''Simple template engine
+Faster then you think''':
+			break
+		sleep(0.01)
+	
 	assert d(parameters['Description']) == '''Simple template engine
 Faster then you think'''
 

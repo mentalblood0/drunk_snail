@@ -14,7 +14,7 @@ def test_many():
 		name = path.split('\\')[1].split('.')[0]
 		args.append((name, FileSource(path, watch=False)))
 
-	for i in range(10):
+	for i in range(2):
 
 		templates = [
 			Template(*a)

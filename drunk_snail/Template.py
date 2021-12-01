@@ -55,6 +55,9 @@ class _Template_proxy:
 	def __dir__(self):
 		return self._actual_template.__dir__()
 	
+	def __hash__(self):
+		return self._actual_template.__hash__()
+	
 	def delete(self):
 		try:
 			self._actual_template.__del__()
@@ -189,7 +192,7 @@ class _Template:
 	def __eq__(self, other):
 		return (
 			isinstance(other, self.__class__)
-			and str(other) == str(self)
+			and hash(self) == hash(other)
 		)
 	
 	def __del__(self):
@@ -204,11 +207,14 @@ class _Template:
 					del templates[self.name]
 
 				self.source.clean()
+	
+	def __hash__(self):
+		return hash(self.source)
 
 	def __dir__(self):
 		return [
 			'name', 'source', 'keywords', 'text', 'compiled', 
-			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__'
+			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__', '__hash__'
 		]
 
 

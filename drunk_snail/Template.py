@@ -1,6 +1,5 @@
 from threading import Lock
 from types import ModuleType
-from functools import lru_cache
 
 import drunk_snail_c
 from . import templates, syntax, default_keywords
@@ -56,9 +55,6 @@ class _Template_proxy:
 	def __dir__(self):
 		return self._actual_template.__dir__()
 	
-	def __hash__(self):
-		return self._actual_template.__hash__()
-	
 	def delete(self):
 		try:
 			self._actual_template.__del__()
@@ -70,18 +66,15 @@ class _Template:
 
 	def __init__(self, name, source, keywords=default_keywords, initial_buffer_size=None):
 
-		for property_name in [
-			'compiled',
-			'function'
-		]:
-			getattr(self.__class__, property_name).fget.cache_clear()
-
 		if not hasattr(self, '_lock'):
 			self._lock = Lock()
 		
 		self._name = name
 		self._source = source
 		self._keywords = default_keywords | keywords
+
+		self._compiled = None
+		self._function = None
 
 		text = self.source.get()
 		self._buffer_size = initial_buffer_size or len(text) * 5 or 1
@@ -150,38 +143,39 @@ class _Template:
 		return self._lock
 	
 	@property
-	@lru_cache
 	def compiled(self):
 
 		with self.lock:
-				
-			while True:
-				code, message, result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
-				if code == 2:
-					self._buffer_size *= 2
-				elif code != 0:
-					raise Exception(message)
-				else:
-					break
 		
-		return result
+			if not self._compiled:
+				
+				while True:
+					code, message, result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
+					if code == 2:
+						self._buffer_size *= 2
+					elif code != 0:
+						raise Exception(message)
+					else:
+						break
+				
+				self._compiled = result
+		
+		return self._compiled
 	
 	@property
 	def refs(self):
 		return drunk_snail_c.getTemplateRefs(self.name)
 	
-	@property
-	@lru_cache
-	def function(self):
-		
-		compiled_function = compile(self.compiled, '', 'exec')
-		temp_module = ModuleType('')
-		exec(compiled_function, temp_module.__dict__)
-
-		return getattr(temp_module, 'render')
-	
 	def __call__(self, parameters={}):
-		return self.function(parameters)
+
+		if not self._function:
+			compiled_function = compile(self.compiled, '', 'exec')
+			temp_module = ModuleType('')
+			exec(compiled_function, temp_module.__dict__)
+
+			self._function = getattr(temp_module, 'render')
+
+		return self._function(parameters)
 	
 	def __repr__(self):
 		return f"(name='{self.name}', source={self.source}, keywords={self.keywords})"
@@ -195,7 +189,7 @@ class _Template:
 	def __eq__(self, other):
 		return (
 			isinstance(other, self.__class__)
-			and hash(self) == hash(other)
+			and str(other) == str(self)
 		)
 	
 	def __del__(self):
@@ -210,14 +204,11 @@ class _Template:
 					del templates[self.name]
 
 				self.source.clean()
-	
-	def __hash__(self):
-		return hash(self.source)
 
 	def __dir__(self):
 		return [
 			'name', 'source', 'keywords', 'text', 'compiled', 
-			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__', '__hash__'
+			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__'
 		]
 
 

@@ -11,10 +11,7 @@ from .. import Source
 def getObserverStopper(o):
 
 	def stop():
-		try:
-			o.stop()
-		except FileNotFoundError:
-			pass
+		o.stop()
 	
 	return stop
 

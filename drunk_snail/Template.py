@@ -61,7 +61,6 @@ class _Template_proxy:
 				self._actual_template.__del__()
 			except KeyError:
 				pass
-		
 
 
 class _Template:
@@ -193,16 +192,14 @@ class _Template:
 	
 	def __del__(self):
 
-		if not self._name in templates:
-			return
+		drunk_snail_c.removeTemplate(self.name)
+
+		if self.name in templates:
+			del templates[self.name]
 
 		if hasattr(self.source, 'stopWatch'):
 			self.source.stopWatch()
-		
-		drunk_snail_c.removeTemplate(self._name)
-		
-		del templates[self.name]
-	
+
 	def __dir__(self):
 		return [
 			'name', 'source', 'keywords', 'text', 'compiled', 

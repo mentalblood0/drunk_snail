@@ -46,9 +46,10 @@ if __name__ == '__main__':
 	f_size = len(t[-1].compiled)
 	f_lines_number = t[-1].compiled.count('\n')
 	mean_time = overall_time / experiments_number
+	speed = f_size / mean_time / 1024 / 1024
 
 	print(f"Experiments number: {experiments_number}")
 	print(f"Overall time: {overall_time}s")
 	print(f"Mean time: {mean_time}s")
 	print(f"Resulted function size: {f_size} characters in {f_lines_number} lines")
-	print(f"Compilation speed: {f_size / mean_time / 1024 / 1024} MB/s")
+	print(f"Compilation speed: {round(speed, 6)} MB/s")

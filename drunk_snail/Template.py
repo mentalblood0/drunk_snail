@@ -56,11 +56,10 @@ class _Template_proxy:
 		return self._actual_template.__dir__()
 	
 	def delete(self):
-		with self._actual_template._lock:
-			try:
-				self._actual_template.__del__()
-			except KeyError:
-				pass
+		try:
+			self._actual_template.__del__()
+		except KeyError:
+			pass
 
 
 class _Template:
@@ -191,14 +190,18 @@ class _Template:
 		)
 	
 	def __del__(self):
+	
+		with self._lock:
 
-		drunk_snail_c.removeTemplate(self.name)
+			there_was_template = drunk_snail_c.removeTemplate(self.name)
 
-		if self.name in templates:
-			del templates[self.name]
+			if there_was_template:
 
-		if hasattr(self.source, 'stopWatch'):
-			self.source.stopWatch()
+				if self.name in templates:
+					del templates[self.name]
+
+				if hasattr(self.source, 'stopWatch'):
+					self.source.stopWatch()
 
 	def __dir__(self):
 		return [

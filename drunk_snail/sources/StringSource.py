@@ -13,9 +13,6 @@ class StringSource(Source):
 	@property
 	def id(self):
 		return f"'{self.string}'"
-	
-	def onChange_setter(self, value):
-		pass
 
 
 

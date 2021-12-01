@@ -20,8 +20,10 @@ class Source(metaclass=ABCMeta):
 	def onChange(self, value):
 		self.onChange_setter(value)
 
-	@abstractmethod
 	def onChange_setter(self, value):
+		pass
+	
+	def clean(self):
 		pass
 
 	def __repr__(self):

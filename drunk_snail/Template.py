@@ -200,8 +200,7 @@ class _Template:
 				if self.name in templates:
 					del templates[self.name]
 
-				if hasattr(self.source, 'stopWatch'):
-					self.source.stopWatch()
+				self.source.clean()
 
 	def __dir__(self):
 		return [

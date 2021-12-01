@@ -77,6 +77,9 @@ class FileSource(Source):
 			self._stopObserver()
 			self._stopObserver = None
 	
+	def clean(self):
+		self.stopWatch()
+	
 	@property
 	def id(self):
 		return self.path

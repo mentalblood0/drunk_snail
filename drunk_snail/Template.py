@@ -79,9 +79,9 @@ class _Template:
 		self.source.onChange = self.reload
 		text = self.source.get()
 		if hasattr(self, '_buffer_size'):
-			self._buffer_size = max(self._buffer_size, len(text) * 5)
+			self._buffer_size = max(self._buffer_size, len(text) * 5) or 1
 		else:
-			self._buffer_size = len(text) * 5
+			self._buffer_size = len(text) * 5 or 1
 		
 		drunk_snail_c.addTemplate(self.name, text)
 

@@ -37,6 +37,10 @@ def test_basic():
     )({}) == 'lalala'
 
 
+def test_empty_template():
+    assert Template('test_render_empty_template', StringSource(''))() == ''
+
+
 def test_list():
 
     assert Template(

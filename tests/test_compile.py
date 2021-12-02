@@ -29,3 +29,11 @@ def test_with_references():
 		correct_result = f.read()
 	
 	assert result == correct_result
+
+
+def test_endpoint_template():
+
+	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt', watch=False))
+
+	assert t.compiled
+	assert t()

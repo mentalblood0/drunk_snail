@@ -163,6 +163,30 @@ def test_consicutive_lines():
 #     assert not '(optional)(ref)ReplyTo' in result
 
 
+def test_endpoint_template():
+
+	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt', watch=False))
+	
+	assert t({
+		'route_to': 'route_to',
+		'methods': 'methods',
+		'handler_name': 'handler_name',
+		'handler_args': ', '.join(['a', 'b'])
+	}) == """from ..common import *
+
+
+
+@route(
+	None, 
+	'route_to', 
+	methods=methods
+)
+def handler_name(
+	a, b
+):
+	return Response(status=200)"""
+
+
 def test_readme_example():
 
 	# Attention! Only one operator (param or ref) on line

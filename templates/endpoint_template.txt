@@ -2,6 +2,12 @@ from ..common import *
 
 
 
-@route(None, '<-- (param)route_to -->', methods=<-- (param)methods -->)
-def <-- (param)handler_name -->(<-- (param)handler_args -->))
+@route(
+	None, 
+	'<!-- (param)route_to -->', 
+	methods=<!-- (param)methods -->
+)
+def <!-- (param)handler_name -->(
+	<!-- (param)handler_args -->
+):
 	return Response(status=200)

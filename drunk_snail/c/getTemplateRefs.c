@@ -22,7 +22,7 @@ static PyObject *getTemplateRefs (
 
 	char **result = getTemplateRefs_(name);
 	if (result == NULL)
-		return Py_None;
+		Py_RETURN_NONE;
 	
 	PyObject *result_converted = PyList_New(0);
 	for (; *result; ++result)

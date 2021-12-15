@@ -28,7 +28,7 @@ static PyObject *getTemplate (
 
 	char *result = getTemplate_(name);
 	if (result == NULL)
-		return Py_None;
+		Py_RETURN_NONE;
 
 	return PyUnicode_FromString(result);
 

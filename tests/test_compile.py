@@ -29,3 +29,16 @@ def test_with_references():
 		correct_result = f.read()
 	
 	assert result == correct_result
+
+
+def test_auto_load_dependencies():
+
+	encrypted_key = Template('EncryptedKey', FileSource('templates/EncryptedKey.xml'))
+
+	result = encrypted_key.compiled
+	with open('tests/EncryptedKey_result.py', 'w') as f:
+		f.write(result)
+	with open('tests/EncryptedKey_correct_result.py') as f:
+		correct_result = f.read()
+	
+	assert result == correct_result

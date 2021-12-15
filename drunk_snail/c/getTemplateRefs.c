@@ -1,14 +1,3 @@
-char** getTemplateRefs_(char *name) {
-
-	Template *template = dictionaryLookup(_templates, name);
-	if (template == NULL)
-		return NULL;
-	
-	return template->refs;
-
-}
-
-
 static PyObject *getTemplateRefs (
 	PyObject *self,
 	PyObject *args
@@ -20,13 +9,14 @@ static PyObject *getTemplateRefs (
 		return PyLong_FromLong(1);
 	}
 
-	char **result = getTemplateRefs_(name);
-	if (result == NULL)
+	Template *template = dictionaryLookup(_templates, name);
+	if (template == NULL)
 		Py_RETURN_NONE;
 	
 	PyObject *result_converted = PyList_New(0);
-	for (; *result; ++result)
-		PyList_Append(result_converted, PyUnicode_FromString(*result));
+	int i = 0;
+	for (i = 0; i < template->refs_number; ++i)
+		PyList_Append(result_converted, PyUnicode_FromString(template->refs[i]));
 
 	return result_converted;
 

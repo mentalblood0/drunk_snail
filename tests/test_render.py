@@ -247,6 +247,8 @@ def test_readme_example():
 
 	with open(file_path, 'w') as f:
 		f.write(description)
+	
+	assert os.path.exists(file_path)
 
 	Template(d.name, FileSource(file_path))
 	

@@ -59,6 +59,7 @@ class FileSource(Source):
 		self._watch = watch
 	
 	def get(self):
+		print(os.listdir())
 		with open(self.path) as f:
 			return f.read()
 	

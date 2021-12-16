@@ -9,14 +9,18 @@ from . import templates, syntax, default_keywords
 
 
 
-def Template(name, *args, **kwargs):
+def Template(name, source=None, keywords=None, initial_buffer_size=None):
 
 	if not name in templates:
-		templates[name] = _Template(name, *args, **kwargs)
-	else:
-		if args or kwargs:
-			templates[name].reload(*args, **kwargs)
-
+		templates[name] = _Template(
+			name=name, 
+			source=source, 
+			keywords=keywords or default_keywords, 
+			initial_buffer_size=initial_buffer_size
+		)
+	elif (source and source != templates[name].source) or (keywords and keywords != templates[name].keywords):
+		templates[name].reload(source=source, keywords=keywords or templates[name].keywords)
+	
 	return _Template_proxy(name)
 
 
@@ -100,7 +104,7 @@ class _Template:
 		
 		self.source.onChange = self.reload
 	
-	def reload(self, source=None, keywords=None, checked=None):
+	def reload(self, source=None, keywords=None, checked=None) -> int:
 
 		checked = checked or {}
 		reloaded_number = 1

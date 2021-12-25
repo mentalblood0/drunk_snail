@@ -1,12 +1,16 @@
+from __future__ import annotations
+
 import re
 import os
 from threading import Lock
 from types import ModuleType
 
 import drunk_snail_c
-from . import Source
+from .syntax import syntax
+from .Source import Source
 from .sources import FileSource
-from . import templates, syntax, default_keywords
+from .templates import templates
+from .default_keywords import default_keywords
 
 
 
@@ -236,8 +240,3 @@ class _Template:
 			'name', 'source', 'keywords', 'text', 'compiled', 
 			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__', '__hash__'
 		]
-
-
-
-import sys
-sys.modules[__name__] = Template

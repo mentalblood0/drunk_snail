@@ -1,4 +1,4 @@
-from .. import Source
+from ..Source import Source
 
 
 
@@ -13,8 +13,3 @@ class StringSource(Source):
 	@property
 	def id(self):
 		return f"'{self.string}'"
-
-
-
-import sys
-sys.modules[__name__] = StringSource

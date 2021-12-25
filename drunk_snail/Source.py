@@ -31,8 +31,3 @@ class Source(metaclass=ABCMeta):
 	
 	def __hash__(self):
 		return hash(f"{self.__class__.__name__}:{self.id}")
-
-
-
-import sys
-sys.modules[__name__] = Source

@@ -27,8 +27,3 @@ def importCompiledTemplates(input_dir, templates_to_import=None):
 			pass
 
 	return result
-
-
-
-import sys
-sys.modules[__name__] = importCompiledTemplates

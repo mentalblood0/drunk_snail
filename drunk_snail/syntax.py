@@ -1,4 +1,4 @@
-from . import Keyword
+from .Keyword import Keyword
 
 
 
@@ -10,8 +10,3 @@ syntax = {
 	'optional_operator':	Keyword('(optional)', '?'),
 	'line_break':			Keyword('\n', 'n')
 }
-
-
-
-import sys
-sys.modules[__name__] = syntax

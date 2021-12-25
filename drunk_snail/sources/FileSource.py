@@ -4,7 +4,7 @@ from time import time as now
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
-from .. import Source
+from ..Source import Source
 
 
 
@@ -84,8 +84,3 @@ class FileSource(Source):
 	@property
 	def id(self):
 		return self.path
-
-
-
-import sys
-sys.modules[__name__] = FileSource

@@ -24,7 +24,7 @@ def test_many():
 		for t in templates:
 			t.compiled
 		
-		ThreadPool(len(templates)).map(
+		ThreadPool(len(templates) or 1).map(
 			lambda t: t.delete(),
 			templates
 		)

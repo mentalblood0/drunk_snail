@@ -8,7 +8,7 @@
 * Compiles templates to Python functions
 * Customizable syntax
 * Auto-reload template on file change
-* Cascade reloading of referensing templates
+* Cascade reloading of referencing templates
 
 
 

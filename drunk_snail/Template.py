@@ -4,12 +4,13 @@ from threading import Lock
 from types import ModuleType
 
 import drunk_snail_c
+from . import Source
 from .sources import FileSource
 from . import templates, syntax, default_keywords
 
 
 
-def Template(name, source=None, keywords=None, initial_buffer_size=None):
+def Template(name, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None) -> _Template_proxy:
 
 	if not name in templates:
 		templates[name] = _Template(
@@ -26,18 +27,18 @@ def Template(name, source=None, keywords=None, initial_buffer_size=None):
 
 class _Template_proxy:
 
-	def __init__(self, name):
+	def __init__(self, name: str):
 		self._actual_template_name = name
 	
 	@property
-	def _actual_template(self):
+	def _actual_template(self) -> _Template:
 		
 		if not self._actual_template_name in templates:
 			raise KeyError(f"Template '{self._actual_template_name}' not exists (seems to be deleted)")
 		
 		return templates[self._actual_template_name]
 
-	def __getattribute__(self, name):
+	def __getattribute__(self, name: str):
 
 		if name in ['_actual_template_name', '_actual_template', 'delete']:
 			return super().__getattribute__(name)
@@ -74,7 +75,7 @@ class _Template_proxy:
 
 class _Template:
 
-	def __init__(self, name, source, keywords=default_keywords, initial_buffer_size=None):
+	def __init__(self, name: str, source: Source, keywords: dict[str, str]=default_keywords, initial_buffer_size: int=None):
 
 		if not hasattr(self, '_lock'):
 			self._lock = Lock()
@@ -104,7 +105,7 @@ class _Template:
 		
 		self.source.onChange = self.reload
 	
-	def reload(self, source=None, keywords=None, checked=None) -> int:
+	def reload(self, source: Source=None, keywords: dict[str, str]=None, checked: dict[str, bool]=None) -> int:
 
 		checked = checked or {}
 		reloaded_number = 1
@@ -133,27 +134,27 @@ class _Template:
 		return reloaded_number
 	
 	@property
-	def name(self):
+	def name(self) -> str:
 		return self._name
 	
 	@property
-	def source(self):
+	def source(self) -> Source:
 		return self._source
 	
 	@property
-	def keywords(self):
+	def keywords(self) -> dict[str, str]:
 		return self._keywords
 	
 	@property
-	def text(self):
+	def text(self) -> str:
 		return drunk_snail_c.getTemplate(self.name)
 	
 	@property
-	def lock(self):
+	def lock(self) -> Lock:
 		return self._lock
 	
 	@property
-	def compiled(self):
+	def compiled(self) -> str:
 
 		with self.lock:
 		
@@ -185,10 +186,10 @@ class _Template:
 		return self._compiled
 	
 	@property
-	def refs(self):
+	def refs(self) -> list[str]:
 		return drunk_snail_c.getTemplateRefs(self.name)
 	
-	def __call__(self, parameters={}):
+	def __call__(self, parameters: dict={}) -> str:
 
 		if not self._function:
 			compiled_function = compile(self.compiled, '', 'exec')
@@ -199,22 +200,22 @@ class _Template:
 
 		return self._function(parameters)
 	
-	def __repr__(self):
+	def __repr__(self) -> str:
 		return f"(name='{self.name}', source={self.source}, keywords={self.keywords})"
 	
-	def __str__(self):
+	def __str__(self) -> str:
 		return self.text
 	
-	def __len__(self):
+	def __len__(self) -> int:
 		return len(self.text)
 
-	def __eq__(self, other):
+	def __eq__(self, other) -> bool:
 		return (
 			isinstance(other, self.__class__)
 			and hash(self) == hash(other)
 		)
 	
-	def __del__(self):
+	def __del__(self) -> None:
 	
 		with self.lock:
 
@@ -227,10 +228,10 @@ class _Template:
 
 				self.source.clean()
 	
-	def __hash__(self):
+	def __hash__(self) -> int:
 		return hash(self.source)
 
-	def __dir__(self):
+	def __dir__(self) -> list[str]:
 		return [
 			'name', 'source', 'keywords', 'text', 'compiled', 
 			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__', '__hash__'

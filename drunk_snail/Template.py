@@ -189,7 +189,7 @@ class _Template:
 	def refs(self) -> list[str]:
 		return drunk_snail_c.getTemplateRefs(self.name)
 	
-	def __call__(self, parameters: dict={}) -> str:
+	def __call__(self, parameters: dict=None) -> str:
 
 		if not self._function:
 			compiled_function = compile(self.compiled, '', 'exec')
@@ -198,7 +198,7 @@ class _Template:
 
 			self._function = getattr(temp_module, 'render')
 
-		return self._function(parameters)
+		return self._function(parameters or {})
 	
 	def __repr__(self) -> str:
 		return f"(name='{self.name}', source={self.source}, keywords={self.keywords})"

@@ -1,6 +1,9 @@
 import os
+from idna import valid_label_length
 import pytest
 from time import sleep
+
+from sqlalchemy import false
 from drunk_snail import Template, default_keywords
 from drunk_snail.sources import StringSource, FileSource
 
@@ -149,13 +152,13 @@ def test_consicutive_lines():
 
 def test_shift():
 
-	for letter in ['a', 'b', 'c']:
+	for letter in ['a', 'b', 'c', 'd']:
 		Template(letter, FileSource(f'templates/{letter.upper()}.xml'))
 	
-	print(Template('a')())
+	result = Template('a')({'B': {'C': [{}, {}]}})
 
-	valid_tabs_number = (1 * 2 + (2 * 2 + 3 * 1) * 2) * 2
-	assert Template('a')().count('\t') == valid_tabs_number
+	valid_tabs_number = 60
+	assert result.count('\t') == valid_tabs_number
 
 
 def test_endpoint_template():

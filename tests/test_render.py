@@ -151,8 +151,10 @@ def test_shift():
 
 	for letter in ['a', 'b', 'c']:
 		Template(letter, FileSource(f'templates/{letter.upper()}.xml'))
+	
+	print(Template('a')())
 
-	valid_tabs_number = 1 * 2 + 2 * 2 + 3 * 1
+	valid_tabs_number = (1 * 2 + (2 * 2 + 3 * 1) * 2) * 2
 	assert Template('a')().count('\t') == valid_tabs_number
 
 

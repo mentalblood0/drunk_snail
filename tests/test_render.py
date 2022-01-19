@@ -147,20 +147,13 @@ def test_consicutive_lines():
 '''
 
 
-# def test_addressing():
+def test_shift():
 
-#     for name in [
-#         'Reference',
-#         'RelatesTo',
-#         'ReplyTo',
-#         'Relations',
-#         'Addressing'
-#     ]:
-#         path = f"templates_/{name}.xml"
-#         Template(name, FileSource(path))
-	
-#     result = Template('Addressing').compiled
-#     assert not '(optional)(ref)ReplyTo' in result
+	for letter in ['a', 'b', 'c']:
+		Template(letter, FileSource(f'templates/{letter.upper()}.xml'))
+
+	valid_tabs_number = 1 * 2 + 2 * 2 + 3 * 1
+	assert Template('a')().count('\t') == valid_tabs_number
 
 
 def test_endpoint_template():

@@ -131,6 +131,8 @@ static PyObject *compile (
 		PyTuple_SetItem(t, 2, PyUnicode_FromString(compilation_result->result));
 	else
 		PyTuple_SetItem(t, 2, PyUnicode_FromString(""));
+	
+	free(compilation_result);
 
 	return t;
 

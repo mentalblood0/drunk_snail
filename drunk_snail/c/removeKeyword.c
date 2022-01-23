@@ -4,10 +4,11 @@ int removeKeywordByKeywords(Keywords *keywords, char *keyword) {
 	if (value == NULL) {
 		return 1;
 	}
-	
-	if (keywords->data[(int)value[0]])
-		free(keywords->data[(int)value[0]]); // value[0] is symbol (see addKeyword)
-	keywords->data[(int)value[0]] = NULL;
+
+	char symbol = value[0];
+	if (keywords->data[(int)symbol])
+		free(keywords->data[(int)symbol]);
+	keywords->data[(int)symbol] = NULL;
 
 	treeRemove(keywords->tree, keyword);
 

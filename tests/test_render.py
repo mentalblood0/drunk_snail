@@ -248,7 +248,7 @@ def test_readme_example():
 	
 	assert os.path.exists(file_path)
 
-	Template(d.name, FileSource(file_path))
+	Template(d.name, FileSource(file_path, watch=True))
 	
 	# but there default_keywords are set, so
 	assert d(parameters['Description']) == '''( $first ) template engine

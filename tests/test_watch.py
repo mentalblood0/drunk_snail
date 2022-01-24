@@ -12,7 +12,7 @@ def test_basic():
 	with open(file_path, 'w') as f:
 		f.write('<!-- (param)x -->')
 	
-	t = Template('test_watch_basic', FileSource(file_path))
+	t = Template('test_watch_basic', FileSource(file_path, watch=True))
 	assert t({'x': 'a'}) == 'a'
 
 	with open(file_path, 'a') as f:

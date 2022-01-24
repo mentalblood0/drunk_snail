@@ -52,7 +52,7 @@ def watchFile(path, onChange):
 
 class FileSource(Source):
 
-	def __init__(self, path, watch=True):
+	def __init__(self, path, watch=False):
 
 		self.path = path
 		self._stopObserver = None

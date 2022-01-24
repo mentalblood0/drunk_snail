@@ -6,12 +6,29 @@ from threading import Lock
 from types import ModuleType
 
 import drunk_snail_c
-from .syntax import syntax
 from .Source import Source
 from .sources import FileSource
-from .templates import templates
-from .default_keywords import default_keywords
+from .syntax import default_keywords
 
+
+
+@lambda C: C()
+class templates(dict):
+	pass
+
+
+keywords_symbols: dict[str, str] = {
+
+	'open_tag': 'o',
+	'close_tag': 'c',
+	
+	'param_operator': 'p',
+	'ref_operator': 'r',
+	'optional_operator': '?',
+	
+	'line_break': 'n'
+
+}
 
 
 def Template(name, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None) -> _Template_proxy:
@@ -30,7 +47,7 @@ def Template(name, source: Source=None, keywords: dict[str, str]=None, initial_b
 			keywords and 
 			(keywords != templates[name].keywords)
 		):
-		templates[name].reload(source=source, keywords=keywords or templates[name].keywords)
+		templates[name].reload(source=source, keywords=keywords)
 	
 	return _Template_proxy(name)
 
@@ -44,7 +61,7 @@ class _Template_proxy:
 	def _actual_template(self) -> _Template:
 		
 		if not self._actual_template_name in templates:
-			raise KeyError(f"Template '{self._actual_template_name}' not exists (seems to be deleted)")
+			raise KeyError(f"Template '{self._actual_template_name}' deleted or not created yet")
 		
 		return templates[self._actual_template_name]
 
@@ -104,14 +121,12 @@ class _Template:
 
 		for type, keyword in self.keywords.items():
 			
-			if not type in syntax:
+			if not type in default_keywords:
 				return False
 
-			old_value = syntax[type].value
-			syntax[type].value = keyword
-
-			drunk_snail_c.removeKeyword(self.name, old_value)
-			drunk_snail_c.addKeyword(self.name, syntax[type].value, syntax[type].symbol)
+			symbol = keywords_symbols[type]
+			drunk_snail_c.removeKeyword(self.name, symbol)
+			drunk_snail_c.addKeyword(self.name, keyword, symbol)
 		
 		self.source.onChange = self.reload
 	

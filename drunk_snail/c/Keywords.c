@@ -1,4 +1,5 @@
 typedef struct KeywordData {
+	char *keyword;
 	char *last_inclusion;
 	int length;
 	char last_symbol;
@@ -15,6 +16,7 @@ Keywords* createKeywords(int number_of_keywords) {
 
 	Keywords *result = malloc(sizeof(Keywords));
 	result->tree = createTree();
+	
 	result->data = calloc(number_of_keywords, sizeof(KeywordData*));
 
 	return result;
@@ -36,6 +38,9 @@ void addKeywordByKeywords(Keywords *keywords, char *keyword, char symbol) {
 	for (; *k; k++);
 	data->length = (int)(k - keyword);
 	data->last_symbol = *k;
+
+	data->keyword = malloc(sizeof(char) * (data->length + 2));
+	strncpy(data->keyword, keyword, (data->length + 2));
 
 	keywords->data[(int)symbol] = data;
 

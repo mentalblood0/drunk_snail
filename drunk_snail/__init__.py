@@ -1,17 +1,11 @@
-from . import sources
+from . import syntax
 from .Source import Source
-from .syntax import syntax
-from .Keyword import Keyword
 from .Template import Template
-from .templates import templates
-from .default_keywords import default_keywords
 
 
 
 __all__ = [
+	'syntax',
 	'Source',
-	'Keyword'
-	'sources',
-	'Template',
-	'default_keywords'
+	'Template'
 ]

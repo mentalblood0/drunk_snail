@@ -1,12 +1,12 @@
-from .Keyword import Keyword
+default_keywords: dict[str, str] = {
 
+	'open_tag': '<!--',
+	'close_tag': '-->',
+	
+	'param_operator': '(param)',
+	'ref_operator': '(ref)',
+	'optional_operator': '(optional)',
+	
+	'line_break': '\n'
 
-
-syntax = {
-	'open_tag':				Keyword('<!--', 'o'),
-	'close_tag':			Keyword('-->', 'c'),
-	'param_operator':		Keyword('(param)', 'p'),
-	'ref_operator':			Keyword('(ref)', 'r'),
-	'optional_operator':	Keyword('(optional)', '?'),
-	'line_break':			Keyword('\n', 'n')
 }

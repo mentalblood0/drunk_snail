@@ -1,10 +1,9 @@
 import os
-from idna import valid_label_length
 import pytest
 from time import sleep
 
-from sqlalchemy import false
-from drunk_snail import Template, default_keywords
+from drunk_snail import Template
+from drunk_snail.syntax import default_keywords
 from drunk_snail.sources import StringSource, FileSource
 
 

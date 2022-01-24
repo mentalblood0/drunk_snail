@@ -1,6 +1,6 @@
-import drunk_snail
+from drunk_snail import Template
 from drunk_snail.sources import StringSource
-from drunk_snail import Template, default_keywords
+from drunk_snail.syntax import default_keywords
 
 
 

@@ -1,5 +1,3 @@
-from re import template
-from time import sleep
 from threading import Thread
 from drunk_snail import Template
 from drunk_snail.sources import StringSource

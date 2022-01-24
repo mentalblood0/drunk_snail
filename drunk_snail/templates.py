@@ -1,7 +1,3 @@
-from .common import singleton
-
-
-
-@singleton
+@lambda C: C()
 class templates(dict):
 	pass

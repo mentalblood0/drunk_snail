@@ -23,7 +23,13 @@ def Template(name, source: Source=None, keywords: dict[str, str]=None, initial_b
 			keywords=keywords or default_keywords, 
 			initial_buffer_size=initial_buffer_size
 		)
-	elif (source and source != templates[name].source) or (keywords and keywords != templates[name].keywords):
+	elif (
+			source and 
+			(source != templates[name].source)
+		) or (
+			keywords and 
+			(keywords != templates[name].keywords)
+		):
 		templates[name].reload(source=source, keywords=keywords or templates[name].keywords)
 	
 	return _Template_proxy(name)

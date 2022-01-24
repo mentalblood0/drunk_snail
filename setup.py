@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
 	setup(
 		name='drunk_snail',
-		version='4.3.7',
+		version='4.3.8',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 		maintainer_email='neceporenkostepan@gmail.com',
 		keywords=['template', 'engine', 'fast'],
 		url='https://github.com/MentalBlood/drunk_snail',
-		packages=['drunk_snail', 'drunk_snail.subcommands', 'drunk_snail.sources'],
+		packages=['drunk_snail', 'drunk_snail.sources'],
 		ext_modules=[
 			Extension(
 				'drunk_snail_c',

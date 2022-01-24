@@ -8,13 +8,14 @@ from drunk_snail.sources import StringSource
 
 def test_create_show():
 
-	template_name = 'test_create_show'
+	name = 'test_create_show'
+	text = 'lalala'
 
 	def create():
-		Template(template_name, StringSource('lalala'))
+		Template(name, StringSource(text))
 
 	def show():
-		print(Template(template_name))
+		assert Template(name).text == text
 
 	t = Thread(target=create)
 	t.start()

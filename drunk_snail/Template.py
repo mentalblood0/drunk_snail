@@ -118,7 +118,7 @@ class _Template:
 		for type, keyword in self.keywords.items():
 			
 			if not type in default_keywords:
-				return False
+				raise Exception(f"No such keyword type: '{type}'")
 
 			symbol = keywords_symbols[type]
 			drunk_snail_c.removeKeyword(self.name, symbol)

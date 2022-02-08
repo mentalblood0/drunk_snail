@@ -31,30 +31,26 @@ keywords_symbols: dict[str, str] = {
 }
 
 
-def Template(name, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None) -> _Template_proxy:
+class Template:
 
-	if not name in templates:
-		templates[name] = _Template(
-			name=name, 
-			source=source, 
-			keywords=keywords or default_keywords, 
-			initial_buffer_size=initial_buffer_size
-		)
-	elif (
-			source and 
-			(source != templates[name].source)
-		) or (
-			keywords and 
-			(keywords != templates[name].keywords)
-		):
-		templates[name].reload(source=source, keywords=keywords)
-	
-	return _Template_proxy(name)
+	def __init__(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None):
 
+		if not name in templates:
+			templates[name] = _Template(
+				name=name, 
+				source=source, 
+				keywords=keywords or default_keywords, 
+				initial_buffer_size=initial_buffer_size
+			)
+		elif (
+				source and 
+				(source != templates[name].source)
+			) or (
+				keywords and 
+				(keywords != templates[name].keywords)
+			):
+			templates[name].reload(source=source, keywords=keywords)
 
-class _Template_proxy:
-
-	def __init__(self, name: str):
 		self._actual_template_name = name
 	
 	@property

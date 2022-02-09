@@ -160,6 +160,13 @@ def test_shift():
 	assert result.count('\t') == valid_tabs_number
 
 
+def test_cyrillic():
+
+	t = Template('test_render_cyrillic', StringSource('ляляля'))
+
+	assert t() == 'ляляля'
+
+
 def test_endpoint_template():
 
 	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt', watch=False))

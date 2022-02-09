@@ -1,9 +1,9 @@
-if (n->children[(int)*c]) {
+if (((int)(*c) >= 0) && n->children[(int)*c]) {
 	n = n->children[(int)*c];
 	++potential_keyword_length;
 } else {
 	n = &keywords->tree->root;
-	if (n->children[(int)*c])
+	if (((int)(*c) >= 0) && n->children[(int)*c])
 		n = n->children[(int)*c];
 	
 	potential_keyword_length = 0;

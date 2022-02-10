@@ -19,6 +19,35 @@ pip install drunk-snail
 ```
 
 
+`Table.xml`:
+```xml
+<table>
+    <!-- (ref)Row -->
+</table>
+```
+
+`Row`:
+```xml
+<row>
+    <!-- (param)cell -->
+</row>
+```
+
+arguments:
+```json
+{
+    "row": [
+        {"cell": ["1.1", "2.1", "3.1"]},
+        {"cell": ["1.2", "2.2", "3.2"]},
+        {"cell": ["1.3", "2.3", "3.3"]}
+    ]
+}
+```
+
+result:
+```xml
+```
+
 
 ## Usage
 

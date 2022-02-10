@@ -167,6 +167,26 @@ def test_cyrillic():
 	assert t() == 'ляляля'
 
 
+def test_table():
+
+	table = Template('test_render_table', FileSource('templates/Table.xml'))
+	row = Template('test_render_row', FileSource('templates/Row.xml'))
+	
+	args = {
+		"Row": [
+			{"cell": ["1.1", "2.1", "3.1"]},
+			{"cell": ["1.2", "2.2", "3.2"]},
+			{"cell": ["1.3", "2.3", "3.3"]}
+		]
+	}
+
+	result = table(args)
+
+	with open('tests/table_correct_result.xml', encoding='utf8') as f:
+		correct_result = f.read()
+	assert result == correct_result
+
+
 def test_endpoint_template():
 
 	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt', watch=False))

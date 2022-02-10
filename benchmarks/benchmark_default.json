@@ -1,4 +1,15 @@
 {
+	"compile::one": {
+		"__n__": 1000,
+		"keywords": {
+			"open_tag": "<!--",
+			"close_tag": "-->",
+			"param_operator": "(param)",
+			"ref_operator": "(ref)"
+		},
+		"folding_depth": 15,
+		"template_name_prefix": "benchmark_compile_"
+	},
 	"render::table": {
 		"__n__": 1000,
 		"width": 10,

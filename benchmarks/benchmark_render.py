@@ -9,8 +9,8 @@ class table(Benchmark):
 
 	def prepare(self, width, height):
 
-		self.row = Template('row', FileSource('templates/Row.xml'))
-		self.table = Template('table', FileSource('templates/Table.xml'))
+		self.row = Template('Row', FileSource('templates/Row.xml'))
+		self.table = Template('Table', FileSource('templates/Table.xml'))
 
 		self.args = {
 			"Row": [

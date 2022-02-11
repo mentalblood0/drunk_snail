@@ -1,4 +1,4 @@
-char *compile__def_strings[2] = {"def render(", "):\n\tresult = ''\n"};
+char *compile__def_strings[2] = {"def render(", "):\n\tresult = []\n"};
 int compile__def_lengths[2] = {11, 16};
 
 #define compile__def_memcpy(i) compile__memcpy(compile__def_strings[i], compile__def_strings[i] + compile__def_lengths[i])

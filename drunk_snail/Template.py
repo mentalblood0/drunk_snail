@@ -12,10 +12,7 @@ from .syntax import default_keywords
 
 
 
-@lambda C: C()
-class templates(dict):
-	pass
-
+templates: dict[str, _Template] = {}
 
 keywords_symbols: dict[str, str] = {
 

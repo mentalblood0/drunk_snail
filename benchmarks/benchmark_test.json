@@ -3,5 +3,10 @@
 		"__n__": 1,
 		"width": 100,
 		"height": 10000
+	},
+	"render::table_by_comprehension": {
+		"__n__": 1,
+		"width": 100,
+		"height": 10000
 	}
 }

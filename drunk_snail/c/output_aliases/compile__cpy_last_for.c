@@ -4,14 +4,14 @@
 //     result += f'''	<x-:IgnoreComments>{P['p']}</x-:IgnoreComments>'''
 // else:
 //     for p in P['p']:
-// 	    result += f'''	<x-:IgnoreComments>{p}</x-:IgnoreComments>\n'''
+//         result += f'''	<x-:IgnoreComments>{p}</x-:IgnoreComments>\n'''
 
 
 
 #include "compile__cpy_last_for_l1.c" /* if (not P) or (not 'p' in P): */
 #include "compile__cpy_last_for_l3.c" /* elif type(P['p']) != list: */
 #include "compile__cpy_last_for_l5.c" /* else: */
-#include "compile__cpy_last_for_l6.c" /* 	for p in P['p']: */
+#include "compile__cpy_last_for_l6.c" /*     for p in P['p']: */
 
 
 

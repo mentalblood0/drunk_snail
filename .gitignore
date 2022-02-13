@@ -4,7 +4,7 @@ a.exe
 dist
 *egg-info*
 compiled_templates/*
-test.py
+test.py*
 build.cmd
 templates_
 compiled_templates_

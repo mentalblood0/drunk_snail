@@ -15,7 +15,6 @@
 #include "removeTemplate.c"
 #include "addKeyword.c"
 #include "removeKeyword.c"
-// #include "compile.c"
-#include "compileComprehension.c"
+#include "./compile/main.c"
 
 #include "python_module_properties.c"

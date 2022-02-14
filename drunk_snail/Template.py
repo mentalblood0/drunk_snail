@@ -27,10 +27,15 @@ keywords_symbols: dict[str, str] = {
 
 }
 
+approaches = {
+	'comprehension': drunk_snail_c.compileComprehension,
+	'append': drunk_snail_c.compileAppend
+}
+
 
 class Template:
 
-	def __init__(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None):
+	def __init__(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None, approach: str=None):
 
 		if not name in templates:
 			templates[name] = _Template(
@@ -45,6 +50,9 @@ class Template:
 			) or (
 				keywords and 
 				(keywords != templates[name].keywords)
+			) or (
+				approach and 
+				(approach != templates[name].approach)
 			):
 			templates[name].reload(source=source, keywords=keywords)
 
@@ -95,7 +103,7 @@ class Template:
 
 class _Template:
 
-	def __init__(self, name: str, source: Source, keywords: dict[str, str]=default_keywords, initial_buffer_size: int=None):
+	def __init__(self, name: str, source: Source, keywords: dict[str, str]=default_keywords, initial_buffer_size: int=None, approach='comprehension'):
 
 		if not hasattr(self, '_lock'):
 			self._lock = Lock()
@@ -103,6 +111,8 @@ class _Template:
 		self._name = name
 		self._source = source
 		self._keywords = default_keywords | keywords
+		self._approach = approach
+		self._approachFunc = approaches[approach]
 
 		self._compiled = None
 		self._function = None
@@ -164,6 +174,10 @@ class _Template:
 		return self._keywords
 	
 	@property
+	def approach(self) -> str:
+		return self._approach
+	
+	@property
 	def text(self) -> str:
 		return drunk_snail_c.getTemplate(self.name)
 	
@@ -179,9 +193,10 @@ class _Template:
 			if not self._compiled:
 				
 				while True:
+					
 					code, message, result = drunk_snail_c.compileComprehension(self.name, self._buffer_size, 0)
+					
 					if code == 2:
-						# print('buffer too small')
 						self._buffer_size *= 2
 					
 					elif code != 0:

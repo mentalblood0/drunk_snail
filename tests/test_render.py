@@ -199,9 +199,6 @@ def test_table():
 	table = Template('Table', FileSource('templates/Table.xml'))
 	row = Template('Row', FileSource('templates/Row.xml'))
 
-	with open('tests/table_compiled_result.py', 'w', encoding='utf8') as f:
-		f.write(table.compiled)
-
 	# print(table.compiled)
 	# assert False
 	

@@ -6,6 +6,7 @@ from drunk_snail.sources import StringSource
 
 
 if __name__ == '__main__':
+
 	keywords = {
 		'open_tag': '<!--',
 		'close_tag': '-->',
@@ -36,7 +37,7 @@ if __name__ == '__main__':
 			)
 		)
 
-	experiments_number = 10000
+	experiments_number = 100
 	overall_time = 0
 
 	for i in range(experiments_number):

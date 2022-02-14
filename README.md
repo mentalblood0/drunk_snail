@@ -88,7 +88,14 @@ Can be set on `Template.__init__`
 ## Interface
 
 ```python
-Template(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None)
+Template(
+    self,
+    name: str,
+    source: Source=None,
+    keywords: dict[str, str]=None,
+    initial_buffer_size: int=None,
+    approach: str='comprehension'
+)
 
 Template.compiled -> str
 Template.text -> str
@@ -111,9 +118,9 @@ For template `name.extension` there will be compiled template `name.py`:
 
 ```python
 def render(name):
-    result = []
-    # barely readeble but fast code here
-    return ''.join(result)
+    return ''.join([
+        # barely readeble but fast code here
+    ])
 ```
 
 Parameters:

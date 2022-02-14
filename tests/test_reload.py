@@ -60,7 +60,7 @@ def test_ref():
 		'test_reload_ref_1': {
 			'p': 1
 		}
-	}) == '1\n'
+	}) == '1'
 
 	Template(t1.name, StringSource('__( $p )__'))
 
@@ -68,7 +68,7 @@ def test_ref():
 		'test_reload_ref_1': {
 			'p': 1
 		}
-	}) == '__1__\n'
+	}) == '__1__'
 
 def test_cascade():
 

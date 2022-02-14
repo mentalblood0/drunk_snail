@@ -19,10 +19,6 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		// 	compile__cpy_if(param_name_start, param_name_end);
 		// 	tabs_number++;
 		// }
-		// if ((!*c || !*(c-1)) && !depth) { /* processing last line */
-		// 	compile__cpy_last_for(param_name_start, param_name_end)
-		// }
-		// else {
 			
 			addTabs(&result_end, tabs_number + 1);
 			compile__cpy_for_start();
@@ -47,7 +43,12 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			compile__cpy_one('\n');
 
 			addTabs(&result_end, tabs_number + 2);
-			compile__cpy_for_end(param_name_start, param_name_end);
+			if (optional) {
+				compile__cpy_for_end_optional(param_name_start, param_name_end);
+			}
+			else {
+				compile__cpy_for_end(param_name_start, param_name_end);
+			}
 
 			addTabs(&result_end, tabs_number + 1);
 			compile__cpy_one(']');
@@ -58,12 +59,10 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 				compile__cpy_one('-');
 				compile__cpy_one('1');
 				compile__cpy_one(']');
-				// compile__cpy_last_for(param_name_start, param_name_end);
 			}
 			compile__cpy_one(',');
 			compile__cpy_one('\n');
 
-		// }
 		// if (optional)
 		// 	tabs_number--;
 	} else {
@@ -111,10 +110,22 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			free(ref_name);
 
 			addTabs(&result_end, tabs_number + 2);
-			compile__cpy_for_end(ref_name_start, ref_name_end);
+			if (optional) {
+				compile__cpy_for_end_optional(ref_name_start, ref_name_end);
+			}
+			else {
+				compile__cpy_for_end(ref_name_start, ref_name_end);
+			}
 			addTabs(&result_end, tabs_number + 1);
 			compile__cpy_one(']');
 			compile__cpy_one(')');
+			if ((!*c || !*(c-1)) && !depth) { /* processing last line */
+				compile__cpy_one('[');
+				compile__cpy_one(':');
+				compile__cpy_one('-');
+				compile__cpy_one('1');
+				compile__cpy_one(']');
+			}
 			compile__cpy_one(',');
 			compile__cpy_one('\n');
 

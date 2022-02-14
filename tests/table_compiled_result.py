@@ -10,7 +10,7 @@ def render(Table):
 				]),
 				"	</tr>\n",
 			])
-			for Row in ([None] if ((not Table) or (not 'Row' in Table)) else (Table['Row'] if type(Table['Row']) == list else [Table['Row']]))
+			for Row in ([] if ((not Table) or (not 'Row' in Table)) else (Table['Row'] if type(Table['Row']) == list else [Table['Row']]))
 		]),
-		"</table>",
-	])
+	"</table>",
+])

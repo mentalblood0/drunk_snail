@@ -10,11 +10,11 @@ def render(EncryptedKey):
 		"			<!--You have a CHOICE of the next 3 items at this level-->\n",
 		''.join([
 			f"			<xd:X509Certificate>{x509_certificate}</xd:X509Certificate>\n"
-			for x509_certificate in ([None] if ((not EncryptedKey) or (not 'x509_certificate' in EncryptedKey)) else (EncryptedKey['x509_certificate'] if type(EncryptedKey['x509_certificate']) == list else [EncryptedKey['x509_certificate']]))
+			for x509_certificate in ([] if ((not EncryptedKey) or (not 'x509_certificate' in EncryptedKey)) else (EncryptedKey['x509_certificate'] if type(EncryptedKey['x509_certificate']) == list else [EncryptedKey['x509_certificate']]))
 		]),
 		''.join([
 			f"			<xd:X509SKI>{x509_ski}</xd:X509SKI>\n"
-			for x509_ski in ([None] if ((not EncryptedKey) or (not 'x509_ski' in EncryptedKey)) else (EncryptedKey['x509_ski'] if type(EncryptedKey['x509_ski']) == list else [EncryptedKey['x509_ski']]))
+			for x509_ski in ([] if ((not EncryptedKey) or (not 'x509_ski' in EncryptedKey)) else (EncryptedKey['x509_ski'] if type(EncryptedKey['x509_ski']) == list else [EncryptedKey['x509_ski']]))
 		]),
 		''.join([
 			''.join([
@@ -29,7 +29,7 @@ def render(EncryptedKey):
 				]),
 				"			</xd:X509IssuerSerial>\n",
 			])
-			for IssuerSerial in ([None] if ((not EncryptedKey) or (not 'IssuerSerial' in EncryptedKey)) else (EncryptedKey['IssuerSerial'] if type(EncryptedKey['IssuerSerial']) == list else [EncryptedKey['IssuerSerial']]))
+			for IssuerSerial in ([] if ((not EncryptedKey) or (not 'IssuerSerial' in EncryptedKey)) else (EncryptedKey['IssuerSerial'] if type(EncryptedKey['IssuerSerial']) == list else [EncryptedKey['IssuerSerial']]))
 		]),
 	"		</xd:X509Data>\n",
 	"	</xe:KeyInfo>\n",

@@ -142,11 +142,6 @@ def test_consicutive_lines():
 ''')
 	)
 
-	# print(t1.compiled)
-	# print(t2.compiled)
-	# print(t3.compiled)
-	# assert False
-
 	result = t3({
 		'test_consicutive_lines_1': {},
 		'test_consicutive_lines_2': {}
@@ -156,7 +151,29 @@ def test_consicutive_lines():
 \tb
 '''
 
-# test_consicutive_lines()
+
+def test_optional_param():
+	assert Template(
+		'test_optional_param',
+		StringSource('<!-- (optional)(param)a -->')
+	)() == ''
+
+
+def test_optional_ref():
+
+	Template(
+		'test_optional_ref_1',
+		StringSource('lalala')
+	)
+	t = Template(
+		'test_optional_ref_2',
+		StringSource('<!-- (optional)(ref)test_optional_ref_1 -->')
+	)
+	
+	assert t() == ''
+	assert t({
+		'test_optional_ref_1': [None]
+	}) == 'lalala'
 
 
 def test_shift():

@@ -17,7 +17,7 @@ def render(CanonicalizationMethod):
 		"		<!--You have a CHOICE of the next 4 items at this level-->\n",
 		''.join([
 			f"		<x-:Element x-:Name="string" x-:NS="{qname_aware_element}"/>\n"
-			for qname_aware_element in ([None] if ((not CanonicalizationMethod) or (not 'qname_aware_element' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_element'] if type(CanonicalizationMethod['qname_aware_element']) == list else [CanonicalizationMethod['qname_aware_element']]))
+			for qname_aware_element in ([] if ((not CanonicalizationMethod) or (not 'qname_aware_element' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_element'] if type(CanonicalizationMethod['qname_aware_element']) == list else [CanonicalizationMethod['qname_aware_element']]))
 		]),
 		''.join([
 			f"		<x-:XPathElement x-:Name="string" x-:NS="{qname_aware_xpath_element}"/>\n"
@@ -25,11 +25,11 @@ def render(CanonicalizationMethod):
 		]),
 		''.join([
 			f"		<x-:QualifiedAttr x-:Name="string" x-:NS="{qname_aware_qualified_attr}"/>\n"
-			for qname_aware_qualified_attr in ([None] if ((not CanonicalizationMethod) or (not 'qname_aware_qualified_attr' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_qualified_attr'] if type(CanonicalizationMethod['qname_aware_qualified_attr']) == list else [CanonicalizationMethod['qname_aware_qualified_attr']]))
+			for qname_aware_qualified_attr in ([] if ((not CanonicalizationMethod) or (not 'qname_aware_qualified_attr' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_qualified_attr'] if type(CanonicalizationMethod['qname_aware_qualified_attr']) == list else [CanonicalizationMethod['qname_aware_qualified_attr']]))
 		]),
 		''.join([
 			f"		<x-:UnqualifiedAttr x-:Name="string" x-:ParentName="string" x-:ParentNS="{qname_aware_unqualified_attr}"/>\n"
-			for qname_aware_unqualified_attr in ([None] if ((not CanonicalizationMethod) or (not 'qname_aware_unqualified_attr' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_unqualified_attr'] if type(CanonicalizationMethod['qname_aware_unqualified_attr']) == list else [CanonicalizationMethod['qname_aware_unqualified_attr']]))
+			for qname_aware_unqualified_attr in ([] if ((not CanonicalizationMethod) or (not 'qname_aware_unqualified_attr' in CanonicalizationMethod)) else (CanonicalizationMethod['qname_aware_unqualified_attr'] if type(CanonicalizationMethod['qname_aware_unqualified_attr']) == list else [CanonicalizationMethod['qname_aware_unqualified_attr']]))
 		]),
 		"	</x-:QNameAware>\n",
 		"</xd:CanonicalizationMethod>",

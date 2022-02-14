@@ -33,5 +33,9 @@ if __name__ == '__main__':
 		install_requires=[
 			'watchdog'
 		],
-		data_files=glob.glob('drunk_snail/c/*.c') + glob.glob('drunk_snail/c/output_aliases/*.c')
+		data_files=(
+			glob.glob('drunk_snail/c/*.c')
+			+ glob.glob('drunk_snail/c/output_aliases/*.c')
+			+ glob.glob('drunk_snail/c/output_aliases_comprehension/*.c')
+		)
 	)

@@ -179,8 +179,9 @@ class _Template:
 			if not self._compiled:
 				
 				while True:
-					code, message, result = drunk_snail_c.compile(self.name, self._buffer_size, 0)
+					code, message, result = drunk_snail_c.compileComprehension(self.name, self._buffer_size, 0)
 					if code == 2:
+						# print('buffer too small')
 						self._buffer_size *= 2
 					
 					elif code != 0:

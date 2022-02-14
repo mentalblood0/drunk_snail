@@ -19,19 +19,19 @@ def render_comprehension(Table):
 def render(Root):
 	return ''.join([
 
-	# content
-	'content\n',
+		# content
+		'content\n',
 
-	# start <!-- (param)name --> end
-	''.join([
-		f'start {name} end\n'
-		for name in Root['name']
+		# start <!-- (param)name --> end
+		''.join([
+			f'start {name} end\n'
+			for name in Root['name']
+		]),
+
+		# start <!-- (ref)Name --> end
+		''.join([
+			# Name processing result
+			for Name in Root['Name']
+		]),
+
 	])
-
-	# start <!-- (ref)Name --> end
-	''.join([
-		# Name processing result
-		for Name in Root['Name']
-	])
-
-])

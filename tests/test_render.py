@@ -18,11 +18,14 @@ keywords = {
 
 def test_basic():
 	
-	assert Template(
+	t = Template(
 		'test_render_basic', 
 		StringSource('( $x )'), 
 		keywords
-	)({
+	)
+	print(t.compiled)
+	
+	assert t({
 		'x': 'lalala'
 	}) == 'lalala'
 
@@ -64,7 +67,7 @@ def test_list():
 		keywords
 	)({
 		'some_param': ['1', '2', '3']
-	}) == '1\n2\n3\n'
+	}) == '1\n2\n3'
 
 
 def test_ref():
@@ -139,6 +142,11 @@ def test_consicutive_lines():
 ''')
 	)
 
+	# print(t1.compiled)
+	# print(t2.compiled)
+	# print(t3.compiled)
+	# assert False
+
 	result = t3({
 		'test_consicutive_lines_1': {},
 		'test_consicutive_lines_2': {}
@@ -147,6 +155,8 @@ def test_consicutive_lines():
 \ta
 \tb
 '''
+
+# test_consicutive_lines()
 
 
 def test_shift():
@@ -169,8 +179,14 @@ def test_cyrillic():
 
 def test_table():
 
-	table = Template('test_render_table', FileSource('templates/Table.xml'))
-	row = Template('test_render_row', FileSource('templates/Row.xml'))
+	table = Template('Table', FileSource('templates/Table.xml'))
+	row = Template('Row', FileSource('templates/Row.xml'))
+
+	with open('tests/table_compiled_result.py', 'w', encoding='utf8') as f:
+		f.write(table.compiled)
+
+	# print(table.compiled)
+	# assert False
 	
 	args = {
 		"Row": [
@@ -209,97 +225,3 @@ def handler_name(
 	a, b
 ):
 	return Response(status=200)"""
-
-
-def test_readme_example():
-
-	# Attention! Only one operator (param or ref) on line
-	# This is for intuitive handling list as param
-
-	description = '''( $first ) template engine
-( $second )er then you think'''
-	d = Template('Description', StringSource(description), {
-		'open_tag': '(',
-		'close_tag': ')',
-		'param_operator': '$'
-	})
-
-	text = '''<h1><!-- (param)header --></h1>
-<div><!-- (optional)(ref)Description --></div>
-<ul>
-	<li><!-- (param)list_element --></li>
-</ul>'''
-	t = Template('Text', StringSource(text))
-
-	parameters = {
-		'header': 'Features',
-		'Description': {
-			'first': 'Simple',
-			'second': 'Fast'
-		},
-		'list_element': [
-			'Customizable syntax',
-			'Backend written using C',
-			'Auto reload template on file change'
-		]
-	}
-
-	correct_result = '''<h1>Features</h1>
-<div>Simple template engine</div>
-<div>Faster then you think</div>
-<ul>
-	<li>Customizable syntax</li>
-	<li>Backend written using C</li>
-	<li>Auto reload template on file change</li>
-</ul>'''
-
-	assert t(parameters) == correct_result
-
-	# --- let's reload template with new text and corresponding keywords ---
-
-	description_with_default_keywords = '''<!-- (param)first --> template engine
-<!-- (param)second -->er then you think'''
-
-	Template(d.name, StringSource(description_with_default_keywords), default_keywords)
-	assert d.text == description_with_default_keywords
-
-	assert t(parameters) == correct_result
-
-	# ----------- ok, let's see how to load templates from files -----------
-
-	file_path = 'example_file.txt'
-
-	with open(file_path, 'w') as f:
-		f.write(description)
-	
-	assert os.path.exists(file_path)
-
-	Template(d.name, FileSource(file_path, watch=True))
-	
-	# but there default_keywords are set, so
-	assert d(parameters['Description']) == '''( $first ) template engine
-( $second )er then you think'''
-
-	# any file content change triggers template reload:
-	with open(file_path, 'w') as f:
-		f.write(description_with_default_keywords)
-	
-	for i in range(100):
-		if d(parameters['Description']) == '''Simple template engine
-Faster then you think''':
-			break
-		sleep(0.01)
-	
-	assert d(parameters['Description']) == '''Simple template engine
-Faster then you think'''
-
-	os.remove(file_path)
-
-	# ------------------- what about removing templates? -------------------
-
-	d1 = Template(d.name) # description template interface copy
-	d.delete()
-	with pytest.raises(KeyError):
-		d.text # throws KeyError
-	with pytest.raises(KeyError):
-		d1.text # throws KeyError too!

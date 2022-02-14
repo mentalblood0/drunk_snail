@@ -196,7 +196,7 @@ class _Template:
 				
 				while True:
 					
-					code, message, result = self._approachFunc(self.name, self._buffer_size, 0)
+					code, message, result = self._approachFunc(self.name, self._buffer_size)
 					
 					if code == 2:
 						self._buffer_size *= 2

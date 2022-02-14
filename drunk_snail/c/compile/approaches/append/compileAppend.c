@@ -14,8 +14,7 @@ void compileAppend_(
 	char *postfix_start,
 	char *postfix_end,
 	int tabs_number,
-	int depth,
-	int log
+	int depth
 ) {
 
 	Template *template = dictionaryLookup(templates_tree, template_name);
@@ -94,10 +93,9 @@ static PyObject *compileAppend (
 ) {
 
 	char *name;
-	int log;
 	int buffer_size;
 	
-	if (!PyArg_ParseTuple(args, "sii", &name, &buffer_size, &log)) {
+	if (!PyArg_ParseTuple(args, "si", &name, &buffer_size)) {
 		return PyLong_FromLong(-1);
 	}
 
@@ -110,7 +108,7 @@ static PyObject *compileAppend (
 		name,
 		_templates,
 		NULL, buffer_size,
-		0, NULL, NULL, NULL, NULL, 1, 0, log
+		0, NULL, NULL, NULL, NULL, 1, 0
 	);
 
 	PyObject *t = PyTuple_New(3);

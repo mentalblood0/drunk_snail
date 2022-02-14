@@ -83,8 +83,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 				line_after_close_tag_start,
 				line_after_close_tag_end,
 				tabs_number + 1,
-				depth + 1,
-				log
+				depth + 1
 			);
 			free(ref_name);
 

@@ -14,8 +14,7 @@ void compileComprehension_(
 	char *postfix_start,
 	char *postfix_end,
 	int tabs_number,
-	int depth,
-	int log
+	int depth
 ) {
 
 	// printf("compileComprehension_ %s\n", template_name);
@@ -108,10 +107,9 @@ static PyObject *compileComprehension (
 ) {
 
 	char *name;
-	int log;
 	int buffer_size;
 	
-	if (!PyArg_ParseTuple(args, "sii", &name, &buffer_size, &log)) {
+	if (!PyArg_ParseTuple(args, "si", &name, &buffer_size)) {
 		return PyLong_FromLong(-1);
 	}
 
@@ -124,7 +122,7 @@ static PyObject *compileComprehension (
 		name,
 		_templates,
 		NULL, buffer_size,
-		0, NULL, NULL, NULL, NULL, 1, 0, log
+		0, NULL, NULL, NULL, NULL, 1, 0
 	);
 
 	PyObject *t = PyTuple_New(3);

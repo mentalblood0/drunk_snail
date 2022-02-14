@@ -61,21 +61,27 @@ def test_nonexistent_file():
 @pytest.mark.parametrize('approach', approaches)
 def test_list(approach: str):
 
-	assert Template(
+	t = Template(
 		'test_render_list', 
 		StringSource('( $some_param )\n'), 
 		keywords,
 		approach=approach
-	)({
+	)
+	print(t.compiled)
+	
+	assert t({
 		'some_param': ['1', '2', '3']
 	}) == '1\n2\n3\n'
 
-	assert Template(
+	t = Template(
 		'test_render_list', 
 		StringSource('( $some_param )'), 
 		keywords,
 		approach=approach
-	)({
+	)
+	print(t.compiled)
+
+	assert t({
 		'some_param': ['1', '2', '3']
 	}) == '1\n2\n3'
 

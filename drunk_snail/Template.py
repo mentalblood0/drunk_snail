@@ -35,14 +35,15 @@ approaches = {
 
 class Template:
 
-	def __init__(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None, approach: str=None):
+	def __init__(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None, approach: str='comprehension'):
 
 		if not name in templates:
 			templates[name] = _Template(
 				name=name, 
 				source=source, 
 				keywords=keywords or default_keywords, 
-				initial_buffer_size=initial_buffer_size
+				initial_buffer_size=initial_buffer_size,
+				approach=approach
 			)
 		elif (
 				source and 
@@ -103,7 +104,7 @@ class Template:
 
 class _Template:
 
-	def __init__(self, name: str, source: Source, keywords: dict[str, str]=default_keywords, initial_buffer_size: int=None, approach='comprehension'):
+	def __init__(self, name: str, source: Source, keywords: dict[str, str]=default_keywords, initial_buffer_size: int=None, approach=None):
 
 		if not hasattr(self, '_lock'):
 			self._lock = Lock()

@@ -1,4 +1,3 @@
-import itertools
 from sharpener import Benchmark
 
 from drunk_snail import Template
@@ -8,10 +7,10 @@ from drunk_snail.sources import FileSource
 
 class table(Benchmark):
 
-	def prepare(self, width, height):
+	def prepare(self, width, height, approach):
 
-		self.row = Template('Row', FileSource('templates/Row.xml'))
-		self.table = Template('Table', FileSource('templates/Table.xml'))
+		self.row = Template('Row', FileSource('templates/Row.xml'), approach=approach)
+		self.table = Template('Table', FileSource('templates/Table.xml'), approach=approach)
 
 		if not hasattr(self, 'args'):
 			self.args = {

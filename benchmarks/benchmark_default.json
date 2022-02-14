@@ -8,11 +8,13 @@
 			"ref_operator": "(ref)"
 		},
 		"folding_depth": 15,
-		"template_name_prefix": "benchmark_compile_"
+		"template_name_prefix": "benchmark_compile_",
+		"approach": "comprehension"
 	},
 	"render::table": {
 		"__n__": 1,
 		"width": 100,
-		"height": 10000
+		"height": 10000,
+		"approach": "comprehension"
 	}
 }

@@ -7,6 +7,8 @@ from drunk_snail.sources import StringSource
 
 if __name__ == '__main__':
 
+	approach = 'append'
+
 	keywords = {
 		'open_tag': '<!--',
 		'close_tag': '-->',
@@ -18,12 +20,14 @@ if __name__ == '__main__':
 		Template(
 			f'benchmark_compile_0', 
 			StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-			keywords
+			keywords,
+			approach=approach
 		),
 		Template(
 			f'benchmark_compile_1', 
 			StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}benchmark_compile_0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-			keywords
+			keywords,
+			approach=approach
 		)
 	]
 	folding_depth = 15
@@ -33,7 +37,8 @@ if __name__ == '__main__':
 			Template(
 				f'benchmark_compile_{i}', 
 				StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}benchmark_compile_{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}benchmark_compile_{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-				keywords
+				keywords,
+				approach=approach
 			)
 		)
 

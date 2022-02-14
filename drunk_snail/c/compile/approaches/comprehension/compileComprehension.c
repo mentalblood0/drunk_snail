@@ -2,14 +2,6 @@
 
 
 
-int addTabs__i;
-#define addTabs(s_end, n) {\
-	for (addTabs__i = 0; addTabs__i < n; addTabs__i++) {\
-		compile__cpy_one('\t');\
-	}\
-}
-
-
 void compileComprehension_(
 	CompilationResult *compilation_result,
 	char *template_name,
@@ -61,7 +53,7 @@ void compileComprehension_(
 		compileComprehension__cpy_def();
 	}
 	else {
-		addTabs(&result_end, tabs_number);
+		compile__addTabs(&result_end, tabs_number);
 		compileComprehension__cpy_for_start();
 	}
 
@@ -87,7 +79,7 @@ void compileComprehension_(
 	}
 
 	
-	addTabs(&result_end, tabs_number);
+	compile__addTabs(&result_end, tabs_number);
 	compile__cpy_one(']');
 	compile__cpy_one(')');
 	if (depth) {

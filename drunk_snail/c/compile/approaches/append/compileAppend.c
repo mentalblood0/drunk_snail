@@ -2,14 +2,6 @@
 
 
 
-void addTabs(char **s_end, int n) {
-	for (; n; n--) {
-		**s_end = '\t';
-		(*s_end)++;
-	}
-}
-
-
 void compileAppend_(
 	CompilationResult *compilation_result,
 	char *template_name,

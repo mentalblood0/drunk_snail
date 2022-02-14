@@ -17,13 +17,13 @@
 
 #define compileAppend__cpy_last_for(param_name_start, param_name_end) {\
 	\
-	addTabs(&result_end, tabs_number);\
+	compile__addTabs(&result_end, tabs_number);\
 	compileAppend__cpy_last_for_l1(param_name_start, param_name_end);\
 	\
-	addTabs(&result_end, tabs_number);\
+	compile__addTabs(&result_end, tabs_number);\
 	compile__cpy_one('\t');\
 	compileAppend__cpy_print_left_part();\
-	addTabs(&result_end, inner_tabs_number);\
+	compile__addTabs(&result_end, inner_tabs_number);\
 	if (prefix_start)\
 		compile__memcpy(prefix_start, prefix_end);\
 	compile__memcpy(line_before_open_tag_start, line_before_open_tag_end);\
@@ -34,13 +34,13 @@
 	compile__cpy_one('n');\
 	compileAppend__cpy_print_right_part();\
 	\
-	addTabs(&result_end, tabs_number);\
+	compile__addTabs(&result_end, tabs_number);\
 	compileAppend__cpy_last_for_l3(param_name_start, param_name_end);\
 	\
-	addTabs(&result_end, tabs_number);\
+	compile__addTabs(&result_end, tabs_number);\
 	compile__cpy_one('\t');\
 	compileAppend__cpy_print_left_part();\
-	addTabs(&result_end, inner_tabs_number);\
+	compile__addTabs(&result_end, inner_tabs_number);\
 	if (prefix_start)\
 		compile__memcpy(prefix_start, prefix_end);\
 	compile__memcpy(line_before_open_tag_start, line_before_open_tag_end);\
@@ -55,17 +55,17 @@
 		compile__memcpy(postfix_start, postfix_end);\
 	compileAppend__cpy_print_right_part();\
 	\
-	addTabs(&result_end, tabs_number);\
+	compile__addTabs(&result_end, tabs_number);\
 	compileAppend__cpy_last_for_l5();\
 	\
-	addTabs(&result_end, tabs_number);\
+	compile__addTabs(&result_end, tabs_number);\
 	compileAppend__cpy_last_for_l6(param_name_start, param_name_end);\
 	\
-	addTabs(&result_end, tabs_number);\
+	compile__addTabs(&result_end, tabs_number);\
 	compile__cpy_one('\t');\
 	compile__cpy_one('\t');\
 	compileAppend__cpy_print_left_part();\
-	addTabs(&result_end, inner_tabs_number);\
+	compile__addTabs(&result_end, inner_tabs_number);\
 	if (prefix_start)\
 		compile__memcpy(prefix_start, prefix_end);\
 	compile__memcpy(line_before_open_tag_start, line_before_open_tag_end);\

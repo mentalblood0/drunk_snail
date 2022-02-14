@@ -7,7 +7,7 @@ from drunk_snail.sources import StringSource
 
 if __name__ == '__main__':
 
-	approach = 'append'
+	approach = 'comprehension'
 
 	keywords = {
 		'open_tag': '<!--',

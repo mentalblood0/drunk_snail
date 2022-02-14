@@ -1,10 +1,10 @@
 char *prev_line_break = keywords->data[(int)'n']->last_inclusion;
 char *line_start = prev_line_break+1;
 char *line_end = (*(c - 1) == '\n') ? c - 1 : c;
-addTabs(&result_end, tabs_number + 1);
+compile__addTabs(&result_end, tabs_number + 1);
 // compileComprehension__cpy_print_left_part();
 compile__cpy_one('"');
-addTabs(&result_end, inner_tabs_number);
+compile__addTabs(&result_end, inner_tabs_number);
 if (prefix_start)
 	compile__memcpy(prefix_start, prefix_end);
 if (line_start <= line_end)

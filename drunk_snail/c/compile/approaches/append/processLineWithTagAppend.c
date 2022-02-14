@@ -15,7 +15,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		for (; *param_name_end != ' '; param_name_end++);
 
 		if (optional) {
-			addTabs(&result_end, tabs_number);
+			compile__addTabs(&result_end, tabs_number);
 			compileAppend__cpy_if(param_name_start, param_name_end);
 			tabs_number++;
 		}
@@ -23,12 +23,12 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			compileAppend__cpy_last_for(param_name_start, param_name_end)
 		}
 		else {
-			addTabs(&result_end, tabs_number);
+			compile__addTabs(&result_end, tabs_number);
 			compileAppend__cpy_for(param_name_start, param_name_end);
-			addTabs(&result_end, tabs_number);
+			compile__addTabs(&result_end, tabs_number);
 			compile__cpy_one('\t');
 			compileAppend__cpy_print_left_part();
-			addTabs(&result_end, inner_tabs_number);
+			compile__addTabs(&result_end, inner_tabs_number);
 			if (prefix_start)
 				compile__memcpy(prefix_start, prefix_end);
 			compile__memcpy(line_before_open_tag_start, line_before_open_tag_end);
@@ -64,11 +64,11 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			if (subtemplate_prefix_start != line_before_open_tag_start)
 				subtemplate_prefix_start--;
 			if (optional) {
-				addTabs(&result_end, tabs_number);
+				compile__addTabs(&result_end, tabs_number);
 				compileAppend__cpy_if(ref_name_start, ref_name_end);
 				tabs_number++;
 			}
-			addTabs(&result_end, tabs_number);
+			compile__addTabs(&result_end, tabs_number);
 			compileAppend__cpy_for(ref_name_start, ref_name_end);
 			
 			compileAppend_(

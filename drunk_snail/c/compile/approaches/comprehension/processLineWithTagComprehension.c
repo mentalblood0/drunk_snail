@@ -15,19 +15,19 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		for (; *param_name_end != ' '; param_name_end++);
 
 		// if (optional) {
-		// 	addTabs(&result_end, tabs_number);
+		// 	compile__addTabs(&result_end, tabs_number);
 		// 	compileComprehension__cpy_if(param_name_start, param_name_end);
 		// 	tabs_number++;
 		// }
 			
-			addTabs(&result_end, tabs_number + 1);
+			compile__addTabs(&result_end, tabs_number + 1);
 			compileComprehension__cpy_for_start();
 
-			addTabs(&result_end, tabs_number + 1);
+			compile__addTabs(&result_end, tabs_number + 1);
 			compile__cpy_one('\t');
 			compile__cpy_one('f');
 			compile__cpy_one('"');
-			addTabs(&result_end, inner_tabs_number);
+			compile__addTabs(&result_end, inner_tabs_number);
 			if (prefix_start)
 				compile__memcpy(prefix_start, prefix_end);
 			compile__memcpy(line_before_open_tag_start, line_before_open_tag_end);
@@ -42,7 +42,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			compile__cpy_one('"');
 			compile__cpy_one('\n');
 
-			addTabs(&result_end, tabs_number + 2);
+			compile__addTabs(&result_end, tabs_number + 2);
 			if (optional) {
 				compileComprehension__cpy_for_end_optional(param_name_start, param_name_end);
 			}
@@ -50,7 +50,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 				compileComprehension__cpy_for_end(param_name_start, param_name_end);
 			}
 
-			addTabs(&result_end, tabs_number + 1);
+			compile__addTabs(&result_end, tabs_number + 1);
 			compile__cpy_one(']');
 			compile__cpy_one(')');
 			if ((!*c || !*(c-1)) && !depth) { /* processing last line */
@@ -85,11 +85,11 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			if (subtemplate_prefix_start != line_before_open_tag_start)
 				subtemplate_prefix_start--;
 			// if (optional) {
-			// 	addTabs(&result_end, tabs_number);
+			// 	compile__addTabs(&result_end, tabs_number);
 			// 	compileComprehension__cpy_if(ref_name_start, ref_name_end);
 			// 	tabs_number++;
 			// }
-			addTabs(&result_end, tabs_number + 1);
+			compile__addTabs(&result_end, tabs_number + 1);
 			compileComprehension__cpy_for_start();
 			
 			compileComprehension_(
@@ -109,14 +109,14 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			);
 			free(ref_name);
 
-			addTabs(&result_end, tabs_number + 2);
+			compile__addTabs(&result_end, tabs_number + 2);
 			if (optional) {
 				compileComprehension__cpy_for_end_optional(ref_name_start, ref_name_end);
 			}
 			else {
 				compileComprehension__cpy_for_end(ref_name_start, ref_name_end);
 			}
-			addTabs(&result_end, tabs_number + 1);
+			compile__addTabs(&result_end, tabs_number + 1);
 			compile__cpy_one(']');
 			compile__cpy_one(')');
 			if ((!*c || !*(c-1)) && !depth) { /* processing last line */

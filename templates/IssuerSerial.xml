@@ -1,4 +1,0 @@
-<xd:X509IssuerSerial>
-	<xd:X509IssuerName><!-- (param)name --></xd:X509IssuerName>
-	<xd:X509Serial><!-- (param)serial --></xd:X509Serial>
-</xd:X509IssuerSerial>

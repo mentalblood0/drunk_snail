@@ -9,10 +9,11 @@ class table(Benchmark):
 
 	def prepare(self, width, height, approach):
 
-		self.row = Template('Row', FileSource('templates/Row.xml'), approach=approach)
-		self.table = Template('Table', FileSource('templates/Table.xml'), approach=approach)
-
 		if not hasattr(self, 'args'):
+
+			self.row = Template('Row', FileSource('templates/Row.xml'), approach=approach)
+			self.table = Template('Table', FileSource('templates/Table.xml'), approach=approach)
+			
 			self.args = {
 				"Row": [
 					{
@@ -27,10 +28,6 @@ class table(Benchmark):
 	
 	def run(self, **kwargs):
 		self.table(self.args)
-	
-	def clean(self, **kwargs):
-		self.row.delete()
-		self.table.delete()
 
 
 def render_func(Table):

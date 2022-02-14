@@ -13,58 +13,50 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		char *param_name_start = param_ + keywords->data[(int)'p']->length;
 		char *param_name_end = param_name_start;
 		for (; *param_name_end != ' '; param_name_end++);
-
-		// if (optional) {
-		// 	compile__addTabs(&result_end, tabs_number);
-		// 	compileComprehension__cpy_if(param_name_start, param_name_end);
-		// 	tabs_number++;
-		// }
 			
-			compile__addTabs(&result_end, tabs_number + 1);
-			compileComprehension__cpy_for_start();
+		compile__addTabs(&result_end, tabs_number + 1);
+		compileComprehension__cpy_for_start();
 
-			compile__addTabs(&result_end, tabs_number + 1);
-			compile__cpy_one('\t');
-			compile__cpy_one('f');
-			compile__cpy_one('"');
-			compile__addTabs(&result_end, inner_tabs_number);
-			if (prefix_start)
-				compile__memcpy(prefix_start, prefix_end);
-			compile__memcpy(line_before_open_tag_start, line_before_open_tag_end);
-			compile__cpy_one('{');
-			compile__memcpy(param_name_start, param_name_end);
-			compile__cpy_one('}');
-			compile__memcpy(line_after_close_tag_start, line_after_close_tag_end);
-			if (postfix_start)
-				compile__memcpy(postfix_start, postfix_end);
-			compile__cpy_one('\\');
-			compile__cpy_one('n');
-			compile__cpy_one('"');
-			compile__cpy_one('\n');
+		compile__addTabs(&result_end, tabs_number + 1);
+		compile__cpy_one('\t');
+		compile__cpy_one('f');
+		compile__cpy_one('"');
+		compile__addTabs(&result_end, inner_tabs_number);
+		if (prefix_start)
+			compile__memcpy(prefix_start, prefix_end);
+		compile__memcpy(line_before_open_tag_start, line_before_open_tag_end);
+		compile__cpy_one('{');
+		compile__memcpy(param_name_start, param_name_end);
+		compile__cpy_one('}');
+		compile__memcpy(line_after_close_tag_start, line_after_close_tag_end);
+		if (postfix_start)
+			compile__memcpy(postfix_start, postfix_end);
+		compile__cpy_one('\\');
+		compile__cpy_one('n');
+		compile__cpy_one('"');
+		compile__cpy_one('\n');
 
-			compile__addTabs(&result_end, tabs_number + 2);
-			if (optional) {
-				compileComprehension__cpy_for_end_optional(param_name_start, param_name_end);
-			}
-			else {
-				compileComprehension__cpy_for_end(param_name_start, param_name_end);
-			}
+		compile__addTabs(&result_end, tabs_number + 2);
+		if (optional) {
+			compileComprehension__cpy_for_end_optional(param_name_start, param_name_end);
+		}
+		else {
+			compileComprehension__cpy_for_end(param_name_start, param_name_end);
+		}
 
-			compile__addTabs(&result_end, tabs_number + 1);
+		compile__addTabs(&result_end, tabs_number + 1);
+		compile__cpy_one(']');
+		compile__cpy_one(')');
+		if ((!*c || !*(c-1)) && !depth) { /* processing last line */
+			compile__cpy_one('[');
+			compile__cpy_one(':');
+			compile__cpy_one('-');
+			compile__cpy_one('1');
 			compile__cpy_one(']');
-			compile__cpy_one(')');
-			if ((!*c || !*(c-1)) && !depth) { /* processing last line */
-				compile__cpy_one('[');
-				compile__cpy_one(':');
-				compile__cpy_one('-');
-				compile__cpy_one('1');
-				compile__cpy_one(']');
-			}
-			compile__cpy_one(',');
-			compile__cpy_one('\n');
+		}
+		compile__cpy_one(',');
+		compile__cpy_one('\n');
 
-		// if (optional)
-		// 	tabs_number--;
 	} else {
 		// ------------------ REF ------------------
 		if (ref_) {
@@ -84,11 +76,6 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			char *subtemplate_prefix_start = line_before_open_tag_start;
 			if (subtemplate_prefix_start != line_before_open_tag_start)
 				subtemplate_prefix_start--;
-			// if (optional) {
-			// 	compile__addTabs(&result_end, tabs_number);
-			// 	compileComprehension__cpy_if(ref_name_start, ref_name_end);
-			// 	tabs_number++;
-			// }
 			compile__addTabs(&result_end, tabs_number + 1);
 			compileComprehension__cpy_for_start();
 			

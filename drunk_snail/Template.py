@@ -54,7 +54,7 @@ class Template:
 				approach and 
 				(approach != templates[name].approach)
 			):
-			templates[name].reload(source=source, keywords=keywords)
+			templates[name].reload(source=source, keywords=keywords, approach=approach)
 
 		self._actual_template_name = name
 	
@@ -133,7 +133,7 @@ class _Template:
 		
 		self.source.onChange = self.reload
 	
-	def reload(self, source: Source=None, keywords: dict[str, str]=None, checked: dict[str, bool]=None) -> int:
+	def reload(self, source: Source=None, keywords: dict[str, str]=None, checked: dict[str, bool]=None, approach: str=None) -> int:
 
 		checked = checked or {}
 		reloaded_number = 1
@@ -156,7 +156,8 @@ class _Template:
 				self.name, 
 				source or self.source, 
 				keywords or self.keywords,
-				self._buffer_size
+				initial_buffer_size=self._buffer_size,
+				approach=approach or self.approach
 			)
 		
 		return reloaded_number
@@ -194,7 +195,7 @@ class _Template:
 				
 				while True:
 					
-					code, message, result = drunk_snail_c.compileComprehension(self.name, self._buffer_size, 0)
+					code, message, result = self._approachFunc(self.name, self._buffer_size, 0)
 					
 					if code == 2:
 						self._buffer_size *= 2

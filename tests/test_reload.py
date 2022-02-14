@@ -1,3 +1,5 @@
+import pytest
+
 from drunk_snail import Template
 from drunk_snail.sources import StringSource
 from drunk_snail.syntax import default_keywords
@@ -11,49 +13,51 @@ keywords = {
 	'ref_operator': '~'
 }
 
+approaches = ['comprehension', 'append']
 
-def test_basic():
+
+@pytest.mark.parametrize('approach', approaches)
+def test_basic(approach: str):
 	
 	t = Template(
 		'test_reload_basic', 
 		StringSource('( $some_param )'), 
-		keywords
+		keywords,
+		approach=approach
 	)
-	print(t.compiled)
 
 	assert t({
 		'some_param': 'lalala'
 	}) == 'lalala'
 
-	# assert False
-
 	t.reload(source=StringSource('<!-- (param)x -->\n( $y )'))
-	print(t.compiled)
 	assert t({
 		'x': 1,
 		'y': 2
 	}) == '<!-- (param)x -->\n2'
 
 	t = Template('test_reload_basic', keywords=default_keywords)
-	print(t.compiled)
 	assert t({
 		'x': 1,
 		'y': 2
 	}) == '1\n( $y )'
 
 
-def test_ref():
+@pytest.mark.parametrize('approach', approaches)
+def test_ref(approach: str):
 
 	t1 = Template(
 		'test_reload_ref_1', 
 		StringSource('( $p )'), 
-		keywords
+		keywords,
+		approach=approach
 	)
 
 	t2 = Template(
 		'test_reload_ref_2', 
 		StringSource('( ~test_reload_ref_1 )'), 
-		keywords
+		keywords,
+		approach=approach
 	)
 
 	assert t2({
@@ -62,7 +66,7 @@ def test_ref():
 		}
 	}) == '1'
 
-	Template(t1.name, StringSource('__( $p )__'))
+	Template(t1.name, StringSource('__( $p )__'), approach=approach)
 
 	assert t2({
 		'test_reload_ref_1': {
@@ -70,24 +74,29 @@ def test_ref():
 		}
 	}) == '__1__'
 
-def test_cascade():
+
+@pytest.mark.parametrize('approach', approaches)
+def test_cascade(approach: str):
 
 	t1 = Template(
 		'test_reload_cascade_1', 
 		StringSource('( $p )'), 
-		keywords
+		keywords,
+		approach=approach
 	)
 
 	t2 = Template(
 		'test_reload_cascade_2', 
 		StringSource('( ~test_reload_cascade_1 )'), 
-		keywords
+		keywords,
+		approach=approach
 	)
 
 	t3 = Template(
 		'test_reload_cascade_3', 
 		StringSource('( ~test_reload_cascade_1 )\n( ~test_reload_cascade_2 )'), 
-		keywords
+		keywords,
+		approach=approach
 	)
 
 	assert t1.reload(source=StringSource('__( $p )__')) == 1

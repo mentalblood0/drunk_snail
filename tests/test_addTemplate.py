@@ -4,4 +4,4 @@ from drunk_snail.sources import FileSource
 
 
 def test_basic():
-    assert Template('CanonicalizationMethod', FileSource('templates/CanonicalizationMethod.xml'))
+	assert Template('CanonicalizationMethod', FileSource('templates/CanonicalizationMethod.xml'))

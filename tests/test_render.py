@@ -15,15 +15,19 @@ keywords = {
 	'ref_operator': '~'
 }
 
+approaches = ['comprehension', 'append']
 
-def test_basic():
+
+@pytest.mark.parametrize('approach', approaches)
+def test_basic(approach: str):
 	
 	t = Template(
 		'test_render_basic', 
 		StringSource('( $x )'), 
-		keywords
+		keywords,
+		approach=approach
 	)
-	print(t.compiled)
+	# print(t.compiled)
 	
 	assert t({
 		'x': 'lalala'
@@ -31,19 +35,22 @@ def test_basic():
 
 	assert Template(
 		'test_render_basic', 
-		StringSource('( $x )\n')
+		StringSource('( $x )\n'),
+		approach=approach
 	)({
 		'x': 'lalala'
 	}) == 'lalala\n'
 
 	assert Template(
 		'test_render_basic', 
-		StringSource('lalala')
+		StringSource('lalala'),
+		approach=approach
 	)({}) == 'lalala'
 
 
-def test_empty_template():
-	assert Template('test_render_empty_template', StringSource(''))() == ''
+@pytest.mark.parametrize('approach', approaches)
+def test_empty_template(approach: str):
+	assert Template('test_render_empty_template', StringSource(''), approach=approach)() == ''
 
 
 def test_nonexistent_file():
@@ -51,12 +58,14 @@ def test_nonexistent_file():
 		Template('test_render_nonexistent_file', FileSource('lalala', watch=False))
 
 
-def test_list():
+@pytest.mark.parametrize('approach', approaches)
+def test_list(approach: str):
 
 	assert Template(
 		'test_render_list', 
 		StringSource('( $some_param )\n'), 
-		keywords
+		keywords,
+		approach=approach
 	)({
 		'some_param': ['1', '2', '3']
 	}) == '1\n2\n3\n'
@@ -64,24 +73,28 @@ def test_list():
 	assert Template(
 		'test_render_list', 
 		StringSource('( $some_param )'), 
-		keywords
+		keywords,
+		approach=approach
 	)({
 		'some_param': ['1', '2', '3']
 	}) == '1\n2\n3'
 
 
-def test_ref():
+@pytest.mark.parametrize('approach', approaches)
+def test_ref(approach: str):
 
 	Template(
 		'addition', 
 		StringSource('Nice to ( $action ) you'), 
-		keywords
+		keywords,
+		approach=approach
 	)
 
 	Template(
 		'greeting', 
 		StringSource('Hello, ( $name )!\n( ~addition )!\n'), 
-		keywords
+		keywords,
+		approach=approach
 	)
 	
 	assert Template('greeting')({
@@ -91,7 +104,7 @@ def test_ref():
 		}
 	}) == 'Hello, username!\nNice to eat you!\n'
 
-	print(Template('greeting').compiled)
+	# print(Template('greeting').compiled)
 
 	result = Template('greeting')({
 		'name': 'username',
@@ -101,37 +114,43 @@ def test_ref():
 			'action': 'eat'
 		}]
 	})
-	print(result)
+	# print(result)
 	assert result == 'Hello, username!\nNice to meet you!\nNice to eat you!\n'
 
 
-def test_buf_overflow():
+@pytest.mark.parametrize('approach', approaches)
+def test_buf_overflow(approach: str):
 
 	t1 = Template(
 		'test_buf_overflow_1', 
 		StringSource(' ' * 1000),
-		keywords
+		keywords,
+		approach=approach
 	)
 
 	t2 = Template(
 		'test_buf_overflow_2', 
 		StringSource('( ~test_buf_overflow_1 )'),
-		keywords
+		keywords,
+		approach=approach
 	)
 
 	assert t2.compiled
 
 
-def test_consicutive_lines():
+@pytest.mark.parametrize('approach', approaches)
+def test_consicutive_lines(approach: str):
 
 	t1 = Template(
 		'test_consicutive_lines_1',
-		StringSource('a')
+		StringSource('a'),
+		approach=approach
 	)
 
 	t2 = Template(
 		'test_consicutive_lines_2',
-		StringSource('b')
+		StringSource('b'),
+		approach=approach
 	)
 
 	t3 = Template(
@@ -139,7 +158,8 @@ def test_consicutive_lines():
 		StringSource('''
 \t<!-- (optional)(ref)test_consicutive_lines_1 -->
 \t<!-- (optional)(ref)test_consicutive_lines_2 -->
-''')
+'''),
+		approach=approach
 	)
 
 	result = t3({
@@ -152,22 +172,27 @@ def test_consicutive_lines():
 '''
 
 
-def test_optional_param():
+@pytest.mark.parametrize('approach', approaches)
+def test_optional_param(approach: str):
 	assert Template(
 		'test_optional_param',
-		StringSource('<!-- (optional)(param)a -->')
+		StringSource('<!-- (optional)(param)a -->'),
+		approach=approach
 	)() == ''
 
 
-def test_optional_ref():
+@pytest.mark.parametrize('approach', approaches)
+def test_optional_ref(approach: str):
 
 	Template(
 		'test_optional_ref_1',
-		StringSource('lalala')
+		StringSource('lalala'),
+		approach=approach
 	)
 	t = Template(
 		'test_optional_ref_2',
-		StringSource('<!-- (optional)(ref)test_optional_ref_1 -->')
+		StringSource('<!-- (optional)(ref)test_optional_ref_1 -->'),
+		approach=approach
 	)
 	
 	assert t() == ''
@@ -176,10 +201,11 @@ def test_optional_ref():
 	}) == 'lalala'
 
 
-def test_shift():
+@pytest.mark.parametrize('approach', ['append'])
+def test_shift(approach: str):
 
 	for letter in ['a', 'b', 'c', 'd']:
-		Template(letter, FileSource(f'templates/{letter.upper()}.xml'))
+		Template(letter, FileSource(f'templates/{letter.upper()}.xml'), approach=approach)
 	
 	result = Template('a')({'B': {'C': [{}, {}]}})
 
@@ -187,17 +213,19 @@ def test_shift():
 	assert result.count('\t') == valid_tabs_number
 
 
-def test_cyrillic():
+@pytest.mark.parametrize('approach', approaches)
+def test_cyrillic(approach: str):
 
-	t = Template('test_render_cyrillic', StringSource('ляляля'))
+	t = Template('test_render_cyrillic', StringSource('ляляля'), approach=approach)
 
 	assert t() == 'ляляля'
 
 
-def test_table():
+@pytest.mark.parametrize('approach', approaches)
+def test_table(approach: str):
 
-	table = Template('Table', FileSource('templates/Table.xml'))
-	row = Template('Row', FileSource('templates/Row.xml'))
+	row = Template('Row', FileSource('templates/Row.xml'), approach=approach)
+	table = Template('Table', FileSource('templates/Table.xml'), approach=approach)
 
 	# print(table.compiled)
 	# assert False
@@ -217,9 +245,10 @@ def test_table():
 	assert result == correct_result
 
 
-def test_endpoint_template():
+@pytest.mark.parametrize('approach', approaches)
+def test_endpoint_template(approach: str):
 
-	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt', watch=False))
+	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt'), approach=approach)
 	
 	assert t({
 		'route_to': 'route_to',

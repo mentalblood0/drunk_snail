@@ -1,8 +1,8 @@
+import json
 from sharpener import Benchmark
 
 from drunk_snail import Template
 from drunk_snail.sources import FileSource
-
 
 
 class table(Benchmark):
@@ -28,6 +28,69 @@ class table(Benchmark):
 	
 	def run(self, **kwargs):
 		self.table(self.args)
+
+
+class args_to_str(Benchmark):
+
+	def prepare(self, width, height):
+
+		if not hasattr(self, 'args'):
+			self.args = {
+				"Row": [
+					{
+						"cell": [
+							f"{x}.{y}"
+							for x in range(width)
+						]
+					}
+					for y in range(height)
+				]
+			}
+	
+	def run(self, **kwargs):
+		str(self.args)
+
+
+class args_to_json(Benchmark):
+
+	def prepare(self, width, height):
+
+		if not hasattr(self, 'args'):
+			self.args = {
+				"Row": [
+					{
+						"cell": [
+							f"{x}.{y}"
+							for x in range(width)
+						]
+					}
+					for y in range(height)
+				]
+			}
+	
+	def run(self, **kwargs):
+		json.dumps(self.args)
+
+
+class args_to_json_with_indent(Benchmark):
+
+	def prepare(self, width, height, **kwargs):
+
+		if not hasattr(self, 'args'):
+			self.args = {
+				"Row": [
+					{
+						"cell": [
+							f"{x}.{y}"
+							for x in range(width)
+						]
+					}
+					for y in range(height)
+				]
+			}
+	
+	def run(self, indent, **kwargs):
+		json.dumps(self.args, indent=indent)
 
 
 def render_func(Table):

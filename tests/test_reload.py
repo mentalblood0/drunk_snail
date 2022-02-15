@@ -37,7 +37,6 @@ def test_basic(approach: str):
 	}) == '<!-- (param)x -->\n2'
 
 	t = Template('test_reload_basic', keywords=default_keywords)
-	print(t.compiled)
 	assert t({
 		'x': 1,
 		'y': 2
@@ -61,19 +60,21 @@ def test_ref(approach: str):
 		approach=approach
 	)
 
-	assert t2({
+	result = t2({
 		'test_reload_ref_1': {
 			'p': 1
 		}
-	}) == '1'
+	})
+	assert result == '1' or result == '1\n'
 
 	Template(t1.name, StringSource('__( $p )__'), approach=approach)
 
-	assert t2({
+	result = t2({
 		'test_reload_ref_1': {
 			'p': 1
 		}
-	}) == '__1__'
+	})
+	assert result == '__1__' or result == '__1__\n'
 
 
 @pytest.mark.parametrize('approach', approaches)

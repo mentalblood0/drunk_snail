@@ -93,7 +93,7 @@ class args_to_json_with_indent(Benchmark):
 		json.dumps(self.args, indent=indent)
 
 
-def render_func(Table):
+def render_append(Table):
 	result = []
 	result.append('<table>\n')
 	for Row in Table['Row']:
@@ -105,7 +105,7 @@ def render_func(Table):
 	return ''.join(result)
 
 
-class table_by_func(Benchmark):
+class table_by_append(Benchmark):
 
 	def prepare(self, width, height):
 
@@ -123,7 +123,7 @@ class table_by_func(Benchmark):
 			}
 	
 	def run(self, **kwargs):
-		render_func(self.args)
+		render_append(self.args)
 
 
 def render_comprehension(Table):
@@ -163,3 +163,42 @@ class table_by_comprehension(Benchmark):
 	
 	def run(self, **kwargs):
 		render_comprehension(self.args)
+
+
+def render_comprehension_optimized(Table):
+	return ''.join([
+		'<table>\n',
+		*[
+			''.join([
+				'    <tr>\n',
+				*[
+					f'        <td>{cell}</td>\n'
+					for cell in Row['cell']
+				],
+				'    </tr>\n'
+			])
+			for Row in Table['Row']
+		],
+		'</table>\n'
+	])
+
+
+class table_by_comprehension_optimized(Benchmark):
+
+	def prepare(self, width, height):
+
+		if not hasattr(self, 'args'):
+			self.args = {
+				"Row": [
+					{
+						"cell": [
+							f"{x}.{y}"
+							for x in range(width)
+						]
+					}
+					for y in range(height)
+				]
+			}
+	
+	def run(self, **kwargs):
+		render_comprehension_optimized(self.args)

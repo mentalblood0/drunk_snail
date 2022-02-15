@@ -118,7 +118,7 @@ For template `name.extension` there will be compiled template `name.py`:
 
 ```python
 def render(name):
-    return ''.join([
+    return '\n'.join([
         # barely readeble but fast code here
     ])
 ```

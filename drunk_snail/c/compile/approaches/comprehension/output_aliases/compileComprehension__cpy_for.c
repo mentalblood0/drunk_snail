@@ -1,13 +1,26 @@
 char *compileComprehension__for_start_strings[1] = {
-	"''.join([\n"
+	"'\\n'.join([\n"
 };
 
-int compileComprehension__for_start_lengths[1] = {10};
+int compileComprehension__for_start_lengths[1] = {12};
 
 #define compileComprehension__for_start_memcpy(i) compile__memcpy(compileComprehension__for_start_strings[i], compileComprehension__for_start_strings[i] + compileComprehension__for_start_lengths[i]);
 
 #define compileComprehension__cpy_for_start() {\
 	compileComprehension__for_start_memcpy(0);\
+};
+
+
+char *compileComprehension__for_start_unpack_strings[1] = {
+	"*[\n"
+};
+
+int compileComprehension__for_start_unpack_lengths[1] = {3};
+
+#define compileComprehension__for_start_unpack_memcpy(i) compile__memcpy(compileComprehension__for_start_unpack_strings[i], compileComprehension__for_start_unpack_strings[i] + compileComprehension__for_start_unpack_lengths[i]);
+
+#define compileComprehension__cpy_for_start_unpack() {\
+	compileComprehension__for_start_unpack_memcpy(0);\
 };
 
 

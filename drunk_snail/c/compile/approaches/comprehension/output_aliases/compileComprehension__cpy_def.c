@@ -1,5 +1,5 @@
-char *compileComprehension__def_strings[2] = {"def render(", "):\n\treturn ''.join([\n"};
-int compileComprehension__def_lengths[2] = {11, 21};
+char *compileComprehension__def_strings[2] = {"def render(", "):\n\treturn '\\n'.join([\n"};
+int compileComprehension__def_lengths[2] = {11, 23};
 
 #define compileComprehension__def_memcpy(i) compile__memcpy(compileComprehension__def_strings[i], compileComprehension__def_strings[i] + compileComprehension__def_lengths[i])
 

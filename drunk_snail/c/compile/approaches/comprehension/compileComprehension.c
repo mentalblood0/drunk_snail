@@ -17,8 +17,6 @@ void compileComprehension_(
 	int depth
 ) {
 
-	// printf("compileComprehension_ %s\n", template_name);
-
 	Template *template = dictionaryLookup(templates_tree, template_name);
 	if (template == NULL) {
 		compilation_result->code = 1;
@@ -82,7 +80,6 @@ void compileComprehension_(
 	compile__cpy_one(']');
 	compile__cpy_one(')');
 	if (depth) {
-		// compile__cpy_one(',');
 		compile__cpy_one('\n');
 	}
 	else {

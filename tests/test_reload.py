@@ -37,6 +37,7 @@ def test_basic(approach: str):
 	}) == '<!-- (param)x -->\n2'
 
 	t = Template('test_reload_basic', keywords=default_keywords)
+	print(t.compiled)
 	assert t({
 		'x': 1,
 		'y': 2

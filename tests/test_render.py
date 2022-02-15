@@ -39,7 +39,7 @@ def test_basic(approach: str):
 		approach=approach
 	)({
 		'x': 'lalala'
-	}) == 'lalala\n'
+	}) == 'lalala'
 
 	assert Template(
 		'test_render_basic', 
@@ -67,11 +67,11 @@ def test_list(approach: str):
 		keywords,
 		approach=approach
 	)
-	print(t.compiled)
+	# print(t.compiled)
 	
 	assert t({
 		'some_param': ['1', '2', '3']
-	}) == '1\n2\n3\n'
+	}) == '1\n2\n3'
 
 	t = Template(
 		'test_render_list', 
@@ -79,7 +79,7 @@ def test_list(approach: str):
 		keywords,
 		approach=approach
 	)
-	print(t.compiled)
+	# print(t.compiled)
 
 	assert t({
 		'some_param': ['1', '2', '3']
@@ -108,7 +108,7 @@ def test_ref(approach: str):
 		'addition': {
 			'action': 'eat'
 		}
-	}) == 'Hello, username!\nNice to eat you!\n'
+	}) == 'Hello, username!\nNice to eat you!'
 
 	# print(Template('greeting').compiled)
 
@@ -121,7 +121,7 @@ def test_ref(approach: str):
 		}]
 	})
 	# print(result)
-	assert result == 'Hello, username!\nNice to meet you!\nNice to eat you!\n'
+	assert result == 'Hello, username!\nNice to meet you!\nNice to eat you!'
 
 
 @pytest.mark.parametrize('approach', approaches)
@@ -174,8 +174,7 @@ def test_consicutive_lines(approach: str):
 	})
 	assert result == '''
 \ta
-\tb
-'''
+\tb'''
 
 
 @pytest.mark.parametrize('approach', approaches)
@@ -227,7 +226,7 @@ def test_cyrillic(approach: str):
 	assert t() == 'ляляля'
 
 
-@pytest.mark.parametrize('approach', approaches)
+@pytest.mark.parametrize('approach', ['comprehension'])
 def test_table(approach: str):
 
 	row = Template('Row', FileSource('templates/Row.xml'), approach=approach)

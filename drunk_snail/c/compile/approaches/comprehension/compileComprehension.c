@@ -50,7 +50,6 @@ void compileComprehension_(
 		compileComprehension__cpy_def();
 	}
 	else {
-		// compile__addTabs(&result_end, tabs_number);
 		compileComprehension__cpy_for_start();
 	}
 
@@ -75,17 +74,11 @@ void compileComprehension_(
 		#include "processLineComprehension.c"
 	}
 
-	
-	// compile__addTabs(&result_end, tabs_number);
+
 	compile__cpy_one(']');
 	compile__cpy_one(')');
-	if (depth) {
-		// compile__cpy_one('\n');
-	}
-	else {
+	if (!depth)
 		*result_end = 0;
-		result = (char*)realloc(result, sizeof(char) * (result_end - result + 1));
-	}
 
 	if (buf != NULL)
 		*buf = result_end;

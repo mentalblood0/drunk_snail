@@ -13,12 +13,9 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		char *param_name_start = param_ + keywords->data[(int)'p']->length;
 		char *param_name_end = param_name_start;
 		for (; *param_name_end != ' '; param_name_end++);
-			
-		// compile__addTabs(&result_end, tabs_number + 1);
-		compileComprehension__cpy_for_start_unpack(); // 3
 
-		// compile__addTabs(&result_end, tabs_number + 1);
-		compile__cpy_one('\t');
+		compileComprehension__cpy_for_start_unpack();
+
 		compile__cpy_one('f');
 		compile__cpy_one('"');
 		compile__addTabs(&result_end, inner_tabs_number);
@@ -32,9 +29,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 		if (postfix_start)
 			compile__memcpy(postfix_start, postfix_end);
 		compile__cpy_one('"');
-		// compile__cpy_one('\n');
 
-		compile__addTabs(&result_end, tabs_number + 2);
 		if (optional) {
 			compileComprehension__cpy_for_end_optional(param_name_start, param_name_end);
 		}
@@ -42,10 +37,8 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			compileComprehension__cpy_for_end(param_name_start, param_name_end);
 		}
 
-		// compile__addTabs(&result_end, tabs_number + 1);
 		compile__cpy_one(']');
 		compile__cpy_one(',');
-		// compile__cpy_one('\n');
 
 	} else {
 		// ------------------ REF ------------------
@@ -66,7 +59,6 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			char *subtemplate_prefix_start = line_before_open_tag_start;
 			if (subtemplate_prefix_start != line_before_open_tag_start)
 				subtemplate_prefix_start--;
-			// compile__addTabs(&result_end, tabs_number + 1);
 			compileComprehension__cpy_for_start_unpack();
 			
 			compileComprehension_(
@@ -85,17 +77,14 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			);
 			free(ref_name);
 
-			// compile__addTabs(&result_end, tabs_number + 2);
 			if (optional) {
 				compileComprehension__cpy_for_end_optional(ref_name_start, ref_name_end);
 			}
 			else {
 				compileComprehension__cpy_for_end(ref_name_start, ref_name_end);
 			}
-			// compile__addTabs(&result_end, tabs_number + 1);
 			compile__cpy_one(']');
 			compile__cpy_one(',');
-			// compile__cpy_one('\n');
 
 			if (compilation_result->code != 0) {
 				if (!depth) {

@@ -63,7 +63,11 @@ if __name__ == '__main__':
 	overall_time = 0
 	for i in range(experiments_number):
 		t[-1]._actual_template._compiled = None
-		overall_time += timeit('t[-1].compiled', globals=globals(), number=1)
+		t[-1]._actual_template._function = None
+		overall_time += timeit([
+			't[-1].compiled',
+			't[-1].function'
+		][0], globals=globals(), number=1)
 
 	f_size = len(t[-1].compiled)
 	f_lines_number = t[-1].compiled.count('\n') + 1

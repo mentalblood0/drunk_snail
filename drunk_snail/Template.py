@@ -4,6 +4,7 @@ import re
 import os
 from threading import Lock
 from types import ModuleType
+from typing import Callable
 
 import drunk_snail_c
 from .Source import Source
@@ -225,7 +226,8 @@ class _Template:
 	def refs(self) -> list[str]:
 		return drunk_snail_c.getTemplateRefs(self.name)
 	
-	def __call__(self, parameters: dict=None) -> str:
+	@property
+	def function(self) -> Callable:
 
 		if not self._function:
 			compiled_function = compile(self.compiled, '', 'exec')
@@ -233,8 +235,11 @@ class _Template:
 			exec(compiled_function, temp_module.__dict__)
 
 			self._function = getattr(temp_module, 'render')
-
-		return self._function(parameters or {})
+		
+		return self._function
+	
+	def __call__(self, parameters: dict=None) -> str:
+		return self.function(parameters or {})
 	
 	def __repr__(self) -> str:
 		return f"(name='{self.name}', source={self.source}, keywords={self.keywords})"

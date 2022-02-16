@@ -28,6 +28,9 @@ class table(Benchmark):
 	
 	def run(self, **kwargs):
 		self.table(self.args)
+	
+	# def clean(self, **kwargs):
+	# 	print(len(self.table(self.args)))
 
 
 class args_to_str(Benchmark):

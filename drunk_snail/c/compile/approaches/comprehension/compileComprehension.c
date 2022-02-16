@@ -50,7 +50,7 @@ void compileComprehension_(
 		compileComprehension__cpy_def();
 	}
 	else {
-		compile__addTabs(&result_end, tabs_number);
+		// compile__addTabs(&result_end, tabs_number);
 		compileComprehension__cpy_for_start();
 	}
 
@@ -76,11 +76,11 @@ void compileComprehension_(
 	}
 
 	
-	compile__addTabs(&result_end, tabs_number);
+	// compile__addTabs(&result_end, tabs_number);
 	compile__cpy_one(']');
 	compile__cpy_one(')');
 	if (depth) {
-		compile__cpy_one('\n');
+		// compile__cpy_one('\n');
 	}
 	else {
 		*result_end = 0;

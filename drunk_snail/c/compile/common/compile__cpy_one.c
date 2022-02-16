@@ -9,3 +9,9 @@
 	*result_end = c;\
 	result_end++;\
 }
+
+
+#define compile__cpy_one_no_check(c) {\
+	*result_end = c;\
+	result_end++;\
+}

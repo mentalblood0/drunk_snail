@@ -56,7 +56,8 @@ void compileComprehension_(
 	int optional = 0;
 	int potential_keyword_length = 0;
 
-	clearRefs(template);
+	if (!depth)
+		clearRefs(template);
 	keywords->data[(int)'n']->last_inclusion = s-1;
 	keywords->data[(int)'o']->last_inclusion = NULL;
 	keywords->data[(int)'c']->last_inclusion = NULL;

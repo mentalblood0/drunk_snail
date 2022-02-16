@@ -52,7 +52,8 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 			memcpy(ref_name, ref_name_start, ref_name_end - ref_name_start);
 			ref_name[ref_name_end - ref_name_start] = 0;
 
-			addRef(template, ref_name, ref_name_end - ref_name_start);
+			if (!depth)
+				addRef(template, ref_name, ref_name_end - ref_name_start);
 
 			keywords->data[(int)'p']->last_inclusion = NULL;
 			keywords->data[(int)'r']->last_inclusion = NULL;

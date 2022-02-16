@@ -103,4 +103,4 @@ def test_cascade(approach: str):
 
 	assert t1.reload(source=StringSource('__( $p )__')) == 1
 	assert t2.compiled and (t1.reload(source=StringSource('__( $p )__')) == 2)
-	assert t3.compiled and (t1.reload(source=StringSource('__( $p )__')) == 3)
+	assert t3.compiled and (t1.reload(source=StringSource('__( $p )__')) == 2)

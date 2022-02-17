@@ -39,8 +39,8 @@ void addKeywordByKeywords(Keywords *keywords, char *keyword, char symbol) {
 	data->length = (int)(k - keyword);
 	data->last_symbol = *k;
 
-	data->keyword = malloc(sizeof(char) * (data->length + 2));
-	strncpy(data->keyword, keyword, (data->length + 2));
+	data->keyword = malloc(sizeof(char) * (data->length + 1));
+	strncpy(data->keyword, keyword, (data->length + 1));
 
 	keywords->data[(int)symbol] = data;
 

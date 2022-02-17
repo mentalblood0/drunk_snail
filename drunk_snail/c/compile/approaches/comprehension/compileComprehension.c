@@ -79,7 +79,7 @@ void compileComprehension_(
 	compile__cpy_one(']');
 	compile__cpy_one(')');
 	if (!depth)
-		*result_end = 0;
+		compile__cpy_one('\0');
 
 	if (buf != NULL)
 		*buf = result_end;

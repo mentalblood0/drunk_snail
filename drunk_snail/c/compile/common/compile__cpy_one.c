@@ -1,5 +1,5 @@
 #define compile__cpy_one(c) {\
-	if ((result_end - result + 2) >= buffer_size) {\
+	if ((result_end - result) >= buffer_size) {\
 		if (!depth) {\
 			free(result);\
 		}\

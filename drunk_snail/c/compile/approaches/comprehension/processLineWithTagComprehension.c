@@ -67,7 +67,7 @@ if (line_before_open_tag_start <= line_before_open_tag_end) {
 				ref_name,
 				templates_tree,
 				&result_end,
-				buffer_size - (result_end - result + 2),
+				buffer_size - (result_end - result),
 				depth,
 				subtemplate_prefix_start,
 				line_before_open_tag_end,

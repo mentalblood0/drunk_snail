@@ -1,8 +1,8 @@
 char *compileComprehension__for_start_strings[1] = {
-	"'\\n'.join(["
+	"j(["
 };
 
-int compileComprehension__for_start_lengths[1] = {11};
+int compileComprehension__for_start_lengths[1] = {3};
 
 #define compileComprehension__for_start_memcpy(i) compile__memcpy(compileComprehension__for_start_strings[i], compileComprehension__for_start_strings[i] + compileComprehension__for_start_lengths[i]);
 

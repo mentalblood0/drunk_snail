@@ -7,7 +7,7 @@ void compileAppend_(
 	char *template_name,
 	Tree *templates_tree,
 	char **buf,
-	int buffer_size,
+	__int64 buffer_size,
 	int inner_tabs_number,
 	char *prefix_start,
 	char *prefix_end,
@@ -94,7 +94,7 @@ static PyObject *compileAppend (
 ) {
 
 	char *name;
-	int buffer_size;
+	__int64 buffer_size;
 	
 	if (!PyArg_ParseTuple(args, "si", &name, &buffer_size)) {
 		return PyLong_FromLong(-1);

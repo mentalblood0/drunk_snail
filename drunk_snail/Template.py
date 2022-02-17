@@ -146,14 +146,11 @@ class _Template:
 
 			for name in templates:
 				if name not in checked:
-
-					print('check', name)
 				
 					checked[name] = True
 					
 					t = templates[name]
 					if self.name in t.refs:
-						print(self.name, 'in', t)
 						reloaded_number += t.reload(checked=checked)
 
 			drunk_snail_c.removeTemplate(self.name)

@@ -1,4 +1,5 @@
 import os
+import json
 import glob
 from distutils.core import setup, Extension
 
@@ -10,6 +11,13 @@ if __name__ == '__main__':
 	if os.path.exists('README.md'):
 		with open('README.md') as f:
 			long_description = f.read()
+	
+	data_files = {}
+	for p in glob.glob('drunk_snail/c/*.c') + glob.glob('drunk_snail/c/**/*.c', recursive=True):
+		dirname = os.path.dirname(p)
+		if dirname not in data_files:
+			data_files[dirname] = []
+		data_files[dirname].append(p)
 
 	setup(
 		name='drunk_snail',
@@ -33,8 +41,5 @@ if __name__ == '__main__':
 		install_requires=[
 			'watchdog'
 		],
-		data_files=(
-			glob.glob('drunk_snail/c/*.c')
-			+ glob.glob('drunk_snail/c/**/*.c', recursive=True)
-		)
+		data_files=list(data_files.items())
 	)

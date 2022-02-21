@@ -1,3 +1,5 @@
+#include <inttypes.h>
+
 #include "./common/main.c"
 
 #include "./approaches/append/main.c"

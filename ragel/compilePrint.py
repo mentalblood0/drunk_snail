@@ -52,7 +52,7 @@ def compilePrint(approach, fragment_name, expression):
 			strings_copied += 1
 		elif e['type'] == 'keyword':
 			cpy_definition_list.append(
-				f'\tmemcpy(result_end, {e["s"]}_start, {e["s"]}_end - {e["s"]}_start); result_end += {len(e["s"])};'
+				f'\tmemcpy(result_end, {e["s"]}_start, {e["s"]}_end - {e["s"]}_start); result_end += {e["s"]}_end - {e["s"]}_start;'
 			)
 	cpy_definition_list.append('}')
 	

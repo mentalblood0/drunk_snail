@@ -11,51 +11,103 @@
 
 
 
+enum ActionType {
+	ACTION_PARAM,
+	ACTION_REF,
+	ACTION_NONE
+};
+
+
 int test(char* input)
 {
-	const char *p = input;
+	char *p = input;
 	const char *pe = input + strlen(input);
 	const char *eof = pe;
 	const char* ts, * te;
 	int cs, act, top, stack[2], curline;
 
+	enum ActionType action_type = ACTION_NONE;
+
+	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
+
 	%%{
 	
 		action action_start_line {
-			printf("start_line\n");
+
+			start_line = NULL;
+			end_line = NULL;
+			start_expression = NULL;
+			end_expression = NULL;
+			name_start = NULL;
+			name_end = NULL;
+			action_type = ACTION_NONE;
+
+			printf("start_line %ld\n", p - input);
+			start_line = p;
 		}
 		action action_end_line {
-			printf("end_line\n");
-		}
-		action action_empty_line {
-			printf("empty_line %d='%c'\n", p - input, *p);
+			printf("end_line %ld\n", p - input);
+			end_line = p;
+
+			if (action_type == ACTION_PARAM)
+				printf(
+					"---------- PARAM ----------\n"
+					"other_left: '%.*s'\n"
+					"name: '%.*s'\n"
+					"other_right: '%.*s'\n"
+					"---------------------------\n",
+					start_expression - start_line, start_line,
+					name_end - name_start, name_start,
+					end_line - end_expression, end_expression
+				);
+			else if (action_type == ACTION_REF)
+				printf(
+					"----------- REF -----------\n"
+					"other_left: '%.*s'\n"
+					"name: '%.*s'\n"
+					"other_right: '%.*s'\n"
+					"---------------------------\n",
+					start_expression - start_line, start_line,
+					name_end - name_start, name_start,
+					end_line - end_expression, end_expression
+				);
+			else if (action_type == ACTION_NONE)
+				printf(
+					"---------- EMPTY ----------\n"
+					"line: '%.*s'\n"
+					"---------------------------\n",
+					end_line - start_line, start_line
+				);
+
 		}
 
 		action action_param {
+			action_type = ACTION_PARAM;
 			printf("param\n");
 		}
 		action action_ref {
+			action_type = ACTION_REF;
 			printf("ref\n");
 		}
 
-		action action_other_left {
-			printf("other_left\n");
-		}
-		action action_other_right {
-			printf("other_right\n");
-		}
 		action action_name_start {
-			printf("name_start %d\n", p - input);
+			printf("name_start %ld\n", p - input);
+			name_start = p;
 		}
 		action action_name_end {
-			printf("name_end %d\n", p - input);
+			printf("name_end %ld\n", p - input);
+			name_end = p;
 		}
 
 		action action_start_expression {
-			printf("start_expression %d\n", p - input);
+			if (!(start_expression && name_end)) {
+				printf("start_expression %ld\n", p - input);
+				start_expression = p;
+			}
 		}
 		action action_end_expression {
-			printf("end_expression %d\n", p - input);
+			printf("end_expression %ld\n", p - input);
+			end_expression = p;
 		}
 
 		open = '<!--';

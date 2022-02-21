@@ -4,10 +4,13 @@
 
 int main(void) {
 
-	char input[128] = "<table>\n\t<!-- (param)Row -->\n<table>\n<!-- (param) -->";
-	printf("%s", input);
-	// printf("input: ");
-	// gets(input);
+	char input[128] = 
+	"<table>\n"
+	"	<th><!-- (param)Head --></th>\n"
+	"	<!-- (ref)Row -->\n"
+	"<table>\n";
+
+	printf("'%s'\n", input);
 
 	test(input);
 

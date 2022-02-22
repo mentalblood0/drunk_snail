@@ -51,7 +51,7 @@ def compilePrint(expression, target='result_end', approach=None, fragment_name=N
 		f'char *{prefix}_strings[{len(string_sequence)}]'\
 		f' = {{{json.dumps(string_sequence, indent=indent)[1:-1]}}};';
 	
-	args = []
+	args = ['target']
 	for w in set(keywords_sequence):
 		args += [
 			w,
@@ -65,12 +65,12 @@ def compilePrint(expression, target='result_end', approach=None, fragment_name=N
 	for e in splited_annotated:
 		if e['type'] == 'string':
 			cpy_definition_list.append(
-				f'\tmemcpy({target}, {prefix}_strings[{strings_copied}], {len(e["s"])}); {target} += {len(e["s"])};'
+				f'\tmemcpy(target, {prefix}_strings[{strings_copied}], {len(e["s"])}); target += {len(e["s"])};'
 			)
 			strings_copied += 1
 		elif e['type'] == 'keyword':
 			cpy_definition_list.append(
-				f'\tmemcpy({target}, {e["s"]}_start, {e["s"]}_end - {e["s"]}_start); {target} += {e["s"]}_end - {e["s"]}_start;'
+				f'\tmemcpy(target, {e["s"]}_start, {e["s"]}_end - {e["s"]}_start); target += {e["s"]}_end - {e["s"]}_start;'
 			)
 	cpy_definition_list.append('};')
 	

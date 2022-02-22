@@ -1,6 +1,22 @@
 import re
 import json
+import argparse
 
+
+
+parser = argparse.ArgumentParser(description='Compile prints to optimized form')
+parser.add_argument(
+	'--file',
+	'-f',
+	help='Path to file to compile',
+	required=True
+)
+parser.add_argument(
+	'--output',
+	'-o',
+	help='Path to output file',
+	required=False
+)
 
 
 keywords = [
@@ -9,7 +25,7 @@ keywords = [
 ]
 
 
-def compilePrint(expression, approach=None, fragment_name=None, prefix=None):
+def compilePrint(expression, target='result_end', approach=None, fragment_name=None, prefix=None):
 	
 	splited = expression.split('$')
 	splited_annotated = [
@@ -48,12 +64,12 @@ def compilePrint(expression, approach=None, fragment_name=None, prefix=None):
 	for e in splited_annotated:
 		if e['type'] == 'string':
 			cpy_definition_list.append(
-				f'\tmemcpy(result_end, {prefix}_strings[{strings_copied}], {len(e["s"])}); result_end += {len(e["s"])};'
+				f'\tmemcpy({target}, {prefix}_strings[{strings_copied}], {len(e["s"])}); {target} += {len(e["s"])};'
 			)
 			strings_copied += 1
 		elif e['type'] == 'keyword':
 			cpy_definition_list.append(
-				f'\tmemcpy(result_end, {e["s"]}_start, {e["s"]}_end - {e["s"]}_start); result_end += {e["s"]}_end - {e["s"]}_start;'
+				f'\tmemcpy({target}, {e["s"]}_start, {e["s"]}_end - {e["s"]}_start); {target} += {e["s"]}_end - {e["s"]}_start;'
 			)
 	cpy_definition_list.append('};')
 	
@@ -67,7 +83,7 @@ def compilePrint(expression, approach=None, fragment_name=None, prefix=None):
 def replacePrints(s):
 
 	result = s
-	found = re.findall(r'\n((.*) : compilePrint\(\"(.*)\"\))', s)
+	found = re.findall(r'\n((.*) {%\n*\t*(.*)\n\t*%})', s)
 	for line, prefix, expression in found:
 		compiled = compilePrint(expression, prefix=prefix)
 		result = result.replace(line, compiled)
@@ -75,9 +91,12 @@ def replacePrints(s):
 	return result
 
 
-expression = "lalala\n"\
-	"compileComprehension__for_end : compilePrint(\"for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$))"\
-	" else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))\")\n"\
-	"lololo"
+args = parser.parse_args()
 
-print(replacePrints(expression))
+with open(args.file, encoding='utf8') as f:
+	text = f.read()
+
+result = replacePrints(text)
+
+with open(args.output or 'a.out', 'w', encoding='utf8') as f:
+	f.write(result)

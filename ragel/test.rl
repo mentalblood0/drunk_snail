@@ -1,8 +1,6 @@
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <errno.h>
 
 %%{
 	machine test;
@@ -11,11 +9,9 @@
 
 
 
-enum ActionType {
-	ACTION_PARAM,
-	ACTION_REF,
-	ACTION_NONE
-};
+compileComprehension__for_end {%
+	for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))
+%}
 
 
 int test(char* input)

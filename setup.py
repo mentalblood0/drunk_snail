@@ -35,7 +35,8 @@ if __name__ == '__main__':
 		ext_modules=[
 			Extension(
 				'drunk_snail_c',
-				['drunk_snail/c/drunk_snail_c.c']
+				['drunk_snail/c/drunk_snail_c.c'],
+				extra_compile_args=['-O3']
 			)
 		],
 		install_requires=[

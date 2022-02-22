@@ -21,6 +21,18 @@ for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME
 %}
 
 
+compileComprehension__empty {%
+"$INDENT*INNER_INDENT_SIZE$$LINE$",
+%}
+
+
+enum ActionType {
+	ACTION_PARAM,
+	ACTION_REF,
+	ACTION_NONE
+};
+
+
 int test(char* input)
 {
 	char *p = input;

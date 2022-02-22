@@ -1,5 +1,4 @@
 import os
-import json
 import glob
 from distutils.core import setup, Extension
 

@@ -1,3 +1,4 @@
+import re
 import json
 
 
@@ -8,7 +9,7 @@ keywords = [
 ]
 
 
-def compilePrint(approach, fragment_name, expression):
+def compilePrint(expression, approach=None, fragment_name=None, prefix=None):
 	
 	splited = expression.split('$')
 	splited_annotated = [
@@ -27,7 +28,7 @@ def compilePrint(approach, fragment_name, expression):
 		else:
 			string_sequence.append(s)
 	
-	prefix = f'compile{approach.capitalize()}__{fragment_name}'
+	prefix = prefix or f'compile{approach.capitalize()}__{fragment_name}'
 
 	strings_definition = \
 		f'char *{prefix}_strings[{len(string_sequence)}]'\
@@ -54,17 +55,29 @@ def compilePrint(approach, fragment_name, expression):
 			cpy_definition_list.append(
 				f'\tmemcpy(result_end, {e["s"]}_start, {e["s"]}_end - {e["s"]}_start); result_end += {e["s"]}_end - {e["s"]}_start;'
 			)
-	cpy_definition_list.append('}')
+	cpy_definition_list.append('};')
 	
 	cpy_definition = '\\\n'.join(cpy_definition_list)
 
-	result = f'{strings_definition}\n\n{cpy_definition}'
+	result = f'{strings_definition}\n{cpy_definition}'
 
 	return result
 
 
-expression = "for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$))"\
-" else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))"
+def replacePrints(s):
 
-result = compilePrint('Comprehension', 'for_end', expression)
-print(result)
+	result = s
+	found = re.findall(r'\n((.*) : compilePrint\(\"(.*)\"\))', s)
+	for line, prefix, expression in found:
+		compiled = compilePrint(expression, prefix=prefix)
+		result = result.replace(line, compiled)
+	
+	return result
+
+
+expression = "lalala\n"\
+	"compileComprehension__for_end : compilePrint(\"for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$))"\
+	" else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))\")\n"\
+	"lololo"
+
+print(replacePrints(expression))

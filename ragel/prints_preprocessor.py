@@ -46,9 +46,10 @@ def compilePrint(expression, target='result_end', approach=None, fragment_name=N
 	
 	prefix = prefix or f'compile{approach.capitalize()}__{fragment_name}'
 
+	indent = '\t'
 	strings_definition = \
 		f'char *{prefix}_strings[{len(string_sequence)}]'\
-		f' = {{{json.dumps(string_sequence, indent=4)[1:-1]}}};';
+		f' = {{{json.dumps(string_sequence, indent=indent)[1:-1]}}};';
 	
 	args = []
 	for w in set(keywords_sequence):
@@ -83,7 +84,7 @@ def compilePrint(expression, target='result_end', approach=None, fragment_name=N
 def replacePrints(s):
 
 	result = s
-	found = re.findall(r'\n((.*) {%\n*\t*(.*)\n\t*%})', s)
+	found = re.findall(r'((.*) {%[ \n]+([^%]*)[ \n]+%})', s)
 	for line, prefix, expression in found:
 		compiled = compilePrint(expression, prefix=prefix)
 		result = result.replace(line, compiled)

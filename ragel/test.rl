@@ -10,10 +10,14 @@
 
 
 
-compileComprehension__for_end {% for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']])) %}
-
-compileComprehension__def {% def render($TEMPLATE_NAME$):
+compileComprehension__def {%
+def render($TEMPLATE_NAME$):
 	result = []
+
+%}
+
+compileComprehension__for_end {%
+for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))
 %}
 
 

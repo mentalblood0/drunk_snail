@@ -84,7 +84,7 @@ def compilePrint(expression, target='result_end', approach=None, fragment_name=N
 def replacePrints(s):
 
 	result = s
-	found = re.findall(r'((.*) {%[ \n]+([^%]*)[ \n]+%})', s)
+	found = re.findall(r'((.*) {%[ \n]([^%]*)[ \n]%})', s)
 	for line, prefix, expression in found:
 		compiled = compilePrint(expression, prefix=prefix)
 		result = result.replace(line, compiled)

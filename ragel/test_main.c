@@ -1,4 +1,4 @@
-#include "test.c"
+#include "test_preprocessed.c"
 
 
 
@@ -10,9 +10,10 @@ int main(void) {
 	"	<!-- (ref)Row -->\n"
 	"<table>\n";
 
-	printf("'%s'\n", input);
+	// printf("'%s'\n", input);
 
-	test(input);
+	char *output = compile(input);
+	puts(output);
 
 	return 0;
 }

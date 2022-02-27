@@ -11,4 +11,5 @@ compiled_templates_
 compileTemplates
 build
 a.out
-test_preprocessed.rl
+test_preprocessed*
+*.out

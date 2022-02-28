@@ -610,6 +610,7 @@ case 12:
 		case 10: goto tr4;
 		case 40: goto tr17;
 		case 60: goto tr5;
+		case 95: goto tr18;
 	}
 	if ( (*p) > 90 ) {
 		if ( 97 <= (*p) && (*p) <= 122 )
@@ -645,12 +646,13 @@ st13:
 	if ( ++p == pe )
 		goto _test_eof13;
 case 13:
-/* #line 649 "compileRagel.c" */
+/* #line 650 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr19;
 		case 45: goto tr20;
 		case 60: goto tr5;
+		case 95: goto st13;
 	}
 	if ( (*p) < 65 ) {
 		if ( 48 <= (*p) && (*p) <= 57 )
@@ -672,7 +674,7 @@ st14:
 	if ( ++p == pe )
 		goto _test_eof14;
 case 14:
-/* #line 676 "compileRagel.c" */
+/* #line 678 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st14;
@@ -691,7 +693,7 @@ st15:
 	if ( ++p == pe )
 		goto _test_eof15;
 case 15:
-/* #line 695 "compileRagel.c" */
+/* #line 697 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st16;
@@ -755,6 +757,7 @@ case 21:
 		case 10: goto tr4;
 		case 40: goto tr32;
 		case 60: goto tr5;
+		case 95: goto tr33;
 	}
 	if ( (*p) > 90 ) {
 		if ( 97 <= (*p) && (*p) <= 122 )
@@ -934,7 +937,7 @@ case 21:
 
 		}
 	break;
-/* #line 938 "compileRagel.c" */
+/* #line 941 "compileRagel.c" */
 	}
 	}
 

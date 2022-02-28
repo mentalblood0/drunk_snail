@@ -247,7 +247,14 @@ def test_table(approach: str):
 def test_endpoint_template(approach: str):
 
 	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt'), approach=approach)
-	
+	print(t.compiled)
+	print(t({
+		'route_to': 'route_to',
+		'methods': 'methods',
+		'handler_name': 'handler_name',
+		'handler_args': ', '.join(['a', 'b'])
+	}))
+
 	assert t({
 		'route_to': 'route_to',
 		'methods': 'methods',

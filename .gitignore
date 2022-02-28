@@ -9,8 +9,9 @@ build.cmd
 templates_
 compiled_templates_
 compileTemplates
-build
+build*
 a.out
-test_preprocessed*
+*preprocessed*
+compileRagel.c
 *.out
 test.py

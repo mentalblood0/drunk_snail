@@ -21,7 +21,7 @@ compileRagel__end {%
 %}
 
 compileRagel__for {%
-for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))
+for $ARG$ in ([$optional?None:$] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))
 %}
 
 
@@ -81,6 +81,7 @@ void compileRagel_(
 	int cs, act, top, stack[2], curline;
 
 	enum ActionType action_type = ACTION_NONE;
+	bool optional = false;
 
 	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
 
@@ -105,6 +106,7 @@ void compileRagel_(
 			name_start = NULL;
 			name_end = NULL;
 			action_type = ACTION_NONE;
+			optional = false;
 
 			printf("start_line %ld\n", p - input);
 			start_line = p;
@@ -164,6 +166,8 @@ void compileRagel_(
 			end_expression = NULL;
 			name_start = NULL;
 			name_end = NULL;
+			action_type = ACTION_NONE;
+			optional = false;
 
 		}
 
@@ -174,6 +178,10 @@ void compileRagel_(
 		action action_ref {
 			action_type = ACTION_REF;
 			printf("ref\n");
+		}
+		action action_optional {
+			optional = true;
+			printf("optional\n");
 		}
 
 		action action_name_start {
@@ -200,6 +208,7 @@ void compileRagel_(
 		close = '-->';
 		param = '(param)' %action_param;
 		ref = '(ref)' %action_ref;
+		optional = '(optional)' %action_optional;
 
 		delimeter = '\n';
 		other = (any - delimeter)+;

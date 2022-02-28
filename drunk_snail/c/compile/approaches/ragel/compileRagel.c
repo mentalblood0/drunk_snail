@@ -36,9 +36,10 @@ char *compileRagel__end_strings[1] = {
 	memcpy(target, compileRagel__end_strings[0], 2); target += 2;\
 };
 
-char *compileRagel__for_strings[11] = {
+char *compileRagel__for_strings[12] = {
 	"for ",
-	" in ([None] if ((not ",
+	" in ([",
+	"] if ((not ",
 	") or (not '",
 	"' in ",
 	")) else (",
@@ -52,25 +53,30 @@ char *compileRagel__for_strings[11] = {
 #define compileRagel__for(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
 	memcpy(target, compileRagel__for_strings[0], 4); target += 4;\
 	memcpy(target, ARG, ARG_length); target += ARG_length;\
-	memcpy(target, compileRagel__for_strings[1], 21); target += 21;\
-	memcpy(target, TEMPLATE_NAME, TEMPLATE_NAME_length); target += TEMPLATE_NAME_length;\
+	memcpy(target, compileRagel__for_strings[1], 6); target += 6;\
+	if (optional)\
+		memcpy(target, "None", 4);\
+	else\
+		memcpy(target, "", 0);\
 	memcpy(target, compileRagel__for_strings[2], 11); target += 11;\
-	memcpy(target, ARG, ARG_length); target += ARG_length;\
-	memcpy(target, compileRagel__for_strings[3], 5); target += 5;\
 	memcpy(target, TEMPLATE_NAME, TEMPLATE_NAME_length); target += TEMPLATE_NAME_length;\
-	memcpy(target, compileRagel__for_strings[4], 9); target += 9;\
-	memcpy(target, TEMPLATE_NAME, TEMPLATE_NAME_length); target += TEMPLATE_NAME_length;\
-	memcpy(target, compileRagel__for_strings[5], 2); target += 2;\
+	memcpy(target, compileRagel__for_strings[3], 11); target += 11;\
 	memcpy(target, ARG, ARG_length); target += ARG_length;\
-	memcpy(target, compileRagel__for_strings[6], 11); target += 11;\
+	memcpy(target, compileRagel__for_strings[4], 5); target += 5;\
 	memcpy(target, TEMPLATE_NAME, TEMPLATE_NAME_length); target += TEMPLATE_NAME_length;\
-	memcpy(target, compileRagel__for_strings[7], 2); target += 2;\
-	memcpy(target, ARG, ARG_length); target += ARG_length;\
-	memcpy(target, compileRagel__for_strings[8], 18); target += 18;\
+	memcpy(target, compileRagel__for_strings[5], 9); target += 9;\
 	memcpy(target, TEMPLATE_NAME, TEMPLATE_NAME_length); target += TEMPLATE_NAME_length;\
-	memcpy(target, compileRagel__for_strings[9], 2); target += 2;\
+	memcpy(target, compileRagel__for_strings[6], 2); target += 2;\
 	memcpy(target, ARG, ARG_length); target += ARG_length;\
-	memcpy(target, compileRagel__for_strings[10], 5); target += 5;\
+	memcpy(target, compileRagel__for_strings[7], 11); target += 11;\
+	memcpy(target, TEMPLATE_NAME, TEMPLATE_NAME_length); target += TEMPLATE_NAME_length;\
+	memcpy(target, compileRagel__for_strings[8], 2); target += 2;\
+	memcpy(target, ARG, ARG_length); target += ARG_length;\
+	memcpy(target, compileRagel__for_strings[9], 18); target += 18;\
+	memcpy(target, TEMPLATE_NAME, TEMPLATE_NAME_length); target += TEMPLATE_NAME_length;\
+	memcpy(target, compileRagel__for_strings[10], 2); target += 2;\
+	memcpy(target, ARG, ARG_length); target += ARG_length;\
+	memcpy(target, compileRagel__for_strings[11], 5); target += 5;\
 };
 
 
@@ -171,6 +177,7 @@ void compileRagel_(
 	int cs, act, top, stack[2], curline;
 
 	enum ActionType action_type = ACTION_NONE;
+	bool optional = false;
 
 	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
 
@@ -185,19 +192,19 @@ void compileRagel_(
 	printf("after compileRagel__def\n");
 
 	
-/* #line 189 "compileRagel.c" */
+/* #line 196 "compileRagel.c" */
 	{
 	cs = compile_start;
 	}
 
-/* #line 194 "compileRagel.c" */
+/* #line 201 "compileRagel.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 180 "compileRagel_preprocessed.rl" */
+/* #line 187 "compileRagel_preprocessed.rl" */
 	{
 
 			start_line = NULL;
@@ -207,11 +214,12 @@ tr1:
 			name_start = NULL;
 			name_end = NULL;
 			action_type = ACTION_NONE;
+			optional = false;
 
 			printf("start_line %ld\n", p - input);
 			start_line = p;
 		}
-/* #line 193 "compileRagel_preprocessed.rl" */
+/* #line 201 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_line %ld\n", p - input);
 			end_line = p;
@@ -267,11 +275,13 @@ tr1:
 			end_expression = NULL;
 			name_start = NULL;
 			name_end = NULL;
+			action_type = ACTION_NONE;
+			optional = false;
 
 		}
 	goto st0;
 tr4:
-/* #line 193 "compileRagel_preprocessed.rl" */
+/* #line 201 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_line %ld\n", p - input);
 			end_line = p;
@@ -327,16 +337,18 @@ tr4:
 			end_expression = NULL;
 			name_start = NULL;
 			name_end = NULL;
+			action_type = ACTION_NONE;
+			optional = false;
 
 		}
 	goto st0;
 tr23:
-/* #line 275 "compileRagel_preprocessed.rl" */
+/* #line 289 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_expression %ld\n", p - input);
 			end_expression = p;
 		}
-/* #line 193 "compileRagel_preprocessed.rl" */
+/* #line 201 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_line %ld\n", p - input);
 			end_line = p;
@@ -392,6 +404,8 @@ tr23:
 			end_expression = NULL;
 			name_start = NULL;
 			name_end = NULL;
+			action_type = ACTION_NONE;
+			optional = false;
 
 		}
 	goto st0;
@@ -399,14 +413,14 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 403 "compileRagel.c" */
+/* #line 417 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 180 "compileRagel_preprocessed.rl" */
+/* #line 187 "compileRagel_preprocessed.rl" */
 	{
 
 			start_line = NULL;
@@ -416,13 +430,14 @@ tr0:
 			name_start = NULL;
 			name_end = NULL;
 			action_type = ACTION_NONE;
+			optional = false;
 
 			printf("start_line %ld\n", p - input);
 			start_line = p;
 		}
 	goto st1;
 tr22:
-/* #line 275 "compileRagel_preprocessed.rl" */
+/* #line 289 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_expression %ld\n", p - input);
 			end_expression = p;
@@ -432,14 +447,14 @@ st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 436 "compileRagel.c" */
+/* #line 451 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 180 "compileRagel_preprocessed.rl" */
+/* #line 187 "compileRagel_preprocessed.rl" */
 	{
 
 			start_line = NULL;
@@ -449,11 +464,12 @@ tr2:
 			name_start = NULL;
 			name_end = NULL;
 			action_type = ACTION_NONE;
+			optional = false;
 
 			printf("start_line %ld\n", p - input);
 			start_line = p;
 		}
-/* #line 269 "compileRagel_preprocessed.rl" */
+/* #line 283 "compileRagel_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end)) {
 				printf("start_expression %ld\n", p - input);
@@ -462,7 +478,7 @@ tr2:
 		}
 	goto st2;
 tr5:
-/* #line 269 "compileRagel_preprocessed.rl" */
+/* #line 283 "compileRagel_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end)) {
 				printf("start_expression %ld\n", p - input);
@@ -471,14 +487,14 @@ tr5:
 		}
 	goto st2;
 tr24:
-/* #line 269 "compileRagel_preprocessed.rl" */
+/* #line 283 "compileRagel_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end)) {
 				printf("start_expression %ld\n", p - input);
 				start_expression = p;
 			}
 		}
-/* #line 275 "compileRagel_preprocessed.rl" */
+/* #line 289 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_expression %ld\n", p - input);
 			end_expression = p;
@@ -488,7 +504,7 @@ st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 492 "compileRagel.c" */
+/* #line 508 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -527,14 +543,14 @@ case 5:
 	}
 	goto st1;
 tr30:
-/* #line 251 "compileRagel_preprocessed.rl" */
+/* #line 261 "compileRagel_preprocessed.rl" */
 	{
 			action_type = ACTION_PARAM;
 			printf("param\n");
 		}
 	goto st6;
 tr35:
-/* #line 255 "compileRagel_preprocessed.rl" */
+/* #line 265 "compileRagel_preprocessed.rl" */
 	{
 			action_type = ACTION_REF;
 			printf("ref\n");
@@ -544,7 +560,7 @@ st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 548 "compileRagel.c" */
+/* #line 564 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -594,31 +610,31 @@ case 8:
 		goto tr14;
 	goto st1;
 tr14:
-/* #line 260 "compileRagel_preprocessed.rl" */
+/* #line 274 "compileRagel_preprocessed.rl" */
 	{
 			printf("name_start %ld\n", p - input);
 			name_start = p;
 		}
 	goto st9;
 tr31:
-/* #line 251 "compileRagel_preprocessed.rl" */
+/* #line 261 "compileRagel_preprocessed.rl" */
 	{
 			action_type = ACTION_PARAM;
 			printf("param\n");
 		}
-/* #line 260 "compileRagel_preprocessed.rl" */
+/* #line 274 "compileRagel_preprocessed.rl" */
 	{
 			printf("name_start %ld\n", p - input);
 			name_start = p;
 		}
 	goto st9;
 tr36:
-/* #line 255 "compileRagel_preprocessed.rl" */
+/* #line 265 "compileRagel_preprocessed.rl" */
 	{
 			action_type = ACTION_REF;
 			printf("ref\n");
 		}
-/* #line 260 "compileRagel_preprocessed.rl" */
+/* #line 274 "compileRagel_preprocessed.rl" */
 	{
 			printf("name_start %ld\n", p - input);
 			name_start = p;
@@ -628,7 +644,7 @@ st9:
 	if ( ++p == pe )
 		goto _test_eof9;
 case 9:
-/* #line 632 "compileRagel.c" */
+/* #line 648 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr15;
@@ -646,7 +662,7 @@ case 9:
 		goto st9;
 	goto st1;
 tr15:
-/* #line 264 "compileRagel_preprocessed.rl" */
+/* #line 278 "compileRagel_preprocessed.rl" */
 	{
 			printf("name_end %ld\n", p - input);
 			name_end = p;
@@ -656,7 +672,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-/* #line 660 "compileRagel.c" */
+/* #line 676 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st10;
@@ -665,7 +681,7 @@ case 10:
 	}
 	goto st1;
 tr16:
-/* #line 264 "compileRagel_preprocessed.rl" */
+/* #line 278 "compileRagel_preprocessed.rl" */
 	{
 			printf("name_end %ld\n", p - input);
 			name_end = p;
@@ -675,7 +691,7 @@ st11:
 	if ( ++p == pe )
 		goto _test_eof11;
 case 11:
-/* #line 679 "compileRagel.c" */
+/* #line 695 "compileRagel.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st12;
@@ -943,7 +959,7 @@ case 23:
 	case 21: 
 	case 22: 
 	case 23: 
-/* #line 193 "compileRagel_preprocessed.rl" */
+/* #line 201 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_line %ld\n", p - input);
 			end_line = p;
@@ -999,16 +1015,18 @@ case 23:
 			end_expression = NULL;
 			name_start = NULL;
 			name_end = NULL;
+			action_type = ACTION_NONE;
+			optional = false;
 
 		}
 	break;
 	case 13: 
-/* #line 275 "compileRagel_preprocessed.rl" */
+/* #line 289 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_expression %ld\n", p - input);
 			end_expression = p;
 		}
-/* #line 193 "compileRagel_preprocessed.rl" */
+/* #line 201 "compileRagel_preprocessed.rl" */
 	{
 			printf("end_line %ld\n", p - input);
 			end_line = p;
@@ -1064,16 +1082,18 @@ case 23:
 			end_expression = NULL;
 			name_start = NULL;
 			name_end = NULL;
+			action_type = ACTION_NONE;
+			optional = false;
 
 		}
 	break;
-/* #line 1071 "compileRagel.c" */
+/* #line 1091 "compileRagel.c" */
 	}
 	}
 
 	}
 
-/* #line 302 "compileRagel_preprocessed.rl" */
+/* #line 317 "compileRagel_preprocessed.rl" */
 
 
 	compileRagel__end(output_end);

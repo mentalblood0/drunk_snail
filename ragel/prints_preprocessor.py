@@ -21,7 +21,8 @@ parser.add_argument(
 
 includes_types = {
 	'keyword': r'ARG|TEMPLATE_NAME|LINE|OTHER_LEFT|OTHER_RIGHT',
-	'repetition': r'(\w|_)+(\*(\w|_)+)+'
+	'repetition': r'\w+\*\w+',
+	'condition': r'\w+\?[^:]*:[^:]*'
 }
 
 
@@ -88,6 +89,18 @@ def compilePrint(expression, name=None, defined=None):
 				f'\t\tmemcpy(target, {s}, {s}_length);',
 				f'\t\ttarget += {s}_length;',
 				f'\t}}'
+			]
+		
+		elif e['type'] == 'condition':
+
+			condition_object, values = e['s'].split('?')
+			value_if_true, value_if_false = values.split(':')
+
+			cpy_definition_list += [
+				f'\tif ({condition_object})',
+				f'\t\tmemcpy(target, "{value_if_true}", {len(value_if_true)});',
+				f'\telse',
+				f'\t\tmemcpy(target, "{value_if_false}", {len(value_if_false)});'
 			]
 		
 		elif e['type'] == 'call':

@@ -170,11 +170,16 @@ def test_consicutive_lines(approach: str):
 
 @pytest.mark.parametrize('approach', approaches)
 def test_optional_param(approach: str):
-	assert Template(
+	
+	t = Template(
 		'test_optional_param',
 		StringSource('<!-- (optional)(param)a -->'),
 		approach=approach
-	)() == ''
+	)
+	print(Template('test_optional_param', approach='comprehension').compiled)
+	print(Template('test_optional_param', approach='ragel').compiled)
+	
+	assert t() == ''
 
 
 @pytest.mark.parametrize('approach', approaches)

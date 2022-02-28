@@ -11,9 +11,10 @@
 
 
 compileRagel__def {%
-j = '\n'.join
+j=''.join
+J='\n'.join
 def render($TEMPLATE_NAME$):
-	return j([
+	return J([
 %}
 
 compileRagel__end {%
@@ -21,7 +22,7 @@ compileRagel__end {%
 %}
 
 compileRagel__for {%
-for $ARG$ in ([$optional?None:$] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))
+for $ARG$ in ([$optional?:None$] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))
 %}
 
 
@@ -33,8 +34,12 @@ compileRagel__param {%
 *[f"$INDENT*INNER_INDENT_SIZE$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$"$compileRagel__for$],
 %}
 
-compileRagel__ref {%
-*[j([$compile(getTemplate(ARG))$])$compileRagel__for$],
+compileRagel__ref_before {%
+*[j(["$OTHER_LEFT$","$OTHER_RIGHT$\n$OTHER_LEFT$".join([
+%}
+
+compileRagel__ref_after {%
+]),"$OTHER_RIGHT$"])$compileRagel__for$],
 %}
 
 
@@ -50,29 +55,29 @@ char compileRagel__indent[2] = "\t";
 void compileRagel_(
 	CompilationResult *compilation_result,
 	char *template_name,
+	int template_name_length,
 	Tree *templates_tree,
-	int inner_indent_size,
+	char **output_end,
+	int depth,
 	int buffer_size
 )
 {
 
-	Template *template = dictionaryLookup(templates_tree, template_name);
+	Template *template = dictionaryLookupUnterminated(templates_tree, template_name, template_name_length);
 	if (template == NULL) {
 		compilation_result->code = 1;
 		compilation_result->message = malloc(sizeof(char) * 256);
 		snprintf(
 			compilation_result->message, 
 			256, 
-			"Can not compile template \"%s\": not loaded\n", 
-			template_name
+			"Can not compile template \"%.*s\": not loaded\n", 
+			template_name_length, template_name
 		);
 		return;
 	}
 	
 	char *input = template->text;
-
-	int template_name_length = 0;
-	for (template_name_length = 0; template_name[template_name_length]; template_name_length++);
+	int inner_indent_size = 0;
 
 	char *p = input;
 	const char *pe = input + strlen(input);
@@ -85,15 +90,19 @@ void compileRagel_(
 
 	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
 
-	if (!compilation_result->result) {
+	if (compilation_result->result == NULL) {
+		// printf("malloc\n");
 		compilation_result->result = malloc(sizeof(char) * buffer_size);
+		output_end = malloc(sizeof(char*) * 1);
+		*output_end = compilation_result->result;
 	}
-	char *output_end = compilation_result->result;
 
-	printf("after init\n");
+	// printf("after init\n");
 
-	compileRagel__def(output_end, template_name, template_name_length);
-	printf("after compileRagel__def\n");
+	if (!depth) {
+		compileRagel__def(output_end, template_name, template_name_length);
+		// printf("after compileRagel__def\n");
+	}
 
 	%%{
 	
@@ -108,25 +117,25 @@ void compileRagel_(
 			action_type = ACTION_NONE;
 			optional = false;
 
-			printf("start_line %ld\n", p - input);
+			// printf("start_line %ld %ld\n", p - input, (*output_end) - compilation_result->result);
 			start_line = p;
 		}
 		action action_end_line {
-			printf("end_line %ld\n", p - input);
+			// printf("end_line %ld\n", p - input);
 			end_line = p;
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					printf(
-						"---------- PARAM ----------\n"
-						"other_left: '%.*s'\n"
-						"name: '%.*s'\n"
-						"other_right: '%.*s'\n"
-						"---------------------------\n",
-						start_expression - start_line, start_line,
-						name_end - name_start, name_start,
-						end_line - end_expression, end_expression
-					);
+					// printf(
+					// 	"---------- PARAM ----------\n"
+					// 	"other_left: '%.*s'\n"
+					// 	"name: '%.*s'\n"
+					// 	"other_right: '%.*s'\n"
+					// 	"---------------------------\n",
+					// 	start_expression - start_line, start_line,
+					// 	name_end - name_start, name_start,
+					// 	end_line - end_expression, end_expression
+					// );
 					compileRagel__param(
 						output_end,
 						start_line, start_expression - start_line,
@@ -135,29 +144,43 @@ void compileRagel_(
 						compileRagel__indent, 1, inner_indent_size,
 						template_name, template_name_length
 					);
-					printf("after compileRagel__param\n");
+					// printf("after compileRagel__param\n");
 				}
-				else if (action_type == ACTION_REF)
-					printf(
-						"----------- REF -----------\n"
-						"other_left: '%.*s'\n"
-						"name: '%.*s'\n"
-						"other_right: '%.*s'\n"
-						"---------------------------\n",
-						start_expression - start_line, start_line,
-						name_end - name_start, name_start,
-						end_line - end_expression, end_expression
+				else if (action_type == ACTION_REF) {
+					// printf(
+					// 	"----------- REF -----------\n"
+					// 	"other_left: '%.*s'\n"
+					// 	"name: '%.*s'\n"
+					// 	"other_right: '%.*s'\n"
+					// 	"---------------------------\n",
+					// 	start_expression - start_line, start_line,
+					// 	name_end - name_start, name_start,
+					// 	end_line - end_expression, end_expression
+					// );
+					compileRagel__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
+					// printf("after compileRagel__ref_before\n");
+					compileRagel_(
+						compilation_result,
+						name_start,
+						name_end - name_start,
+						templates_tree,
+						output_end,
+						depth + 1,
+						buffer_size
 					);
+					compileRagel__ref_after(output_end, end_expression, end_line - end_expression, name_start, name_end - name_start, template_name, template_name_length);
+					// printf("after compileRagel__ref_after\n");
+				}
 			}
 			if (action_type == ACTION_NONE) {
-				printf(
-					"---------- EMPTY ----------\n"
-					"line: '%.*s'\n"
-					"---------------------------\n",
-					end_line - start_line, start_line
-				);
+				// printf(
+				// 	"---------- EMPTY ----------\n"
+				// 	"line: '%.*s'\n"
+				// 	"---------------------------\n",
+				// 	end_line - start_line, start_line
+				// );
 				compileRagel__empty(output_end, start_line, end_line - start_line, compileRagel__indent, 1, inner_indent_size);
-				printf("after compileRagel__empty\n");
+				// printf("after compileRagel__empty\n");
 			}
 
 			start_line = NULL;
@@ -173,34 +196,34 @@ void compileRagel_(
 
 		action action_param {
 			action_type = ACTION_PARAM;
-			printf("param\n");
+			// printf("param\n");
 		}
 		action action_ref {
 			action_type = ACTION_REF;
-			printf("ref\n");
+			// printf("ref\n");
 		}
 		action action_optional {
 			optional = true;
-			printf("optional\n");
+			// printf("optional\n");
 		}
 
 		action action_name_start {
-			printf("name_start %ld\n", p - input);
+			// printf("name_start %ld\n", p - input);
 			name_start = p;
 		}
 		action action_name_end {
-			printf("name_end %ld\n", p - input);
+			// printf("name_end %ld\n", p - input);
 			name_end = p;
 		}
 
 		action action_start_expression {
 			if (!(start_expression && name_end)) {
-				printf("start_expression %ld\n", p - input);
+				// printf("start_expression %ld\n", p - input);
 				start_expression = p;
 			}
 		}
 		action action_end_expression {
-			printf("end_expression %ld\n", p - input);
+			// printf("end_expression %ld\n", p - input);
 			end_expression = p;
 		}
 
@@ -214,7 +237,7 @@ void compileRagel_(
 		other = (any - delimeter)+;
 
 		unknown_operator = '(' [a-zA-Z_][a-zA-Z_0-9]* ')';
-		operator = param | ref | unknown_operator;
+		operator = param | ref | optional;
 		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_name_start %action_name_end;
 
 		expression = (open ' '* operator+ name ' '* close) >action_start_expression %action_end_expression;
@@ -229,9 +252,11 @@ void compileRagel_(
 		write exec;
 	}%%
 
-	compileRagel__end(output_end);
-	printf("after compileRagel__end\n");
-	*output_end = 0;
+	if (!depth) {
+		compileRagel__end(output_end);
+		// printf("after compileRagel__end\n");
+		**output_end = 0;
+	}
 };
 
 
@@ -247,6 +272,9 @@ static PyObject *compileRagel (
 		return PyLong_FromLong(-1);
 	}
 
+	int name_length = 0;
+	for (name_length = 0; name[name_length]; name_length++);
+
 	CompilationResult *compilation_result = malloc(sizeof(CompilationResult) * 1);
 	compilation_result->code = 0;
 	compilation_result->message = NULL;
@@ -254,7 +282,9 @@ static PyObject *compileRagel (
 	compileRagel_(
 		compilation_result,
 		name,
+		name_length,
 		_templates,
+		NULL,
 		0,
 		buffer_size
 	);

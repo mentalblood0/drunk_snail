@@ -137,6 +137,31 @@ void* treeGet(TreeNode *node, char *key) {
 }
 
 
+void* treeGetUnterminated(TreeNode *node, char *key, int length) {
+
+	char *c = NULL;
+	
+	for (c = key; c - key < length; c++) {
+
+		if ((int)(*c) == -1)
+			return NULL;
+		
+		node = node->children[(int)(*c)];
+		if (!node)
+			return NULL;
+	
+	}
+
+	return node->value;
+
+}
+
+
 void* dictionaryLookup(Tree *tree, char *key) {
 	return treeGet(&tree->root, key);
+}
+
+
+void* dictionaryLookupUnterminated(Tree *tree, char *key, int length) {
+	return treeGetUnterminated(&tree->root, key, length);
 }

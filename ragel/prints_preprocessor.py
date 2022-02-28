@@ -64,13 +64,13 @@ def compilePrint(expression, name=None, defined=None):
 
 		if e['type'] == None:
 			cpy_definition_list.append(
-				f'\tmemcpy(target, {name}_strings[{strings_copied}], {len(e["s"])}); target += {len(e["s"])};'
+				f'\tmemcpy(*target, {name}_strings[{strings_copied}], {len(e["s"])}); *target += {len(e["s"])};'
 			)
 			strings_copied += 1
 		
 		elif e['type'] == 'keyword':
 			cpy_definition_list.append(
-				f'\tmemcpy(target, {e["s"]}, {e["s"]}_length); target += {e["s"]}_length;'
+				f'\tmemcpy(*target, {e["s"]}, {e["s"]}_length); *target += {e["s"]}_length;'
 			)
 		
 		elif e['type'] == 'repetition':
@@ -86,8 +86,8 @@ def compilePrint(expression, name=None, defined=None):
 
 			cpy_definition_list += [
 				f'\tfor ({counter} = 0; {counter} < {number}; {counter}++) {{',
-				f'\t\tmemcpy(target, {s}, {s}_length);',
-				f'\t\ttarget += {s}_length;',
+				f'\t\tmemcpy(*target, {s}, {s}_length);',
+				f'\t\t*target += {s}_length;',
 				f'\t}}'
 			]
 		
@@ -97,10 +97,12 @@ def compilePrint(expression, name=None, defined=None):
 			value_if_true, value_if_false = values.split(':')
 
 			cpy_definition_list += [
-				f'\tif ({condition_object})',
-				f'\t\tmemcpy(target, "{value_if_true}", {len(value_if_true)});',
-				f'\telse',
-				f'\t\tmemcpy(target, "{value_if_false}", {len(value_if_false)});'
+				f'\tif ({condition_object}) {{',
+				f'\t\tmemcpy(*target, "{value_if_true}", {len(value_if_true)}); *target += {len(value_if_true)};',
+				f'\t}}',
+				f'\telse {{',
+				f'\t\tmemcpy(*target, "{value_if_false}", {len(value_if_false)}); *target += {len(value_if_false)};',
+				f'\t}}'
 			]
 		
 		elif e['type'] == 'call':

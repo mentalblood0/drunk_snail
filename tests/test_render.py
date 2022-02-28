@@ -15,31 +15,30 @@ keywords = {
 	'ref_operator': '(ref)'
 }
 
-# approaches = ['comprehension', 'append', 'ragel']
-approaches = ['ragel']
+approaches = ['comprehension', 'append', 'ragel']
 
 
 @pytest.mark.parametrize('approach', approaches)
 def test_basic(approach: str):
 	
-	# result = Template(
-	# 	'test_render_basic', 
-	# 	StringSource('<!-- (param)x -->'), 
-	# 	keywords,
-	# 	approach=approach
-	# )({
-	# 	'x': 'lalala'
-	# })
-	# assert result == 'lalala' or result == 'lalala\n'
+	result = Template(
+		'test_render_basic', 
+		StringSource('<!-- (param)x -->'), 
+		keywords,
+		approach=approach
+	)({
+		'x': 'lalala'
+	})
+	assert result == 'lalala' or result == 'lalala\n'
 
-	# result = Template(
-	# 	'test_render_basic', 
-	# 	StringSource('<!-- (param)x -->\n'),
-	# 	approach=approach
-	# )({
-	# 	'x': 'lalala'
-	# })
-	# assert result == 'lalala' or result == 'lalala\n'
+	result = Template(
+		'test_render_basic', 
+		StringSource('<!-- (param)x -->\n'),
+		approach=approach
+	)({
+		'x': 'lalala'
+	})
+	assert result == 'lalala' or result == 'lalala\n'
 
 	result = Template(
 		'test_render_basic', 
@@ -93,17 +92,21 @@ def test_ref(approach: str):
 		approach=approach
 	)
 
-	result = Template(
+	t = Template(
 		'greeting', 
 		StringSource('Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n'), 
 		keywords,
 		approach=approach
-	)({
+	)
+	print(t.compiled)
+	
+	result = t({
 		'name': 'username',
 		'addition': {
 			'action': 'eat'
 		}
 	})
+	print(result)
 	assert result == 'Hello, username!\nNice to eat you!' or result == 'Hello, username!\nNice to eat you!\n'
 
 	result = Template('greeting')({
@@ -230,7 +233,7 @@ def test_table(approach: str):
 	row = Template('Row', FileSource('templates/Row.xml'), approach=approach)
 	table = Template('Table', FileSource('templates/Table.xml'), approach=approach)
 
-	# print(table.compiled)
+	print(table.compiled)
 	# assert False
 	
 	args = {
@@ -242,10 +245,13 @@ def test_table(approach: str):
 	}
 
 	result = table(args)
+	print(result)
 
 	with open('tests/table_correct_result.xml', encoding='utf8') as f:
 		correct_result = f.read()
 	assert result == correct_result
+
+test_table('ragel')
 
 
 @pytest.mark.parametrize('approach', approaches)

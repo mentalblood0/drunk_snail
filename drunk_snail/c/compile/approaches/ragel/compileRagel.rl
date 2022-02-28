@@ -10,31 +10,31 @@
 
 
 
-compileComprehension__def {%
+compileRagel__def {%
 j = '\n'.join
 def render($TEMPLATE_NAME$):
 	return j([
 %}
 
-compileComprehension__end {%
+compileRagel__end {%
 ])
 %}
 
-compileComprehension__for {%
+compileRagel__for {%
 for $ARG$ in ([None] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))
 %}
 
 
-compileComprehension__empty {%
+compileRagel__empty {%
 "$INDENT*INNER_INDENT_SIZE$$LINE$",
 %}
 
-compileComprehension__param {%
-*[f"$INDENT*INNER_INDENT_SIZE$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$"$compileComprehension__for$,
+compileRagel__param {%
+*[f"$INDENT*INNER_INDENT_SIZE$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$"$compileRagel__for$],
 %}
 
-compileComprehension__ref {%
-*[j([$compile(getTemplate(ARG))$])$compileComprehension__for$],
+compileRagel__ref {%
+*[j([$compile(getTemplate(ARG))$])$compileRagel__for$],
 %}
 
 
@@ -47,7 +47,7 @@ enum ActionType {
 
 char compileRagel__indent[2] = "\t";
 
-char* compileRagel_(
+void compileRagel_(
 	CompilationResult *compilation_result,
 	char *template_name,
 	Tree *templates_tree,
@@ -69,10 +69,10 @@ char* compileRagel_(
 		return;
 	}
 	
-	char *p = template->text;
+	char *input = template->text;
 
 	int template_name_length = 0;
-	for (template_name_length = 0; *template_name[template_name_length]; template_name_length++);
+	for (template_name_length = 0; template_name[template_name_length]; template_name_length++);
 
 	char *p = input;
 	const char *pe = input + strlen(input);
@@ -89,7 +89,10 @@ char* compileRagel_(
 	}
 	char *output_end = compilation_result->result;
 
-	compileComprehension__def(output_end, template_name, template_name_length);
+	printf("after init\n");
+
+	compileRagel__def(output_end, template_name, template_name_length);
+	printf("after compileRagel__def\n");
 
 	%%{
 	
@@ -103,82 +106,93 @@ char* compileRagel_(
 			name_end = NULL;
 			action_type = ACTION_NONE;
 
-			// printf("start_line %ld\n", p - input);
+			printf("start_line %ld\n", p - input);
 			start_line = p;
 		}
 		action action_end_line {
-			// printf("end_line %ld\n", p - input);
+			printf("end_line %ld\n", p - input);
 			end_line = p;
 
-			if (action_type == ACTION_PARAM) {
-				// printf(
-				// 	"---------- PARAM ----------\n"
-				// 	"other_left: '%.*s'\n"
-				// 	"name: '%.*s'\n"
-				// 	"other_right: '%.*s'\n"
-				// 	"---------------------------\n",
-				// 	start_expression - start_line, start_line,
-				// 	name_end - name_start, name_start,
-				// 	end_line - end_expression, end_expression
-				// );
-				compileComprehension__param(
-					output_end,
-					start_line, start_expression - start_line,
-					name_start, name_end - name_start,
-					end_expression, end_line - end_expression,
-					compileRagel__indent, 1, inner_indent_size,
-					template_name, template_name_length
+			if (name_end && end_expression) {
+				if (action_type == ACTION_PARAM) {
+					printf(
+						"---------- PARAM ----------\n"
+						"other_left: '%.*s'\n"
+						"name: '%.*s'\n"
+						"other_right: '%.*s'\n"
+						"---------------------------\n",
+						start_expression - start_line, start_line,
+						name_end - name_start, name_start,
+						end_line - end_expression, end_expression
+					);
+					compileRagel__param(
+						output_end,
+						start_line, start_expression - start_line,
+						name_start, name_end - name_start,
+						end_expression, end_line - end_expression,
+						compileRagel__indent, 1, inner_indent_size,
+						template_name, template_name_length
+					);
+					printf("after compileRagel__param\n");
+				}
+				else if (action_type == ACTION_REF)
+					printf(
+						"----------- REF -----------\n"
+						"other_left: '%.*s'\n"
+						"name: '%.*s'\n"
+						"other_right: '%.*s'\n"
+						"---------------------------\n",
+						start_expression - start_line, start_line,
+						name_end - name_start, name_start,
+						end_line - end_expression, end_expression
+					);
+			}
+			if (action_type == ACTION_NONE) {
+				printf(
+					"---------- EMPTY ----------\n"
+					"line: '%.*s'\n"
+					"---------------------------\n",
+					end_line - start_line, start_line
 				);
+				compileRagel__empty(output_end, start_line, end_line - start_line, compileRagel__indent, 1, inner_indent_size);
+				printf("after compileRagel__empty\n");
 			}
-			// else if (action_type == ACTION_REF)
-			// 	printf(
-			// 		"----------- REF -----------\n"
-			// 		"other_left: '%.*s'\n"
-			// 		"name: '%.*s'\n"
-			// 		"other_right: '%.*s'\n"
-			// 		"---------------------------\n",
-			// 		start_expression - start_line, start_line,
-			// 		name_end - name_start, name_start,
-			// 		end_line - end_expression, end_expression
-			// 	);
-			else if (action_type == ACTION_NONE) {
-				// printf(
-				// 	"---------- EMPTY ----------\n"
-				// 	"line: '%.*s'\n"
-				// 	"---------------------------\n",
-				// 	end_line - start_line, start_line
-				// );
-				compileComprehension__empty(output_end, start_line, end_line - start_line, compileRagel__indent, 1, inner_indent_size);
-			}
+
+			start_line = NULL;
+			end_line = NULL;
+			start_expression = NULL;
+			end_expression = NULL;
+			name_start = NULL;
+			name_end = NULL;
 
 		}
 
 		action action_param {
 			action_type = ACTION_PARAM;
-			// printf("param\n");
+			printf("param\n");
 		}
 		action action_ref {
 			action_type = ACTION_REF;
-			// printf("ref\n");
+			printf("ref\n");
 		}
 
 		action action_name_start {
-			// printf("name_start %ld\n", p - input);
+			printf("name_start %ld\n", p - input);
 			name_start = p;
 		}
 		action action_name_end {
-			// printf("name_end %ld\n", p - input);
+			printf("name_end %ld\n", p - input);
 			name_end = p;
 		}
 
 		action action_start_expression {
 			if (!(start_expression && name_end)) {
-				// printf("start_expression %ld\n", p - input);
+				printf("start_expression %ld\n", p - input);
 				start_expression = p;
 			}
 		}
 		action action_end_expression {
-			// printf("end_expression %ld\n", p - input);
+			printf("end_expression %ld\n", p - input);
 			end_expression = p;
 		}
 
@@ -190,8 +204,9 @@ char* compileRagel_(
 		delimeter = '\n';
 		other = (any - delimeter)+;
 
-		operator = param | ref;
-		name = (alpha+ alnum*) >action_name_start %action_name_end;
+		unknown_operator = '(' [a-zA-Z_][a-zA-Z_0-9]* ')';
+		operator = param | ref | unknown_operator;
+		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_name_start %action_name_end;
 
 		expression = (open ' '* operator+ name ' '* close) >action_start_expression %action_end_expression;
 
@@ -205,10 +220,9 @@ char* compileRagel_(
 		write exec;
 	}%%
 
-	compileComprehension__end(output_end);
+	compileRagel__end(output_end);
+	printf("after compileRagel__end\n");
 	*output_end = 0;
-
-	return compilation_result;
 };
 
 
@@ -228,10 +242,11 @@ static PyObject *compileRagel (
 	compilation_result->code = 0;
 	compilation_result->message = NULL;
 	compilation_result->result = NULL;
-	compileComprehension_(
+	compileRagel_(
 		compilation_result,
 		name,
 		_templates,
+		0,
 		buffer_size
 	);
 
@@ -242,7 +257,7 @@ static PyObject *compileRagel (
 		PyTuple_SetItem(t, 2, PyUnicode_FromString(""));
 	}
 	else {
-		PyTuple_SetItem(t, 1, PyUnicode_FromString(compilation_result->message));
+		PyTuple_SetItem(t, 1, PyUnicode_FromString(""));
 		PyTuple_SetItem(t, 2, PyUnicode_FromString(compilation_result->result));
 	}
 	

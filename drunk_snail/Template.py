@@ -114,8 +114,8 @@ class _Template:
 		self._name = name
 		self._source = source
 		self._keywords = default_keywords | keywords
-		self._approach = approach
-		self._approachFunc = approaches[approach]
+		self._approach = approach or 'comprehension'
+		self._approachFunc = approaches[self._approach]
 
 		self._compiled = None
 		self._function = None

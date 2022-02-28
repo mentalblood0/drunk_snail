@@ -9,14 +9,15 @@ if __name__ == '__main__':
 
 	approach = [
 		'append',
-		'comprehension'
-	][1]
+		'comprehension',
+		'ragel'
+	][2]
 
 	keywords = {
-		'open_tag': '{',
-		'close_tag': '}',
-		'param_operator': 'p:',
-		'ref_operator': 'r:'
+		'open_tag': '<!--',
+		'close_tag': '-->',
+		'param_operator': '(param)',
+		'ref_operator': '(ref)'
 	}
 	template_name_prefix = "t"
 

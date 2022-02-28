@@ -1,6 +1,6 @@
 {
 	"compile::fibonacci": {
-		"__n__": 100,
+		"__n__": 1000,
 		"keywords": {
 			"open_tag": "<!--",
 			"close_tag": "-->",
@@ -8,7 +8,7 @@
 			"ref_operator": "(ref)"
 		},
 		"folding_depth": 15,
-		"template_name_prefix": "benchmark_compile_",
+		"template_name_prefix": "t",
 		"approach": "ragel"
 	},
 	"render::args_to_str": {

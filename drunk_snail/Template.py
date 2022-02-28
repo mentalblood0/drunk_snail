@@ -206,11 +206,7 @@ class _Template:
 					
 					elif code != 0:
 
-						print(message)
-
 						not_loaded_list = re.search(r'\"(\w+)\"', message).groups()
-						print(not_loaded_list)
-						print(templates)
 
 						if len(not_loaded_list) and hasattr(self.source, 'path'):
 							for name in not_loaded_list:

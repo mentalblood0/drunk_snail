@@ -10,7 +10,7 @@ class table(Benchmark):
 
 		if not hasattr(self, 'table'):
 
-			with open('templates/mako_template.html', 'r', encoding='utf8') as f:
+			with open('templates/mako_template.xml', 'r', encoding='utf8') as f:
 				text = f.read()
 
 			self.table = Template(text)

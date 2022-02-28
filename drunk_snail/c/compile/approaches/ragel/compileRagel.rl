@@ -50,7 +50,17 @@ enum ActionType {
 };
 
 
-char compileRagel__indent[2] = "\t";
+#define reset_line_properties() {\
+	start_line = NULL;\
+	end_line = NULL;\
+	start_expression = NULL;\
+	end_expression = NULL;\
+	name_start = NULL;\
+	name_end = NULL;\
+	action_type = ACTION_NONE;\
+	optional = false;\
+}
+
 
 void compileRagel_(
 	CompilationResult *compilation_result,
@@ -75,11 +85,9 @@ void compileRagel_(
 		);
 		return;
 	}
-	
-	char *input = template->text;
 
-	char *p = input;
-	const char *pe = input + template->length;
+	char *p = template->text;
+	const char *pe = template->text + template->length;
 	const char *eof = pe;
 	const char *ts, *te;
 	int cs, act, top, stack[2], curline;
@@ -90,51 +98,26 @@ void compileRagel_(
 	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
 
 	if (compilation_result->result == NULL) {
-		// printf("malloc\n");
 		compilation_result->result = malloc(sizeof(char) * buffer_size);
 		output_end = malloc(sizeof(char*) * 1);
 		*output_end = compilation_result->result;
 	}
 
-	// printf("after init\n");
-
-	if (!depth) {
+	if (!depth)
 		compileRagel__def(output_end, template_name, template_name_length);
-		// printf("after compileRagel__def\n");
-	}
 
 	%%{
 	
 		action action_start_line {
-
-			start_line = NULL;
-			end_line = NULL;
-			start_expression = NULL;
-			end_expression = NULL;
-			name_start = NULL;
-			name_end = NULL;
-			action_type = ACTION_NONE;
-			optional = false;
-
-			// printf("start_line %ld %ld\n", p - input, (*output_end) - compilation_result->result);
+			reset_line_properties();
 			start_line = p;
 		}
 		action action_end_line {
-			// printf("end_line %ld\n", p - input);
+
 			end_line = p;
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					// printf(
-					// 	"---------- PARAM ----------\n"
-					// 	"other_left: '%.*s'\n"
-					// 	"name: '%.*s'\n"
-					// 	"other_right: '%.*s'\n"
-					// 	"---------------------------\n",
-					// 	start_expression - start_line, start_line,
-					// 	name_end - name_start, name_start,
-					// 	end_line - end_expression, end_expression
-					// );
 					compileRagel__param(
 						output_end,
 						start_line, start_expression - start_line,
@@ -142,21 +125,9 @@ void compileRagel_(
 						end_expression, end_line - end_expression,
 						template_name, template_name_length
 					);
-					// printf("after compileRagel__param\n");
 				}
 				else if (action_type == ACTION_REF) {
-					// printf(
-					// 	"----------- REF -----------\n"
-					// 	"other_left: '%.*s'\n"
-					// 	"name: '%.*s'\n"
-					// 	"other_right: '%.*s'\n"
-					// 	"---------------------------\n",
-					// 	start_expression - start_line, start_line,
-					// 	name_end - name_start, name_start,
-					// 	end_line - end_expression, end_expression
-					// );
 					compileRagel__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
-					// printf("after compileRagel__ref_before\n");
 					compileRagel_(
 						compilation_result,
 						name_start,
@@ -174,61 +145,37 @@ void compileRagel_(
 						return;
 					}
 					compileRagel__ref_after(output_end, end_expression, end_line - end_expression, name_start, name_end - name_start, template_name, template_name_length);
-					// printf("after compileRagel__ref_after\n");
 				}
 			}
-			if (action_type == ACTION_NONE) {
-				// printf(
-				// 	"---------- EMPTY ----------\n"
-				// 	"line: '%.*s'\n"
-				// 	"---------------------------\n",
-				// 	end_line - start_line, start_line
-				// );
+			if (action_type == ACTION_NONE)
 				compileRagel__empty(output_end, start_line, end_line - start_line);
-				// printf("after compileRagel__empty\n");
-			}
 
-			start_line = NULL;
-			end_line = NULL;
-			start_expression = NULL;
-			end_expression = NULL;
-			name_start = NULL;
-			name_end = NULL;
-			action_type = ACTION_NONE;
-			optional = false;
+			reset_line_properties();
 
 		}
 
 		action action_param {
 			action_type = ACTION_PARAM;
-			// printf("param\n");
 		}
 		action action_ref {
 			action_type = ACTION_REF;
-			// printf("ref\n");
 		}
 		action action_optional {
 			optional = true;
-			// printf("optional\n");
 		}
 
 		action action_name_start {
-			// printf("name_start %ld\n", p - input);
 			name_start = p;
 		}
 		action action_name_end {
-			// printf("name_end %ld\n", p - input);
 			name_end = p;
 		}
 
 		action action_start_expression {
-			if (!(start_expression && name_end)) {
-				// printf("start_expression %ld\n", p - input);
+			if (!(start_expression && name_end))
 				start_expression = p;
-			}
 		}
 		action action_end_expression {
-			// printf("end_expression %ld\n", p - input);
 			end_expression = p;
 		}
 
@@ -241,7 +188,6 @@ void compileRagel_(
 		delimeter = '\n';
 		other = (any - delimeter)+;
 
-		unknown_operator = '(' [a-zA-Z_][a-zA-Z_0-9]* ')';
 		operator = param | ref | optional;
 		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_name_start %action_name_end;
 
@@ -252,14 +198,12 @@ void compileRagel_(
 		template = (line delimeter)* (line - zlen)?;
 		main := template;
 
-		# Initialize and execute.
 		write init;
 		write exec;
 	}%%
 
 	if (!depth) {
 		compileRagel__end(output_end);
-		// printf("after compileRagel__end\n");
 		**output_end = 0;
 	}
 };

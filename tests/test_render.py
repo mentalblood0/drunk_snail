@@ -157,8 +157,7 @@ def test_consicutive_lines(approach: str):
 
 	t3 = Template(
 		'test_consicutive_lines_3',
-		StringSource('''
-\t<!-- (optional)(ref)test_consicutive_lines_1 -->
+		StringSource('''\t<!-- (optional)(ref)test_consicutive_lines_1 -->
 \t<!-- (optional)(ref)test_consicutive_lines_2 -->
 '''),
 		approach=approach
@@ -168,7 +167,7 @@ def test_consicutive_lines(approach: str):
 		'test_consicutive_lines_1': {},
 		'test_consicutive_lines_2': {}
 	})
-	assert result == '\n\ta\n\tb' or result == '\n\ta\n\tb\n'
+	assert result == '\ta\n\tb' or result == '\ta\n\tb\n'
 
 
 @pytest.mark.parametrize('approach', approaches)

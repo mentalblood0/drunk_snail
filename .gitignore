@@ -13,3 +13,4 @@ build
 a.out
 test_preprocessed*
 *.out
+test.py

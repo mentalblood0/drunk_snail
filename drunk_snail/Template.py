@@ -29,14 +29,15 @@ keywords_symbols: dict[str, str] = {
 }
 
 approaches = {
+	'append': drunk_snail_c.compileAppend,
 	'comprehension': drunk_snail_c.compileComprehension,
-	'append': drunk_snail_c.compileAppend
+	'ragel': drunk_snail_c.compileRagel
 }
 
 
 class Template:
 
-	def __init__(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None, approach: str='comprehension'):
+	def __init__(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None, approach: str=None):
 
 		if not name in templates:
 			templates[name] = _Template(
@@ -120,7 +121,8 @@ class _Template:
 		self._function = None
 
 		text = self.source.get()
-		self._buffer_size = initial_buffer_size or len(text) * 5 or 1
+		# self._buffer_size = initial_buffer_size or len(text) * 5 or 1
+		self._buffer_size = initial_buffer_size or 100500
 		
 		drunk_snail_c.addTemplate(self.name, text)
 

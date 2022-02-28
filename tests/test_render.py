@@ -9,36 +9,37 @@ from drunk_snail.sources import StringSource, FileSource
 
 
 keywords = {
-	'open_tag': '(',
-	'close_tag': ')',
-	'param_operator': '$',
-	'ref_operator': '~'
+	'open_tag': '<!--',
+	'close_tag': '-->',
+	'param_operator': '(param)',
+	'ref_operator': '(ref)'
 }
 
-approaches = ['comprehension', 'append']
+# approaches = ['comprehension', 'append', 'ragel']
+approaches = ['ragel']
 
 
 @pytest.mark.parametrize('approach', approaches)
 def test_basic(approach: str):
 	
-	result = Template(
-		'test_render_basic', 
-		StringSource('( $x )'), 
-		keywords,
-		approach=approach
-	)({
-		'x': 'lalala'
-	})
-	assert result == 'lalala' or result == 'lalala\n'
+	# result = Template(
+	# 	'test_render_basic', 
+	# 	StringSource('<!-- (param)x -->'), 
+	# 	keywords,
+	# 	approach=approach
+	# )({
+	# 	'x': 'lalala'
+	# })
+	# assert result == 'lalala' or result == 'lalala\n'
 
-	result = Template(
-		'test_render_basic', 
-		StringSource('( $x )\n'),
-		approach=approach
-	)({
-		'x': 'lalala'
-	})
-	assert result == 'lalala' or result == 'lalala\n'
+	# result = Template(
+	# 	'test_render_basic', 
+	# 	StringSource('<!-- (param)x -->\n'),
+	# 	approach=approach
+	# )({
+	# 	'x': 'lalala'
+	# })
+	# assert result == 'lalala' or result == 'lalala\n'
 
 	result = Template(
 		'test_render_basic', 
@@ -63,7 +64,7 @@ def test_list(approach: str):
 
 	result = Template(
 		'test_render_list', 
-		StringSource('( $some_param )\n'), 
+		StringSource('<!-- (param)some_param -->\n'), 
 		keywords,
 		approach=approach
 	)({
@@ -73,7 +74,7 @@ def test_list(approach: str):
 
 	result = Template(
 		'test_render_list', 
-		StringSource('( $some_param )'), 
+		StringSource('<!-- (param)some_param -->'), 
 		keywords,
 		approach=approach
 	)({
@@ -87,14 +88,14 @@ def test_ref(approach: str):
 
 	Template(
 		'addition', 
-		StringSource('Nice to ( $action ) you'), 
+		StringSource('Nice to <!-- (param)action --> you'), 
 		keywords,
 		approach=approach
 	)
 
 	result = Template(
 		'greeting', 
-		StringSource('Hello, ( $name )!\n( ~addition )!\n'), 
+		StringSource('Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n'), 
 		keywords,
 		approach=approach
 	)({
@@ -128,7 +129,7 @@ def test_buf_overflow(approach: str):
 
 	t2 = Template(
 		'test_buf_overflow_2', 
-		StringSource('( ~test_buf_overflow_1 )'),
+		StringSource('<!-- (ref)test_buf_overflow_1 -->'),
 		keywords,
 		approach=approach
 	)
@@ -265,3 +266,7 @@ def handler_name(
 	a, b
 ):
 	return Response(status=200)"""
+
+
+# test_endpoint_template('ragel')
+# print('ok')

@@ -11,7 +11,6 @@
 
 
 compileRagel__def {%
-j=''.join
 J='\n'.join
 def render($TEMPLATE_NAME$):
 	return J([
@@ -205,6 +204,7 @@ void compileRagel_(
 	if (!depth) {
 		compileRagel__end(output_end);
 		**output_end = 0;
+		free(output_end);
 	}
 };
 

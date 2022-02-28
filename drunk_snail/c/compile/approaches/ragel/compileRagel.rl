@@ -75,10 +75,10 @@ void compileRagel_(
 	Template *template = dictionaryLookupUnterminated(templates_tree, template_name, template_name_length);
 	if (template == NULL) {
 		compilation_result->code = 1;
-		compilation_result->message = malloc(sizeof(char) * 256);
+		compilation_result->message = malloc(sizeof(char) * 128);
 		snprintf(
 			compilation_result->message, 
-			256, 
+			128, 
 			"Can not compile template \"%.*s\": not loaded\n", 
 			template_name_length, template_name
 		);
@@ -86,15 +86,15 @@ void compileRagel_(
 	}
 
 	char *p = template->text;
-	const char *pe = template->text + template->length;
-	const char *eof = pe;
-	const char *ts, *te;
-	int cs, act, top, stack[2], curline;
+	char *pe = template->text + template->length;
+	char *eof = pe;
+	int cs;
 
 	enum ActionType action_type = ACTION_NONE;
 	bool optional = false;
 
 	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
+	reset_line_properties();
 
 	if (compilation_result->result == NULL) {
 		compilation_result->result = malloc(sizeof(char) * buffer_size);
@@ -107,10 +107,7 @@ void compileRagel_(
 
 	%%{
 	
-		action action_start_line {
-			reset_line_properties();
-			start_line = p;
-		}
+		action action_start_line { start_line = p; }
 		action action_end_line {
 
 			end_line = p;
@@ -153,30 +150,18 @@ void compileRagel_(
 
 		}
 
-		action action_param {
-			action_type = ACTION_PARAM;
-		}
-		action action_ref {
-			action_type = ACTION_REF;
-		}
-		action action_optional {
-			optional = true;
-		}
+		action action_param { action_type = ACTION_PARAM; }
+		action action_ref { action_type = ACTION_REF; }
+		action action_optional { optional = true; }
 
-		action action_name_start {
-			name_start = p;
-		}
-		action action_name_end {
-			name_end = p;
-		}
+		action action_name_start { name_start = p; }
+		action action_name_end { name_end = p; }
 
 		action action_start_expression {
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
-		action action_end_expression {
-			end_expression = p;
-		}
+		action action_end_expression { end_expression = p; }
 
 		open = '<!--';
 		close = '-->';
@@ -221,9 +206,6 @@ static PyObject *compileRagel (
 		return PyLong_FromLong(-1);
 	}
 
-	int name_length = 0;
-	for (name_length = 0; name[name_length]; name_length++);
-
 	CompilationResult *compilation_result = malloc(sizeof(CompilationResult) * 1);
 	compilation_result->code = 0;
 	compilation_result->message = NULL;
@@ -231,7 +213,7 @@ static PyObject *compileRagel (
 	compileRagel_(
 		compilation_result,
 		name,
-		name_length,
+		strlen(name),
 		_templates,
 		NULL,
 		0,

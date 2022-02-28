@@ -27,11 +27,11 @@ for $ARG$ in ([$optional?:None$] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $T
 
 
 compileRagel__empty {%
-"$INDENT*INNER_INDENT_SIZE$$LINE$",
+"$LINE$",
 %}
 
 compileRagel__param {%
-*[f"$INDENT*INNER_INDENT_SIZE$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$"$compileRagel__for$],
+*[f"$OTHER_LEFT${$ARG$}$OTHER_RIGHT$"$compileRagel__for$],
 %}
 
 compileRagel__ref_before {%
@@ -77,10 +77,9 @@ void compileRagel_(
 	}
 	
 	char *input = template->text;
-	int inner_indent_size = 0;
 
 	char *p = input;
-	const char *pe = input + strlen(input);
+	const char *pe = input + template->length;
 	const char *eof = pe;
 	const char *ts, *te;
 	int cs, act, top, stack[2], curline;
@@ -141,7 +140,6 @@ void compileRagel_(
 						start_line, start_expression - start_line,
 						name_start, name_end - name_start,
 						end_expression, end_line - end_expression,
-						compileRagel__indent, 1, inner_indent_size,
 						template_name, template_name_length
 					);
 					// printf("after compileRagel__param\n");
@@ -168,6 +166,13 @@ void compileRagel_(
 						depth + 1,
 						buffer_size
 					);
+					if (compilation_result->code == 2) {
+						if (!depth) {
+							free(compilation_result->result);
+							compilation_result->result = NULL;
+						}
+						return;
+					}
 					compileRagel__ref_after(output_end, end_expression, end_line - end_expression, name_start, name_end - name_start, template_name, template_name_length);
 					// printf("after compileRagel__ref_after\n");
 				}
@@ -179,7 +184,7 @@ void compileRagel_(
 				// 	"---------------------------\n",
 				// 	end_line - start_line, start_line
 				// );
-				compileRagel__empty(output_end, start_line, end_line - start_line, compileRagel__indent, 1, inner_indent_size);
+				compileRagel__empty(output_end, start_line, end_line - start_line);
 				// printf("after compileRagel__empty\n");
 			}
 
@@ -291,14 +296,15 @@ static PyObject *compileRagel (
 
 	PyObject *t = PyTuple_New(3);
 	PyTuple_SetItem(t, 0, PyLong_FromLong(compilation_result->code));
-	if (compilation_result->message) {
+	if (compilation_result->message)
 		PyTuple_SetItem(t, 1, PyUnicode_FromString(compilation_result->message));
-		PyTuple_SetItem(t, 2, PyUnicode_FromString(""));
-	}
-	else {
+	else
 		PyTuple_SetItem(t, 1, PyUnicode_FromString(""));
+
+	if (compilation_result->result)
 		PyTuple_SetItem(t, 2, PyUnicode_FromString(compilation_result->result));
-	}
+	else
+		PyTuple_SetItem(t, 2, PyUnicode_FromString(""));
 	
 	free(compilation_result);
 

@@ -121,8 +121,8 @@ class _Template:
 		self._function = None
 
 		text = self.source.get()
-		# self._buffer_size = initial_buffer_size or len(text) * 5 or 1
-		self._buffer_size = initial_buffer_size or 100500
+		self._buffer_size = initial_buffer_size or len(text) * 5 or 1
+		# self._buffer_size = initial_buffer_size or 100500
 		
 		drunk_snail_c.addTemplate(self.name, text)
 

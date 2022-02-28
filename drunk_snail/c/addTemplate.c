@@ -4,6 +4,7 @@ Tree *_templates;
 typedef struct Template {
 
 	char *text;
+	size_t length;
 	
 	Keywords *keywords;
 	
@@ -52,6 +53,8 @@ void addTemplate_(char *name, char *text) {
 	size_t text_length = strlen(text) + 1;
 	template->text = malloc(sizeof(char) * text_length);
 	strncpy(template->text, text, text_length);
+
+	template->length = text_length - 1;
 	
 	template->keywords = createKeywords(128);
 

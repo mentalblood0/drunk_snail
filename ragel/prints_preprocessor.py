@@ -57,6 +57,7 @@ def compilePrint(expression, name=None, defined=None):
 			args.append(f'{w}_length')
 	
 	cpy_definition_list = []
+	lengths_copied = []
 	strings_copied = 0
 	counter = f'{name}__i'
 	is_counter_defined = False
@@ -67,11 +68,13 @@ def compilePrint(expression, name=None, defined=None):
 				f'\tmemcpy(*target, {name}_strings[{strings_copied}], {len(e["s"])}); *target += {len(e["s"])};'
 			)
 			strings_copied += 1
+			lengths_copied.append(len(e['s']))
 		
 		elif e['type'] == 'keyword':
 			cpy_definition_list.append(
 				f'\tmemcpy(*target, {e["s"]}, {e["s"]}_length); *target += {e["s"]}_length;'
 			)
+			lengths_copied.append(f'{e["s"]}_length')
 		
 		elif e['type'] == 'repetition':
 
@@ -90,6 +93,7 @@ def compilePrint(expression, name=None, defined=None):
 				f'\t\t*target += {s}_length;',
 				f'\t}}'
 			]
+			lengths_copied.append(f'{s}_length')
 		
 		elif e['type'] == 'condition':
 
@@ -104,11 +108,13 @@ def compilePrint(expression, name=None, defined=None):
 				f'\t\tmemcpy(*target, "{value_if_false}", {len(value_if_false)}); *target += {len(value_if_false)};',
 				f'\t}}'
 			]
+			lengths_copied.append(max(len(value_if_true), len(value_if_false)))
 		
 		elif e['type'] == 'call':
 
 			call_name = e['s']
-			call_args = defined[e['s']]
+			call_args = defined[e['s']]['args']
+			call_lengths = defined[e['s']]['lengths']
 
 			for a in call_args:
 				if a not in args:
@@ -117,6 +123,19 @@ def compilePrint(expression, name=None, defined=None):
 			cpy_definition_list += [
 				f'\t{call_name}({", ".join(call_args)});'
 			]
+			lengths_copied += call_lengths
+
+	lengths_sum = '+'.join([str(n) for n in lengths_copied + [1]])
+	cpy_definition_list = [
+		f'\tif ((*target - compilation_result->result) + ({lengths_sum}) >= buffer_size) {{',
+		f'\t\tif (!depth) {{',
+		f'\t\t\tfree(compilation_result->result);',
+		f'\t\t\tcompilation_result->result = NULL;',
+		f'\t\t}}',
+		f'\t\tcompilation_result->code = 2;',
+		f'\t\treturn;',
+		f'\t}}'
+	] + cpy_definition_list
 
 	cpy_definition_list.append('};')
 	cpy_definition_list.insert(0, f'#define {name}({", ".join(args)}) {{')
@@ -124,7 +143,7 @@ def compilePrint(expression, name=None, defined=None):
 	
 	definitions.append(cpy_definition)
 
-	return '\n'.join(definitions), args
+	return '\n'.join(definitions), args, lengths_copied
 
 
 definitions_regexp = re.compile(r'((.*) {%[ \n]([^%]*)[ \n]%})')
@@ -136,8 +155,12 @@ def replacePrints(s):
 	found = re.findall(definitions_regexp, s)
 	for line, name, expression in found:
 
-		compiled, args = compilePrint(expression, name=name, defined=defined)
-		defined[name] = args
+		compiled, args, lengths = compilePrint(expression, name=name, defined=defined)
+		defined[name] = {
+			'args': args,
+			'lengths': lengths
+		}
+		print(name)
 
 		result = result.replace(line, compiled)
 	

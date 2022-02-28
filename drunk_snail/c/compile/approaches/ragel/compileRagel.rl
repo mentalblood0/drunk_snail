@@ -35,11 +35,11 @@ compileRagel__param {%
 %}
 
 compileRagel__ref_before {%
-*[j(["$OTHER_LEFT$","$OTHER_RIGHT$\n$OTHER_LEFT$".join([
+*["$OTHER_LEFT$"+"$OTHER_RIGHT$\n$OTHER_LEFT$".join([
 %}
 
 compileRagel__ref_after {%
-]),"$OTHER_RIGHT$"])$compileRagel__for$],
+])+"$OTHER_RIGHT$"$compileRagel__for$],
 %}
 
 

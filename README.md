@@ -165,7 +165,7 @@ Template(
     source: Source=None,
     keywords: dict[str, str]=None,
     initial_buffer_size: int=None,
-    approach: str='comprehension' # {'append', 'comprehension', 'ragel'}
+    approach: str='comprehension' # {'append', 'comprehension', 'comprehension'}
 )
 
 Template.compiled -> str

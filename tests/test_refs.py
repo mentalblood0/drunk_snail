@@ -8,10 +8,10 @@ from drunk_snail.syntax import default_keywords
 
 
 keywords = {
-	'open_tag': '(',
-	'close_tag': ')',
-	'param_operator': '$',
-	'ref_operator': '~'
+	'open_tag': '<!--',
+	'close_tag': '-->',
+	'param_operator': '(param)',
+	'ref_operator': '(ref)'
 }
 
 approaches = ['comprehension', 'append']
@@ -28,7 +28,7 @@ def test_getTemplateRefs(approach: str):
 
 	Template(
 		'test_getTemplateRefs_2', 
-		StringSource('( ~test_getTemplateRefs_1 )'), 
+		StringSource('<!-- (ref)test_getTemplateRefs_1 -->'), 
 		keywords,
 		approach=approach
 	).compiled
@@ -47,7 +47,7 @@ def test_refs(approach: str):
 
 	t2 = Template(
 		'test_refs_2', 
-		StringSource('( ~test_refs_1 )'), 
+		StringSource('<!-- (ref)test_refs_1 -->'), 
 		keywords,
 		approach=approach
 	)

@@ -10,7 +10,7 @@ if __name__ == '__main__':
 	approach = [
 		'append',
 		'comprehension',
-		'ragel'
+		'comprehension'
 	][2]
 
 	keywords = {

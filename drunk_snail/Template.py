@@ -31,7 +31,7 @@ keywords_symbols: dict[str, str] = {
 approaches = {
 	'append': drunk_snail_c.compileAppend,
 	'comprehension': drunk_snail_c.compileComprehension,
-	'ragel': drunk_snail_c.compileRagel
+	'comprehension': drunk_snail_c.compileComprehension
 }
 
 

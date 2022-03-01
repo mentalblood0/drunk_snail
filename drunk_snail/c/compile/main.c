@@ -4,4 +4,3 @@
 
 #include "./approaches/append/main.c"
 #include "./approaches/comprehension/main.c"
-#include "./approaches/ragel/main.c"

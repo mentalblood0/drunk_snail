@@ -12,6 +12,6 @@ compileTemplates
 build*
 a.out
 *preprocessed*
-compileRagel.c
+compileComprehension.c
 *.out
 test.py

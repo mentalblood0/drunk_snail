@@ -15,7 +15,7 @@ keywords = {
 	'ref_operator': '(ref)'
 }
 
-approaches = ['comprehension', 'append', 'ragel']
+approaches = ['append', 'comprehension']
 
 
 @pytest.mark.parametrize('approach', approaches)
@@ -179,7 +179,7 @@ def test_optional_param(approach: str):
 		approach=approach
 	)
 	print(Template('test_optional_param', approach='comprehension').compiled)
-	print(Template('test_optional_param', approach='ragel').compiled)
+	print(Template('test_optional_param', approach='comprehension').compiled)
 	
 	assert t() == ''
 
@@ -250,7 +250,7 @@ def test_table(approach: str):
 		correct_result = f.read()
 	assert result == correct_result
 
-test_table('ragel')
+test_table('comprehension')
 
 
 @pytest.mark.parametrize('approach', approaches)
@@ -285,5 +285,5 @@ def handler_name(
 	return Response(status=200)"""
 
 
-# test_endpoint_template('ragel')
+# test_endpoint_template('comprehension')
 # print('ok')

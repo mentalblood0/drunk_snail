@@ -10,35 +10,35 @@
 
 
 
-compileRagel__def {%
+compileComprehension__def {%
 J='\n'.join
 def render($TEMPLATE_NAME$):
 	return J([
 %}
 
-compileRagel__end {%
+compileComprehension__end {%
 ])
 %}
 
-compileRagel__for {%
+compileComprehension__for {%
 for $ARG$ in ([$optional?:None$] if ((not $TEMPLATE_NAME$) or (not '$ARG$' in $TEMPLATE_NAME$)) else ($TEMPLATE_NAME$['$ARG$'] if type($TEMPLATE_NAME$['$ARG$']) == list else [$TEMPLATE_NAME$['$ARG$']]))
 %}
 
 
-compileRagel__empty {%
+compileComprehension__empty {%
 "$LINE$",
 %}
 
-compileRagel__param {%
-*[f"$OTHER_LEFT${$ARG$}$OTHER_RIGHT$"$compileRagel__for$],
+compileComprehension__param {%
+*[f"$OTHER_LEFT${$ARG$}$OTHER_RIGHT$"$compileComprehension__for$],
 %}
 
-compileRagel__ref_before {%
+compileComprehension__ref_before {%
 *["$OTHER_LEFT$"+"$OTHER_RIGHT$\n$OTHER_LEFT$".join([
 %}
 
-compileRagel__ref_after {%
-])+"$OTHER_RIGHT$"$compileRagel__for$],
+compileComprehension__ref_after {%
+])+"$OTHER_RIGHT$"$compileComprehension__for$],
 %}
 
 
@@ -61,7 +61,7 @@ enum ActionType {
 }
 
 
-void compileRagel_(
+void compileComprehension_(
 	CompilationResult *compilation_result,
 	char *template_name,
 	int template_name_length,
@@ -103,7 +103,7 @@ void compileRagel_(
 	}
 
 	if (!depth)
-		compileRagel__def(output_end, template_name, template_name_length);
+		compileComprehension__def(output_end, template_name, template_name_length);
 
 	%%{
 	
@@ -114,7 +114,7 @@ void compileRagel_(
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					compileRagel__param(
+					compileComprehension__param(
 						output_end,
 						start_line, start_expression - start_line,
 						name_start, name_end - name_start,
@@ -123,8 +123,8 @@ void compileRagel_(
 					);
 				}
 				else if (action_type == ACTION_REF) {
-					compileRagel__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
-					compileRagel_(
+					compileComprehension__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
+					compileComprehension_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
@@ -140,11 +140,11 @@ void compileRagel_(
 						}
 						return;
 					}
-					compileRagel__ref_after(output_end, end_expression, end_line - end_expression, name_start, name_end - name_start, template_name, template_name_length);
+					compileComprehension__ref_after(output_end, end_expression, end_line - end_expression, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
 			if (action_type == ACTION_NONE)
-				compileRagel__empty(output_end, start_line, end_line - start_line);
+				compileComprehension__empty(output_end, start_line, end_line - start_line);
 
 			reset_line_properties();
 
@@ -187,14 +187,14 @@ void compileRagel_(
 	}%%
 
 	if (!depth) {
-		compileRagel__end(output_end);
+		compileComprehension__end(output_end);
 		**output_end = 0;
 		free(output_end);
 	}
 };
 
 
-static PyObject *compileRagel (
+static PyObject *compileComprehension (
 	PyObject *self,
 	PyObject *args
 ) {
@@ -210,7 +210,7 @@ static PyObject *compileRagel (
 	compilation_result->code = 0;
 	compilation_result->message = NULL;
 	compilation_result->result = NULL;
-	compileRagel_(
+	compileComprehension_(
 		compilation_result,
 		name,
 		strlen(name),

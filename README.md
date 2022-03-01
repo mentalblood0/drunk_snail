@@ -97,7 +97,34 @@ print(result)
 
 ## Syntax
 
-### Keywords
+```
+open = '<!--'
+close = '-->'
+param = '(param)'
+ref = '(ref)'
+optional = '(optional)'
+
+delimeter = '\n'
+other = (any - delimeter)+
+
+operator = param | ref | optional
+name = [a-zA-Z_][a-zA-Z_0-9]*
+
+expression = open ' '* operator+ name ' '* close
+
+line = other? expression? other?
+
+template = (line delimeter)* (line - zlen)?
+```
+
+### Examples
+
+* `<!-- (ref)AnotherTemplateName -->` includes template(s) with name "AnotherTemplateName"
+* `<!-- (param)some_param_name -->` includes param value(s)
+* `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
+* `<!-- (optional)(param)some_param_name -->` skips line if no param provided
+
+### Customization
 
 ```python
 {
@@ -110,14 +137,7 @@ print(result)
 }
 ```
 
-Can be set on `Template.__init__`
-
-### Expressions
-
-* `<!-- (ref)AnotherTemplateName -->` includes template(s) with name "AnotherTemplateName"
-* `<!-- (param)some_param_name -->` includes param value(s)
-* `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
-* `<!-- (optional)(param)some_param_name -->` skips line if no param provided
+Can be set on `Template.__init__`, **works only for `append` and `comprehension` approaches**
 
 
 
@@ -130,7 +150,7 @@ Template(
     source: Source=None,
     keywords: dict[str, str]=None,
     initial_buffer_size: int=None,
-    approach: str='comprehension'
+    approach: str='comprehension' # {'append', 'comprehension', 'ragel'}
 )
 
 Template.compiled -> str
@@ -153,10 +173,9 @@ Template.__call__(self, parameters: dict) -> str
 For template `name.extension` there will be compiled template `name.py`:
 
 ```python
+j='\n'.join
 def render(name):
-    return '\n'.join([
-        # barely readeble but fast code here
-    ])
+    return j([<barely readeble but fast code here>])
 ```
 
 Parameters:

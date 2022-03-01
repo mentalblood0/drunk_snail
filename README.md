@@ -7,7 +7,8 @@
 * Template engine
 * Compiles templates to Python functions
 * Customizable syntax
-* Auto-reload template on file change
+* Templates hot reloading
+* Automatic reloading on file change
 * Cascade reloading of referencing templates
 
 
@@ -152,7 +153,7 @@ template = (line delimeter)* (line - zlen)?
 }
 ```
 
-Can be set on `Template.__init__`, **works only for `append` and `comprehension` approaches**
+Can be set on `Template.__init__`, **works only for `append` approaches**
 
 
 

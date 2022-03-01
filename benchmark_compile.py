@@ -9,9 +9,8 @@ if __name__ == '__main__':
 
 	approach = [
 		'append',
-		'comprehension',
 		'comprehension'
-	][2]
+	][1]
 
 	keywords = {
 		'open_tag': '<!--',

@@ -12,6 +12,42 @@
 
 
 
+Rendering 10x1000 table (mean of 10000 experiments):
+
+| Engine                                                        | Time, ms |
+| ------------------------------------------------------------- | -------- |
+| [mako](https://github.com/sqlalchemy/mako)                    | 3.40     |
+| [Jinja](https://github.com/pallets/jinja)                     | 1.64     |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **1.19** |
+
+| Other                         | Time, ms |
+| ----------------------------- | -------- |
+| Args dict to str              | 0.97     |
+| Args dict to json             | 0.96     |
+| Args dict to json with indent | 5.61     |
+
+
+
+Rendering 100x10000 table (mean of 100 experiments)
+
+| Engine                                                        | Time, ms |
+| ------------------------------------------------------------- | -------- |
+| [mako](https://github.com/sqlalchemy/mako)                    | 205      |
+| [Jinja](https://github.com/pallets/jinja)                     | 216      |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **86**   |
+
+| Other                         | Time, ms |
+| ----------------------------- | -------- |
+| Args dict to str              | 83       |
+| Args dict to json             | 73       |
+| Args dict to json with indent | 313      |
+
+
+
+Benchmarks done using [sharpener](https://github.com/MentalBlood/sharpener) (see `Benchmarking` section below)
+
+
+
 ## Installation
 
 ```bash

@@ -12,6 +12,25 @@
 
 
 
+## Example
+
+Row:
+```html
+<tr>
+    <td><!-- (param)cell --></td>
+</tr>
+```
+Table:
+```html
+<table>
+    <!-- (ref)Row -->
+</table>
+```
+
+
+
+## Performance
+
 Rendering 10x1000 table (mean of 10000 experiments):
 
 | Engine                                                        | Time, ms |
@@ -26,8 +45,6 @@ Rendering 10x1000 table (mean of 10000 experiments):
 | Args dict to json             | 0.96     |
 | Args dict to json with indent | 5.61     |
 
-
-
 Rendering 100x10000 table (mean of 100 experiments)
 
 | Engine                                                        | Time, ms |
@@ -41,8 +58,6 @@ Rendering 100x10000 table (mean of 100 experiments)
 | Args dict to str              | 83       |
 | Args dict to json             | 73       |
 | Args dict to json with indent | 313      |
-
-
 
 Benchmarks done using [sharpener](https://github.com/MentalBlood/sharpener) (see `Benchmarking` section below)
 

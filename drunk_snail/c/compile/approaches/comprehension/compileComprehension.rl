@@ -102,8 +102,10 @@ void compileComprehension_(
 		*output_end = compilation_result->result;
 	}
 
-	if (!depth)
+	if (!depth) {
+		clearRefs(template);
 		compileComprehension__def(output_end, template_name, template_name_length);
+	}
 
 	%%{
 	
@@ -123,6 +125,8 @@ void compileComprehension_(
 					);
 				}
 				else if (action_type == ACTION_REF) {
+					if (!depth)
+						addRef(template, name_start, name_end - name_start);
 					compileComprehension__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
 					compileComprehension_(
 						compilation_result,

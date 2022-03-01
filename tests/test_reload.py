@@ -34,13 +34,7 @@ def test_basic(approach: str):
 	assert t({
 		'x': 1,
 		'y': 2
-	}) == '<!-- (param)x -->\n2'
-
-	t = Template('test_reload_basic', keywords=default_keywords)
-	assert t({
-		'x': 1,
-		'y': 2
-	}) == '1\n<!-- (param)y -->'
+	}) == '1\n2'
 
 
 @pytest.mark.parametrize('approach', approaches)

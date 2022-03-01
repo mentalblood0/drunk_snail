@@ -23,7 +23,8 @@ void addRef(Template *template, char *ref_start, size_t ref_length) {
 	}
 
 	template->refs[template->refs_number] = malloc(sizeof(char) * (ref_length + 1));
-	strncpy(template->refs[template->refs_number], ref_start, (ref_length + 1));
+	strncpy(template->refs[template->refs_number], ref_start, ref_length);
+	template->refs[template->refs_number][ref_length] = 0;
 
 	template->refs_number += 1;
 

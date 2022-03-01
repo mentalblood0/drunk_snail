@@ -257,25 +257,27 @@ void compileComprehension_(
 		*output_end = compilation_result->result;
 	}
 
-	if (!depth)
+	if (!depth) {
+		clearRefs(template);
 		compileComprehension__def(output_end, template_name, template_name_length);
+	}
 
 	
-#line 265 "test.c"
+#line 267 "test.c"
 	{
 	cs = compile_start;
 	}
 
-#line 270 "test.c"
+#line 272 "test.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-#line 256 "test_preprocessed.rl"
+#line 258 "test_preprocessed.rl"
 	{ start_line = p; }
-#line 257 "test_preprocessed.rl"
+#line 259 "test_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -291,6 +293,8 @@ tr1:
 					);
 				}
 				else if (action_type == ACTION_REF) {
+					if (!depth)
+						addRef(template, name_start, name_end - name_start);
 					compileComprehension__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
 					compileComprehension_(
 						compilation_result,
@@ -319,7 +323,7 @@ tr1:
 		}
 	goto st0;
 tr4:
-#line 257 "test_preprocessed.rl"
+#line 259 "test_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -335,6 +339,8 @@ tr4:
 					);
 				}
 				else if (action_type == ACTION_REF) {
+					if (!depth)
+						addRef(template, name_start, name_end - name_start);
 					compileComprehension__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
 					compileComprehension_(
 						compilation_result,
@@ -363,9 +369,9 @@ tr4:
 		}
 	goto st0;
 tr31:
-#line 310 "test_preprocessed.rl"
+#line 314 "test_preprocessed.rl"
 	{ end_expression = p; }
-#line 257 "test_preprocessed.rl"
+#line 259 "test_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -381,6 +387,8 @@ tr31:
 					);
 				}
 				else if (action_type == ACTION_REF) {
+					if (!depth)
+						addRef(template, name_start, name_end - name_start);
 					compileComprehension__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
 					compileComprehension_(
 						compilation_result,
@@ -412,60 +420,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-#line 416 "test.c"
+#line 424 "test.c"
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-#line 256 "test_preprocessed.rl"
+#line 258 "test_preprocessed.rl"
 	{ start_line = p; }
 	goto st1;
 tr30:
-#line 310 "test_preprocessed.rl"
+#line 314 "test_preprocessed.rl"
 	{ end_expression = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-#line 434 "test.c"
+#line 442 "test.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-#line 256 "test_preprocessed.rl"
+#line 258 "test_preprocessed.rl"
 	{ start_line = p; }
-#line 306 "test_preprocessed.rl"
+#line 310 "test_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr5:
-#line 306 "test_preprocessed.rl"
+#line 310 "test_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr32:
-#line 306 "test_preprocessed.rl"
+#line 310 "test_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
-#line 310 "test_preprocessed.rl"
+#line 314 "test_preprocessed.rl"
 	{ end_expression = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-#line 469 "test.c"
+#line 477 "test.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -504,22 +512,22 @@ case 5:
 	}
 	goto st1;
 tr21:
-#line 301 "test_preprocessed.rl"
+#line 305 "test_preprocessed.rl"
 	{ optional = true; }
 	goto st6;
 tr38:
-#line 299 "test_preprocessed.rl"
+#line 303 "test_preprocessed.rl"
 	{ action_type = ACTION_PARAM; }
 	goto st6;
 tr43:
-#line 300 "test_preprocessed.rl"
+#line 304 "test_preprocessed.rl"
 	{ action_type = ACTION_REF; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-#line 523 "test.c"
+#line 531 "test.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -625,28 +633,28 @@ case 15:
 		goto tr22;
 	goto st1;
 tr22:
-#line 301 "test_preprocessed.rl"
+#line 305 "test_preprocessed.rl"
 	{ optional = true; }
-#line 303 "test_preprocessed.rl"
+#line 307 "test_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 tr39:
-#line 299 "test_preprocessed.rl"
-	{ action_type = ACTION_PARAM; }
 #line 303 "test_preprocessed.rl"
+	{ action_type = ACTION_PARAM; }
+#line 307 "test_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 tr44:
-#line 300 "test_preprocessed.rl"
+#line 304 "test_preprocessed.rl"
 	{ action_type = ACTION_REF; }
-#line 303 "test_preprocessed.rl"
+#line 307 "test_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-#line 650 "test.c"
+#line 658 "test.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr23;
@@ -664,14 +672,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr23:
-#line 304 "test_preprocessed.rl"
+#line 308 "test_preprocessed.rl"
 	{ name_end = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-#line 675 "test.c"
+#line 683 "test.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -680,14 +688,14 @@ case 17:
 	}
 	goto st1;
 tr24:
-#line 304 "test_preprocessed.rl"
+#line 308 "test_preprocessed.rl"
 	{ name_end = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-#line 691 "test.c"
+#line 699 "test.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -891,7 +899,7 @@ case 30:
 	case 28: 
 	case 29: 
 	case 30: 
-#line 257 "test_preprocessed.rl"
+#line 259 "test_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -907,6 +915,8 @@ case 30:
 					);
 				}
 				else if (action_type == ACTION_REF) {
+					if (!depth)
+						addRef(template, name_start, name_end - name_start);
 					compileComprehension__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
 					compileComprehension_(
 						compilation_result,
@@ -935,9 +945,9 @@ case 30:
 		}
 	break;
 	case 20: 
-#line 310 "test_preprocessed.rl"
+#line 314 "test_preprocessed.rl"
 	{ end_expression = p; }
-#line 257 "test_preprocessed.rl"
+#line 259 "test_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -953,6 +963,8 @@ case 30:
 					);
 				}
 				else if (action_type == ACTION_REF) {
+					if (!depth)
+						addRef(template, name_start, name_end - name_start);
 					compileComprehension__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
 					compileComprehension_(
 						compilation_result,
@@ -980,13 +992,13 @@ case 30:
 
 		}
 	break;
-#line 984 "test.c"
+#line 996 "test.c"
 	}
 	}
 
 	}
 
-#line 333 "test_preprocessed.rl"
+#line 337 "test_preprocessed.rl"
 
 
 	if (!depth) {

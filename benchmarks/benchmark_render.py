@@ -205,3 +205,46 @@ class table_by_comprehension_optimized(Benchmark):
 	
 	def run(self, **kwargs):
 		render_comprehension_optimized(self.args)
+
+
+def renderRow(Row):
+	return ''.join([
+		'    <tr>\n',
+		*[
+			f'        <td>{cell}</td>\n'
+			for cell in Row['cell']
+		],
+		'    </tr>\n'
+	])
+
+
+def render_comprehension_optimized_multifunction(Table):
+	return ''.join([
+		'<table>\n',
+		*[
+			renderRow(Row)
+			for Row in Table['Row']
+		],
+		'</table>\n'
+	])
+
+
+class table_by_comprehension_optimized_multifunction(Benchmark):
+
+	def prepare(self, width, height):
+
+		if not hasattr(self, 'args'):
+			self.args = {
+				"Row": [
+					{
+						"cell": [
+							f"{x}.{y}"
+							for x in range(width)
+						]
+					}
+					for y in range(height)
+				]
+			}
+	
+	def run(self, **kwargs):
+		render_comprehension_optimized_multifunction(self.args)

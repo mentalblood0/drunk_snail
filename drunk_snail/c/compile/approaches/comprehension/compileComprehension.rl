@@ -65,14 +65,13 @@ void compileComprehension_(
 	CompilationResult *compilation_result,
 	char *template_name,
 	int template_name_length,
-	Tree *templates_tree,
 	char **output_end,
 	int depth,
 	int buffer_size
 )
 {
 
-	Template *template = dictionaryLookupUnterminated(templates_tree, template_name, template_name_length);
+	Template *template = dictionaryLookupUnterminated(_templates, template_name, template_name_length);
 	if (template == NULL) {
 		compilation_result->code = 1;
 		compilation_result->message = malloc(sizeof(char) * 128);
@@ -126,9 +125,8 @@ void compileComprehension_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
-						templates_tree,
 						output_end,
-						depth + 1,
+						1,
 						buffer_size
 					);
 					if (compilation_result->code == 2) {
@@ -214,7 +212,6 @@ static PyObject *compileComprehension (
 		&compilation_result,
 		name,
 		strlen(name),
-		_templates,
 		&_output_end,
 		0,
 		buffer_size

@@ -207,33 +207,23 @@ static PyObject *compileComprehension (
 	compilation_result.code = 0;
 	compilation_result.message = NULL;
 
-	compilation_result->result = malloc(sizeof(char) * buffer_size);
-	char *_output_end = compilation_result->result;
-	char **output_end;
-	output_end = &_output_end;
+	compilation_result.result = malloc(sizeof(char) * buffer_size);
+	char *_output_end = compilation_result.result;
 
 	compileComprehension_(
-		compilation_result,
+		&compilation_result,
 		name,
 		strlen(name),
 		_templates,
-		output_end,
+		&_output_end,
 		0,
 		buffer_size
 	);
 
 	PyObject *t = PyTuple_New(3);
 	PyTuple_SetItem(t, 0, PyLong_FromLong(compilation_result.code));
-	if (compilation_result.message)
-		PyTuple_SetItem(t, 1, PyUnicode_FromString(compilation_result.message));
-	else
-		PyTuple_SetItem(t, 1, PyUnicode_FromString(""));
-
-	if (compilation_result.result)
-		PyTuple_SetItem(t, 2, PyUnicode_FromString(compilation_result.result));
-	else
-		PyTuple_SetItem(t, 2, PyUnicode_FromString(""));
-
+	PyTuple_SetItem(t, 1, PyUnicode_FromString(compilation_result.message ? compilation_result.message : ""));
+	PyTuple_SetItem(t, 2, PyUnicode_FromString(compilation_result.result ? compilation_result.result : ""));
 	return t;
 
 }

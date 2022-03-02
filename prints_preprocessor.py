@@ -43,12 +43,7 @@ def compilePrint(expression, name=None, defined=None):
 			})
 	
 	definitions = []
-
-	indent = '\t'
-	definitions.append(
-		f'char *{name}_strings[{len([True for e in parsed if not e["type"]])}]'\
-		f' = {{{json.dumps([e["s"] for e in parsed if not e["type"]], indent=indent)[1:-1]}}};'
-	)
+	raw_strings = [e["s"] for e in parsed if not e["type"]]
 	
 	args = ['target']
 	for w in [e['s'] for e in parsed if e['type'] == 'keyword']:
@@ -65,7 +60,7 @@ def compilePrint(expression, name=None, defined=None):
 
 		if e['type'] == None:
 			cpy_definition_list.append(
-				f'\tmemcpy(*target, {name}_strings[{strings_copied}], {len(e["s"])}); *target += {len(e["s"])};'
+				f'\tmemcpy(*target, {json.dumps(raw_strings[strings_copied])}, {len(e["s"])}); *target += {len(e["s"])};'
 			)
 			strings_copied += 1
 			lengths_copied.append(len(e['s']))

@@ -250,8 +250,6 @@ def test_table(approach: str):
 		correct_result = f.read()
 	assert result == correct_result
 
-test_table('comprehension')
-
 
 @pytest.mark.parametrize('approach', approaches)
 def test_endpoint_template(approach: str):

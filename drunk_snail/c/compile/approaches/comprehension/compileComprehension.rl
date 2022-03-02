@@ -21,7 +21,7 @@ compileComprehension__end {%
 %}
 
 compileComprehension__for {%
-for $ARG$ in([$optional?:''$]if(not'$ARG$'in $TEMPLATE_NAME$)else($TEMPLATE_NAME$['$ARG$']if type($TEMPLATE_NAME$['$ARG$'])==list else[$TEMPLATE_NAME$['$ARG$']]))
+for $ARG$ in(($TEMPLATE_NAME$['$ARG$']if list==type($TEMPLATE_NAME$['$ARG$'])else[$TEMPLATE_NAME$['$ARG$']])if'$ARG$'in $TEMPLATE_NAME$ else[$optional?:''$])
 %}
 
 

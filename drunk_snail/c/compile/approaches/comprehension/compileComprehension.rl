@@ -188,9 +188,8 @@ static PyObject *compileComprehension (
 	char *name;
 	int buffer_size;
 	
-	if (!PyArg_ParseTuple(args, "si", &name, &buffer_size)) {
-		return PyLong_FromLong(-1);
-	}
+	if (!PyArg_ParseTuple(args, "si", &name, &buffer_size))
+		return NULL;
 
 	CompilationResult compilation_result;
 	compilation_result.message = NULL;

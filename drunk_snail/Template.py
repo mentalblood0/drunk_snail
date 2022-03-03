@@ -204,18 +204,18 @@ class _Template:
 					if code == 2:
 						self._buffer_size *= 2
 					
-					elif code != 0:
+					# elif code != 0:
 
-						not_loaded_list = re.search(r'\"(\w+)\"', message).groups()
+					# 	not_loaded_list = re.search(r'\"(\w+)\"', message).groups()
 
-						if len(not_loaded_list) and hasattr(self.source, 'path'):
-							for name in not_loaded_list:
-								p = self.source.path
-								file_path = f"{os.path.dirname(p)}{os.path.sep}{name}{os.path.splitext(os.path.basename(p))[1]}"
-								Template(name, FileSource(file_path))
+					# 	if len(not_loaded_list) and hasattr(self.source, 'path'):
+					# 		for name in not_loaded_list:
+					# 			p = self.source.path
+					# 			file_path = f"{os.path.dirname(p)}{os.path.sep}{name}{os.path.splitext(os.path.basename(p))[1]}"
+					# 			Template(name, FileSource(file_path))
 						
-						else:
-							raise Exception(message)
+					# 	else:
+					# 		raise Exception(message)
 					
 					else:
 						break

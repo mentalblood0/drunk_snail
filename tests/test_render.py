@@ -58,6 +58,11 @@ def test_nonexistent_file():
 		Template('test_render_nonexistent_file', FileSource('lalala', watch=False))
 
 
+def test_nonexistent_template():
+	with pytest.raises(RuntimeError):
+		Template('test_nonexistent_template', StringSource('<!-- (ref)something -->')).compiled
+
+
 @pytest.mark.parametrize('approach', approaches)
 def test_list(approach: str):
 

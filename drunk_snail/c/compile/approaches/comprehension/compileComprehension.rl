@@ -217,6 +217,11 @@ static PyObject *compileComprehension (
 		buffer_size
 	);
 
+	if (compilation_result.code == 1) {
+		PyErr_SetString(PyExc_RuntimeError, compilation_result.message);
+		return NULL;
+	}
+
 	PyObject *t = PyTuple_New(3);
 	PyTuple_SetItem(t, 0, PyLong_FromLong(compilation_result.code));
 	PyTuple_SetItem(t, 1, PyUnicode_FromString(compilation_result.message ? compilation_result.message : ""));

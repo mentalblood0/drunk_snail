@@ -11,6 +11,18 @@
 		"template_name_prefix": "t",
 		"approach": "comprehension"
 	},
+	"compile::fibonacci_with_function_compilation": {
+		"__n__": 10,
+		"keywords": {
+			"open_tag": "<!--",
+			"close_tag": "-->",
+			"param_operator": "(param)",
+			"ref_operator": "(ref)"
+		},
+		"folding_depth": 15,
+		"template_name_prefix": "t",
+		"approach": "comprehension"
+	},
 	"render::args_to_str": {
 		"__n__": 100,
 		"width": 10,

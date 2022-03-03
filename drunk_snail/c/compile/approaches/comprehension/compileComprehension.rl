@@ -73,8 +73,7 @@ void compileComprehension_(
 
 	Template *template = dictionaryLookupUnterminated(_templates, template_name, template_name_length);
 	if (template == NULL) {
-		compilation_result->code = 1;
-		compilation_result->message = malloc(sizeof(char) * 128);
+		compilation_result->message = malloc(sizeof(char) * (template_name_length + 1));
 		memcpy(compilation_result->message, template_name, template_name_length);
 		compilation_result->message[template_name_length] = 0;
 		return;
@@ -126,6 +125,8 @@ void compileComprehension_(
 						1,
 						buffer_size
 					);
+					if (compilation_result->message)
+						return;
 					compileComprehension__ref_after(output_end, end_expression, end_line - end_expression, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
@@ -192,10 +193,9 @@ static PyObject *compileComprehension (
 	}
 
 	CompilationResult compilation_result;
-	compilation_result.code = 0;
 	compilation_result.message = NULL;
-
 	compilation_result.result = malloc(sizeof(char) * buffer_size);
+
 	char *_output_end = compilation_result.result;
 
 	compileComprehension_(
@@ -207,7 +207,7 @@ static PyObject *compileComprehension (
 		&buffer_size
 	);
 
-	if (compilation_result.code == 1) {
+	if (compilation_result.message) {
 		PyErr_SetString(PyExc_KeyError, compilation_result.message);
 		return NULL;
 	}

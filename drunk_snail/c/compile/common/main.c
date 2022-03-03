@@ -1,5 +1,1 @@
-#include "compile__handle_buffer_overflow.c"
-#include "compile__memcpy.c"
-#include "compile__cpy_one.c"
-#include "compile__addTabs.c"
 #include "compile__compilation_result.c"

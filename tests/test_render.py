@@ -15,7 +15,7 @@ keywords = {
 	'ref_operator': '(ref)'
 }
 
-approaches = ['append', 'comprehension']
+approaches = ['comprehension']
 
 
 @pytest.mark.parametrize('approach', approaches)
@@ -59,7 +59,7 @@ def test_nonexistent_file():
 
 
 def test_nonexistent_template():
-	with pytest.raises(RuntimeError):
+	with pytest.raises(KeyError):
 		Template('test_nonexistent_template', StringSource('<!-- (ref)something -->')).compiled
 
 
@@ -209,18 +209,6 @@ def test_optional_ref(approach: str):
 		'test_optional_ref_1': [None]
 	})
 	assert result == 'lalala' or result == 'lalala\n'
-
-
-@pytest.mark.parametrize('approach', ['append'])
-def test_shift(approach: str):
-
-	for letter in ['a', 'b', 'c', 'd']:
-		Template(letter, FileSource(f'templates/{letter.upper()}.xml'), approach=approach)
-	
-	result = Template('a')({'B': {'C': [{}, {}]}})
-
-	valid_tabs_number = 60
-	assert result.count('\t') == valid_tabs_number
 
 
 @pytest.mark.parametrize('approach', approaches)

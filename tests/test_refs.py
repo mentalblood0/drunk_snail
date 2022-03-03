@@ -14,7 +14,7 @@ keywords = {
 	'ref_operator': '(ref)'
 }
 
-approaches = ['comprehension', 'append']
+approaches = ['comprehension']
 
 
 @pytest.mark.parametrize('approach', approaches)
@@ -34,8 +34,6 @@ def test_getTemplateRefs(approach: str):
 	).compiled
 
 	assert drunk_snail_c.getTemplateRefs('test_getTemplateRefs_2') == ['test_getTemplateRefs_1']
-
-test_getTemplateRefs('append')
 
 
 @pytest.mark.parametrize('approach', approaches)

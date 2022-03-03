@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import re
-import os
 from threading import Lock
-from types import ModuleType
 from typing import Callable
+from types import ModuleType
 
 import drunk_snail_c
 from .Source import Source
-from .sources import FileSource
 from .syntax import default_keywords
 
 
@@ -29,8 +26,6 @@ keywords_symbols: dict[str, str] = {
 }
 
 approaches = {
-	'append': drunk_snail_c.compileAppend,
-	'comprehension': drunk_snail_c.compileComprehension,
 	'comprehension': drunk_snail_c.compileComprehension
 }
 
@@ -194,33 +189,8 @@ class _Template:
 	def compiled(self) -> str:
 
 		with self.lock:
-		
 			if not self._compiled:
-				
-				while True:
-					
-					code, message, result = self._approachFunc(self.name, self._buffer_size)
-					
-					if code == 2:
-						self._buffer_size *= 2
-					
-					# elif code != 0:
-
-					# 	not_loaded_list = re.search(r'\"(\w+)\"', message).groups()
-
-					# 	if len(not_loaded_list) and hasattr(self.source, 'path'):
-					# 		for name in not_loaded_list:
-					# 			p = self.source.path
-					# 			file_path = f"{os.path.dirname(p)}{os.path.sep}{name}{os.path.splitext(os.path.basename(p))[1]}"
-					# 			Template(name, FileSource(file_path))
-						
-					# 	else:
-					# 		raise Exception(message)
-					
-					else:
-						break
-				
-				self._compiled = result
+				self._compiled, self._buffer_size = self._approachFunc(self.name, self._buffer_size)
 		
 		return self._compiled
 	

@@ -122,13 +122,11 @@ def compilePrint(expression, name=None, defined=None):
 
 	lengths_sum = '+'.join([str(n) for n in lengths_copied + [1]])
 	cpy_definition_list = [
-		f'\tif ((*target - compilation_result->result) + ({lengths_sum}) >= buffer_size) {{',
-		f'\t\tif (!depth) {{',
-		f'\t\t\tfree(compilation_result->result);',
-		f'\t\t\tcompilation_result->result = NULL;',
-		f'\t\t}}',
-		f'\t\tcompilation_result->code = 2;',
-		f'\t\treturn;',
+		f'\twhile ((*target - compilation_result->result) + ({lengths_sum}) >= *buffer_size) {{',
+		f'\t\t(*buffer_size) *= 2;',
+		f'\t\tnew_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));',
+		f'\t\t*target = new_result + (*target - compilation_result->result);',
+		f'\t\tcompilation_result->result = new_result;'
 		f'\t}}'
 	] + cpy_definition_list
 

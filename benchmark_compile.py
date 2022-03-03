@@ -8,9 +8,8 @@ from drunk_snail.sources import StringSource
 if __name__ == '__main__':
 
 	approach = [
-		'append',
 		'comprehension'
-	][1]
+	][0]
 
 	keywords = {
 		'open_tag': '<!--',

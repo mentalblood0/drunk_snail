@@ -2,7 +2,6 @@ import pytest
 
 from drunk_snail import Template
 from drunk_snail.sources import StringSource
-from drunk_snail.syntax import default_keywords
 
 
 
@@ -13,7 +12,7 @@ keywords = {
 	'ref_operator': '(ref)'
 }
 
-approaches = ['comprehension', 'append']
+approaches = ['comprehension']
 
 
 @pytest.mark.parametrize('approach', approaches)

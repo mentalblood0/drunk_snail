@@ -6,7 +6,6 @@
 
 * Template engine
 * Compiles templates to Python functions
-* Customizable syntax
 * Templates hot reloading
 * Automatic reloading on file change
 * Cascade reloading of referencing templates
@@ -140,21 +139,6 @@ template = (line delimeter)* (line - zlen)?
 * `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
 * `<!-- (optional)(param)some_param_name -->` skips line if no param provided
 
-### Customization
-
-```python
-{
-    'open_tag': '<!--',
-    'close_tag': '-->',
-    'param_operator': '(param)',
-    'optional_operator': '(optional)',
-    'ref_operator': '(ref)',
-    'line_break': '\n'
-}
-```
-
-Can be set on `Template.__init__`, **works only for `append` approaches**
-
 
 
 ## Interface
@@ -164,16 +148,16 @@ Template(
     self,
     name: str,
     source: Source=None,
-    keywords: dict[str, str]=None,
+    keywords: dict[str, str]=None, # deprecated
     initial_buffer_size: int=None,
-    approach: str='comprehension' # {'append', 'comprehension', 'comprehension'}
+    approach: str='comprehension' # {'comprehension'}
 )
 
 Template.compiled -> str
 Template.text -> str
 Template.source -> str
 Template.name -> str
-Template.keywords -> str
+Template.keywords -> str # deprecated
 
 Template.delete(self) -> None
 

@@ -67,7 +67,7 @@ void compileComprehension_(
 	int template_name_length,
 	char **output_end,
 	int depth,
-	int buffer_size
+	int *buffer_size
 )
 {
 
@@ -75,12 +75,8 @@ void compileComprehension_(
 	if (template == NULL) {
 		compilation_result->code = 1;
 		compilation_result->message = malloc(sizeof(char) * 128);
-		snprintf(
-			compilation_result->message, 
-			128, 
-			"Can not compile template \"%.*s\": not loaded\n", 
-			template_name_length, template_name
-		);
+		memcpy(compilation_result->message, template_name, template_name_length);
+		compilation_result->message[template_name_length] = 0;
 		return;
 	}
 
@@ -88,6 +84,7 @@ void compileComprehension_(
 	char *pe = template->text + template->length;
 	char *eof = pe;
 	int cs;
+	char *new_result;
 
 	enum ActionType action_type = ACTION_NONE;
 	bool optional = false;
@@ -129,13 +126,6 @@ void compileComprehension_(
 						1,
 						buffer_size
 					);
-					if (compilation_result->code == 2) {
-						if (!depth) {
-							free(compilation_result->result);
-							compilation_result->result = NULL;
-						}
-						return;
-					}
 					compileComprehension__ref_after(output_end, end_expression, end_line - end_expression, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
@@ -214,18 +204,17 @@ static PyObject *compileComprehension (
 		strlen(name),
 		&_output_end,
 		0,
-		buffer_size
+		&buffer_size
 	);
 
 	if (compilation_result.code == 1) {
-		PyErr_SetString(PyExc_RuntimeError, compilation_result.message);
+		PyErr_SetString(PyExc_KeyError, compilation_result.message);
 		return NULL;
 	}
 
-	PyObject *t = PyTuple_New(3);
-	PyTuple_SetItem(t, 0, PyLong_FromLong(compilation_result.code));
-	PyTuple_SetItem(t, 1, PyUnicode_FromString(compilation_result.message ? compilation_result.message : ""));
-	PyTuple_SetItem(t, 2, PyUnicode_FromString(compilation_result.result ? compilation_result.result : ""));
+	PyObject *t = PyTuple_New(2);
+	PyTuple_SetItem(t, 0, PyUnicode_FromString(compilation_result.result));
+	PyTuple_SetItem(t, 1, PyLong_FromLong(buffer_size));
 	return t;
 
 }

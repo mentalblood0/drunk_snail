@@ -26,20 +26,32 @@ for $ARG$ in(($TEMPLATE_NAME$['$ARG$']if list==type($TEMPLATE_NAME$['$ARG$'])els
 
 
 compileComprehension__empty {%
-"$LINE$",
+"$other[:depth].left$$LINE$$other[:depth].right$",
 %}
 
 compileComprehension__param {%
-*[f"$OTHER_LEFT${$ARG$}$OTHER_RIGHT$"$compileComprehension__for$],
+*[f"$other[:depth].left$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$$other[:depth].right$"$compileComprehension__for$],
 %}
 
 compileComprehension__ref_before {%
-*["$OTHER_LEFT$"+"$OTHER_RIGHT$\n$OTHER_LEFT$".join([
+*[J([
 %}
 
 compileComprehension__ref_after {%
-])+"$OTHER_RIGHT$"$compileComprehension__for$],
+])$compileComprehension__for$],
 %}
+
+
+typedef struct Substring {
+	char *start;
+	int length;
+} Substring;
+
+
+typedef struct Other {
+	Substring left;
+	Substring right;
+} Other;
 
 
 enum ActionType {
@@ -67,7 +79,8 @@ void compileComprehension_(
 	int template_name_length,
 	char **output_end,
 	int depth,
-	int *buffer_size
+	int *buffer_size,
+	Other *other
 )
 {
 
@@ -114,20 +127,25 @@ void compileComprehension_(
 					);
 				}
 				else if (action_type == ACTION_REF) {
+					other[depth].left.start = start_line;
+					other[depth].left.length = start_expression - start_line;
+					other[depth].right.start = end_expression;
+					other[depth].right.length = end_line - end_expression;
 					if (!depth)
 						addRef(template, name_start, name_end - name_start);
-					compileComprehension__ref_before(output_end, start_line, start_expression - start_line, end_expression, end_line - end_expression);
+					compileComprehension__ref_before(output_end);
 					compileComprehension_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
 						output_end,
 						1,
-						buffer_size
+						buffer_size,
+						other
 					);
 					if (compilation_result->message)
 						return;
-					compileComprehension__ref_after(output_end, end_expression, end_line - end_expression, name_start, name_end - name_start, template_name, template_name_length);
+					compileComprehension__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
 			if (action_type == ACTION_NONE)
@@ -195,6 +213,8 @@ static PyObject *compileComprehension (
 	compilation_result.message = NULL;
 	compilation_result.result = malloc(sizeof(char) * buffer_size);
 
+	Other other[64];
+
 	char *_output_end = compilation_result.result;
 
 	compileComprehension_(
@@ -203,7 +223,8 @@ static PyObject *compileComprehension (
 		strlen(name),
 		&_output_end,
 		0,
-		&buffer_size
+		&buffer_size,
+		other
 	);
 
 	if (compilation_result.message) {

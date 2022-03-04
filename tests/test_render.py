@@ -244,6 +244,24 @@ def test_table(approach: str):
 	assert result == correct_result
 
 
+def test_other_deep_inject():
+
+	a = Template('test_other_deep_inject_a', StringSource('a'))
+	b = Template('test_other_deep_inject_b', StringSource('b<!-- (ref)test_other_deep_inject_a -->b'))
+	c = Template('test_other_deep_inject_c', StringSource('c<!-- (ref)test_other_deep_inject_b -->c'))
+	d = Template('test_other_deep_inject_d', StringSource('d<!-- (ref)test_other_deep_inject_c -->d'))
+
+	print(c.compiled)
+
+	assert d({
+		'test_other_deep_inject_b': {
+			'test_other_deep_inject_b': {
+				'test_other_deep_inject_a': {}
+			}
+		}
+	}) == 'dcbabcd'
+
+
 @pytest.mark.parametrize('approach', approaches)
 def test_endpoint_template(approach: str):
 

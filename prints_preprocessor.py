@@ -23,7 +23,7 @@ includes_types = {
 	'keyword': r'ARG|TEMPLATE_NAME|LINE|OTHER_LEFT|OTHER_RIGHT',
 	'repetition': r'\w+\*\w+',
 	'condition': r'\w+\?[^:]*:[^:]*',
-	'subarray': r'((\w+)(\.\w+)*)\[:(\w+)\]((\.\w+)*)'
+	'subarray': r'((\w+)(\.\w+)*)\[:(\w+)\]((\.\w+)*)(\+|\-)'
 }
 for k in includes_types:
 	includes_types[k] = re.compile(includes_types[k])
@@ -137,13 +137,19 @@ def compilePrint(expression, name=None, defined=None):
 		elif e['type'] == 'subarray':
 
 			m, length, path_to_substring = e['groups'][0], e['groups'][3], e['groups'][4]
+			m = e['groups'][0]
+			length = e['groups'][3]
+			path_to_substring = e['groups'][4]
+			direction = e['groups'][-1]
 
 			if not is_counter_defined:
 				definitions.insert(0, f'int {counter};')
 				is_counter_defined = True
 
 			cpy_definition_list += [
-				f'\tfor ({counter} = 0; {counter} < {length}; {counter}++) {{',
+				f'\tfor ({counter} = 0; {counter} < {length}; {counter}++) {{'
+				if direction == '+'
+				else f'\tfor ({counter} = {length}-1; {counter} >= 0; {counter}--) {{',
 				f'\t\tmemcpy(*target, {m}[{counter}]{path_to_substring}.start, {m}[{counter}]{path_to_substring}.length); *target += {m}[{counter}]{path_to_substring}.length;',
 				f'\t}}'
 			]

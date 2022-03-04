@@ -26,11 +26,11 @@ for $ARG$ in(($TEMPLATE_NAME$['$ARG$']if list==type($TEMPLATE_NAME$['$ARG$'])els
 
 
 compileComprehension__empty {%
-"$other[:depth].left$$LINE$$other[:depth].right$",
+"$other[:depth].left+$$LINE$$other[:depth].right-$",
 %}
 
 compileComprehension__param {%
-*[f"$other[:depth].left$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$$other[:depth].right$"$compileComprehension__for$],
+*[f"$other[:depth].left+$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$$other[:depth].right-$"$compileComprehension__for$],
 %}
 
 compileComprehension__ref_before {%
@@ -139,7 +139,7 @@ void compileComprehension_(
 						name_start,
 						name_end - name_start,
 						output_end,
-						1,
+						depth + 1,
 						buffer_size,
 						other
 					);

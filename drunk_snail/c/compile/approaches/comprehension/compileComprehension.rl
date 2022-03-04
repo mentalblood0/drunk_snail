@@ -24,6 +24,10 @@ compileComprehension__for {%
 for $ARG$ in(($TEMPLATE_NAME$['$ARG$']if list==type($TEMPLATE_NAME$['$ARG$'])else[$TEMPLATE_NAME$['$ARG$']])if'$ARG$'in $TEMPLATE_NAME$ else[$optional?:''$])
 %}
 
+compileComprehension__for_strict {%
+for $ARG$ in $TEMPLATE_NAME$['$ARG$']
+%}
+
 
 compileComprehension__empty {%
 "$other[:depth].left+$$LINE$$other[:depth].right-$",
@@ -70,6 +74,7 @@ enum ActionType {
 	name_end = NULL;\
 	action_type = ACTION_NONE;\
 	optional = false;\
+	strict = false;\
 }
 
 
@@ -100,6 +105,7 @@ void compileComprehension_(
 
 	enum ActionType action_type = ACTION_NONE;
 	bool optional = false;
+	bool strict = false;
 
 	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
 	reset_line_properties();
@@ -158,6 +164,7 @@ void compileComprehension_(
 		action action_param { action_type = ACTION_PARAM; }
 		action action_ref { action_type = ACTION_REF; }
 		action action_optional { optional = true; }
+		action action_strict { strict = true; }
 
 		action action_name_start { name_start = p; }
 		action action_name_end { name_end = p; }
@@ -173,11 +180,12 @@ void compileComprehension_(
 		param = '(param)' %action_param;
 		ref = '(ref)' %action_ref;
 		optional = '(optional)' %action_optional;
+		strict = '(strict)' %action_strict;
 
 		delimeter = '\n';
 		other = (any - delimeter)+;
 
-		operator = param | ref | optional;
+		operator = param | ref | optional | strict;
 		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_name_start %action_name_end;
 
 		expression = (open ' '* operator+ name ' '* close) >action_start_expression %action_end_expression;

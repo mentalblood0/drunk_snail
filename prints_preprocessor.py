@@ -23,37 +23,40 @@ includes_types = {
 	'keyword': r'ARG|TEMPLATE_NAME|LINE|OTHER_LEFT|OTHER_RIGHT',
 	'repetition': r'\w+\*\w+',
 	'condition': r'\w+\?[^:]*:[^:]*',
-	'subarray': r'((\w+)(\.\w+)*)\[:(\w+)\]((\.\w+)*)(\+|\-)'
+	'subarray': r'((\w+)(\.\w+)*)\[:(\w+)\]((\.\w+)*)(\+|\-)',
+	'condition_call': r'\*\((\w+)\?([^:]*):([^:]*)\)'
 }
 for k in includes_types:
 	includes_types[k] = re.compile(includes_types[k])
+
+
+def parseElement(s, defined):
+
+	p = {
+		's': s,
+		'type': 'raw'
+	}
+
+	for t, regexp in includes_types.items():
+		match = re.match(regexp, s)
+		if match:
+			p['type'] = t
+			p['groups'] = match.groups()
+			break
+
+	if (p['type'] == 'raw') and (s in defined):
+		p['type'] = 'call'
+
+	return p
 
 
 def compilePrint(expression, name=None, defined=None):
 
 	parsed = []
 	for i, s in enumerate(expression.split('$')):
-		
-		element = {
-			's': s,
-			'type': 'raw'
-		}
-
-		if i % 2:
-	
-			for t, regexp in includes_types.items():
-				match = re.match(regexp, s)
-				if match:
-					element['type'] = t
-					element['groups'] = match.groups()
-					break
-		
-			if (element['type'] == 'raw') and (s in defined):
-				element['type'] = 'call'
-		
-			print(f'\t{element["type"]} \'{s}\'')
-	
-		parsed.append(element)
+		p = parseElement(s, defined)
+		print(f'\t{p["type"]} \'{s}\'')
+		parsed.append(p)
 	
 	definitions = []
 	raw_strings = [e["s"] for e in parsed if e["type"] == 'raw']
@@ -133,6 +136,38 @@ def compilePrint(expression, name=None, defined=None):
 				f'\t{call_name}({", ".join(call_args)});'
 			]
 			lengths_copied += call_lengths
+		
+		elif e['type'] == 'condition_call':
+
+			condition_object = e['groups'][0]
+
+			call_name = {
+				True: e['groups'][1],
+				False: e['groups'][2]
+			}
+			call_args = {
+				True: defined[call_name[True]]['args'],
+				False: defined[call_name[False]]['args']
+			}
+			call_lengths = {
+				True: defined[call_name[True]]['lengths'],
+				False: defined[call_name[False]]['lengths']
+			}
+
+			for a in call_args[True] + call_args[False]:
+				if a not in args:
+					args.append(a)
+
+			cpy_definition_list += [
+				f'\tif ({condition_object}) {{',
+				f'\t\t{call_name[True]}({", ".join(call_args[True])});',
+				f'\t}}',
+				f'\telse {{',
+				f'\t\t{call_name[False]}({", ".join(call_args[False])});',
+				f'\t}}'
+			]
+
+			lengths_copied += max(call_lengths[True], call_lengths[False])
 		
 		elif e['type'] == 'subarray':
 

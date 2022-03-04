@@ -34,7 +34,7 @@ compileComprehension__empty {%
 %}
 
 compileComprehension__param {%
-*[f"$other[:depth].left+$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$$other[:depth].right-$"$compileComprehension__for$],
+*[f"$other[:depth].left+$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$$other[:depth].right-$"$*(strict?compileComprehension__for_strict:compileComprehension__for)$],
 %}
 
 compileComprehension__ref_before {%
@@ -42,7 +42,7 @@ compileComprehension__ref_before {%
 %}
 
 compileComprehension__ref_after {%
-])$compileComprehension__for$],
+])$*(strict?compileComprehension__for_strict:compileComprehension__for)$],
 %}
 
 

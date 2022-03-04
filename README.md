@@ -35,9 +35,9 @@ Rendering 10x1000 table (mean of 10000 experiments):
 
 | Engine                                                        | Time, ms |
 | ------------------------------------------------------------- | -------- |
-| [mako](https://github.com/sqlalchemy/mako)                    | 3.41     |
-| [Jinja](https://github.com/pallets/jinja)                     | 1.72     |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **1.17** |
+| [mako](https://github.com/sqlalchemy/mako)                    | 3.40     |
+| [Jinja](https://github.com/pallets/jinja)                     | 1.68     |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **1.04** |
 
 | Other                         | Time, ms |
 | ----------------------------- | -------- |

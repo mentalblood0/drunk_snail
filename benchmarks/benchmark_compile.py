@@ -15,13 +15,11 @@ class fibonacci(Benchmark):
 				Template(
 					f'{template_name_prefix}0', 
 					StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-					keywords,
 					approach=approach
 				),
 				Template(
 					f'{template_name_prefix}1', 
 					StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-					keywords,
 					approach=approach
 				)
 			]
@@ -31,7 +29,6 @@ class fibonacci(Benchmark):
 					Template(
 						f'{template_name_prefix}{i}', 
 						StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-						keywords,
 						approach=approach
 					)
 				)
@@ -52,13 +49,11 @@ class fibonacci_with_function_compilation(Benchmark):
 				Template(
 					f'{template_name_prefix}0', 
 					StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-					keywords,
 					approach=approach
 				),
 				Template(
 					f'{template_name_prefix}1', 
 					StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-					keywords,
 					approach=approach
 				)
 			]
@@ -68,7 +63,6 @@ class fibonacci_with_function_compilation(Benchmark):
 					Template(
 						f'{template_name_prefix}{i}', 
 						StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-						keywords,
 						approach=approach
 					)
 				)

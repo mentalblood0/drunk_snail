@@ -3,17 +3,9 @@ import pytest
 from time import sleep
 
 from drunk_snail import Template
-from drunk_snail.syntax import default_keywords
 from drunk_snail.sources import StringSource, FileSource
 
 
-
-keywords = {
-	'open_tag': '<!--',
-	'close_tag': '-->',
-	'param_operator': '(param)',
-	'ref_operator': '(ref)'
-}
 
 approaches = ['comprehension']
 
@@ -24,7 +16,6 @@ def test_basic(approach: str):
 	result = Template(
 		'test_render_basic', 
 		StringSource('<!-- (param)x -->'), 
-		keywords,
 		approach=approach
 	)({
 		'x': 'lalala'
@@ -69,7 +60,6 @@ def test_list(approach: str):
 	result = Template(
 		'test_render_list', 
 		StringSource('<!-- (param)some_param -->\n'), 
-		keywords,
 		approach=approach
 	)({
 		'some_param': ['1', '2', '3']
@@ -79,7 +69,6 @@ def test_list(approach: str):
 	result = Template(
 		'test_render_list', 
 		StringSource('<!-- (param)some_param -->'), 
-		keywords,
 		approach=approach
 	)({
 		'some_param': ['1', '2', '3']
@@ -93,14 +82,12 @@ def test_ref(approach: str):
 	Template(
 		'addition', 
 		StringSource('Nice to <!-- (param)action --> you'), 
-		keywords,
 		approach=approach
 	)
 
 	t = Template(
 		'greeting', 
 		StringSource('Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n'), 
-		keywords,
 		approach=approach
 	)
 	print(t.compiled)
@@ -131,14 +118,12 @@ def test_buf_overflow(approach: str):
 	t1 = Template(
 		'test_buf_overflow_1', 
 		StringSource(' ' * 1000),
-		keywords,
 		approach=approach
 	)
 
 	t2 = Template(
 		'test_buf_overflow_2', 
 		StringSource('<!-- (ref)test_buf_overflow_1 -->'),
-		keywords,
 		approach=approach
 	)
 

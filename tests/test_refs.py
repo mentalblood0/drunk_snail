@@ -3,16 +3,8 @@ import pytest
 import drunk_snail_c
 from drunk_snail import Template
 from drunk_snail.sources import StringSource
-from drunk_snail.syntax import default_keywords
 
 
-
-keywords = {
-	'open_tag': '<!--',
-	'close_tag': '-->',
-	'param_operator': '(param)',
-	'ref_operator': '(ref)'
-}
 
 approaches = ['comprehension']
 
@@ -29,7 +21,6 @@ def test_getTemplateRefs(approach: str):
 	Template(
 		'test_getTemplateRefs_2', 
 		StringSource('<!-- (ref)test_getTemplateRefs_1 -->'), 
-		keywords,
 		approach=approach
 	).compiled
 
@@ -48,7 +39,6 @@ def test_refs(approach: str):
 	t2 = Template(
 		'test_refs_2', 
 		StringSource('<!-- (ref)test_refs_1 -->'), 
-		keywords,
 		approach=approach
 	)
 

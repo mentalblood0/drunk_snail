@@ -6,24 +6,10 @@ from types import ModuleType
 
 import drunk_snail_c
 from .Source import Source
-from .syntax import default_keywords
 
 
 
 templates: dict[str, _Template] = {}
-
-keywords_symbols: dict[str, str] = {
-
-	'open_tag': 'o',
-	'close_tag': 'c',
-	
-	'param_operator': 'p',
-	'ref_operator': 'r',
-	'optional_operator': '?',
-	
-	'line_break': 'n'
-
-}
 
 approaches = {
 	'comprehension': drunk_snail_c.compileComprehension
@@ -32,13 +18,12 @@ approaches = {
 
 class Template:
 
-	def __init__(self, name: str, source: Source=None, keywords: dict[str, str]=None, initial_buffer_size: int=None, approach: str=None):
+	def __init__(self, name: str, source: Source=None, initial_buffer_size: int=None, approach: str=None):
 
 		if not name in templates:
 			templates[name] = _Template(
 				name=name, 
 				source=source, 
-				keywords=keywords or default_keywords, 
 				initial_buffer_size=initial_buffer_size,
 				approach=approach
 			)
@@ -46,13 +31,10 @@ class Template:
 				source and 
 				(source != templates[name].source)
 			) or (
-				keywords and 
-				(keywords != templates[name].keywords)
-			) or (
 				approach and 
 				(approach != templates[name].approach)
 			):
-			templates[name].reload(source=source, keywords=keywords, approach=approach)
+			templates[name].reload(source=source, approach=approach)
 
 		self._actual_template_name = name
 	
@@ -101,14 +83,13 @@ class Template:
 
 class _Template:
 
-	def __init__(self, name: str, source: Source, keywords: dict[str, str]=default_keywords, initial_buffer_size: int=None, approach=None):
+	def __init__(self, name: str, source: Source, initial_buffer_size: int=None, approach=None):
 
 		if not hasattr(self, '_lock'):
 			self._lock = Lock()
 		
 		self._name = name
 		self._source = source
-		self._keywords = default_keywords | keywords
 		self._approach = approach or 'comprehension'
 		self._approachFunc = approaches[self._approach]
 
@@ -117,22 +98,12 @@ class _Template:
 
 		text = self.source.get()
 		self._buffer_size = initial_buffer_size or len(text) * 5 or 1
-		# self._buffer_size = initial_buffer_size or 100500
 		
 		drunk_snail_c.addTemplate(self.name, text)
-
-		for type, keyword in self.keywords.items():
-			
-			if not type in default_keywords:
-				raise Exception(f"No such keyword type: '{type}'")
-
-			symbol = keywords_symbols[type]
-			drunk_snail_c.removeKeyword(self.name, symbol)
-			drunk_snail_c.addKeyword(self.name, keyword, symbol)
 		
 		self.source.onChange = self.reload
 	
-	def reload(self, source: Source=None, keywords: dict[str, str]=None, checked: dict[str, bool]=None, approach: str=None) -> int:
+	def reload(self, source: Source=None, checked: dict[str, bool]=None, approach: str=None) -> int:
 
 		checked = checked or {}
 		reloaded_number = 1
@@ -154,7 +125,6 @@ class _Template:
 			self.__init__(
 				self.name, 
 				source or self.source, 
-				keywords or self.keywords,
 				initial_buffer_size=self._buffer_size,
 				approach=approach or self.approach
 			)
@@ -168,10 +138,6 @@ class _Template:
 	@property
 	def source(self) -> Source:
 		return self._source
-	
-	@property
-	def keywords(self) -> dict[str, str]:
-		return self._keywords
 	
 	@property
 	def approach(self) -> str:
@@ -214,7 +180,7 @@ class _Template:
 		return self.function(parameters or {})
 	
 	def __repr__(self) -> str:
-		return f"(name='{self.name}', source={self.source}, keywords={self.keywords})"
+		return f"(name='{self.name}', source={self.source})"
 	
 	def __str__(self) -> str:
 		return self.text
@@ -246,6 +212,6 @@ class _Template:
 
 	def __dir__(self) -> list[str]:
 		return [
-			'name', 'source', 'keywords', 'text', 'compiled', 
+			'name', 'source', 'text', 'compiled', 
 			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__', '__hash__'
 		]

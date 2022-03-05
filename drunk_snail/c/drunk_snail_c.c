@@ -8,13 +8,10 @@
 
 #include "prefix_tree.c"
 
-#include "Keywords.c"
 #include "addTemplate.c"
 #include "getTemplate.c"
 #include "getTemplateRefs.c"
 #include "removeTemplate.c"
-#include "addKeyword.c"
-#include "removeKeyword.c"
 #include "./compile/main.c"
 
 #include "python_module_properties.c"

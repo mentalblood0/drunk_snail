@@ -148,7 +148,6 @@ Template(
     self,
     name: str,
     source: Source=None,
-    keywords: dict[str, str]=None, # deprecated
     initial_buffer_size: int=None,
     approach: str='comprehension' # {'comprehension'}
 )
@@ -157,7 +156,6 @@ Template.compiled -> str
 Template.text -> str
 Template.source -> str
 Template.name -> str
-Template.keywords -> str # deprecated
 
 Template.delete(self) -> None
 

@@ -6,8 +6,6 @@ typedef struct Template {
 	char *text;
 	size_t length;
 	
-	Keywords *keywords;
-	
 	char **refs;
 	int refs_number;
 	int refs_number_allocated;
@@ -56,8 +54,6 @@ void addTemplate_(char *name, char *text) {
 	strncpy(template->text, text, text_length);
 
 	template->length = text_length - 1;
-	
-	template->keywords = createKeywords(128);
 
 	template->refs = calloc(addTemplate__initial_refs_number_allocated, sizeof(char*));
 	template->refs_number_allocated = addTemplate__initial_refs_number_allocated;

@@ -6,14 +6,6 @@ int removeTemplate_(char *name) {
 	
 	free(template->text);
 
-	Keywords *keywords = template->keywords;
-	clearTree(keywords->tree);
-	int i = 0;
-	for (i = 0; i < 128; i++)
-		if (*(keywords->data + i) != NULL)
-			free(*(keywords->data + i));
-	free(keywords->data);
-
 	clearRefs(template);
 	free(template->refs);
 	

@@ -5,13 +5,6 @@ from drunk_snail.sources import StringSource
 
 
 
-keywords = {
-	'open_tag': '<!--',
-	'close_tag': '-->',
-	'param_operator': '(param)',
-	'ref_operator': '(ref)'
-}
-
 approaches = ['comprehension']
 
 
@@ -21,7 +14,6 @@ def test_basic(approach: str):
 	t = Template(
 		'test_reload_basic', 
 		StringSource('<!-- (param)some_param -->'), 
-		keywords,
 		approach=approach
 	)
 
@@ -42,14 +34,12 @@ def test_ref(approach: str):
 	t1 = Template(
 		'test_reload_ref_1', 
 		StringSource('<!-- (param)p -->'), 
-		keywords,
 		approach=approach
 	)
 
 	t2 = Template(
 		'test_reload_ref_2', 
 		StringSource('<!-- (ref)test_reload_ref_1 -->'), 
-		keywords,
 		approach=approach
 	)
 
@@ -76,21 +66,18 @@ def test_cascade(approach: str):
 	t1 = Template(
 		'test_reload_cascade_1', 
 		StringSource('<!-- (param)p -->'), 
-		keywords,
 		approach=approach
 	)
 
 	t2 = Template(
 		'test_reload_cascade_2', 
 		StringSource('<!-- (ref)test_reload_cascade_1 -->'), 
-		keywords,
 		approach=approach
 	)
 
 	t3 = Template(
 		'test_reload_cascade_3', 
 		StringSource('<!-- (ref)test_reload_cascade_1 -->\n<!-- (ref)test_reload_cascade_2 -->'), 
-		keywords,
 		approach=approach
 	)
 

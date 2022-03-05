@@ -19,6 +19,8 @@ parser.add_argument(
 )
 
 
+delimeters = re.compile(r'<|>')
+
 includes_types = {
 	'keyword': r'ARG|TEMPLATE_NAME|LINE|OTHER_LEFT|OTHER_RIGHT',
 	'repetition': r'\w+\*\w+',
@@ -53,7 +55,7 @@ def parseElement(s, defined):
 def compilePrint(expression, name=None, defined=None):
 
 	parsed = []
-	for i, s in enumerate(expression.split('$')):
+	for s in re.split(delimeters, expression):
 		p = parseElement(s, defined)
 		print(f'\t{p["type"]} \'{s}\'')
 		parsed.append(p)

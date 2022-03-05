@@ -12,7 +12,7 @@
 
 compileComprehension__def {%
 J='\n'.join
-def render($TEMPLATE_NAME$):
+def render(<TEMPLATE_NAME>):
 	return J([
 %}
 
@@ -21,20 +21,20 @@ compileComprehension__end {%
 %}
 
 compileComprehension__for {%
-for $ARG$ in(($TEMPLATE_NAME$['$ARG$']if list==type($TEMPLATE_NAME$['$ARG$'])else[$TEMPLATE_NAME$['$ARG$']])if'$ARG$'in $TEMPLATE_NAME$ else[$optional?:''$])
+for <ARG> in((<TEMPLATE_NAME>['<ARG>']if list==type(<TEMPLATE_NAME>['<ARG>'])else[<TEMPLATE_NAME>['<ARG>']])if'<ARG>'in <TEMPLATE_NAME> else[<optional?:''>])
 %}
 
 compileComprehension__for_strict {%
-for $ARG$ in $TEMPLATE_NAME$['$ARG$']
+for <ARG> in <TEMPLATE_NAME>['<ARG>']
 %}
 
 
 compileComprehension__empty {%
-"$other[:depth].left+$$LINE$$other[:depth].right-$",
+"<other[:depth].left+><LINE><other[:depth].right->",
 %}
 
 compileComprehension__param {%
-*[f"$other[:depth].left+$$OTHER_LEFT${$ARG$}$OTHER_RIGHT$$other[:depth].right-$"$*(strict?compileComprehension__for_strict:compileComprehension__for)$],
+*[f"<other[:depth].left+><OTHER_LEFT>{<ARG>}<OTHER_RIGHT><other[:depth].right->"<*(strict?compileComprehension__for_strict:compileComprehension__for)>],
 %}
 
 compileComprehension__ref_before {%
@@ -42,7 +42,7 @@ compileComprehension__ref_before {%
 %}
 
 compileComprehension__ref_after {%
-])$*(strict?compileComprehension__for_strict:compileComprehension__for)$],
+])<*(strict?compileComprehension__for_strict:compileComprehension__for)>],
 %}
 
 

@@ -79,15 +79,15 @@ from drunk_snail.sources import StringSource
 
 
 Template('Row', StringSource(
-'''<tr>
-    <td><!-- (param)cell --></td>
-</tr>'''
+    '<tr>'
+    '    <td><!-- (param)cell --></td>'
+    '</tr>'
 ))
 
 table = Template('Table', StringSource(
-'''<table>
-    <!-- (ref)Row -->
-</table>'''
+    '<table>'
+    '    <!-- (ref)Row -->'
+    '</table>'
 ))
 
 width = 10
@@ -115,17 +115,20 @@ print(result)
 ```
 open = '<!--'
 close = '-->'
+
 param = '(param)'
 ref = '(ref)'
 optional = '(optional)'
+strict = '(strict)'
 
-delimeter = '\n'
-other = (any - delimeter)+
+operator = param | ref | optional | strict
 
-operator = param | ref | optional
 name = [a-zA-Z_][a-zA-Z_0-9]*
 
 expression = open ' '* operator+ name ' '* close
+
+delimeter = '\n'
+other = (any - delimeter)+
 
 line = other? expression? other?
 
@@ -147,9 +150,7 @@ template = (line delimeter)* (line - zlen)?
 Template(
     self,
     name: str,
-    source: Source=None,
-    initial_buffer_size: int=None,
-    approach: str='comprehension' # {'comprehension'}
+    source: Source=None
 )
 
 Template.compiled -> str
@@ -171,9 +172,9 @@ Template.__call__(self, parameters: dict) -> str
 For template `name.extension` there will be compiled template `name.py`:
 
 ```python
-j='\n'.join
+J='\n'.join
 def render(name):
-    return j([<barely readeble but fast code here>])
+    return J([<barely readeble but fast code here>])
 ```
 
 Parameters:
@@ -205,7 +206,7 @@ Using [sharpener](https://github.com/MentalBlood/sharpener):
 pip install --upgrade drunk_snail
 git clone https://github.com/MentalBlood/drunk_snail drunk_snail
 cd drunk_snail
-python -m sharpener run
+python -m sharpener run -p 0
 ```
 
 Config is [here](benchmarks/benchmark_default.json)

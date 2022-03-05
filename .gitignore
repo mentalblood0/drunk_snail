@@ -12,6 +12,5 @@ compileTemplates
 build*
 a.out
 *preprocessed*
-compileComprehension.c
 *.out
 test.py

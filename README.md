@@ -135,12 +135,15 @@ line = other? expression? other?
 template = (line delimeter)* (line - zlen)?
 ```
 
+
 ### Examples
 
 * `<!-- (ref)AnotherTemplateName -->` includes template(s) with name "AnotherTemplateName"
 * `<!-- (param)some_param_name -->` includes param value(s)
 * `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
 * `<!-- (optional)(param)some_param_name -->` skips line if no param provided
+* `<!-- (strict)(ref)AnotherTemplateName -->` corresponding object must be list[dict]
+* `<!-- (strict)(param)some_param_name -->` corresponding object must be list[string]
 
 
 

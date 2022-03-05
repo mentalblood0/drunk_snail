@@ -1,20 +1,13 @@
-import pytest
-
 from drunk_snail import Template
 from drunk_snail.sources import StringSource
 
 
 
-approaches = ['comprehension']
-
-
-@pytest.mark.parametrize('approach', approaches)
-def test_basic(approach: str):
+def test_basic():
 	
 	t = Template(
 		'test_reload_basic', 
-		StringSource('<!-- (param)some_param -->'), 
-		approach=approach
+		StringSource('<!-- (param)some_param -->')
 	)
 
 	assert t({
@@ -28,57 +21,46 @@ def test_basic(approach: str):
 	}) == '1\n2'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_ref(approach: str):
+def test_ref():
 
 	t1 = Template(
 		'test_reload_ref_1', 
-		StringSource('<!-- (param)p -->'), 
-		approach=approach
+		StringSource('<!-- (param)p -->')
 	)
 
 	t2 = Template(
 		'test_reload_ref_2', 
-		StringSource('<!-- (ref)test_reload_ref_1 -->'), 
-		approach=approach
+		StringSource('<!-- (ref)test_reload_ref_1 -->')
 	)
 
-	result = t2({
+	assert t2({
 		'test_reload_ref_1': {
 			'p': 1
 		}
-	})
-	assert result == '1' or result == '1\n'
+	}) == '1'
 
-	Template(t1.name, StringSource('__<!-- (param)p -->__'), approach=approach)
+	Template(t1.name, StringSource('__<!-- (param)p -->__'))
 
-	result = t2({
+	assert t2({
 		'test_reload_ref_1': {
 			'p': 1
 		}
-	})
-	assert result == '__1__' or result == '__1__\n'
+	}) == '__1__'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_cascade(approach: str):
+def test_cascade():
 
 	t1 = Template(
 		'test_reload_cascade_1', 
-		StringSource('<!-- (param)p -->'), 
-		approach=approach
+		StringSource('<!-- (param)p -->')
 	)
-
 	t2 = Template(
 		'test_reload_cascade_2', 
-		StringSource('<!-- (ref)test_reload_cascade_1 -->'), 
-		approach=approach
+		StringSource('<!-- (ref)test_reload_cascade_1 -->')
 	)
-
 	t3 = Template(
 		'test_reload_cascade_3', 
-		StringSource('<!-- (ref)test_reload_cascade_1 -->\n<!-- (ref)test_reload_cascade_2 -->'), 
-		approach=approach
+		StringSource('<!-- (ref)test_reload_cascade_1 -->\n<!-- (ref)test_reload_cascade_2 -->')
 	)
 
 	assert t1.reload(source=StringSource('__<!-- (param)p -->__')) == 1

@@ -79,15 +79,15 @@ from drunk_snail.sources import StringSource
 
 
 Template('Row', StringSource(
-    '<tr>'
-    '    <td><!-- (param)cell --></td>'
-    '</tr>'
+    '<tr>\n'
+    '    <td><!-- (param)cell --></td>\n'
+    '</tr>\n'
 ))
 
 table = Template('Table', StringSource(
-    '<table>'
-    '    <!-- (ref)Row -->'
-    '</table>'
+    '<table>\n'
+    '    <!-- (ref)Row -->\n'
+    '</table>\n'
 ))
 
 width = 10

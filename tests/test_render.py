@@ -1,47 +1,35 @@
-import os
 import pytest
-from time import sleep
 
 from drunk_snail import Template
 from drunk_snail.sources import StringSource, FileSource
 
 
 
-approaches = ['comprehension']
-
-
-@pytest.mark.parametrize('approach', approaches)
-def test_basic(approach: str):
+def test_basic():
 	
-	result = Template(
+	assert Template(
 		'test_render_basic', 
-		StringSource('<!-- (param)x -->'), 
-		approach=approach
+		StringSource('<!-- (param)x -->')
 	)({
 		'x': 'lalala'
-	})
-	assert result == 'lalala' or result == 'lalala\n'
+	}) == 'lalala'
 
-	result = Template(
+	assert Template(
 		'test_render_basic', 
-		StringSource('<!-- (param)x -->\n'),
-		approach=approach
+		StringSource('<!-- (param)x -->\n')
 	)({
 		'x': 'lalala'
-	})
-	assert result == 'lalala' or result == 'lalala\n'
+	}) == 'lalala'
 
-	result = Template(
+	assert Template(
 		'test_render_basic', 
-		StringSource('lalala'),
-		approach=approach
-	)()
-	assert result == 'lalala' or result == 'lalala\n'
+		StringSource('lalala')
+	)() == 'lalala'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_empty_template(approach: str):
-	assert Template('test_render_empty_template', StringSource(''), approach=approach)() == ''
+
+def test_empty_template():
+	assert Template('test_render_empty_template', StringSource(''))() == ''
 
 
 def test_nonexistent_file():
@@ -54,165 +42,127 @@ def test_nonexistent_template():
 		Template('test_nonexistent_template', StringSource('<!-- (ref)something -->')).compiled
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_list(approach: str):
 
-	result = Template(
+def test_list():
+
+	assert Template(
 		'test_render_list', 
-		StringSource('<!-- (param)some_param -->\n'), 
-		approach=approach
+		StringSource('<!-- (param)some_param -->\n')
 	)({
 		'some_param': ['1', '2', '3']
-	})
-	assert result == '1\n2\n3' or result == '1\n2\n3\n'
+	}) == '1\n2\n3'
 
-	result = Template(
+	assert Template(
 		'test_render_list', 
-		StringSource('<!-- (param)some_param -->'), 
-		approach=approach
+		StringSource('<!-- (param)some_param -->')
 	)({
 		'some_param': ['1', '2', '3']
-	})
-	assert result == '1\n2\n3' or result == '1\n2\n3\n'
+	}) == '1\n2\n3'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_ref(approach: str):
+
+def test_ref():
 
 	Template(
 		'addition', 
-		StringSource('Nice to <!-- (param)action --> you'), 
-		approach=approach
+		StringSource('Nice to <!-- (param)action --> you')
 	)
-
 	t = Template(
 		'greeting', 
-		StringSource('Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n'), 
-		approach=approach
+		StringSource('Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n')
 	)
-	print(t.compiled)
 	
-	result = t({
+	assert t({
 		'name': 'username',
 		'addition': {
 			'action': 'eat'
 		}
-	})
-	print(result)
-	assert result == 'Hello, username!\nNice to eat you!' or result == 'Hello, username!\nNice to eat you!\n'
+	}) == 'Hello, username!\nNice to eat you!'
 
-	result = Template('greeting')({
+	assert Template('greeting')({
 		'name': 'username',
 		'addition': [{
 			'action': 'meet'
 		}, {
 			'action': 'eat'
 		}]
-	})
-	assert result == 'Hello, username!\nNice to meet you!\nNice to eat you!' or result == 'Hello, username!\nNice to meet you!\nNice to eat you!\n'
+	}) == 'Hello, username!\nNice to meet you!\nNice to eat you!'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_buf_overflow(approach: str):
 
-	t1 = Template(
+def test_buf_overflow():
+
+	Template(
 		'test_buf_overflow_1', 
-		StringSource(' ' * 1000),
-		approach=approach
+		StringSource(' ' * 100)
 	)
 
-	t2 = Template(
+	assert Template(
 		'test_buf_overflow_2', 
-		StringSource('<!-- (ref)test_buf_overflow_1 -->'),
-		approach=approach
-	)
-
-	assert t2.compiled
+		StringSource('<!-- (ref)test_buf_overflow_1 -->')
+	).compiled
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_consicutive_lines(approach: str):
 
-	t1 = Template(
+def test_consicutive_lines():
+
+	Template(
 		'test_consicutive_lines_1',
-		StringSource('a'),
-		approach=approach
+		StringSource('a')
 	)
-
-	t2 = Template(
+	Template(
 		'test_consicutive_lines_2',
-		StringSource('b'),
-		approach=approach
+		StringSource('b')
 	)
-
-	t3 = Template(
+	t = Template(
 		'test_consicutive_lines_3',
-		StringSource('''\t<!-- (optional)(ref)test_consicutive_lines_1 -->
-\t<!-- (optional)(ref)test_consicutive_lines_2 -->
-'''),
-		approach=approach
+		StringSource(
+			'\t<!-- (optional)(ref)test_consicutive_lines_1 -->\n'
+			'\t<!-- (optional)(ref)test_consicutive_lines_2 -->\n'
+		)
 	)
 
-	result = t3({
+	assert t({
 		'test_consicutive_lines_1': {},
 		'test_consicutive_lines_2': {}
-	})
-	assert result == '\ta\n\tb' or result == '\ta\n\tb\n'
+	}) == '\ta\n\tb'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_optional_param(approach: str):
-	
-	t = Template(
+def test_optional_param():
+	assert Template(
 		'test_optional_param',
-		StringSource('<!-- (optional)(param)a -->'),
-		approach=approach
-	)
-	print(Template('test_optional_param', approach='comprehension').compiled)
-	print(Template('test_optional_param', approach='comprehension').compiled)
-	
-	assert t() == ''
+		StringSource('<!-- (optional)(param)a -->')
+	)() == ''
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_optional_ref(approach: str):
+def test_optional_ref():
 
 	Template(
 		'test_optional_ref_1',
-		StringSource('lalala'),
-		approach=approach
+		StringSource('lalala')
 	)
 	t = Template(
 		'test_optional_ref_2',
-		StringSource('<!-- (optional)(ref)test_optional_ref_1 -->'),
-		approach=approach
+		StringSource('<!-- (optional)(ref)test_optional_ref_1 -->')
 	)
 	
 	assert t() == ''
 	
-	result = t({
+	assert t({
 		'test_optional_ref_1': [None]
-	})
-	assert result == 'lalala' or result == 'lalala\n'
+	}) == 'lalala'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_cyrillic(approach: str):
 
-	t = Template('test_render_cyrillic', StringSource('ляляля'), approach=approach)
-
-	assert t() == 'ляляля'
+def test_cyrillic():
+	assert Template('test_render_cyrillic', StringSource('ляляля'))() == 'ляляля'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_table(approach: str):
+def test_table():
 
-	row = Template('Row', FileSource('templates/Row.xml'), approach=approach)
-	table = Template('Table', FileSource('templates/Table.xml'), approach=approach)
+	Template('Row', FileSource('templates/Row.xml'))
+	table = Template('Table', FileSource('templates/Table.xml'))
 
-	print(table.compiled)
-	# assert False
-	
 	args = {
 		"Row": [
 			{"cell": ["1.1", "2.1", "3.1"]},
@@ -221,22 +171,17 @@ def test_table(approach: str):
 		]
 	}
 
-	result = table(args)
-	print(result)
-
 	with open('tests/table_correct_result.xml', encoding='utf8') as f:
 		correct_result = f.read()
-	assert result == correct_result
+	assert table(args) == correct_result
 
 
 def test_other_deep_inject():
 
-	a = Template('test_other_deep_inject_a', StringSource('a'))
-	b = Template('test_other_deep_inject_b', StringSource('b<!-- (ref)test_other_deep_inject_a -->b'))
-	c = Template('test_other_deep_inject_c', StringSource('c<!-- (ref)test_other_deep_inject_b -->c'))
+	Template('test_other_deep_inject_a', StringSource('a'))
+	Template('test_other_deep_inject_b', StringSource('b<!-- (ref)test_other_deep_inject_a -->b'))
+	Template('test_other_deep_inject_c', StringSource('c<!-- (ref)test_other_deep_inject_b -->c'))
 	d = Template('test_other_deep_inject_d', StringSource('d<!-- (ref)test_other_deep_inject_c -->d'))
-
-	print(c.compiled)
 
 	assert d({
 		'test_other_deep_inject_b': {
@@ -247,17 +192,9 @@ def test_other_deep_inject():
 	}) == 'dcbabcd'
 
 
-@pytest.mark.parametrize('approach', approaches)
-def test_endpoint_template(approach: str):
+def test_endpoint_template():
 
-	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt'), approach=approach)
-	print(t.compiled)
-	print(t({
-		'route_to': 'route_to',
-		'methods': 'methods',
-		'handler_name': 'handler_name',
-		'handler_args': ', '.join(['a', 'b'])
-	}))
+	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt'))
 
 	assert t({
 		'route_to': 'route_to',
@@ -277,7 +214,3 @@ def handler_name(
 	a, b
 ):
 	return Response(status=200)"""
-
-
-# test_endpoint_template('comprehension')
-# print('ok')

@@ -11,30 +11,21 @@ from .Source import Source
 
 templates: dict[str, _Template] = {}
 
-approaches = {
-	'comprehension': drunk_snail_c.compileComprehension
-}
-
 
 class Template:
 
-	def __init__(self, name: str, source: Source=None, initial_buffer_size: int=None, approach: str=None):
+	def __init__(self, name: str, source: Source=None):
 
 		if not name in templates:
 			templates[name] = _Template(
 				name=name, 
-				source=source, 
-				initial_buffer_size=initial_buffer_size,
-				approach=approach
+				source=source
 			)
 		elif (
 				source and 
 				(source != templates[name].source)
-			) or (
-				approach and 
-				(approach != templates[name].approach)
 			):
-			templates[name].reload(source=source, approach=approach)
+			templates[name].reload(source=source)
 
 		self._actual_template_name = name
 	
@@ -83,27 +74,25 @@ class Template:
 
 class _Template:
 
-	def __init__(self, name: str, source: Source, initial_buffer_size: int=None, approach=None):
+	def __init__(self, name: str, source: Source):
 
 		if not hasattr(self, '_lock'):
 			self._lock = Lock()
 		
 		self._name = name
 		self._source = source
-		self._approach = approach or 'comprehension'
-		self._approachFunc = approaches[self._approach]
 
 		self._compiled = None
 		self._function = None
 
 		text = self.source.get()
-		self._buffer_size = initial_buffer_size or len(text) * 5 or 1
+		self._buffer_size = len(text) * 5 or 1
 		
 		drunk_snail_c.addTemplate(self.name, text)
 		
 		self.source.onChange = self.reload
 	
-	def reload(self, source: Source=None, checked: dict[str, bool]=None, approach: str=None) -> int:
+	def reload(self, source: Source=None, checked: dict[str, bool]=None) -> int:
 
 		checked = checked or {}
 		reloaded_number = 1
@@ -124,9 +113,7 @@ class _Template:
 			drunk_snail_c.removeTemplate(self.name)
 			self.__init__(
 				self.name, 
-				source or self.source, 
-				initial_buffer_size=self._buffer_size,
-				approach=approach or self.approach
+				source or self.source
 			)
 		
 		return reloaded_number
@@ -154,9 +141,9 @@ class _Template:
 	@property
 	def compiled(self) -> str:
 
-		with self.lock:
-			if not self._compiled:
-				self._compiled, self._buffer_size = self._approachFunc(self.name, self._buffer_size)
+		if not self._compiled:
+			with self.lock:
+				self._compiled, self._buffer_size = drunk_snail_c.compileComprehension(self.name, self._buffer_size)
 		
 		return self._compiled
 	
@@ -191,7 +178,7 @@ class _Template:
 	def __eq__(self, other) -> bool:
 		return (
 			isinstance(other, self.__class__)
-			and hash(self) == hash(other)
+			and (hash(self) == hash(other))
 		)
 	
 	def __del__(self) -> None:

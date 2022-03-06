@@ -7,33 +7,25 @@ from drunk_snail.sources import StringSource
 
 if __name__ == '__main__':
 
-	keywords = {
-		'open_tag': '<!--',
-		'close_tag': '-->',
-		'param_operator': '(param)',
-		'ref_operator': '(ref)'
-	}
-	template_name_prefix = "t"
-
 	folding_depth = 15
 	experiments_number = 1000
 
 	t = [
 		Template(
-			f'{template_name_prefix}0',
-			StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
+			f't0',
+			StringSource(f"<!-- (param)x -->")
 		),
 		Template(
-			f'{template_name_prefix}1',
-			StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
+			f't1',
+			StringSource(f"<!-- (ref)t0 -->\n<!-- (param)x -->")
 		)
 	]
 
 	for i in range(2, folding_depth):
 		t.append(
 			Template(
-				f'{template_name_prefix}{i}',
-				StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
+				f't{i}',
+				StringSource(f"<!-- (ref)t{i-2} -->\n<!-- (ref)t{i-1} -->\n<!-- (param)x -->")
 			)
 		)
 	

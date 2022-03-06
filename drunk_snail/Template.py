@@ -127,10 +127,6 @@ class _Template:
 		return self._source
 	
 	@property
-	def approach(self) -> str:
-		return self._approach
-	
-	@property
 	def text(self) -> str:
 		return drunk_snail_c.getTemplate(self.name)
 	

@@ -7,12 +7,12 @@ from drunk_snail.sources import FileSource
 
 class table(Benchmark):
 
-	def prepare(self, width, height, approach):
+	def prepare(self, width, height):
 
 		if not hasattr(self, 'args'):
 
-			self.row = Template('Row', FileSource('templates/Row.xml'), approach=approach)
-			self.table = Template('Table', FileSource('templates/Table.xml'), approach=approach)
+			self.row = Template('Row', FileSource('templates/Row.xml'))
+			self.table = Template('Table', FileSource('templates/Table.xml'))
 			
 			self.args = {
 				"Row": [
@@ -28,9 +28,6 @@ class table(Benchmark):
 	
 	def run(self, **kwargs):
 		self.table(self.args)
-	
-	# def clean(self, **kwargs):
-	# 	print(len(self.table(self.args)))
 
 
 class args_to_str(Benchmark):

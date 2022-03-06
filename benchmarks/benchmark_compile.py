@@ -7,29 +7,26 @@ from drunk_snail.sources import StringSource
 
 class fibonacci(Benchmark):
 
-	def prepare(self, keywords, folding_depth, template_name_prefix, approach):
+	def prepare(self, keywords, folding_depth, template_name_prefix):
 
 		if not hasattr(self, 'templates'):
 
 			self.templates = [
 				Template(
-					f'{template_name_prefix}0', 
-					StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-					approach=approach
+					f'{template_name_prefix}0',
+					StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 				),
 				Template(
-					f'{template_name_prefix}1', 
-					StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-					approach=approach
+					f'{template_name_prefix}1',
+					StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 				)
 			]
 
 			for i in range(2, folding_depth):
 				self.templates.append(
 					Template(
-						f'{template_name_prefix}{i}', 
-						StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-						approach=approach
+						f'{template_name_prefix}{i}',
+						StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 					)
 				)
 		
@@ -41,20 +38,18 @@ class fibonacci(Benchmark):
 
 class fibonacci_with_function_compilation(Benchmark):
 
-	def prepare(self, keywords, folding_depth, template_name_prefix, approach):
+	def prepare(self, keywords, folding_depth, template_name_prefix):
 
 		if not hasattr(self, 'templates'):
 
 			self.templates = [
 				Template(
 					f'{template_name_prefix}0', 
-					StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-					approach=approach
+					StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 				),
 				Template(
 					f'{template_name_prefix}1', 
-					StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-					approach=approach
+					StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 				)
 			]
 
@@ -62,8 +57,7 @@ class fibonacci_with_function_compilation(Benchmark):
 				self.templates.append(
 					Template(
 						f'{template_name_prefix}{i}', 
-						StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-						approach=approach
+						StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 					)
 				)
 		

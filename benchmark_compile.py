@@ -7,10 +7,6 @@ from drunk_snail.sources import StringSource
 
 if __name__ == '__main__':
 
-	approach = [
-		'comprehension'
-	][0]
-
 	keywords = {
 		'open_tag': '<!--',
 		'close_tag': '-->',
@@ -25,13 +21,11 @@ if __name__ == '__main__':
 	t = [
 		Template(
 			f'{template_name_prefix}0',
-			StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"),
-			approach=approach
+			StringSource(f"{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 		),
 		Template(
 			f'{template_name_prefix}1',
-			StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-			approach=approach
+			StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}0 {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 		)
 	]
 
@@ -39,8 +33,7 @@ if __name__ == '__main__':
 		t.append(
 			Template(
 				f'{template_name_prefix}{i}',
-				StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}"), 
-				approach=approach
+				StringSource(f"{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-2} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['ref_operator']}{template_name_prefix}{i-1} {keywords['close_tag']}\n{keywords['open_tag']} {keywords['param_operator']}x {keywords['close_tag']}")
 			)
 		)
 	

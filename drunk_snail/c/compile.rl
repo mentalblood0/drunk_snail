@@ -91,7 +91,8 @@ void compile_(
 	char **output_end,
 	int depth,
 	int *buffer_size,
-	Other *other
+	Other *other,
+	int *other_size
 )
 {
 
@@ -139,6 +140,10 @@ void compile_(
 					);
 				}
 				else if (action_type == ACTION_REF) {
+					if (depth >= other_size) {
+						*other_size *= 2;
+						other = realloc(other, sizeof(other) * (*other_size));
+					}
 					other[depth].left.start = start_line;
 					other[depth].left.length = start_expression - start_line;
 					other[depth].right.start = end_expression;
@@ -153,7 +158,8 @@ void compile_(
 						output_end,
 						depth + 1,
 						buffer_size,
-						other
+						other,
+						other_size
 					);
 					if (compilation_result->message)
 						return;
@@ -227,7 +233,8 @@ static PyObject *compile (
 	compilation_result.message = NULL;
 	compilation_result.result = malloc(sizeof(char) * buffer_size);
 
-	Other other[64];
+	int other_size = 16;
+	Other *other = malloc(sizeof(Other) * other_size);
 
 	char *_output_end = compilation_result.result;
 
@@ -238,7 +245,8 @@ static PyObject *compile (
 		&_output_end,
 		0,
 		&buffer_size,
-		other
+		other,
+		&other_size
 	);
 
 	if (compilation_result.message) {

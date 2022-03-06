@@ -140,7 +140,7 @@ void compile_(
 					);
 				}
 				else if (action_type == ACTION_REF) {
-					if (depth >= other_size) {
+					if (depth >= *other_size) {
 						*other_size *= 2;
 						other = realloc(other, sizeof(other) * (*other_size));
 					}

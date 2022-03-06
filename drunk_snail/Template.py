@@ -127,6 +127,10 @@ class _Template:
 		return self._source
 	
 	@property
+	def approach(self) -> str:
+		return self._approach
+	
+	@property
 	def text(self) -> str:
 		return drunk_snail_c.getTemplate(self.name)
 	
@@ -139,7 +143,7 @@ class _Template:
 
 		if not self._compiled:
 			with self.lock:
-				self._compiled, self._buffer_size = drunk_snail_c.compile(self.name, self._buffer_size)
+				self._compiled, self._buffer_size = drunk_snail_c.compileComprehension(self.name, self._buffer_size)
 		
 		return self._compiled
 	

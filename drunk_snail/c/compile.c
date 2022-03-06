@@ -274,7 +274,7 @@ tr1:
 					);
 				}
 				else if (action_type == ACTION_REF) {
-					if (depth >= other_size) {
+					if (depth >= *other_size) {
 						*other_size *= 2;
 						other = realloc(other, sizeof(other) * (*other_size));
 					}
@@ -323,7 +323,7 @@ tr4:
 					);
 				}
 				else if (action_type == ACTION_REF) {
-					if (depth >= other_size) {
+					if (depth >= *other_size) {
 						*other_size *= 2;
 						other = realloc(other, sizeof(other) * (*other_size));
 					}
@@ -373,7 +373,7 @@ tr32:
 					);
 				}
 				else if (action_type == ACTION_REF) {
-					if (depth >= other_size) {
+					if (depth >= *other_size) {
 						*other_size *= 2;
 						other = realloc(other, sizeof(other) * (*other_size));
 					}
@@ -977,7 +977,7 @@ case 37:
 					);
 				}
 				else if (action_type == ACTION_REF) {
-					if (depth >= other_size) {
+					if (depth >= *other_size) {
 						*other_size *= 2;
 						other = realloc(other, sizeof(other) * (*other_size));
 					}
@@ -1027,7 +1027,7 @@ case 37:
 					);
 				}
 				else if (action_type == ACTION_REF) {
-					if (depth >= other_size) {
+					if (depth >= *other_size) {
 						*other_size *= 2;
 						other = realloc(other, sizeof(other) * (*other_size));
 					}

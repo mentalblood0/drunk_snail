@@ -16,7 +16,7 @@ static const int compile_en_main = 0;
 
 
 
-#define compileComprehension__def(target, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
+#define compile__def(target, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
 	while ((*target - compilation_result->result) + (23+TEMPLATE_NAME_length+14+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
@@ -28,7 +28,7 @@ static const int compile_en_main = 0;
 	memcpy(*target, "):\n\treturn J([", 14); *target += 14;\
 };
 
-#define compileComprehension__end(target) {\
+#define compile__end(target) {\
 	while ((*target - compilation_result->result) + (2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
@@ -38,7 +38,7 @@ static const int compile_en_main = 0;
 	memcpy(*target, "])", 2); *target += 2;\
 };
 
-#define compileComprehension__for(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
+#define compile__for(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
 	while ((*target - compilation_result->result) + (4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
@@ -73,7 +73,7 @@ static const int compile_en_main = 0;
 	memcpy(*target, "])", 2); *target += 2;\
 };
 
-#define compileComprehension__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
+#define compile__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
 	while ((*target - compilation_result->result) + (4+ARG_length+4+TEMPLATE_NAME_length+2+ARG_length+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
@@ -90,8 +90,8 @@ static const int compile_en_main = 0;
 };
 
 
-int compileComprehension__empty__i;
-#define compileComprehension__empty(target, LINE, LINE_length) {\
+int compile__empty__i;
+#define compile__empty(target, LINE, LINE_length) {\
 	while ((*target - compilation_result->result) + (1+0+LINE_length+0+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
@@ -99,20 +99,20 @@ int compileComprehension__empty__i;
 		compilation_result->result = new_result;\
 	}\
 	memcpy(*target, "\"", 1); *target += 1;\
-	for (compileComprehension__empty__i = 0; compileComprehension__empty__i < depth; compileComprehension__empty__i++) {\
-		memcpy(*target, other[compileComprehension__empty__i].left.start, other[compileComprehension__empty__i].left.length); *target += other[compileComprehension__empty__i].left.length;\
+	for (compile__empty__i = 0; compile__empty__i < depth; compile__empty__i++) {\
+		memcpy(*target, other[compile__empty__i].left.start, other[compile__empty__i].left.length); *target += other[compile__empty__i].left.length;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
 	memcpy(*target, LINE, LINE_length); *target += LINE_length;\
 	memcpy(*target, "", 0); *target += 0;\
-	for (compileComprehension__empty__i = depth-1; compileComprehension__empty__i >= 0; compileComprehension__empty__i--) {\
-		memcpy(*target, other[compileComprehension__empty__i].right.start, other[compileComprehension__empty__i].right.length); *target += other[compileComprehension__empty__i].right.length;\
+	for (compile__empty__i = depth-1; compile__empty__i >= 0; compile__empty__i--) {\
+		memcpy(*target, other[compile__empty__i].right.start, other[compile__empty__i].right.length); *target += other[compile__empty__i].right.length;\
 	}\
 	memcpy(*target, "\",", 2); *target += 2;\
 };
 
-int compileComprehension__param__i;
-#define compileComprehension__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
+int compile__param__i;
+#define compile__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
 	while ((*target - compilation_result->result) + (4+0+OTHER_LEFT_length+1+ARG_length+1+OTHER_RIGHT_length+0+1+4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
@@ -120,8 +120,8 @@ int compileComprehension__param__i;
 		compilation_result->result = new_result;\
 	}\
 	memcpy(*target, "*[f\"", 4); *target += 4;\
-	for (compileComprehension__param__i = 0; compileComprehension__param__i < depth; compileComprehension__param__i++) {\
-		memcpy(*target, other[compileComprehension__param__i].left.start, other[compileComprehension__param__i].left.length); *target += other[compileComprehension__param__i].left.length;\
+	for (compile__param__i = 0; compile__param__i < depth; compile__param__i++) {\
+		memcpy(*target, other[compile__param__i].left.start, other[compile__param__i].left.length); *target += other[compile__param__i].left.length;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
 	memcpy(*target, OTHER_LEFT, OTHER_LEFT_length); *target += OTHER_LEFT_length;\
@@ -130,20 +130,20 @@ int compileComprehension__param__i;
 	memcpy(*target, "}", 1); *target += 1;\
 	memcpy(*target, OTHER_RIGHT, OTHER_RIGHT_length); *target += OTHER_RIGHT_length;\
 	memcpy(*target, "", 0); *target += 0;\
-	for (compileComprehension__param__i = depth-1; compileComprehension__param__i >= 0; compileComprehension__param__i--) {\
-		memcpy(*target, other[compileComprehension__param__i].right.start, other[compileComprehension__param__i].right.length); *target += other[compileComprehension__param__i].right.length;\
+	for (compile__param__i = depth-1; compile__param__i >= 0; compile__param__i--) {\
+		memcpy(*target, other[compile__param__i].right.start, other[compile__param__i].right.length); *target += other[compile__param__i].right.length;\
 	}\
 	memcpy(*target, "\"", 1); *target += 1;\
 	if (strict) {\
-		compileComprehension__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
+		compile__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	}\
 	else {\
-		compileComprehension__for(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
+		compile__for(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	}\
 	memcpy(*target, "],", 2); *target += 2;\
 };
 
-#define compileComprehension__ref_before(target) {\
+#define compile__ref_before(target) {\
 	while ((*target - compilation_result->result) + (5+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
@@ -153,7 +153,7 @@ int compileComprehension__param__i;
 	memcpy(*target, "*[J([", 5); *target += 5;\
 };
 
-#define compileComprehension__ref_after(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
+#define compile__ref_after(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
 	while ((*target - compilation_result->result) + (2+4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
@@ -162,10 +162,10 @@ int compileComprehension__param__i;
 	}\
 	memcpy(*target, "])", 2); *target += 2;\
 	if (strict) {\
-		compileComprehension__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
+		compile__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	}\
 	else {\
-		compileComprehension__for(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
+		compile__for(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	}\
 	memcpy(*target, "],", 2); *target += 2;\
 };
@@ -190,6 +190,12 @@ enum ActionType {
 };
 
 
+typedef struct CompilationResult {
+	char *message;
+	char *result;
+} CompilationResult;
+
+
 #define reset_line_properties() {\
 	start_line = NULL;\
 	end_line = NULL;\
@@ -203,7 +209,7 @@ enum ActionType {
 }
 
 
-void compileComprehension_(
+void compile_(
 	CompilationResult *compilation_result,
 	char *template_name,
 	int template_name_length,
@@ -237,7 +243,7 @@ void compileComprehension_(
 
 	if (!depth) {
 		clearRefs(template);
-		compileComprehension__def(output_end, template_name, template_name_length);
+		compile__def(output_end, template_name, template_name_length);
 	}
 
 	
@@ -258,7 +264,7 @@ tr1:
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					compileComprehension__param(
+					compile__param(
 						output_end,
 						start_line, start_expression - start_line,
 						name_start, name_end - name_start,
@@ -273,8 +279,8 @@ tr1:
 					other[depth].right.length = end_line - end_expression;
 					if (!depth)
 						addRef(template, name_start, name_end - name_start);
-					compileComprehension__ref_before(output_end);
-					compileComprehension_(
+					compile__ref_before(output_end);
+					compile_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
@@ -285,11 +291,11 @@ tr1:
 					);
 					if (compilation_result->message)
 						return;
-					compileComprehension__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
+					compile__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
 			if (action_type == ACTION_NONE)
-				compileComprehension__empty(output_end, start_line, end_line - start_line);
+				compile__empty(output_end, start_line, end_line - start_line);
 
 			reset_line_properties();
 
@@ -302,7 +308,7 @@ tr4:
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					compileComprehension__param(
+					compile__param(
 						output_end,
 						start_line, start_expression - start_line,
 						name_start, name_end - name_start,
@@ -317,8 +323,8 @@ tr4:
 					other[depth].right.length = end_line - end_expression;
 					if (!depth)
 						addRef(template, name_start, name_end - name_start);
-					compileComprehension__ref_before(output_end);
-					compileComprehension_(
+					compile__ref_before(output_end);
+					compile_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
@@ -329,11 +335,11 @@ tr4:
 					);
 					if (compilation_result->message)
 						return;
-					compileComprehension__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
+					compile__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
 			if (action_type == ACTION_NONE)
-				compileComprehension__empty(output_end, start_line, end_line - start_line);
+				compile__empty(output_end, start_line, end_line - start_line);
 
 			reset_line_properties();
 
@@ -347,7 +353,7 @@ tr32:
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					compileComprehension__param(
+					compile__param(
 						output_end,
 						start_line, start_expression - start_line,
 						name_start, name_end - name_start,
@@ -362,8 +368,8 @@ tr32:
 					other[depth].right.length = end_line - end_expression;
 					if (!depth)
 						addRef(template, name_start, name_end - name_start);
-					compileComprehension__ref_before(output_end);
-					compileComprehension_(
+					compile__ref_before(output_end);
+					compile_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
@@ -374,11 +380,11 @@ tr32:
 					);
 					if (compilation_result->message)
 						return;
-					compileComprehension__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
+					compile__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
 			if (action_type == ACTION_NONE)
-				compileComprehension__empty(output_end, start_line, end_line - start_line);
+				compile__empty(output_end, start_line, end_line - start_line);
 
 			reset_line_properties();
 
@@ -946,7 +952,7 @@ case 37:
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					compileComprehension__param(
+					compile__param(
 						output_end,
 						start_line, start_expression - start_line,
 						name_start, name_end - name_start,
@@ -961,8 +967,8 @@ case 37:
 					other[depth].right.length = end_line - end_expression;
 					if (!depth)
 						addRef(template, name_start, name_end - name_start);
-					compileComprehension__ref_before(output_end);
-					compileComprehension_(
+					compile__ref_before(output_end);
+					compile_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
@@ -973,11 +979,11 @@ case 37:
 					);
 					if (compilation_result->message)
 						return;
-					compileComprehension__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
+					compile__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
 			if (action_type == ACTION_NONE)
-				compileComprehension__empty(output_end, start_line, end_line - start_line);
+				compile__empty(output_end, start_line, end_line - start_line);
 
 			reset_line_properties();
 
@@ -991,7 +997,7 @@ case 37:
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					compileComprehension__param(
+					compile__param(
 						output_end,
 						start_line, start_expression - start_line,
 						name_start, name_end - name_start,
@@ -1006,8 +1012,8 @@ case 37:
 					other[depth].right.length = end_line - end_expression;
 					if (!depth)
 						addRef(template, name_start, name_end - name_start);
-					compileComprehension__ref_before(output_end);
-					compileComprehension_(
+					compile__ref_before(output_end);
+					compile_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
@@ -1018,11 +1024,11 @@ case 37:
 					);
 					if (compilation_result->message)
 						return;
-					compileComprehension__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
+					compile__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
 			if (action_type == ACTION_NONE)
-				compileComprehension__empty(output_end, start_line, end_line - start_line);
+				compile__empty(output_end, start_line, end_line - start_line);
 
 			reset_line_properties();
 
@@ -1036,13 +1042,13 @@ case 37:
 
 
 	if (!depth) {
-		compileComprehension__end(output_end);
+		compile__end(output_end);
 		**output_end = 0;
 	}
 };
 
 
-static PyObject *compileComprehension (
+static PyObject *compile (
 	PyObject *self,
 	PyObject *args
 ) {
@@ -1061,7 +1067,7 @@ static PyObject *compileComprehension (
 
 	char *_output_end = compilation_result.result;
 
-	compileComprehension_(
+	compile_(
 		&compilation_result,
 		name,
 		strlen(name),

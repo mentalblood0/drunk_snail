@@ -12,6 +12,7 @@
 #include "getTemplate.c"
 #include "getTemplateRefs.c"
 #include "removeTemplate.c"
-#include "./compile/main.c"
+
+#include "compile.c"
 
 #include "python_module_properties.c"

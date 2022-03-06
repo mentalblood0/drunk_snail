@@ -14,4 +14,4 @@ a.out
 *preprocessed*
 *.out
 test.py
-compileComprehension_with_comments.c
+compile_with_comments.c

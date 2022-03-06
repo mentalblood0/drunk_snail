@@ -10,39 +10,39 @@
 
 
 
-compileComprehension__def {%
+compile__def {%
 J='\n'.join
 def render(<TEMPLATE_NAME>):
 	return J([
 %}
 
-compileComprehension__end {%
+compile__end {%
 ])
 %}
 
-compileComprehension__for {%
+compile__for {%
 for <ARG> in((<TEMPLATE_NAME>['<ARG>']if list==type(<TEMPLATE_NAME>['<ARG>'])else[<TEMPLATE_NAME>['<ARG>']])if'<ARG>'in <TEMPLATE_NAME> else[<optional?:''>])
 %}
 
-compileComprehension__for_strict {%
+compile__for_strict {%
 for <ARG> in <TEMPLATE_NAME>['<ARG>']
 %}
 
 
-compileComprehension__empty {%
+compile__empty {%
 "<other[:depth].left+><LINE><other[:depth].right->",
 %}
 
-compileComprehension__param {%
-*[f"<other[:depth].left+><OTHER_LEFT>{<ARG>}<OTHER_RIGHT><other[:depth].right->"<*(strict?compileComprehension__for_strict:compileComprehension__for)>],
+compile__param {%
+*[f"<other[:depth].left+><OTHER_LEFT>{<ARG>}<OTHER_RIGHT><other[:depth].right->"<*(strict?compile__for_strict:compile__for)>],
 %}
 
-compileComprehension__ref_before {%
+compile__ref_before {%
 *[J([
 %}
 
-compileComprehension__ref_after {%
-])<*(strict?compileComprehension__for_strict:compileComprehension__for)>],
+compile__ref_after {%
+])<*(strict?compile__for_strict:compile__for)>],
 %}
 
 
@@ -65,6 +65,12 @@ enum ActionType {
 };
 
 
+typedef struct CompilationResult {
+	char *message;
+	char *result;
+} CompilationResult;
+
+
 #define reset_line_properties() {\
 	start_line = NULL;\
 	end_line = NULL;\
@@ -78,7 +84,7 @@ enum ActionType {
 }
 
 
-void compileComprehension_(
+void compile_(
 	CompilationResult *compilation_result,
 	char *template_name,
 	int template_name_length,
@@ -112,7 +118,7 @@ void compileComprehension_(
 
 	if (!depth) {
 		clearRefs(template);
-		compileComprehension__def(output_end, template_name, template_name_length);
+		compile__def(output_end, template_name, template_name_length);
 	}
 
 	%%{
@@ -124,7 +130,7 @@ void compileComprehension_(
 
 			if (name_end && end_expression) {
 				if (action_type == ACTION_PARAM) {
-					compileComprehension__param(
+					compile__param(
 						output_end,
 						start_line, start_expression - start_line,
 						name_start, name_end - name_start,
@@ -139,8 +145,8 @@ void compileComprehension_(
 					other[depth].right.length = end_line - end_expression;
 					if (!depth)
 						addRef(template, name_start, name_end - name_start);
-					compileComprehension__ref_before(output_end);
-					compileComprehension_(
+					compile__ref_before(output_end);
+					compile_(
 						compilation_result,
 						name_start,
 						name_end - name_start,
@@ -151,11 +157,11 @@ void compileComprehension_(
 					);
 					if (compilation_result->message)
 						return;
-					compileComprehension__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
+					compile__ref_after(output_end, name_start, name_end - name_start, template_name, template_name_length);
 				}
 			}
 			if (action_type == ACTION_NONE)
-				compileComprehension__empty(output_end, start_line, end_line - start_line);
+				compile__empty(output_end, start_line, end_line - start_line);
 
 			reset_line_properties();
 
@@ -200,13 +206,13 @@ void compileComprehension_(
 	}%%
 
 	if (!depth) {
-		compileComprehension__end(output_end);
+		compile__end(output_end);
 		**output_end = 0;
 	}
 };
 
 
-static PyObject *compileComprehension (
+static PyObject *compile (
 	PyObject *self,
 	PyObject *args
 ) {
@@ -225,7 +231,7 @@ static PyObject *compileComprehension (
 
 	char *_output_end = compilation_result.result;
 
-	compileComprehension_(
+	compile_(
 		&compilation_result,
 		name,
 		strlen(name),

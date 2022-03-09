@@ -160,8 +160,16 @@ def test_cyrillic():
 
 def test_table():
 
-	Template('Row', FileSource('templates/Row.xml'))
-	table = Template('Table', FileSource('templates/Table.xml'))
+	Template('Row', StringSource(
+		'<tr>\n'
+		'	<td><!-- (strict)(param)cell --></td>\n'
+		'</tr>\n'
+	))
+	table = Template('Table', StringSource(
+		'<table>\n'
+		'	<!-- (strict)(ref)Row -->\n'
+		'</table>\n'
+	))
 
 	args = {
 		"Row": [
@@ -171,9 +179,25 @@ def test_table():
 		]
 	}
 
-	with open('tests/table_correct_result.xml', encoding='utf8') as f:
-		correct_result = f.read()
-	assert table(args) == correct_result
+	assert table(args) == (
+		'<table>\n'
+		'	<tr>\n'
+		'		<td>1.1</td>\n'
+		'		<td>2.1</td>\n'
+		'		<td>3.1</td>\n'
+		'	</tr>\n'
+		'	<tr>\n'
+		'		<td>1.2</td>\n'
+		'		<td>2.2</td>\n'
+		'		<td>3.2</td>\n'
+		'	</tr>\n'
+		'	<tr>\n'
+		'		<td>1.3</td>\n'
+		'		<td>2.3</td>\n'
+		'		<td>3.3</td>\n'
+		'	</tr>\n'
+		'</table>'
+	)
 
 
 def test_other_deep_inject():
@@ -194,7 +218,21 @@ def test_other_deep_inject():
 
 def test_endpoint_template():
 
-	t = Template('test_compile_endpoint_template', FileSource('templates/endpoint_template.txt'))
+	t = Template('test_compile_endpoint_template', StringSource(
+		'from ..common import *\n'
+		'\n'
+		'\n'
+		'\n'
+		'@route(\n'
+		'	None, \n'
+		"	'<!-- (param)route_to -->', \n"
+		'	methods=<!-- (param)methods -->\n'
+		')\n'
+		'def <!-- (param)handler_name -->(\n'
+		'	<!-- (param)handler_args -->\n'
+		'):\n'
+		'	return Response(status=200)'
+	))
 
 	assert t({
 		'route_to': 'route_to',

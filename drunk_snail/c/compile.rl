@@ -30,11 +30,11 @@ for <ARG> in <TEMPLATE_NAME>['<ARG>']
 
 
 compile__empty {%
-"<other[:depth].left+><LINE><other[:depth].right->",
+'<other[:depth].left+><LINE><other[:depth].right->',
 %}
 
 compile__param {%
-*[f"<other[:depth].left+><OTHER_LEFT>{<ARG>}<OTHER_RIGHT><other[:depth].right->"<*(strict?compile__for_strict:compile__for)>],
+*[f'<other[:depth].left+><OTHER_LEFT>{<ARG>}<OTHER_RIGHT><other[:depth].right->'<*(strict?compile__for_strict:compile__for)>],
 %}
 
 compile__ref_before {%

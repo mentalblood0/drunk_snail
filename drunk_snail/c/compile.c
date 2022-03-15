@@ -98,7 +98,7 @@ int compile__empty__i;
 		*target = new_result + (*target - compilation_result->result);\
 		compilation_result->result = new_result;\
 	}\
-	memcpy(*target, "\"", 1); *target += 1;\
+	memcpy(*target, "'", 1); *target += 1;\
 	for (compile__empty__i = 0; compile__empty__i < depth; compile__empty__i++) {\
 		memcpy(*target, other[compile__empty__i].left.start, other[compile__empty__i].left.length); *target += other[compile__empty__i].left.length;\
 	}\
@@ -108,7 +108,7 @@ int compile__empty__i;
 	for (compile__empty__i = depth-1; compile__empty__i >= 0; compile__empty__i--) {\
 		memcpy(*target, other[compile__empty__i].right.start, other[compile__empty__i].right.length); *target += other[compile__empty__i].right.length;\
 	}\
-	memcpy(*target, "\",", 2); *target += 2;\
+	memcpy(*target, "',", 2); *target += 2;\
 };
 
 int compile__param__i;
@@ -119,7 +119,7 @@ int compile__param__i;
 		*target = new_result + (*target - compilation_result->result);\
 		compilation_result->result = new_result;\
 	}\
-	memcpy(*target, "*[f\"", 4); *target += 4;\
+	memcpy(*target, "*[f'", 4); *target += 4;\
 	for (compile__param__i = 0; compile__param__i < depth; compile__param__i++) {\
 		memcpy(*target, other[compile__param__i].left.start, other[compile__param__i].left.length); *target += other[compile__param__i].left.length;\
 	}\
@@ -133,7 +133,7 @@ int compile__param__i;
 	for (compile__param__i = depth-1; compile__param__i >= 0; compile__param__i--) {\
 		memcpy(*target, other[compile__param__i].right.start, other[compile__param__i].right.length); *target += other[compile__param__i].right.length;\
 	}\
-	memcpy(*target, "\"", 1); *target += 1;\
+	memcpy(*target, "'", 1); *target += 1;\
 	if (strict) {\
 		compile__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	}\

@@ -26,6 +26,28 @@ Table:
     <!-- (ref)Row -->
 </table>
 ```
+Arguments:
+```json
+{
+    "Row": [
+        {"cell": ["1.1", "2.1"]},
+        {"cell": ["1.2", "2.2"]}
+    ]
+}
+```
+Result:
+```html
+<table>
+	<tr>
+		<td>1.1</td>
+		<td>2.1</td>
+	</tr>
+	<tr>
+		<td>1.2</td>
+		<td>2.2</td>
+	</tr>
+</table>
+```
 
 
 

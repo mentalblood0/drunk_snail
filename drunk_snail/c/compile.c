@@ -92,13 +92,13 @@ static const int compile_en_main = 0;
 
 int compile__empty__i;
 #define compile__empty(target, LINE, LINE_length) {\
-	while ((*target - compilation_result->result) + (1+0+LINE_length+0+2+1) >= *buffer_size) {\
+	while ((*target - compilation_result->result) + (3+0+LINE_length+0+4+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - compilation_result->result);\
 		compilation_result->result = new_result;\
 	}\
-	memcpy(*target, "'", 1); *target += 1;\
+	memcpy(*target, "'''", 3); *target += 3;\
 	for (compile__empty__i = 0; compile__empty__i < depth; compile__empty__i++) {\
 		memcpy(*target, other[compile__empty__i].left.start, other[compile__empty__i].left.length); *target += other[compile__empty__i].left.length;\
 	}\
@@ -108,18 +108,18 @@ int compile__empty__i;
 	for (compile__empty__i = depth-1; compile__empty__i >= 0; compile__empty__i--) {\
 		memcpy(*target, other[compile__empty__i].right.start, other[compile__empty__i].right.length); *target += other[compile__empty__i].right.length;\
 	}\
-	memcpy(*target, "',", 2); *target += 2;\
+	memcpy(*target, "''',", 4); *target += 4;\
 };
 
 int compile__param__i;
 #define compile__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
-	while ((*target - compilation_result->result) + (4+0+OTHER_LEFT_length+1+ARG_length+1+OTHER_RIGHT_length+0+1+4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+2+1) >= *buffer_size) {\
+	while ((*target - compilation_result->result) + (6+0+OTHER_LEFT_length+1+ARG_length+1+OTHER_RIGHT_length+0+3+4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - compilation_result->result);\
 		compilation_result->result = new_result;\
 	}\
-	memcpy(*target, "*[f'", 4); *target += 4;\
+	memcpy(*target, "*[f'''", 6); *target += 6;\
 	for (compile__param__i = 0; compile__param__i < depth; compile__param__i++) {\
 		memcpy(*target, other[compile__param__i].left.start, other[compile__param__i].left.length); *target += other[compile__param__i].left.length;\
 	}\
@@ -133,7 +133,7 @@ int compile__param__i;
 	for (compile__param__i = depth-1; compile__param__i >= 0; compile__param__i--) {\
 		memcpy(*target, other[compile__param__i].right.start, other[compile__param__i].right.length); *target += other[compile__param__i].right.length;\
 	}\
-	memcpy(*target, "'", 1); *target += 1;\
+	memcpy(*target, "'''", 3); *target += 3;\
 	if (strict) {\
 		compile__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	}\

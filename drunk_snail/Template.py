@@ -31,18 +31,20 @@ class Template:
 	
 	@property
 	def _actual_template(self) -> _Template:
-		
-		if not self._actual_template_name in templates:
+
+		try:
+			result = templates[self._actual_template_name]
+		except KeyError:
 			raise KeyError(f"Template '{self._actual_template_name}' deleted or not created yet")
 		
-		return templates[self._actual_template_name]
+		return result
 
 	def __getattribute__(self, name: str):
 
 		if name in ['_actual_template_name', '_actual_template', 'delete']:
 			return super().__getattribute__(name)
-
-		return getattr(self._actual_template, name)
+		else:
+			return getattr(self._actual_template, name)
 	
 	def __call__(self, *args, **kwargs):
 		return self._actual_template(*args, **kwargs)
@@ -78,7 +80,7 @@ class _Template:
 
 		if not hasattr(self, '_lock'):
 			self._lock = Lock()
-		
+
 		self._name = name
 		self._source = source
 
@@ -87,9 +89,10 @@ class _Template:
 
 		text = self.source.get()
 		self._buffer_size = len(text) * 5 or 1
-		
-		drunk_snail_c.addTemplate(self.name, text)
-		
+
+		with self.lock:
+			drunk_snail_c.addTemplate(self.name, text)
+
 		self.source.onChange = self.reload
 	
 	def reload(self, source: Source=None, checked: dict[str, bool]=None) -> int:
@@ -111,29 +114,28 @@ class _Template:
 						reloaded_number += t.reload(checked=checked)
 
 			drunk_snail_c.removeTemplate(self.name)
-			self.__init__(
-				self.name, 
-				source or self.source
-			)
-		
+
+		self.__init__(self.name, source or self.source)
+
 		return reloaded_number
 	
 	@property
 	def name(self) -> str:
 		return self._name
-	
+
 	@property
 	def source(self) -> Source:
 		return self._source
-	
+
 	@property
 	def text(self) -> str:
-		return drunk_snail_c.getTemplate(self.name)
-	
+		with self.lock:
+			return drunk_snail_c.getTemplate(self.name)
+
 	@property
 	def lock(self) -> Lock:
 		return self._lock
-	
+
 	@property
 	def compiled(self) -> str:
 
@@ -142,11 +144,12 @@ class _Template:
 				self._compiled, self._buffer_size = drunk_snail_c.compile(self.name, self._buffer_size)
 		
 		return self._compiled
-	
+
 	@property
 	def refs(self) -> list[str]:
-		return drunk_snail_c.getTemplateRefs(self.name)
-	
+		with self.lock:
+			return drunk_snail_c.getTemplateRefs(self.name)
+
 	@property
 	def function(self) -> Callable:
 
@@ -158,16 +161,16 @@ class _Template:
 			self._function = getattr(temp_module, 'render')
 		
 		return self._function
-	
+
 	def __call__(self, parameters: dict=None) -> str:
 		return self.function(parameters or {})
-	
+
 	def __repr__(self) -> str:
 		return f"(name='{self.name}', source={self.source})"
 	
 	def __str__(self) -> str:
 		return self.text
-	
+
 	def __len__(self) -> int:
 		return len(self.text)
 
@@ -176,7 +179,7 @@ class _Template:
 			isinstance(other, self.__class__)
 			and (hash(self) == hash(other))
 		)
-	
+
 	def __del__(self) -> None:
 	
 		with self.lock:

@@ -158,6 +158,20 @@ def test_cyrillic():
 	assert Template('test_render_cyrillic', StringSource('ляляля'))() == 'ляляля'
 
 
+def test_backslash():
+	assert Template('test_backslash', StringSource('\\'))() == '\\'
+
+
+def test_quote():
+	assert Template('test_quote', StringSource('\''))() == '\''
+
+
+def test_brackets():
+	assert Template('test_brackets', StringSource('{<!-- (param)x -->}'))({
+		'x': 'lalala'
+	}) == '{lalala}'
+
+
 def test_table():
 
 	Template('Row', StringSource(

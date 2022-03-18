@@ -16,6 +16,16 @@ static const int compile_en_main = 0;
 
 
 
+#define memcpy_escaped(target, source, length) {\
+	for (i = 0; i < length; i++) {\
+		if ((int)(source[i]) > 0)\
+			if (chars_to_escape_check[(int)(source[i])]) {\
+				memcpy(target, &chars_to_escape_check[(int)(source[i])], 1); target += 1;\
+			}\
+		memcpy(target, source + i, 1); target += 1;\
+	}\
+}\
+
 #define compile__def(target, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
 	while ((*target - compilation_result->result) + (23+TEMPLATE_NAME_length+14+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
@@ -24,7 +34,7 @@ static const int compile_en_main = 0;
 		compilation_result->result = new_result;\
 	}\
 	memcpy(*target, "J='\\n'.join\ndef render(", 23); *target += 23;\
-	memcpy(*target, TEMPLATE_NAME, TEMPLATE_NAME_length); *target += TEMPLATE_NAME_length;\
+	memcpy_escaped(*target, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	memcpy(*target, "):\n\treturn J([", 14); *target += 14;\
 };
 
@@ -46,23 +56,23 @@ static const int compile_en_main = 0;
 		compilation_result->result = new_result;\
 	}\
 	memcpy(*target, "for ", 4); *target += 4;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
+	memcpy_escaped(*target, ARG, ARG_length);\
 	memcpy(*target, " in((", 5); *target += 5;\
-	memcpy(*target, TEMPLATE_NAME, TEMPLATE_NAME_length); *target += TEMPLATE_NAME_length;\
+	memcpy_escaped(*target, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	memcpy(*target, "['", 2); *target += 2;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
+	memcpy_escaped(*target, ARG, ARG_length);\
 	memcpy(*target, "']if list==type(", 16); *target += 16;\
-	memcpy(*target, TEMPLATE_NAME, TEMPLATE_NAME_length); *target += TEMPLATE_NAME_length;\
+	memcpy_escaped(*target, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	memcpy(*target, "['", 2); *target += 2;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
+	memcpy_escaped(*target, ARG, ARG_length);\
 	memcpy(*target, "'])else[", 8); *target += 8;\
-	memcpy(*target, TEMPLATE_NAME, TEMPLATE_NAME_length); *target += TEMPLATE_NAME_length;\
+	memcpy_escaped(*target, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	memcpy(*target, "['", 2); *target += 2;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
+	memcpy_escaped(*target, ARG, ARG_length);\
 	memcpy(*target, "']])if'", 7); *target += 7;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
+	memcpy_escaped(*target, ARG, ARG_length);\
 	memcpy(*target, "'in ", 4); *target += 4;\
-	memcpy(*target, TEMPLATE_NAME, TEMPLATE_NAME_length); *target += TEMPLATE_NAME_length;\
+	memcpy_escaped(*target, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	memcpy(*target, " else[", 6); *target += 6;\
 	if (optional) {\
 		memcpy(*target, "", 0); *target += 0;\
@@ -81,59 +91,59 @@ static const int compile_en_main = 0;
 		compilation_result->result = new_result;\
 	}\
 	memcpy(*target, "for ", 4); *target += 4;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
+	memcpy_escaped(*target, ARG, ARG_length);\
 	memcpy(*target, " in ", 4); *target += 4;\
-	memcpy(*target, TEMPLATE_NAME, TEMPLATE_NAME_length); *target += TEMPLATE_NAME_length;\
+	memcpy_escaped(*target, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	memcpy(*target, "['", 2); *target += 2;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
+	memcpy_escaped(*target, ARG, ARG_length);\
 	memcpy(*target, "']", 2); *target += 2;\
 };
 
 
 int compile__empty__i;
 #define compile__empty(target, LINE, LINE_length) {\
-	while ((*target - compilation_result->result) + (3+0+LINE_length+0+4+1) >= *buffer_size) {\
+	while ((*target - compilation_result->result) + (1+0+LINE_length+0+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - compilation_result->result);\
 		compilation_result->result = new_result;\
 	}\
-	memcpy(*target, "'''", 3); *target += 3;\
+	memcpy(*target, "'", 1); *target += 1;\
 	for (compile__empty__i = 0; compile__empty__i < depth; compile__empty__i++) {\
-		memcpy(*target, other[compile__empty__i].left.start, other[compile__empty__i].left.length); *target += other[compile__empty__i].left.length;\
+		memcpy_escaped(*target, other[compile__empty__i].left.start, other[compile__empty__i].left.length);\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
-	memcpy(*target, LINE, LINE_length); *target += LINE_length;\
+	memcpy_escaped(*target, LINE, LINE_length);\
 	memcpy(*target, "", 0); *target += 0;\
 	for (compile__empty__i = depth-1; compile__empty__i >= 0; compile__empty__i--) {\
-		memcpy(*target, other[compile__empty__i].right.start, other[compile__empty__i].right.length); *target += other[compile__empty__i].right.length;\
+		memcpy_escaped(*target, other[compile__empty__i].right.start, other[compile__empty__i].right.length);\
 	}\
-	memcpy(*target, "''',", 4); *target += 4;\
+	memcpy(*target, "',", 2); *target += 2;\
 };
 
 int compile__param__i;
 #define compile__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
-	while ((*target - compilation_result->result) + (6+0+OTHER_LEFT_length+1+ARG_length+1+OTHER_RIGHT_length+0+3+4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+2+1) >= *buffer_size) {\
+	while ((*target - compilation_result->result) + (4+0+OTHER_LEFT_length+1+ARG_length+1+OTHER_RIGHT_length+0+1+4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - compilation_result->result);\
 		compilation_result->result = new_result;\
 	}\
-	memcpy(*target, "*[f'''", 6); *target += 6;\
+	memcpy(*target, "*[f'", 4); *target += 4;\
 	for (compile__param__i = 0; compile__param__i < depth; compile__param__i++) {\
-		memcpy(*target, other[compile__param__i].left.start, other[compile__param__i].left.length); *target += other[compile__param__i].left.length;\
+		memcpy_escaped(*target, other[compile__param__i].left.start, other[compile__param__i].left.length);\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
-	memcpy(*target, OTHER_LEFT, OTHER_LEFT_length); *target += OTHER_LEFT_length;\
+	memcpy_escaped(*target, OTHER_LEFT, OTHER_LEFT_length);\
 	memcpy(*target, "{", 1); *target += 1;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
+	memcpy_escaped(*target, ARG, ARG_length);\
 	memcpy(*target, "}", 1); *target += 1;\
-	memcpy(*target, OTHER_RIGHT, OTHER_RIGHT_length); *target += OTHER_RIGHT_length;\
+	memcpy_escaped(*target, OTHER_RIGHT, OTHER_RIGHT_length);\
 	memcpy(*target, "", 0); *target += 0;\
 	for (compile__param__i = depth-1; compile__param__i >= 0; compile__param__i--) {\
-		memcpy(*target, other[compile__param__i].right.start, other[compile__param__i].right.length); *target += other[compile__param__i].right.length;\
+		memcpy_escaped(*target, other[compile__param__i].right.start, other[compile__param__i].right.length);\
 	}\
-	memcpy(*target, "'''", 3); *target += 3;\
+	memcpy(*target, "'", 1); *target += 1;\
 	if (strict) {\
 		compile__for_strict(target, ARG, ARG_length, TEMPLATE_NAME, TEMPLATE_NAME_length);\
 	}\
@@ -234,6 +244,8 @@ void compile_(
 	char *eof = pe;
 	int cs;
 	char *new_result;
+
+	int i;
 
 	enum ActionType action_type = ACTION_NONE;
 	bool optional = false;

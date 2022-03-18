@@ -43,7 +43,19 @@ static struct PyModuleDef drunk_snail_c_module = {
 PyMODINIT_FUNC PyInit_drunk_snail_c(void) {
 
 	_templates = createTree();
-	
+
+	int i = 0;
+	for (i = 0; i < 128; i++)
+		chars_to_escape_check[i] = 0;
+
+	// char **c = NULL;
+	// for (c = chars_to_escape; **c; c++) {
+	// 	chars_to_escape_check[(int)(**c)] = *(*c + 1);
+	// }
+	for (i = 0; i < 4; i++) {
+		chars_to_escape_check[(int)(chars_to_escape[i][0])] = chars_to_escape[i][1];
+	}
+
 	return PyModule_Create(&drunk_snail_c_module);
 
 }

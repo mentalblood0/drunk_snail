@@ -37,12 +37,6 @@ def test_nonexistent_file():
 		Template('test_render_nonexistent_file', FileSource('lalala', watch=False))
 
 
-def test_nonexistent_template():
-	with pytest.raises(KeyError):
-		Template('test_nonexistent_template', StringSource('<!-- (ref)something -->')).compiled
-
-
-
 def test_list():
 
 	assert Template(
@@ -58,7 +52,6 @@ def test_list():
 	)({
 		'some_param': ['1', '2', '3']
 	}) == '1\n2\n3'
-
 
 
 def test_ref():
@@ -87,21 +80,6 @@ def test_ref():
 			'action': 'eat'
 		}]
 	}) == 'Hello, username!\nNice to meet you!\nNice to eat you!'
-
-
-
-def test_buf_overflow():
-
-	Template(
-		'test_buf_overflow_1', 
-		StringSource(' ' * 100)
-	)
-
-	assert Template(
-		'test_buf_overflow_2', 
-		StringSource('<!-- (ref)test_buf_overflow_1 -->')
-	).compiled
-
 
 
 def test_consicutive_lines():
@@ -151,25 +129,6 @@ def test_optional_ref():
 	assert t({
 		'test_optional_ref_1': [None]
 	}) == 'lalala'
-
-
-
-def test_cyrillic():
-	assert Template('test_render_cyrillic', StringSource('ляляля'))() == 'ляляля'
-
-
-def test_backslash():
-	assert Template('test_backslash', StringSource('\\'))() == '\\'
-
-
-def test_quote():
-	assert Template('test_quote', StringSource('\''))() == '\''
-
-
-def test_brackets():
-	assert Template('test_brackets', StringSource('{<!-- (param)x -->}'))({
-		'x': 'lalala'
-	}) == '{lalala}'
 
 
 def test_table():

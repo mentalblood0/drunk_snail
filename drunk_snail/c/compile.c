@@ -120,9 +120,25 @@ int compile__empty__i;
 	memcpy(*target, "',", 2); *target += 2;\
 };
 
+#define compile__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
+	while ((*target - compilation_result->result) + (0+OTHER_LEFT_length+1+ARG_length+1+OTHER_RIGHT_length+0+1) >= *buffer_size) {\
+		(*buffer_size) *= 2;\
+		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
+		*target = new_result + (*target - compilation_result->result);\
+		compilation_result->result = new_result;\
+	}\
+	memcpy(*target, "", 0); *target += 0;\
+	memcpy_escaped(*target, OTHER_LEFT, OTHER_LEFT_length);\
+	memcpy(*target, "{", 1); *target += 1;\
+	memcpy_escaped(*target, ARG, ARG_length);\
+	memcpy(*target, "}", 1); *target += 1;\
+	memcpy_escaped(*target, OTHER_RIGHT, OTHER_RIGHT_length);\
+	memcpy(*target, "", 0); *target += 0;\
+};
+
 int compile__param__i;
 #define compile__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length, TEMPLATE_NAME, TEMPLATE_NAME_length) {\
-	while ((*target - compilation_result->result) + (4+0+OTHER_LEFT_length+1+ARG_length+1+OTHER_RIGHT_length+0+1+4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+2+1) >= *buffer_size) {\
+	while ((*target - compilation_result->result) + (4+0+0+OTHER_LEFT_length+1+ARG_length+1+OTHER_RIGHT_length+0+0+1+4+ARG_length+5+TEMPLATE_NAME_length+2+ARG_length+16+TEMPLATE_NAME_length+2+ARG_length+8+TEMPLATE_NAME_length+2+ARG_length+7+ARG_length+4+TEMPLATE_NAME_length+6+2+2+2+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - compilation_result->result);\
@@ -133,11 +149,7 @@ int compile__param__i;
 		memcpy_escaped(*target, other[compile__param__i].left.start, other[compile__param__i].left.length);\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
-	memcpy_escaped(*target, OTHER_LEFT, OTHER_LEFT_length);\
-	memcpy(*target, "{", 1); *target += 1;\
-	memcpy_escaped(*target, ARG, ARG_length);\
-	memcpy(*target, "}", 1); *target += 1;\
-	memcpy_escaped(*target, OTHER_RIGHT, OTHER_RIGHT_length);\
+	compile__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length);\
 	memcpy(*target, "", 0); *target += 0;\
 	for (compile__param__i = depth-1; compile__param__i >= 0; compile__param__i--) {\
 		memcpy_escaped(*target, other[compile__param__i].right.start, other[compile__param__i].right.length);\

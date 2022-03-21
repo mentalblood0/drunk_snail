@@ -33,8 +33,12 @@ compile__empty {%
 '<other[:depth].left+><LINE><other[:depth].right->',
 %}
 
+compile__arg {%
+<OTHER_LEFT>{<ARG>}<OTHER_RIGHT>
+%}
+
 compile__param {%
-*[f'<other[:depth].left+><OTHER_LEFT>{<ARG>}<OTHER_RIGHT><other[:depth].right->'<*(strict?compile__for_strict:compile__for)>],
+*[f'<other[:depth].left+><compile__arg><other[:depth].right->'<*(strict?compile__for_strict:compile__for)>],
 %}
 
 compile__ref_before {%

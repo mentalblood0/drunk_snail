@@ -50,7 +50,7 @@ PyMODINIT_FUNC PyInit_drunk_snail_c(void) {
 
 	char *c = NULL;
 	for (c = chars_to_escape; *c; c += 2) {
-		chars_to_escape_check[(int)(*c)] = *(c + 1);
+		chars_to_escape_check[(int)(*c)+128] = *(c + 1);
 	}
 
 	return PyModule_Create(&drunk_snail_c_module);

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ALPHABET_SIZE 128
+#define ALPHABET_SIZE 256
 
 
 
@@ -36,13 +36,13 @@ int treeInsert(Tree* tree, char *key, void *value) {
 			return 1;
 
 		TreeNode *parent = node;
-		node = node->children[(int)(*c)];
+		node = node->children[(int)(*c)+128];
 
 		if (!node) {
 			node = malloc(sizeof(TreeNode));
 			node->value = NULL;
 			node->children = calloc(ALPHABET_SIZE, sizeof(TreeNode*));
-			parent->children[(int)(*c)] = node;
+			parent->children[(int)(*c)+128] = node;
 		}
 	
 	}
@@ -68,7 +68,7 @@ int treeRemove(Tree* tree, char *key) {
 			return 1;
 
 		TreeNode *parent = node;
-		node = node->children[(int)(*c)];
+		node = node->children[(int)(*c)+128];
 		if (!node)
 			return 0;
 
@@ -126,7 +126,7 @@ void* treeGet(TreeNode *node, char *key) {
 		if ((int)(*c) == -1)
 			return NULL;
 		
-		node = node->children[(int)(*c)];
+		node = node->children[(int)(*c)+128];
 		if (!node)
 			return NULL;
 	
@@ -146,7 +146,7 @@ void* treeGetUnterminated(TreeNode *node, char *key, int length) {
 		if ((int)(*c) == -1)
 			return NULL;
 		
-		node = node->children[(int)(*c)];
+		node = node->children[(int)(*c)+128];
 		if (!node)
 			return NULL;
 	

@@ -23,8 +23,12 @@ def test_buf_overflow():
 	).compiled
 
 
-def test_cyrillic():
+def test_cyrillic_source():
 	assert Template('test_render_cyrillic', StringSource('ляляля'))() == 'ляляля'
+
+
+def test_cyrillic_name():
+	assert Template('тест_сириллик_нейм', StringSource('lalala'))() == 'lalala'
 
 
 def test_backslash():

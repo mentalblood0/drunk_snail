@@ -18,10 +18,9 @@ static const int compile_en_main = 0;
 
 #define memcpy_escaped(target, source, length) {\
 	for (i = 0; i < length; i++) {\
-		if ((int)(source[i]) > 0)\
-			if (chars_to_escape_check[(int)(source[i])]) {\
-				memcpy(target, &chars_to_escape_check[(int)(source[i])], 1); target += 1;\
-			}\
+		if (chars_to_escape_check[(int)(source[i])+128]) {\
+			memcpy(target, &chars_to_escape_check[(int)(source[i])+128], 1); target += 1;\
+		}\
 		memcpy(target, source + i, 1); target += 1;\
 	}\
 }\

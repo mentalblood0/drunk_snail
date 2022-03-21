@@ -60,7 +60,23 @@ def compilePrint(expression, name=None, defined=None):
 		print(f'\t{p["type"]} \'{s}\'')
 		parsed.append(p)
 	
+	
+	
 	definitions = []
+
+	if not defined:
+		definitions.append('\\\n'.join([
+			'#define memcpy_escaped(target, source, length) {',
+			'\tfor (i = 0; i < length; i++) {',
+			'\t\tif (chars_to_escape_check[(int)(source[i])+128]) {',
+			'\t\t\tmemcpy(target, &chars_to_escape_check[(int)(source[i])+128], 1); target += 1;',
+			'\t\t}',
+			'\t\tmemcpy(target, source + i, 1); target += 1;',
+			'\t}',
+			'}',
+			''
+		]))
+
 	raw_strings = [e["s"] for e in parsed if e["type"] == 'raw']
 	
 	args = ['target']
@@ -85,7 +101,7 @@ def compilePrint(expression, name=None, defined=None):
 		
 		elif e['type'] == 'keyword':
 			cpy_definition_list.append(
-				f'\tmemcpy(*target, {e["s"]}, {e["s"]}_length); *target += {e["s"]}_length;'
+				f'\tmemcpy_escaped(*target, {e["s"]}, {e["s"]}_length);'
 			)
 			lengths_copied.append(f'{e["s"]}_length')
 		
@@ -103,8 +119,7 @@ def compilePrint(expression, name=None, defined=None):
 
 			cpy_definition_list += [
 				f'\tfor ({counter} = 0; {counter} < {number}; {counter}++) {{',
-				f'\t\tmemcpy(*target, {s}, {s}_length);',
-				f'\t\t*target += {s}_length;',
+				f'\t\tmemcpy_escaped(*target, {s}, {s}_length);',
 				f'\t}}'
 			]
 			lengths_copied.append(f'{s}_length')
@@ -187,7 +202,7 @@ def compilePrint(expression, name=None, defined=None):
 				f'\tfor ({counter} = 0; {counter} < {length}; {counter}++) {{'
 				if direction == '+'
 				else f'\tfor ({counter} = {length}-1; {counter} >= 0; {counter}--) {{',
-				f'\t\tmemcpy(*target, {m}[{counter}]{path_to_substring}.start, {m}[{counter}]{path_to_substring}.length); *target += {m}[{counter}]{path_to_substring}.length;',
+				f'\t\tmemcpy_escaped(*target, {m}[{counter}]{path_to_substring}.start, {m}[{counter}]{path_to_substring}.length);',
 				f'\t}}'
 			]
 

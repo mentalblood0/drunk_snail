@@ -184,7 +184,7 @@ def compilePrint(expression, name=None, defined=None):
 				f'\t}}'
 			]
 
-			lengths_copied += max(call_lengths[True], call_lengths[False])
+			lengths_copied += call_lengths[True] + call_lengths[False]
 		
 		elif e['type'] == 'subarray':
 

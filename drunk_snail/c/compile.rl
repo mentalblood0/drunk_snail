@@ -20,8 +20,12 @@ compile__end {%
 ])
 %}
 
+compile__condition {%
+(<TEMPLATE_NAME>['<ARG>']if list==type(<TEMPLATE_NAME>['<ARG>'])else[<TEMPLATE_NAME>['<ARG>']])if'<ARG>'in <TEMPLATE_NAME> else[<optional?:''>]
+%}
+
 compile__for {%
-for <ARG> in((<TEMPLATE_NAME>['<ARG>']if list==type(<TEMPLATE_NAME>['<ARG>'])else[<TEMPLATE_NAME>['<ARG>']])if'<ARG>'in <TEMPLATE_NAME> else[<optional?:''>])
+for <ARG> in(<compile__condition>)
 %}
 
 compile__for_strict {%

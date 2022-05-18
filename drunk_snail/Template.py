@@ -16,7 +16,7 @@ templates: dict[str, _Template] = {}
 class Template:
 
 	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
-	def __init__(self, name: str, source: Source=None):
+	def __init__(self, name: str, source: Source | None = None):
 
 		if not name in templates:
 			templates[name] = _Template(
@@ -99,7 +99,7 @@ class _Template:
 		self.source.onChange = self.reload
 
 	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
-	def reload(self, source: Source = None, checked: dict[str, bool] | None = None) -> int:
+	def reload(self, source: Source | None = None, checked: dict[str, bool] | None = None) -> int:
 
 		checked = checked or {}
 		reloaded_number = 1
@@ -166,7 +166,7 @@ class _Template:
 		
 		return self._function
 
-	def __call__(self, parameters: dict=None) -> str:
+	def __call__(self, parameters: dict | None = None) -> str:
 		return self.function(parameters or {})
 
 	def __repr__(self) -> str:

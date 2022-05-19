@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pydantic
 from threading import Lock
 from typing import Callable
 from types import ModuleType
@@ -14,7 +15,8 @@ templates: dict[str, _Template] = {}
 
 class Template:
 
-	def __init__(self, name: str, source: Source=None):
+	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
+	def __init__(self, name: str, source: Source | None = None):
 
 		if not name in templates:
 			templates[name] = _Template(
@@ -45,28 +47,28 @@ class Template:
 			return super().__getattribute__(name)
 		else:
 			return getattr(self._actual_template, name)
-	
+
 	def __call__(self, *args, **kwargs):
 		return self._actual_template(*args, **kwargs)
-	
+
 	def __repr__(self):
 		return self._actual_template.__repr__()
-	
+
 	def __str__(self):
 		return self._actual_template.__str__()
-	
+
 	def __len__(self):
 		return self._actual_template.__len__()
-	
+
 	def __eq__(self, other):
 		return self._actual_template.__eq__(other)
-	
+
 	def __dir__(self):
 		return self._actual_template.__dir__()
-	
+
 	def __hash__(self):
 		return self._actual_template.__hash__()
-	
+
 	def delete(self):
 		try:
 			self._actual_template.__del__()
@@ -76,6 +78,7 @@ class Template:
 
 class _Template:
 
+	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
 	def __init__(self, name: str, source: Source):
 
 		if not hasattr(self, '_lock'):
@@ -94,8 +97,9 @@ class _Template:
 			drunk_snail_c.addTemplate(self.name, text)
 
 		self.source.onChange = self.reload
-	
-	def reload(self, source: Source=None, checked: dict[str, bool]=None) -> int:
+
+	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
+	def reload(self, source: Source | None = None, checked: dict[str, bool] | None = None) -> int:
 
 		checked = checked or {}
 		reloaded_number = 1
@@ -118,7 +122,7 @@ class _Template:
 		self.__init__(self.name, source or self.source)
 
 		return reloaded_number
-	
+
 	@property
 	def name(self) -> str:
 		return self._name
@@ -162,7 +166,7 @@ class _Template:
 		
 		return self._function
 
-	def __call__(self, parameters: dict=None) -> str:
+	def __call__(self, parameters: dict | None = None) -> str:
 		return self.function(parameters or {})
 
 	def __repr__(self) -> str:
@@ -192,7 +196,7 @@ class _Template:
 					del templates[self.name]
 
 				self.source.clean()
-	
+
 	def __hash__(self) -> int:
 		return hash(self.source)
 

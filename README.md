@@ -88,7 +88,7 @@ Benchmarks done using [sharpener](https://github.com/MentalBlood/sharpener) (see
 ## Installation
 
 ```bash
-pip install drunk-snail
+pip install git+https://github.com/MentalBlood/drunk_snail
 ```
 
 

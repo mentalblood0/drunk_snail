@@ -8,12 +8,12 @@ from drunk_snail.sources import FileSource
 
 def generateFString(width, height):
 	return ''.join([
-		'<table>\n'
+		'<table>\n',
 		''.join([
 			''.join([
 				'	<tr>\n',
 				''.join([
-					f'		<td>Table["Row"][{j}][{i}]</td>\n'
+					f'		<td>{{Table[Row][{j}][cell][{i}]}}</td>\n'
 					for i in range(width)
 				]),
 				'	</tr>\n'
@@ -25,16 +25,35 @@ def generateFString(width, height):
 
 
 def getDimension(o: dict | list):
-	return len(o['Row']), len(o['Row'][0]['cell'])
+
 	return ''.join([
 		f'{k}{getDimension(v)}'
 		for k, v in o.items()
 	] if type(o) == dict
-	else [
+	else [str(len(o))] + [
 		f'{getDimension(e)}'
 		for e in o
 	] if type(o) == list
-	else ['_'])
+	else [''])
+
+
+def replaceValuesByPaths(o, prefix):
+	if type(o) == dict:
+		return {
+			k: replaceValuesByPaths(v, f'{prefix}[{k}]')
+			for k, v in o.items()
+		}
+	elif type(o) == list:
+		return [
+			replaceValuesByPaths(e, f'{prefix}[{i}]')
+			for i, e in enumerate(o)
+		]
+	else:
+		return f'{{{prefix}}}'
+
+
+def generateFStringFromTemplate(template, args):
+	return template(replaceValuesByPaths(args, template.name))
 
 
 class table_by_fstring(Benchmark):
@@ -42,7 +61,10 @@ class table_by_fstring(Benchmark):
 	def prepare(self, width, height):
 
 		if not hasattr(self, 'args'):
-			self.fstring = generateFString(width, height)
+
+			self.row = Template('Row', FileSource('templates/Row.xml'))
+			self.table = Template('Table', FileSource('templates/Table.xml'))
+
 			self.args = {
 				"Row": [
 					{
@@ -54,9 +76,10 @@ class table_by_fstring(Benchmark):
 					for y in range(height)
 				]
 			}
+			self.fstring = generateFStringFromTemplate(self.table, self.args)
 
 	def run(self, **kwargs):
-		getDimension(self.args)
+		# getDimension(self.args)
 		self.fstring.format(Table=self.args)
 
 

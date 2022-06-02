@@ -40,7 +40,7 @@ def getDimension(o: dict | list):
 def replaceValuesByPaths(o, prefix):
 	if type(o) == dict:
 		return {
-			k: replaceValuesByPaths(v, f'{prefix}[{k}]')
+			k: replaceValuesByPaths(v, f'{prefix}["{k}"]')
 			for k, v in o.items()
 		}
 	elif type(o) == list:
@@ -76,11 +76,14 @@ class table_by_fstring(Benchmark):
 					for y in range(height)
 				]
 			}
+			correct_result = self.table(self.args)
 			self.fstring = generateFStringFromTemplate(self.table, self.args)
+			self.table._actual_template._compiled = f'render = lambda {self.table.name}: f\'\'\'{self.fstring}\'\'\''
+			self.table._actual_template._function = None
+			assert self.table(self.args) == correct_result
 
 	def run(self, **kwargs):
-		# getDimension(self.args)
-		self.fstring.format(Table=self.args)
+		self.table(self.args)
 
 
 class table(Benchmark):

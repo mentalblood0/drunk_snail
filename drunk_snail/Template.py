@@ -6,11 +6,29 @@ from typing import Callable
 from types import ModuleType
 
 import drunk_snail_c
+from typing import Any
+from .Cache import Cache
 from .Source import Source
+from .compilePythonFunction import compilePythonFunction
 
 
 
 templates: dict[str, _Template] = {}
+
+
+def replaceValuesByPaths(o: dict | list | Any, prefix: str):
+	if type(o) == dict:
+		return {
+			k: replaceValuesByPaths(v, f'{prefix}["{k}"]')
+			for k, v in o.items()
+		}
+	elif type(o) == list:
+		return [
+			replaceValuesByPaths(e, f'{prefix}[{i}]')
+			for i, e in enumerate(o)
+		]
+	else:
+		return f'{{{prefix}}}'
 
 
 class Template:
@@ -89,6 +107,7 @@ class _Template:
 
 		self._compiled = None
 		self._function = None
+		self._cache = None
 
 		text = self.source.get()
 		self._buffer_size = len(text) * 5 or 1
@@ -155,19 +174,43 @@ class _Template:
 			return drunk_snail_c.getTemplateRefs(self.name)
 
 	@property
-	def function(self) -> Callable:
+	def function(self) -> Callable[[dict], str]:
 
 		if not self._function:
-			compiled_function = compile(self.compiled, '', 'exec')
-			temp_module = ModuleType('')
-			exec(compiled_function, temp_module.__dict__)
+			self._function = compilePythonFunction(self.compiled, 'render')
 
-			self._function = getattr(temp_module, 'render')
-		
 		return self._function
 
-	def __call__(self, parameters: dict | None = None) -> str:
-		return self.function(parameters or {})
+	def composeFstring(self, parameters) -> str:
+		return self(replaceValuesByPaths(parameters, self.name))
+
+	def setupCache(self, paths: set[tuple[str]]):
+		with self.lock:
+			self._cache = Cache(paths)
+
+	def __call__(
+		self,
+		parameters: dict = None,
+		use_cache: bool = False
+	) -> str:
+
+		parameters = parameters or {}
+
+		if use_cache:
+
+			if not self._cache:
+				raise Exception(f'Use .setupCache before')
+
+			try:
+				return self._cache.get(parameters)(parameters)
+			except KeyError:
+				return self._cache.set(
+					template_name=self.name,
+					parameters=parameters,
+					fstring=self.composeFstring(parameters)
+				)(parameters)
+
+		return self.function(parameters)
 
 	def __repr__(self) -> str:
 		return f"(name='{self.name}', source={self.source})"

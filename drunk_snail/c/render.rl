@@ -92,6 +92,7 @@ void render_(
 	char *eof = pe;
 	int cs;
 	char *new_result;
+	PyObject *param_values;
 
 	int i;
 
@@ -124,17 +125,14 @@ void render_(
 					}
 					memcpy(name_buffer, name_start, name_end - name_start);
 					name_buffer[name_end - name_start] = 0;
-					PyObject *param_values = PyDict_GetItemString(params, name_buffer);
+					*param_values = PyDict_GetItemString(params, name_buffer);
 
 					for (j = 0; j < PyList_Size(param_values); j++) {
-
-						PyObject *c = PyList_GetItem(param_values, j);
-						char *value = PyUnicode_AsUTF8(c);
 
 						render__param(
 							output_end,
 							start_line, start_expression - start_line,
-							value, strlen(value),
+							PyUnicode_AsUTF8(PyList_GetItem(param_values, j)), strlen(value),
 							end_expression, end_line - end_expression
 						);
 
@@ -161,7 +159,6 @@ void render_(
 					}
 					memcpy(name_buffer, name_start, name_end - name_start);
 					name_buffer[name_end - name_start] = 0;
-					PyObject *subtemplate_params = PyDict_GetItemString(params, name_buffer);
 
 					render_(
 						render_result,
@@ -174,7 +171,7 @@ void render_(
 						other_size,
 						name_buffer,
 						name_buffer_size,
-						subtemplate_params
+						PyDict_GetItemString(params, name_buffer)
 					);
 					if (render_result->message)
 						return;

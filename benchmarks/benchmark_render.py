@@ -31,6 +31,29 @@ class table(Benchmark):
 		self.table(self.args)
 
 
+import drunk_snail_c
+class table_c(Benchmark):
+
+	def prepare(self, width, height):
+
+		if not hasattr(self, 'args'):
+			
+			self.args = {
+				"Row": [
+					{
+						"cell": [
+							f"{x}.{y}"
+							for x in range(width)
+						]
+					}
+					for y in range(height)
+				]
+			}
+	
+	def run(self, **kwargs):
+		drunk_snail_c.test(self.args)
+
+
 class table_using_parameters_dimension_cache(Benchmark):
 
 	def prepare(self, width, height):

@@ -29,6 +29,12 @@ static PyMethodDef methods[] = {
 		METH_VARARGS,
 		"Remove template by name"
 	},
+	{
+		"test",
+		test,
+		METH_VARARGS,
+		"test"
+	},
 	{NULL, NULL, 0, NULL}
 };
 

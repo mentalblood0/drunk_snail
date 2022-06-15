@@ -11,7 +11,7 @@ void test_(PyObject *dict) {
 
 		for (j = 0; j < PyList_Size(cells); j++) {
 			PyObject *c = PyList_GetItem(cells, j);
-			// printf("%s ", PyUnicode_AsUTF8(c));
+			PyUnicode_AsUTF8(c);
 		}
 
 		// printf("\n");
@@ -25,7 +25,7 @@ static PyObject *test (
 	PyObject *self,
 	PyObject *args
 ) {
-	
+
 	PyObject *dict;
 
 	if (!PyArg_ParseTuple(args, "O!", &PyDict_Type, &dict))

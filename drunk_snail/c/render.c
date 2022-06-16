@@ -1,10 +1,12 @@
 
+/* #line 1 "compileComprehension_preprocessed.rl" */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 
+/* #line 10 "compileComprehension.c" */
 static const int render_start = 0;
 static const int render_first_final = 0;
 static const int render_error = -1;
@@ -12,6 +14,7 @@ static const int render_error = -1;
 static const int render_en_main = 0;
 
 
+/* #line 9 "compileComprehension_preprocessed.rl" */
 
 
 
@@ -143,6 +146,7 @@ void render_(
 	int cs;
 	char *new_result;
 	char *value;
+	Py_ssize_t value_size;
 	PyObject *param_values;
 	PyObject *ref_values;
 
@@ -162,17 +166,21 @@ void render_(
 	}
 
 	
+/* #line 170 "compileComprehension.c" */
 	{
 	cs = render_start;
 	}
 
+/* #line 175 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
+/* #line 161 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
+/* #line 162 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -193,20 +201,26 @@ tr1:
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
-								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								value = PyUnicode_AsUTF8AndSize(
+									PyObject_Str(PyList_GetItem(param_values, j)),
+									&value_size
+								);
 								render__param(
 									output_end,
 									start_line, start_expression - start_line,
-									value, strlen(value),
+									value, value_size,
 									end_expression, end_line - end_expression
 								);
 							}
 						} else {
-							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							value = PyUnicode_AsUTF8AndSize(
+								PyObject_Str(param_values),
+								&value_size
+							);
 							render__param(
 								output_end,
 								start_line, start_expression - start_line,
-								value, strlen(value),
+								value, value_size,
 								end_expression, end_line - end_expression
 							);
 						}
@@ -304,6 +318,7 @@ tr1:
 		}
 	goto st0;
 tr4:
+/* #line 162 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -324,20 +339,26 @@ tr4:
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
-								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								value = PyUnicode_AsUTF8AndSize(
+									PyObject_Str(PyList_GetItem(param_values, j)),
+									&value_size
+								);
 								render__param(
 									output_end,
 									start_line, start_expression - start_line,
-									value, strlen(value),
+									value, value_size,
 									end_expression, end_line - end_expression
 								);
 							}
 						} else {
-							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							value = PyUnicode_AsUTF8AndSize(
+								PyObject_Str(param_values),
+								&value_size
+							);
 							render__param(
 								output_end,
 								start_line, start_expression - start_line,
-								value, strlen(value),
+								value, value_size,
 								end_expression, end_line - end_expression
 							);
 						}
@@ -435,7 +456,9 @@ tr4:
 		}
 	goto st0;
 tr32:
+/* #line 310 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
+/* #line 162 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -456,20 +479,26 @@ tr32:
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
-								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								value = PyUnicode_AsUTF8AndSize(
+									PyObject_Str(PyList_GetItem(param_values, j)),
+									&value_size
+								);
 								render__param(
 									output_end,
 									start_line, start_expression - start_line,
-									value, strlen(value),
+									value, value_size,
 									end_expression, end_line - end_expression
 								);
 							}
 						} else {
-							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							value = PyUnicode_AsUTF8AndSize(
+								PyObject_Str(param_values),
+								&value_size
+							);
 							render__param(
 								output_end,
 								start_line, start_expression - start_line,
-								value, strlen(value),
+								value, value_size,
 								end_expression, end_line - end_expression
 							);
 						}
@@ -570,50 +599,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
+/* #line 603 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
+/* #line 161 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
 	goto st1;
 tr31:
+/* #line 310 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
+/* #line 621 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
+/* #line 161 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
+/* #line 306 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr5:
+/* #line 306 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr33:
+/* #line 306 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
+/* #line 310 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
+/* #line 656 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -652,21 +691,26 @@ case 5:
 	}
 	goto st1;
 tr22:
+/* #line 300 "compileComprehension_preprocessed.rl" */
 	{ optional = true; }
 	goto st6;
 tr39:
+/* #line 298 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_PARAM; }
 	goto st6;
 tr44:
+/* #line 299 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_REF; }
 	goto st6;
 tr52:
+/* #line 301 "compileComprehension_preprocessed.rl" */
 	{ strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
+/* #line 714 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -773,25 +817,34 @@ case 15:
 		goto tr23;
 	goto st1;
 tr23:
+/* #line 300 "compileComprehension_preprocessed.rl" */
 	{ optional = true; }
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr40:
+/* #line 298 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_PARAM; }
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr45:
+/* #line 299 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_REF; }
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr53:
+/* #line 301 "compileComprehension_preprocessed.rl" */
 	{ strict = true; }
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
+/* #line 848 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr24;
@@ -809,12 +862,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr24:
+/* #line 304 "compileComprehension_preprocessed.rl" */
 	{ name_end = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
+/* #line 873 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -823,12 +878,14 @@ case 17:
 	}
 	goto st1;
 tr25:
+/* #line 304 "compileComprehension_preprocessed.rl" */
 	{ name_end = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
+/* #line 889 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -1122,6 +1179,7 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
+/* #line 162 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -1142,20 +1200,26 @@ case 37:
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
-								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								value = PyUnicode_AsUTF8AndSize(
+									PyObject_Str(PyList_GetItem(param_values, j)),
+									&value_size
+								);
 								render__param(
 									output_end,
 									start_line, start_expression - start_line,
-									value, strlen(value),
+									value, value_size,
 									end_expression, end_line - end_expression
 								);
 							}
 						} else {
-							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							value = PyUnicode_AsUTF8AndSize(
+								PyObject_Str(param_values),
+								&value_size
+							);
 							render__param(
 								output_end,
 								start_line, start_expression - start_line,
-								value, strlen(value),
+								value, value_size,
 								end_expression, end_line - end_expression
 							);
 						}
@@ -1253,7 +1317,9 @@ case 37:
 		}
 	break;
 	case 20: 
+/* #line 310 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
+/* #line 162 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -1274,20 +1340,26 @@ case 37:
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
-								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								value = PyUnicode_AsUTF8AndSize(
+									PyObject_Str(PyList_GetItem(param_values, j)),
+									&value_size
+								);
 								render__param(
 									output_end,
 									start_line, start_expression - start_line,
-									value, strlen(value),
+									value, value_size,
 									end_expression, end_line - end_expression
 								);
 							}
 						} else {
-							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							value = PyUnicode_AsUTF8AndSize(
+								PyObject_Str(param_values),
+								&value_size
+							);
 							render__param(
 								output_end,
 								start_line, start_expression - start_line,
-								value, strlen(value),
+								value, value_size,
 								end_expression, end_line - end_expression
 							);
 						}
@@ -1384,11 +1456,13 @@ case 37:
 
 		}
 	break;
+/* #line 1460 "compileComprehension.c" */
 	}
 	}
 
 	}
 
+/* #line 334 "compileComprehension_preprocessed.rl" */
 
 
 	if (!depth) {

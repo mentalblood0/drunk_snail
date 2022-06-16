@@ -66,27 +66,27 @@ Rendering 10x1000 table (mean of 10000 experiments):
 
 | Engine                                                                                     | Time, ms | templates / s     |
 | ------------------------------------------------------------------------------------------ | -------- | ----------------- |
-| [mako](https://github.com/sqlalchemy/mako)                                                 | 3.10     | 322               |
-| [Jinja](https://github.com/pallets/jinja)                                                  | 1.55     | 645               |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**                              | **0.52** | **1923**          |
+| [mako](https://github.com/sqlalchemy/mako)                                                 | 3.08     | 324               |
+| [Jinja](https://github.com/pallets/jinja)                                                  | 1.56     | 641               |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**                              | **0.44** | **2272**          |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------- | --------- |
 | Args dict to str              | 0.88     | 1136      |
-| Args dict to json             | 0.79     | 1265      |
-| Args dict to json with indent | 5.17     | 193       |
+| Args dict to json             | 0.80     | 1249      |
+| Args dict to json with indent | 5.13     | 194       |
 
 Rendering 100x10000 table (mean of 100 experiments)
 
 | Engine                                                        | Time, ms | templates / s     |
 | ------------------------------------------------------------- | -------- | ----------------- |
 | [mako](https://github.com/sqlalchemy/mako)                    | 198      | 5                 |
-| [Jinja](https://github.com/pallets/jinja)                     | 204      | 4                 |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **48**   | **20**            |
+| [Jinja](https://github.com/pallets/jinja)                     | 203      | 4                 |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **39**   | **25**            |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------- | --------- |
-| Args dict to str              | 74       | 13        |
+| Args dict to str              | 75       | 13        |
 | Args dict to json             | 66       | 16        |
 | Args dict to json with indent | 297      | 3         |
 

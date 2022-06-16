@@ -95,6 +95,7 @@ void render_(
 	int cs;
 	char *new_result;
 	char *value;
+	Py_ssize_t value_size;
 	PyObject *param_values;
 	PyObject *ref_values;
 
@@ -136,20 +137,26 @@ void render_(
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
-								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								value = PyUnicode_AsUTF8AndSize(
+									PyObject_Str(PyList_GetItem(param_values, j)),
+									&value_size
+								);
 								render__param(
 									output_end,
 									start_line, start_expression - start_line,
-									value, strlen(value),
+									value, value_size,
 									end_expression, end_line - end_expression
 								);
 							}
 						} else {
-							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							value = PyUnicode_AsUTF8AndSize(
+								PyObject_Str(param_values),
+								&value_size
+							);
 							render__param(
 								output_end,
 								start_line, start_expression - start_line,
-								value, strlen(value),
+								value, value_size,
 								end_expression, end_line - end_expression
 							);
 						}

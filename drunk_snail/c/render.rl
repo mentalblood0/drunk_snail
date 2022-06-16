@@ -110,10 +110,6 @@ void render_(
 	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
 	reset_line_properties();
 
-	if (!depth) {
-		clearRefs(template);
-	}
-
 	%%{
 	
 		action action_start_line { start_line = p; }
@@ -180,9 +176,6 @@ void render_(
 					other[depth].left.length = start_expression - start_line;
 					other[depth].right.start = end_expression;
 					other[depth].right.length = end_line - end_expression;
-
-					if (!depth)
-						addRef(template, name_start, name_end - name_start);
 
 					if (name_end - name_start > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;

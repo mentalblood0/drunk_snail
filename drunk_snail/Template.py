@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pydantic
-from threading import Lock
 
 import drunk_snail_c
 from typing import Any
@@ -95,43 +94,20 @@ class _Template:
 	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
 	def __init__(self, name: str, source: Source):
 
-		if not hasattr(self, '_lock'):
-			self._lock = Lock()
-
 		self._name = name
 		self._source = source
 
 		text = self.source.get()
 		self._buffer_size = len(text) * 5 or 1
 
-		with self.lock:
-			drunk_snail_c.addTemplate(self.name, text)
+		drunk_snail_c.addTemplate(self.name, text)
 
 		self.source.onChange = self.reload
 
 	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
-	def reload(self, source: Source | None = None, checked: dict[str, bool] | None = None) -> int:
-
-		checked = checked or {}
-		reloaded_number = 1
-
-		with self.lock:
-
-			checked[self.name] = True
-
-			for name in templates:
-				if name not in checked:
-				
-					checked[name] = True
-
-					t = templates[name]
-					if self.name in t.refs:
-						reloaded_number += t.reload(checked=checked)
-
-			drunk_snail_c.removeTemplate(self.name)
-			drunk_snail_c.addTemplate(self.name, (source or self.source).get())
-
-		return reloaded_number
+	def reload(self, source: Source = None) -> None:
+		drunk_snail_c.removeTemplate(self.name)
+		drunk_snail_c.addTemplate(self.name, (source or self.source).get())
 
 	@property
 	def name(self) -> str:
@@ -143,17 +119,7 @@ class _Template:
 
 	@property
 	def text(self) -> str:
-		with self.lock:
-			return drunk_snail_c.getTemplate(self.name)
-
-	@property
-	def lock(self) -> Lock:
-		return self._lock
-
-	@property
-	def refs(self) -> list[str]:
-		with self.lock:
-			return drunk_snail_c.getTemplateRefs(self.name)
+		return drunk_snail_c.getTemplate(self.name)
 
 	def __call__(self, parameters: dict = None) -> str:
 		result, self._buffer_size = drunk_snail_c.render(self.name, self._buffer_size, parameters or {})
@@ -175,17 +141,15 @@ class _Template:
 		)
 
 	def __del__(self) -> None:
-	
-		with self.lock:
 
-			there_was_template = drunk_snail_c.removeTemplate(self.name)
+		there_was_template = drunk_snail_c.removeTemplate(self.name)
 
-			if there_was_template:
+		if there_was_template:
 
-				if self.name in templates:
-					del templates[self.name]
+			if self.name in templates:
+				del templates[self.name]
 
-				self.source.clean()
+			self.source.clean()
 
 	def __hash__(self) -> int:
 		return hash(self.source)

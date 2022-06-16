@@ -161,26 +161,22 @@ void render_(
 	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
 	reset_line_properties();
 
-	if (!depth) {
-		clearRefs(template);
-	}
-
 	
-/* #line 170 "compileComprehension.c" */
+/* #line 166 "compileComprehension.c" */
 	{
 	cs = render_start;
 	}
 
-/* #line 175 "compileComprehension.c" */
+/* #line 171 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 161 "compileComprehension_preprocessed.rl" */
+/* #line 157 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
-/* #line 162 "compileComprehension_preprocessed.rl" */
+/* #line 158 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -244,9 +240,6 @@ tr1:
 					other[depth].left.length = start_expression - start_line;
 					other[depth].right.start = end_expression;
 					other[depth].right.length = end_line - end_expression;
-
-					if (!depth)
-						addRef(template, name_start, name_end - name_start);
 
 					if (name_end - name_start > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
@@ -318,7 +311,7 @@ tr1:
 		}
 	goto st0;
 tr4:
-/* #line 162 "compileComprehension_preprocessed.rl" */
+/* #line 158 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -382,9 +375,6 @@ tr4:
 					other[depth].left.length = start_expression - start_line;
 					other[depth].right.start = end_expression;
 					other[depth].right.length = end_line - end_expression;
-
-					if (!depth)
-						addRef(template, name_start, name_end - name_start);
 
 					if (name_end - name_start > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
@@ -456,9 +446,9 @@ tr4:
 		}
 	goto st0;
 tr32:
-/* #line 310 "compileComprehension_preprocessed.rl" */
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
-/* #line 162 "compileComprehension_preprocessed.rl" */
+/* #line 158 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -522,9 +512,6 @@ tr32:
 					other[depth].left.length = start_expression - start_line;
 					other[depth].right.start = end_expression;
 					other[depth].right.length = end_line - end_expression;
-
-					if (!depth)
-						addRef(template, name_start, name_end - name_start);
 
 					if (name_end - name_start > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
@@ -599,60 +586,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 603 "compileComprehension.c" */
+/* #line 590 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 161 "compileComprehension_preprocessed.rl" */
+/* #line 157 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
 	goto st1;
 tr31:
-/* #line 310 "compileComprehension_preprocessed.rl" */
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 621 "compileComprehension.c" */
+/* #line 608 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 161 "compileComprehension_preprocessed.rl" */
+/* #line 157 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
-/* #line 306 "compileComprehension_preprocessed.rl" */
+/* #line 299 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr5:
-/* #line 306 "compileComprehension_preprocessed.rl" */
+/* #line 299 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr33:
-/* #line 306 "compileComprehension_preprocessed.rl" */
+/* #line 299 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
-/* #line 310 "compileComprehension_preprocessed.rl" */
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 656 "compileComprehension.c" */
+/* #line 643 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -691,26 +678,26 @@ case 5:
 	}
 	goto st1;
 tr22:
-/* #line 300 "compileComprehension_preprocessed.rl" */
+/* #line 293 "compileComprehension_preprocessed.rl" */
 	{ optional = true; }
 	goto st6;
 tr39:
-/* #line 298 "compileComprehension_preprocessed.rl" */
+/* #line 291 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_PARAM; }
 	goto st6;
 tr44:
-/* #line 299 "compileComprehension_preprocessed.rl" */
+/* #line 292 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_REF; }
 	goto st6;
 tr52:
-/* #line 301 "compileComprehension_preprocessed.rl" */
+/* #line 294 "compileComprehension_preprocessed.rl" */
 	{ strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 714 "compileComprehension.c" */
+/* #line 701 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -817,34 +804,34 @@ case 15:
 		goto tr23;
 	goto st1;
 tr23:
-/* #line 300 "compileComprehension_preprocessed.rl" */
+/* #line 293 "compileComprehension_preprocessed.rl" */
 	{ optional = true; }
-/* #line 303 "compileComprehension_preprocessed.rl" */
+/* #line 296 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr40:
-/* #line 298 "compileComprehension_preprocessed.rl" */
+/* #line 291 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_PARAM; }
-/* #line 303 "compileComprehension_preprocessed.rl" */
+/* #line 296 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr45:
-/* #line 299 "compileComprehension_preprocessed.rl" */
+/* #line 292 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_REF; }
-/* #line 303 "compileComprehension_preprocessed.rl" */
+/* #line 296 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr53:
-/* #line 301 "compileComprehension_preprocessed.rl" */
+/* #line 294 "compileComprehension_preprocessed.rl" */
 	{ strict = true; }
-/* #line 303 "compileComprehension_preprocessed.rl" */
+/* #line 296 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 848 "compileComprehension.c" */
+/* #line 835 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr24;
@@ -862,14 +849,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr24:
-/* #line 304 "compileComprehension_preprocessed.rl" */
+/* #line 297 "compileComprehension_preprocessed.rl" */
 	{ name_end = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-/* #line 873 "compileComprehension.c" */
+/* #line 860 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -878,14 +865,14 @@ case 17:
 	}
 	goto st1;
 tr25:
-/* #line 304 "compileComprehension_preprocessed.rl" */
+/* #line 297 "compileComprehension_preprocessed.rl" */
 	{ name_end = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-/* #line 889 "compileComprehension.c" */
+/* #line 876 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -1179,7 +1166,7 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
-/* #line 162 "compileComprehension_preprocessed.rl" */
+/* #line 158 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -1243,9 +1230,6 @@ case 37:
 					other[depth].left.length = start_expression - start_line;
 					other[depth].right.start = end_expression;
 					other[depth].right.length = end_line - end_expression;
-
-					if (!depth)
-						addRef(template, name_start, name_end - name_start);
 
 					if (name_end - name_start > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
@@ -1317,9 +1301,9 @@ case 37:
 		}
 	break;
 	case 20: 
-/* #line 310 "compileComprehension_preprocessed.rl" */
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
-/* #line 162 "compileComprehension_preprocessed.rl" */
+/* #line 158 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -1383,9 +1367,6 @@ case 37:
 					other[depth].left.length = start_expression - start_line;
 					other[depth].right.start = end_expression;
 					other[depth].right.length = end_line - end_expression;
-
-					if (!depth)
-						addRef(template, name_start, name_end - name_start);
 
 					if (name_end - name_start > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
@@ -1456,13 +1437,13 @@ case 37:
 
 		}
 	break;
-/* #line 1460 "compileComprehension.c" */
+/* #line 1441 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-/* #line 334 "compileComprehension_preprocessed.rl" */
+/* #line 327 "compileComprehension_preprocessed.rl" */
 
 
 	if (!depth) {

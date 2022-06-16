@@ -12,14 +12,6 @@
 
 
 
-## Features
-
-* Templates hot reloading
-* Automatic reloading on file change
-* Cascade reloading of referencing templates
-
-
-
 ## Example
 
 Row:

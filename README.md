@@ -7,7 +7,7 @@
 ## Why?
 
 * Faster
-* Esy-readable syntax
+* Easy-readable syntax
 * Separation of business logic and data
 
 

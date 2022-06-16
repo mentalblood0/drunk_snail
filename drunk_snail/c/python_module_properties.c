@@ -35,6 +35,12 @@ static PyMethodDef methods[] = {
 		METH_VARARGS,
 		"test"
 	},
+	{
+		"render",
+		render,
+		METH_VARARGS,
+		"render"
+	},
 	{NULL, NULL, 0, NULL}
 };
 

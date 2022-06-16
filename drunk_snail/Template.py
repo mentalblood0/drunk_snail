@@ -7,7 +7,6 @@ from types import ModuleType
 
 import drunk_snail_c
 from typing import Any
-from .Cache import Cache
 from .Source import Source
 from .compilePythonFunction import compilePythonFunction
 
@@ -173,44 +172,11 @@ class _Template:
 		with self.lock:
 			return drunk_snail_c.getTemplateRefs(self.name)
 
-	@property
-	def function(self) -> Callable[[dict], str]:
-
-		if not self._function:
-			self._function = compilePythonFunction(self.compiled, 'render')
-
-		return self._function
-
 	def composeFstring(self, parameters) -> str:
 		return self(replaceValuesByPaths(parameters, self.name))
 
-	def setupCache(self, paths: set[tuple[str]]):
-		with self.lock:
-			self._cache = Cache(paths)
-
-	def __call__(
-		self,
-		parameters: dict = None,
-		use_cache: bool = False
-	) -> str:
-
-		parameters = parameters or {}
-
-		if use_cache:
-
-			if not self._cache:
-				raise Exception(f'Use .setupCache before')
-
-			try:
-				return self._cache.get(parameters)(parameters)
-			except KeyError:
-				return self._cache.set(
-					template_name=self.name,
-					parameters=parameters,
-					fstring=self.composeFstring(parameters)
-				)(parameters)
-
-		return self.function(parameters)
+	def __call__(self, parameters: dict = None) -> str:
+		return drunk_snail_c.render(self.name, self._buffer_size, parameters)
 
 	def __repr__(self) -> str:
 		return f"(name='{self.name}', source={self.source})"

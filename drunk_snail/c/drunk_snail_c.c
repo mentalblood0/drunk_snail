@@ -16,6 +16,8 @@
 #include "chars_to_escape.c"
 #include "compile.c"
 
+#include "render.c"
+
 #include "test.c"
 
 #include "python_module_properties.c"

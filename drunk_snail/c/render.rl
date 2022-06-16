@@ -17,32 +17,12 @@ render__empty {%
 
 render__arg {%
 <OTHER_LEFT><ARG><OTHER_RIGHT>
-
 %}
 
 render__param {%
 <other[:depth].left+><render__arg><other[:depth].right->
 
 %}
-
-
-typedef struct Substring {
-	char *start;
-	int length;
-} Substring;
-
-
-typedef struct Other {
-	Substring left;
-	Substring right;
-} Other;
-
-
-enum ActionType {
-	ACTION_PARAM,
-	ACTION_REF,
-	ACTION_NONE
-};
 
 
 typedef struct RenderResult {
@@ -79,6 +59,8 @@ void render_(
 )
 {
 
+	//printf("params: %p\n", params);
+
 	Template *template = dictionaryLookupUnterminated(_templates, template_name, template_name_length);
 	if (template == NULL) {
 		render_result->message = malloc(sizeof(char) * (template_name_length + 1));
@@ -92,9 +74,13 @@ void render_(
 	char *eof = pe;
 	int cs;
 	char *new_result;
+	char *value;
 	PyObject *param_values;
+	PyObject *ref_values;
 
 	int i;
+	Py_ssize_t j;
+	Py_ssize_t list_size;
 
 	enum ActionType action_type = ACTION_NONE;
 	bool optional = false;
@@ -105,7 +91,6 @@ void render_(
 
 	if (!depth) {
 		clearRefs(template);
-		render__def(output_end, template_name, template_name_length);
 	}
 
 	%%{
@@ -121,18 +106,22 @@ void render_(
 
 					if (name_end - name_start > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(name_buffer) * (*name_buffer_size));
+						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
 					}
 					memcpy(name_buffer, name_start, name_end - name_start);
 					name_buffer[name_end - name_start] = 0;
-					*param_values = PyDict_GetItemString(params, name_buffer);
 
-					for (j = 0; j < PyList_Size(param_values); j++) {
+					param_values = PyDict_GetItemString(params, name_buffer);
+					list_size = PyList_Size(param_values);
+
+					for (j = 0; j < list_size; j++) {
+
+						value = PyUnicode_AsUTF8(PyList_GetItem(param_values, j));
 
 						render__param(
 							output_end,
 							start_line, start_expression - start_line,
-							PyUnicode_AsUTF8(PyList_GetItem(param_values, j)), strlen(value),
+							value, strlen(value),
 							end_expression, end_line - end_expression
 						);
 
@@ -155,33 +144,41 @@ void render_(
 
 					if (name_end - name_start > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(name_buffer) * (*name_buffer_size));
+						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
 					}
 					memcpy(name_buffer, name_start, name_end - name_start);
 					name_buffer[name_end - name_start] = 0;
 
-					render_(
-						render_result,
-						name_start,
-						name_end - name_start,
-						output_end,
-						depth + 1,
-						buffer_size,
-						other,
-						other_size,
-						name_buffer,
-						name_buffer_size,
-						PyDict_GetItemString(params, name_buffer)
-					);
-					if (render_result->message)
-						return;
+					ref_values = PyDict_GetItemString(params, name_buffer);
+					list_size = PyList_Size(ref_values);
+
+					for (j = 0; j < list_size; j++) {
+
+						render_(
+							render_result,
+							name_start,
+							name_end - name_start,
+							output_end,
+							depth + 1,
+							buffer_size,
+							other,
+							other_size,
+							name_buffer,
+							name_buffer_size,
+							PyList_GetItem(ref_values, j)
+						);
+						if (render_result->message)
+							return;
+
+					}
 
 				}
 
 			}
 
-			if (action_type == ACTION_NONE)
+			if (action_type == ACTION_NONE) {
 				render__empty(output_end, start_line, end_line - start_line);
+			}
 
 			reset_line_properties();
 
@@ -226,7 +223,6 @@ void render_(
 	}%%
 
 	if (!depth) {
-		render__end(output_end);
 		**output_end = 0;
 	}
 };
@@ -241,7 +237,7 @@ static PyObject *render (
 	int buffer_size;
 	PyObject *params;
 	
-	if (!PyArg_ParseTuple(args, "siO!", &name, &buffer_size, &PyDict_Type, &dict))
+	if (!PyArg_ParseTuple(args, "siO!", &name, &buffer_size, &PyDict_Type, &params))
 		return NULL;
 
 	RenderResult render_result;
@@ -266,10 +262,15 @@ static PyObject *render (
 		other,
 		&other_size,
 		name_buffer,
-		&name_buffer_size
+		&name_buffer_size,
+		params
 	);
 
+	free(other);
+	free(name_buffer);
+
 	if (render_result.message) {
+		free(render_result.result);
 		PyErr_SetString(PyExc_KeyError, render_result.message);
 		return NULL;
 	}

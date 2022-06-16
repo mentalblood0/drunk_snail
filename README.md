@@ -64,11 +64,11 @@ Result:
 
 Rendering 10x1000 table (mean of 10000 experiments):
 
-| Engine                                                                                     | Time, ms | templates / s |
-| ------------------------------------------------------------------------------------------ | -------- | ------------- |
-| [mako](https://github.com/sqlalchemy/mako)                                                 | 3.10     | 322           |
-| [Jinja](https://github.com/pallets/jinja)                                                  | 1.55     | 645           |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**                              | **0.52** | 1923          |
+| Engine                                                                                     | Time, ms | templates / s     |
+| ------------------------------------------------------------------------------------------ | -------- | ----------------- |
+| [mako](https://github.com/sqlalchemy/mako)                                                 | 3.10     | 322               |
+| [Jinja](https://github.com/pallets/jinja)                                                  | 1.55     | 645               |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**                              | **0.52** | **1923**          |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------- | --------- |
@@ -78,11 +78,11 @@ Rendering 10x1000 table (mean of 10000 experiments):
 
 Rendering 100x10000 table (mean of 100 experiments)
 
-| Engine                                                        | Time, ms | templates / s |
-| ------------------------------------------------------------- | -------- | ------------- |
-| [mako](https://github.com/sqlalchemy/mako)                    | 198      | 5             |
-| [Jinja](https://github.com/pallets/jinja)                     | 204      | 4             |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **48**   | 20            |
+| Engine                                                        | Time, ms | templates / s     |
+| ------------------------------------------------------------- | -------- | ----------------- |
+| [mako](https://github.com/sqlalchemy/mako)                    | 198      | 5                 |
+| [Jinja](https://github.com/pallets/jinja)                     | 204      | 4                 |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **48**   | **20**            |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------- | --------- |

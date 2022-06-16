@@ -4,8 +4,16 @@
 
 
 
-* Template engine
-* Compiles templates to Python functions
+## Why?
+
+* Faster
+* Esy-readable syntax
+* Separation of business logic and data
+
+
+
+## Features
+
 * Templates hot reloading
 * Automatic reloading on file change
 * Cascade reloading of referencing templates

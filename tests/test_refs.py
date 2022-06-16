@@ -13,7 +13,7 @@ def test_getTemplateRefs():
 	Template(
 		'test_getTemplateRefs_2', 
 		StringSource('<!-- (ref)test_getTemplateRefs_1 -->')
-	).compiled
+	)()
 
 	assert drunk_snail_c.getTemplateRefs('test_getTemplateRefs_2') == ['test_getTemplateRefs_1']
 
@@ -29,4 +29,4 @@ def test_refs():
 		StringSource('<!-- (ref)test_refs_1 -->')
 	)
 
-	assert t.compiled and (t.refs == ['test_refs_1'])
+	assert t() and (t.refs == ['test_refs_1'])

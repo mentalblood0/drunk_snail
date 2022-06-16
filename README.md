@@ -47,6 +47,7 @@ Result:
         <td>2.2</td>
     </tr>
 </table>
+
 ```
 
 
@@ -57,16 +58,15 @@ Rendering 10x1000 table (mean of 10000 experiments):
 
 | Engine                                                                                     | Time, ms |
 | ------------------------------------------------------------------------------------------ | -------- |
-| [mako](https://github.com/sqlalchemy/mako)                                                 | 3.23     |
-| [Jinja](https://github.com/pallets/jinja)                                                  | 1.64     |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**                              | **0.96** |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** (parameters dimension cache) | **0.67** |
+| [mako](https://github.com/sqlalchemy/mako)                                                 | 3.10     |
+| [Jinja](https://github.com/pallets/jinja)                                                  | 1.55     |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**                              | **0.52** |
 
 | Other                         | Time, ms |
 | ----------------------------- | -------- |
-| Args dict to str              | 0.91     |
-| Args dict to json             | 0.81     |
-| Args dict to json with indent | 5.25     |
+| Args dict to str              | 0.88     |
+| Args dict to json             | 0.79     |
+| Args dict to json with indent | 5.17     |
 
 Rendering 100x10000 table (mean of 100 experiments)
 
@@ -74,13 +74,13 @@ Rendering 100x10000 table (mean of 100 experiments)
 | ------------------------------------------------------------- | -------- |
 | [mako](https://github.com/sqlalchemy/mako)                    | 198      |
 | [Jinja](https://github.com/pallets/jinja)                     | 204      |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **79**   |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **48**   |
 
 | Other                         | Time, ms |
 | ----------------------------- | -------- |
-| Args dict to str              | 76       |
-| Args dict to json             | 68       |
-| Args dict to json with indent | 302      |
+| Args dict to str              | 74       |
+| Args dict to json             | 66       |
+| Args dict to json with indent | 297      |
 
 Benchmarks done using [sharpener](https://github.com/MentalBlood/sharpener) (see `Benchmarking` section below)
 
@@ -176,37 +176,19 @@ template = (line delimeter)* (line - zlen)?
 Template(
     self,
     name: str,
-    source: Source=None
+    source: Source
 )
 
-Template.compiled -> str
 Template.text -> str
 Template.source -> str
 Template.name -> str
 
+Template.reload(self, source: Source = None) -> int
 Template.delete(self) -> None
 
 Template.__len__(self) -> int
 Template.__eq__(self, other: _Template) -> bool
 Template.__call__(self, parameters: dict) -> str
-```
-
-
-
-## Resulted Python code (`.compiled`)
-
-For template `name.extension` there will be compiled template `name.py`:
-
-```python
-J='\n'.join
-def render(name):
-    return J([<barely readeble but fast code here>])
-```
-
-Parameters:
-
-```python
-name = dict[str, None | str | Iterable['name'] | list[Iterable['name']]]
 ```
 
 

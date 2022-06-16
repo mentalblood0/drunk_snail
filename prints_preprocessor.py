@@ -60,23 +60,7 @@ def compilePrint(expression, name=None, defined=None):
 		print(f'\t{p["type"]} \'{s}\'')
 		parsed.append(p)
 	
-	
-	
 	definitions = []
-
-	if not defined:
-		definitions.append('\\\n'.join([
-			'#define memcpy_escaped(target, source, length) {',
-			'\tfor (i = 0; i < length; i++) {',
-			'\t\tif (chars_to_escape_check[(int)(source[i])+128]) {',
-			'\t\t\tmemcpy(target, &chars_to_escape_check[(int)(source[i])+128], 1); target += 1;',
-			'\t\t}',
-			'\t\tmemcpy(target, source + i, 1); target += 1;',
-			'\t}',
-			'}',
-			''
-		]))
-
 	raw_strings = [e["s"] for e in parsed if e["type"] == 'raw']
 	
 	args = ['target']
@@ -88,8 +72,6 @@ def compilePrint(expression, name=None, defined=None):
 	cpy_definition_list = []
 	lengths_copied = []
 	strings_copied = 0
-	counter = f'{name}__i'
-	is_counter_defined = False
 	for e in parsed:
 
 		if e['type'] == 'raw':
@@ -101,7 +83,7 @@ def compilePrint(expression, name=None, defined=None):
 		
 		elif e['type'] == 'keyword':
 			cpy_definition_list.append(
-				f'\tmemcpy_escaped(*target, {e["s"]}, {e["s"]}_length);'
+				f'\tmemcpy(*target, {e["s"]}, {e["s"]}_length); *target += {e["s"]}_length;'
 			)
 			lengths_copied.append(f'{e["s"]}_length')
 		
@@ -109,17 +91,14 @@ def compilePrint(expression, name=None, defined=None):
 
 			s, number = e['s'].split('*')
 
-			if not is_counter_defined:
-				definitions.insert(0, f'int {counter};')
-				is_counter_defined = True
-			
 			for a in [s, f'{s}_length', number]:
 				if a not in args:
 					args.append(a)
 
 			cpy_definition_list += [
-				f'\tfor ({counter} = 0; {counter} < {number}; {counter}++) {{',
-				f'\t\tmemcpy_escaped(*target, {s}, {s}_length);',
+				f'\tfor (i = 0; i < {number}; i++) {{',
+				f'\t\tmemcpy(*target, {s}, {s}_length);',
+				f'\t\t*target += {s}_length;',
 				f'\t}}'
 			]
 			lengths_copied.append(f'{s}_length')
@@ -184,7 +163,7 @@ def compilePrint(expression, name=None, defined=None):
 				f'\t}}'
 			]
 
-			lengths_copied += call_lengths[True] + call_lengths[False]
+			lengths_copied += max(call_lengths[True], call_lengths[False])
 		
 		elif e['type'] == 'subarray':
 
@@ -194,25 +173,21 @@ def compilePrint(expression, name=None, defined=None):
 			path_to_substring = e['groups'][4]
 			direction = e['groups'][-1]
 
-			if not is_counter_defined:
-				definitions.insert(0, f'int {counter};')
-				is_counter_defined = True
-
 			cpy_definition_list += [
-				f'\tfor ({counter} = 0; {counter} < {length}; {counter}++) {{'
+				f'\tfor (i = 0; i < {length}; i++) {{'
 				if direction == '+'
-				else f'\tfor ({counter} = {length}-1; {counter} >= 0; {counter}--) {{',
-				f'\t\tmemcpy_escaped(*target, {m}[{counter}]{path_to_substring}.start, {m}[{counter}]{path_to_substring}.length);',
+				else f'\tfor (i = {length}-1; i >= 0; i--) {{',
+				f'\t\tmemcpy(*target, {m}[i]{path_to_substring}.start, {m}[i]{path_to_substring}.length); *target += {m}[i]{path_to_substring}.length;',
 				f'\t}}'
 			]
 
 	lengths_sum = '+'.join([str(n) for n in lengths_copied + [1]])
 	cpy_definition_list = [
-		f'\twhile ((*target - compilation_result->result) + ({lengths_sum}) >= *buffer_size) {{',
+		f'\twhile ((*target - render_result->result) + ({lengths_sum}) >= *buffer_size) {{',
 		f'\t\t(*buffer_size) *= 2;',
-		f'\t\tnew_result = (char*)realloc(compilation_result->result, sizeof(char) * (*buffer_size));',
-		f'\t\t*target = new_result + (*target - compilation_result->result);',
-		f'\t\tcompilation_result->result = new_result;',
+		f'\t\tnew_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));',
+		f'\t\t*target = new_result + (*target - render_result->result);',
+		f'\t\trender_result->result = new_result;',
 		f'\t}}'
 	] + cpy_definition_list
 

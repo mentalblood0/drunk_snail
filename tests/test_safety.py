@@ -7,7 +7,7 @@ from drunk_snail.sources import StringSource
 
 def test_nonexistent_template():
 	with pytest.raises(KeyError):
-		Template('test_nonexistent_template', StringSource('<!-- (ref)something -->')).compiled
+		Template('test_nonexistent_template', StringSource('<!-- (ref)something -->'))()
 
 
 def test_buf_overflow():
@@ -20,26 +20,26 @@ def test_buf_overflow():
 	assert Template(
 		'test_buf_overflow_2', 
 		StringSource('<!-- (ref)test_buf_overflow_1 -->')
-	).compiled
+	)()
 
 
 def test_cyrillic_source():
-	assert Template('test_render_cyrillic', StringSource('ляляля'))() == 'ляляля'
+	assert Template('test_render_cyrillic', StringSource('ляляля'))() == 'ляляля\n'
 
 
 def test_cyrillic_name():
-	assert Template('тест_сириллик_нейм', StringSource('lalala'))() == 'lalala'
+	assert Template('тест_сириллик_нейм', StringSource('lalala'))() == 'lalala\n'
 
 
 def test_backslash():
-	assert Template('test_backslash', StringSource('\\'))() == '\\'
+	assert Template('test_backslash', StringSource('\\'))() == '\\\n'
 
 
 def test_quote():
-	assert Template('test_quote', StringSource('\''))() == '\''
+	assert Template('test_quote', StringSource('\''))() == '\'\n'
 
 
 def test_brackets():
 	assert Template('test_brackets', StringSource('{<!-- (param)x -->}'))({
 		'x': 'lalala'
-	}) == '{lalala}'
+	}) == '{lalala}\n'

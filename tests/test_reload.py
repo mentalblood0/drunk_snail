@@ -12,13 +12,13 @@ def test_basic():
 
 	assert t({
 		'some_param': 'lalala'
-	}) == 'lalala'
+	}) == 'lalala\n'
 
 	t.reload(source=StringSource('<!-- (param)x -->\n<!-- (param)y -->'))
 	assert t({
 		'x': 1,
 		'y': 2
-	}) == '1\n2'
+	}) == '1\n2\n'
 
 
 def test_ref():
@@ -37,7 +37,7 @@ def test_ref():
 		'test_reload_ref_1': {
 			'p': 1
 		}
-	}) == '1'
+	}) == '1\n'
 
 	Template(t1.name, StringSource('__<!-- (param)p -->__'))
 
@@ -45,7 +45,7 @@ def test_ref():
 		'test_reload_ref_1': {
 			'p': 1
 		}
-	}) == '__1__'
+	}) == '__1__\n'
 
 
 def test_cascade():
@@ -64,5 +64,5 @@ def test_cascade():
 	)
 
 	assert t1.reload(source=StringSource('__<!-- (param)p -->__')) == 1
-	assert t2.compiled and (t1.reload(source=StringSource('__<!-- (param)p -->__')) == 2)
-	assert t3.compiled and (t1.reload(source=StringSource('__<!-- (param)p -->__')) == 2)
+	assert t2() and (t1.reload(source=StringSource('__<!-- (param)p -->__')) == 2)
+	assert t3() and (t1.reload(source=StringSource('__<!-- (param)p -->__')) == 2)

@@ -12,19 +12,19 @@ def test_basic():
 		StringSource('<!-- (param)x -->')
 	)({
 		'x': 'lalala'
-	}) == 'lalala'
+	}) == 'lalala\n'
 
 	assert Template(
 		'test_render_basic', 
 		StringSource('<!-- (param)x -->\n')
 	)({
 		'x': 'lalala'
-	}) == 'lalala'
+	}) == 'lalala\n'
 
 	assert Template(
 		'test_render_basic', 
 		StringSource('lalala')
-	)() == 'lalala'
+	)() == 'lalala\n'
 
 
 
@@ -44,14 +44,14 @@ def test_list():
 		StringSource('<!-- (param)some_param -->\n')
 	)({
 		'some_param': ['1', '2', '3']
-	}) == '1\n2\n3'
+	}) == '1\n2\n3\n'
 
 	assert Template(
 		'test_render_list', 
 		StringSource('<!-- (param)some_param -->')
 	)({
 		'some_param': ['1', '2', '3']
-	}) == '1\n2\n3'
+	}) == '1\n2\n3\n'
 
 
 def test_ref():
@@ -70,7 +70,7 @@ def test_ref():
 		'addition': {
 			'action': 'eat'
 		}
-	}) == 'Hello, username!\nNice to eat you!'
+	}) == 'Hello, username!\nNice to eat you!\n'
 
 	assert Template('greeting')({
 		'name': 'username',
@@ -79,7 +79,7 @@ def test_ref():
 		}, {
 			'action': 'eat'
 		}]
-	}) == 'Hello, username!\nNice to meet you!\nNice to eat you!'
+	}) == 'Hello, username!\nNice to meet you!\nNice to eat you!\n'
 
 
 def test_consicutive_lines():
@@ -103,7 +103,7 @@ def test_consicutive_lines():
 	assert t({
 		'test_consicutive_lines_1': {},
 		'test_consicutive_lines_2': {}
-	}) == '\ta\n\tb'
+	}) == '\ta\n\tb\n'
 
 
 def test_optional_param():
@@ -128,7 +128,7 @@ def test_optional_ref():
 	
 	assert t({
 		'test_optional_ref_1': [None]
-	}) == 'lalala'
+	}) == 'lalala\n'
 
 
 def test_table():
@@ -169,7 +169,7 @@ def test_table():
 		'		<td>2.3</td>\n'
 		'		<td>3.3</td>\n'
 		'	</tr>\n'
-		'</table>'
+		'</table>\n'
 	)
 
 
@@ -186,7 +186,7 @@ def test_other_deep_inject():
 				'test_other_deep_inject_a': {}
 			}
 		}
-	}) == 'dcbabcd'
+	}) == 'dcbabcd\n'
 
 
 def test_endpoint_template():
@@ -224,4 +224,5 @@ def test_endpoint_template():
 def handler_name(
 	a, b
 ):
-	return Response(status=200)"""
+	return Response(status=200)
+"""

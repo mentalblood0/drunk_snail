@@ -13,17 +13,17 @@ def test_basic():
 		f.write('<!-- (param)x -->')
 	
 	t = Template('test_watch_basic', FileSource(file_path, watch=True))
-	assert t({'x': 'a'}) == 'a'
+	assert t({'x': 'a'}) == 'a\n'
 
 	with open(file_path, 'a') as f:
 		f.write('\n<!-- (param)y -->')
 	
 	for i in range(100):
-		if t({'x': 'a', 'y': 'b'}) == 'a\nb':
+		if t({'x': 'a', 'y': 'b'}) == 'a\nb\n':
 			break
 		sleep(0.01)
 	
-	assert t({'x': 'a', 'y': 'b'}) == 'a\nb'
+	assert t({'x': 'a', 'y': 'b'}) == 'a\nb\n'
 
 	del t
 	os.remove(file_path)
@@ -37,17 +37,17 @@ def test_disable_watch():
 		f.write('<!-- (param)x -->')
 	
 	t = Template('test_watch_disable_watch', FileSource(file_path, watch=False))
-	assert t({'x': 'a'}) == 'a'
+	assert t({'x': 'a'}) == 'a\n'
 
 	with open(file_path, 'a') as f:
 		f.write('\n<!-- (param)y -->')
 	
 	for i in range(100):
-		if t({'x': 'a', 'y': 'b'}) == 'a':
+		if t({'x': 'a', 'y': 'b'}) == 'a\n':
 			break
 		sleep(0.01)
 	
-	assert t({'x': 'a', 'y': 'b'}) == 'a'
+	assert t({'x': 'a', 'y': 'b'}) == 'a\n'
 
 	del t
 	os.remove(file_path)

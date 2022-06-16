@@ -16,16 +16,6 @@ static const int render_en_main = 0;
 
 
 
-int render__empty__i;
-#define memcpy_escaped(target, source, length) {\
-	for (i = 0; i < length; i++) {\
-		if (chars_to_escape_check[(int)(source[i])+128]) {\
-			memcpy(target, &chars_to_escape_check[(int)(source[i])+128], 1); target += 1;\
-		}\
-		memcpy(target, source + i, 1); target += 1;\
-	}\
-}\
-
 #define render__empty(target, LINE, LINE_length) {\
 	while ((*target - render_result->result) + (0+0+LINE_length+0+1+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
@@ -34,14 +24,14 @@ int render__empty__i;
 		render_result->result = new_result;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
-	for (render__empty__i = 0; render__empty__i < depth; render__empty__i++) {\
-		memcpy_escaped(*target, other[render__empty__i].left.start, other[render__empty__i].left.length);\
+	for (i = 0; i < depth; i++) {\
+		memcpy(*target, other[i].left.start, other[i].left.length); *target += other[i].left.length;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
-	memcpy_escaped(*target, LINE, LINE_length);\
+	memcpy(*target, LINE, LINE_length); *target += LINE_length;\
 	memcpy(*target, "", 0); *target += 0;\
-	for (render__empty__i = depth-1; render__empty__i >= 0; render__empty__i--) {\
-		memcpy_escaped(*target, other[render__empty__i].right.start, other[render__empty__i].right.length);\
+	for (i = depth-1; i >= 0; i--) {\
+		memcpy(*target, other[i].right.start, other[i].right.length); *target += other[i].right.length;\
 	}\
 	memcpy(*target, "\n", 1); *target += 1;\
 };
@@ -54,15 +44,14 @@ int render__empty__i;
 		render_result->result = new_result;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
-	memcpy_escaped(*target, OTHER_LEFT, OTHER_LEFT_length);\
+	memcpy(*target, OTHER_LEFT, OTHER_LEFT_length); *target += OTHER_LEFT_length;\
 	memcpy(*target, "", 0); *target += 0;\
-	memcpy_escaped(*target, ARG, ARG_length);\
+	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
 	memcpy(*target, "", 0); *target += 0;\
-	memcpy_escaped(*target, OTHER_RIGHT, OTHER_RIGHT_length);\
+	memcpy(*target, OTHER_RIGHT, OTHER_RIGHT_length); *target += OTHER_RIGHT_length;\
 	memcpy(*target, "", 0); *target += 0;\
 };
 
-int render__param__i;
 #define render__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
 	while ((*target - render_result->result) + (0+0+0+OTHER_LEFT_length+0+ARG_length+0+OTHER_RIGHT_length+0+0+1+1) >= *buffer_size) {\
 		(*buffer_size) *= 2;\
@@ -71,16 +60,35 @@ int render__param__i;
 		render_result->result = new_result;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
-	for (render__param__i = 0; render__param__i < depth; render__param__i++) {\
-		memcpy_escaped(*target, other[render__param__i].left.start, other[render__param__i].left.length);\
+	for (i = 0; i < depth; i++) {\
+		memcpy(*target, other[i].left.start, other[i].left.length); *target += other[i].left.length;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
 	render__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length);\
 	memcpy(*target, "", 0); *target += 0;\
-	for (render__param__i = depth-1; render__param__i >= 0; render__param__i--) {\
-		memcpy_escaped(*target, other[render__param__i].right.start, other[render__param__i].right.length);\
+	for (i = depth-1; i >= 0; i--) {\
+		memcpy(*target, other[i].right.start, other[i].right.length); *target += other[i].right.length;\
 	}\
 	memcpy(*target, "\n", 1); *target += 1;\
+};
+
+
+typedef struct Substring {
+	char *start;
+	int length;
+} Substring;
+
+
+typedef struct Other {
+	Substring left;
+	Substring right;
+} Other;
+
+
+enum ActionType {
+	ACTION_PARAM,
+	ACTION_REF,
+	ACTION_NONE
 };
 
 
@@ -103,6 +111,9 @@ typedef struct RenderResult {
 }
 
 
+PyObject *empty_dict;
+
+
 void render_(
 	RenderResult *render_result,
 	char *template_name,
@@ -117,8 +128,6 @@ void render_(
 	PyObject *params
 )
 {
-
-	//printf("params: %p\n", params);
 
 	Template *template = dictionaryLookupUnterminated(_templates, template_name, template_name_length);
 	if (template == NULL) {
@@ -180,19 +189,34 @@ tr1:
 					name_buffer[name_end - name_start] = 0;
 
 					param_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(param_values);
-
-					for (j = 0; j < list_size; j++) {
-
-						value = PyUnicode_AsUTF8(PyList_GetItem(param_values, j));
-
+					if (param_values) {
+						if (strict || PyList_Check(param_values)) {
+							list_size = PyList_Size(param_values);
+							for (j = 0; j < list_size; j++) {
+								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								render__param(
+									output_end,
+									start_line, start_expression - start_line,
+									value, strlen(value),
+									end_expression, end_line - end_expression
+								);
+							}
+						} else {
+							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							render__param(
+								output_end,
+								start_line, start_expression - start_line,
+								value, strlen(value),
+								end_expression, end_line - end_expression
+							);
+						}
+					} else if (!optional) {
 						render__param(
 							output_end,
 							start_line, start_expression - start_line,
-							value, strlen(value),
+							"", 0,
 							end_expression, end_line - end_expression
 						);
-
 					}
 
 				}
@@ -218,10 +242,40 @@ tr1:
 					name_buffer[name_end - name_start] = 0;
 
 					ref_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(ref_values);
-
-					for (j = 0; j < list_size; j++) {
-
+					if (ref_values) {
+						if (strict || PyList_Check(ref_values)) {
+							list_size = PyList_Size(ref_values);
+							for (j = 0; j < list_size; j++) {
+								render_(
+									render_result,
+									name_start,
+									name_end - name_start,
+									output_end,
+									depth + 1,
+									buffer_size,
+									other,
+									other_size,
+									name_buffer,
+									name_buffer_size,
+									PyList_GetItem(ref_values, j)
+								);
+							}
+						} else {
+							render_(
+								render_result,
+								name_start,
+								name_end - name_start,
+								output_end,
+								depth + 1,
+								buffer_size,
+								other,
+								other_size,
+								name_buffer,
+								name_buffer_size,
+								ref_values
+							);
+						}
+					} else if (!optional) {
 						render_(
 							render_result,
 							name_start,
@@ -233,11 +287,8 @@ tr1:
 							other_size,
 							name_buffer,
 							name_buffer_size,
-							PyList_GetItem(ref_values, j)
+							empty_dict
 						);
-						if (render_result->message)
-							return;
-
 					}
 
 				}
@@ -269,19 +320,34 @@ tr4:
 					name_buffer[name_end - name_start] = 0;
 
 					param_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(param_values);
-
-					for (j = 0; j < list_size; j++) {
-
-						value = PyUnicode_AsUTF8(PyList_GetItem(param_values, j));
-
+					if (param_values) {
+						if (strict || PyList_Check(param_values)) {
+							list_size = PyList_Size(param_values);
+							for (j = 0; j < list_size; j++) {
+								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								render__param(
+									output_end,
+									start_line, start_expression - start_line,
+									value, strlen(value),
+									end_expression, end_line - end_expression
+								);
+							}
+						} else {
+							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							render__param(
+								output_end,
+								start_line, start_expression - start_line,
+								value, strlen(value),
+								end_expression, end_line - end_expression
+							);
+						}
+					} else if (!optional) {
 						render__param(
 							output_end,
 							start_line, start_expression - start_line,
-							value, strlen(value),
+							"", 0,
 							end_expression, end_line - end_expression
 						);
-
 					}
 
 				}
@@ -307,10 +373,40 @@ tr4:
 					name_buffer[name_end - name_start] = 0;
 
 					ref_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(ref_values);
-
-					for (j = 0; j < list_size; j++) {
-
+					if (ref_values) {
+						if (strict || PyList_Check(ref_values)) {
+							list_size = PyList_Size(ref_values);
+							for (j = 0; j < list_size; j++) {
+								render_(
+									render_result,
+									name_start,
+									name_end - name_start,
+									output_end,
+									depth + 1,
+									buffer_size,
+									other,
+									other_size,
+									name_buffer,
+									name_buffer_size,
+									PyList_GetItem(ref_values, j)
+								);
+							}
+						} else {
+							render_(
+								render_result,
+								name_start,
+								name_end - name_start,
+								output_end,
+								depth + 1,
+								buffer_size,
+								other,
+								other_size,
+								name_buffer,
+								name_buffer_size,
+								ref_values
+							);
+						}
+					} else if (!optional) {
 						render_(
 							render_result,
 							name_start,
@@ -322,11 +418,8 @@ tr4:
 							other_size,
 							name_buffer,
 							name_buffer_size,
-							PyList_GetItem(ref_values, j)
+							empty_dict
 						);
-						if (render_result->message)
-							return;
-
 					}
 
 				}
@@ -359,19 +452,34 @@ tr32:
 					name_buffer[name_end - name_start] = 0;
 
 					param_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(param_values);
-
-					for (j = 0; j < list_size; j++) {
-
-						value = PyUnicode_AsUTF8(PyList_GetItem(param_values, j));
-
+					if (param_values) {
+						if (strict || PyList_Check(param_values)) {
+							list_size = PyList_Size(param_values);
+							for (j = 0; j < list_size; j++) {
+								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								render__param(
+									output_end,
+									start_line, start_expression - start_line,
+									value, strlen(value),
+									end_expression, end_line - end_expression
+								);
+							}
+						} else {
+							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							render__param(
+								output_end,
+								start_line, start_expression - start_line,
+								value, strlen(value),
+								end_expression, end_line - end_expression
+							);
+						}
+					} else if (!optional) {
 						render__param(
 							output_end,
 							start_line, start_expression - start_line,
-							value, strlen(value),
+							"", 0,
 							end_expression, end_line - end_expression
 						);
-
 					}
 
 				}
@@ -397,10 +505,40 @@ tr32:
 					name_buffer[name_end - name_start] = 0;
 
 					ref_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(ref_values);
-
-					for (j = 0; j < list_size; j++) {
-
+					if (ref_values) {
+						if (strict || PyList_Check(ref_values)) {
+							list_size = PyList_Size(ref_values);
+							for (j = 0; j < list_size; j++) {
+								render_(
+									render_result,
+									name_start,
+									name_end - name_start,
+									output_end,
+									depth + 1,
+									buffer_size,
+									other,
+									other_size,
+									name_buffer,
+									name_buffer_size,
+									PyList_GetItem(ref_values, j)
+								);
+							}
+						} else {
+							render_(
+								render_result,
+								name_start,
+								name_end - name_start,
+								output_end,
+								depth + 1,
+								buffer_size,
+								other,
+								other_size,
+								name_buffer,
+								name_buffer_size,
+								ref_values
+							);
+						}
+					} else if (!optional) {
 						render_(
 							render_result,
 							name_start,
@@ -412,11 +550,8 @@ tr32:
 							other_size,
 							name_buffer,
 							name_buffer_size,
-							PyList_GetItem(ref_values, j)
+							empty_dict
 						);
-						if (render_result->message)
-							return;
-
 					}
 
 				}
@@ -1003,19 +1138,34 @@ case 37:
 					name_buffer[name_end - name_start] = 0;
 
 					param_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(param_values);
-
-					for (j = 0; j < list_size; j++) {
-
-						value = PyUnicode_AsUTF8(PyList_GetItem(param_values, j));
-
+					if (param_values) {
+						if (strict || PyList_Check(param_values)) {
+							list_size = PyList_Size(param_values);
+							for (j = 0; j < list_size; j++) {
+								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								render__param(
+									output_end,
+									start_line, start_expression - start_line,
+									value, strlen(value),
+									end_expression, end_line - end_expression
+								);
+							}
+						} else {
+							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							render__param(
+								output_end,
+								start_line, start_expression - start_line,
+								value, strlen(value),
+								end_expression, end_line - end_expression
+							);
+						}
+					} else if (!optional) {
 						render__param(
 							output_end,
 							start_line, start_expression - start_line,
-							value, strlen(value),
+							"", 0,
 							end_expression, end_line - end_expression
 						);
-
 					}
 
 				}
@@ -1041,10 +1191,40 @@ case 37:
 					name_buffer[name_end - name_start] = 0;
 
 					ref_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(ref_values);
-
-					for (j = 0; j < list_size; j++) {
-
+					if (ref_values) {
+						if (strict || PyList_Check(ref_values)) {
+							list_size = PyList_Size(ref_values);
+							for (j = 0; j < list_size; j++) {
+								render_(
+									render_result,
+									name_start,
+									name_end - name_start,
+									output_end,
+									depth + 1,
+									buffer_size,
+									other,
+									other_size,
+									name_buffer,
+									name_buffer_size,
+									PyList_GetItem(ref_values, j)
+								);
+							}
+						} else {
+							render_(
+								render_result,
+								name_start,
+								name_end - name_start,
+								output_end,
+								depth + 1,
+								buffer_size,
+								other,
+								other_size,
+								name_buffer,
+								name_buffer_size,
+								ref_values
+							);
+						}
+					} else if (!optional) {
 						render_(
 							render_result,
 							name_start,
@@ -1056,11 +1236,8 @@ case 37:
 							other_size,
 							name_buffer,
 							name_buffer_size,
-							PyList_GetItem(ref_values, j)
+							empty_dict
 						);
-						if (render_result->message)
-							return;
-
 					}
 
 				}
@@ -1093,19 +1270,34 @@ case 37:
 					name_buffer[name_end - name_start] = 0;
 
 					param_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(param_values);
-
-					for (j = 0; j < list_size; j++) {
-
-						value = PyUnicode_AsUTF8(PyList_GetItem(param_values, j));
-
+					if (param_values) {
+						if (strict || PyList_Check(param_values)) {
+							list_size = PyList_Size(param_values);
+							for (j = 0; j < list_size; j++) {
+								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								render__param(
+									output_end,
+									start_line, start_expression - start_line,
+									value, strlen(value),
+									end_expression, end_line - end_expression
+								);
+							}
+						} else {
+							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							render__param(
+								output_end,
+								start_line, start_expression - start_line,
+								value, strlen(value),
+								end_expression, end_line - end_expression
+							);
+						}
+					} else if (!optional) {
 						render__param(
 							output_end,
 							start_line, start_expression - start_line,
-							value, strlen(value),
+							"", 0,
 							end_expression, end_line - end_expression
 						);
-
 					}
 
 				}
@@ -1131,10 +1323,40 @@ case 37:
 					name_buffer[name_end - name_start] = 0;
 
 					ref_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(ref_values);
-
-					for (j = 0; j < list_size; j++) {
-
+					if (ref_values) {
+						if (strict || PyList_Check(ref_values)) {
+							list_size = PyList_Size(ref_values);
+							for (j = 0; j < list_size; j++) {
+								render_(
+									render_result,
+									name_start,
+									name_end - name_start,
+									output_end,
+									depth + 1,
+									buffer_size,
+									other,
+									other_size,
+									name_buffer,
+									name_buffer_size,
+									PyList_GetItem(ref_values, j)
+								);
+							}
+						} else {
+							render_(
+								render_result,
+								name_start,
+								name_end - name_start,
+								output_end,
+								depth + 1,
+								buffer_size,
+								other,
+								other_size,
+								name_buffer,
+								name_buffer_size,
+								ref_values
+							);
+						}
+					} else if (!optional) {
 						render_(
 							render_result,
 							name_start,
@@ -1146,11 +1368,8 @@ case 37:
 							other_size,
 							name_buffer,
 							name_buffer_size,
-							PyList_GetItem(ref_values, j)
+							empty_dict
 						);
-						if (render_result->message)
-							return;
-
 					}
 
 				}

@@ -25,6 +25,25 @@ render__param {%
 %}
 
 
+typedef struct Substring {
+	char *start;
+	int length;
+} Substring;
+
+
+typedef struct Other {
+	Substring left;
+	Substring right;
+} Other;
+
+
+enum ActionType {
+	ACTION_PARAM,
+	ACTION_REF,
+	ACTION_NONE
+};
+
+
 typedef struct RenderResult {
 	char *message;
 	char *result;
@@ -44,6 +63,9 @@ typedef struct RenderResult {
 }
 
 
+PyObject *empty_dict;
+
+
 void render_(
 	RenderResult *render_result,
 	char *template_name,
@@ -58,8 +80,6 @@ void render_(
 	PyObject *params
 )
 {
-
-	//printf("params: %p\n", params);
 
 	Template *template = dictionaryLookupUnterminated(_templates, template_name, template_name_length);
 	if (template == NULL) {
@@ -112,19 +132,34 @@ void render_(
 					name_buffer[name_end - name_start] = 0;
 
 					param_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(param_values);
-
-					for (j = 0; j < list_size; j++) {
-
-						value = PyUnicode_AsUTF8(PyList_GetItem(param_values, j));
-
+					if (param_values) {
+						if (strict || PyList_Check(param_values)) {
+							list_size = PyList_Size(param_values);
+							for (j = 0; j < list_size; j++) {
+								value = PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(param_values, j)));
+								render__param(
+									output_end,
+									start_line, start_expression - start_line,
+									value, strlen(value),
+									end_expression, end_line - end_expression
+								);
+							}
+						} else {
+							value = PyUnicode_AsUTF8(PyObject_Str(param_values));
+							render__param(
+								output_end,
+								start_line, start_expression - start_line,
+								value, strlen(value),
+								end_expression, end_line - end_expression
+							);
+						}
+					} else if (!optional) {
 						render__param(
 							output_end,
 							start_line, start_expression - start_line,
-							value, strlen(value),
+							"", 0,
 							end_expression, end_line - end_expression
 						);
-
 					}
 
 				}
@@ -150,10 +185,40 @@ void render_(
 					name_buffer[name_end - name_start] = 0;
 
 					ref_values = PyDict_GetItemString(params, name_buffer);
-					list_size = PyList_Size(ref_values);
-
-					for (j = 0; j < list_size; j++) {
-
+					if (ref_values) {
+						if (strict || PyList_Check(ref_values)) {
+							list_size = PyList_Size(ref_values);
+							for (j = 0; j < list_size; j++) {
+								render_(
+									render_result,
+									name_start,
+									name_end - name_start,
+									output_end,
+									depth + 1,
+									buffer_size,
+									other,
+									other_size,
+									name_buffer,
+									name_buffer_size,
+									PyList_GetItem(ref_values, j)
+								);
+							}
+						} else {
+							render_(
+								render_result,
+								name_start,
+								name_end - name_start,
+								output_end,
+								depth + 1,
+								buffer_size,
+								other,
+								other_size,
+								name_buffer,
+								name_buffer_size,
+								ref_values
+							);
+						}
+					} else if (!optional) {
 						render_(
 							render_result,
 							name_start,
@@ -165,11 +230,8 @@ void render_(
 							other_size,
 							name_buffer,
 							name_buffer_size,
-							PyList_GetItem(ref_values, j)
+							empty_dict
 						);
-						if (render_result->message)
-							return;
-
 					}
 
 				}

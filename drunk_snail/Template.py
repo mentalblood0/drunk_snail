@@ -2,13 +2,10 @@ from __future__ import annotations
 
 import pydantic
 from threading import Lock
-from typing import Callable
-from types import ModuleType
 
 import drunk_snail_c
 from typing import Any
 from .Source import Source
-from .compilePythonFunction import compilePythonFunction
 
 
 
@@ -104,10 +101,6 @@ class _Template:
 		self._name = name
 		self._source = source
 
-		self._compiled = None
-		self._function = None
-		self._cache = None
-
 		text = self.source.get()
 		self._buffer_size = len(text) * 5 or 1
 
@@ -130,14 +123,13 @@ class _Template:
 				if name not in checked:
 				
 					checked[name] = True
-					
+
 					t = templates[name]
 					if self.name in t.refs:
 						reloaded_number += t.reload(checked=checked)
 
 			drunk_snail_c.removeTemplate(self.name)
-
-		self.__init__(self.name, source or self.source)
+			drunk_snail_c.addTemplate(self.name, (source or self.source).get())
 
 		return reloaded_number
 
@@ -159,24 +151,13 @@ class _Template:
 		return self._lock
 
 	@property
-	def compiled(self) -> str:
-
-		if not self._compiled:
-			with self.lock:
-				self._compiled, self._buffer_size = drunk_snail_c.compile(self.name, self._buffer_size)
-		
-		return self._compiled
-
-	@property
 	def refs(self) -> list[str]:
 		with self.lock:
 			return drunk_snail_c.getTemplateRefs(self.name)
 
-	def composeFstring(self, parameters) -> str:
-		return self(replaceValuesByPaths(parameters, self.name))
-
 	def __call__(self, parameters: dict = None) -> str:
-		return drunk_snail_c.render(self.name, self._buffer_size, parameters)
+		result, self._buffer_size = drunk_snail_c.render(self.name, self._buffer_size, parameters or {})
+		return result
 
 	def __repr__(self) -> str:
 		return f"(name='{self.name}', source={self.source})"
@@ -211,6 +192,6 @@ class _Template:
 
 	def __dir__(self) -> list[str]:
 		return [
-			'name', 'source', 'text', 'compiled', 
+			'name', 'source', 'text', 
 			'__call__', '__repr__', '__str__', '__len__', '__eq__', '__dir__', '__del__', '__hash__'
 		]

@@ -98,6 +98,7 @@ void render_(
 	Py_ssize_t value_size;
 	PyObject *param_values;
 	PyObject *ref_values;
+	PyObject *item;
 
 	int i;
 	Py_ssize_t j;
@@ -133,8 +134,12 @@ void render_(
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
+								item = PyList_GetItem(param_values, j);
+								if (!PyUnicode_Check(item)) {
+									item = PyObject_Str(item);
+								}
 								value = PyUnicode_AsUTF8AndSize(
-									PyObject_Str(PyList_GetItem(param_values, j)),
+									item,
 									&value_size
 								);
 								render__param(
@@ -145,8 +150,13 @@ void render_(
 								);
 							}
 						} else {
+							if (!PyUnicode_Check(param_values)) {
+								item = PyObject_Str(param_values);
+							} else {
+								item = param_values;
+							}
 							value = PyUnicode_AsUTF8AndSize(
-								PyObject_Str(param_values),
+								item,
 								&value_size
 							);
 							render__param(

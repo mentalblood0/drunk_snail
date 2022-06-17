@@ -61,6 +61,7 @@ Rendering 10x1000 table (mean of 10000 experiments):
 | [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 39.54    | 25                |
 | [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 30.93    | 32                |
 | [airspeed](https://github.com/purcell/airspeed)                   | 28.08    | 35                |
+| [TRender](https://github.com/cesbit/trender)                      | 10.81    | 92                |
 | [mako](https://github.com/sqlalchemy/mako)                        | 3.08     | 324               |
 | [Jinja](https://github.com/pallets/jinja)                         | 1.56     | 641               |
 | **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.32** | **3124**          |
@@ -78,6 +79,7 @@ Rendering 100x10000 table (mean of 100 experiments)
 | [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 3380     | 0 (0.30)          |
 | [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 13945    | 0 (0.07)          |
 | [airspeed](https://github.com/purcell/airspeed)                   | 2574     | 0 (0.39)          |
+| [TRender](https://github.com/cesbit/trender)                      | 957      | 1                 |
 | [mako](https://github.com/sqlalchemy/mako)                        | 198      | 5                 |
 | [Jinja](https://github.com/pallets/jinja)                         | 203      | 4                 |
 | **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **27**   | **37**            |

@@ -122,7 +122,7 @@ void render_(
 
 				if (action_type == ACTION_PARAM) {
 
-					if (name_end - name_start > name_buffer_size) {
+					if (name_end - name_start + 1 > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
 						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
 					}
@@ -187,7 +187,7 @@ void render_(
 					other[depth].right.start = end_expression;
 					other[depth].right.length = end_line - end_expression;
 
-					if (name_end - name_start > name_buffer_size) {
+					if (name_end - name_start + 1 > name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
 						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
 					}

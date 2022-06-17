@@ -1,5 +1,5 @@
 {
-	"chevron_render::table": {
+	"django_render::table": {
 		"__n__": 100,
 		"width": 10,
 		"height": 1000

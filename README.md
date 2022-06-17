@@ -56,12 +56,13 @@ Result:
 
 Rendering 10x1000 table (mean of 10000 experiments):
 
-| Engine                                                        | Time, ms | templates / s     |
-| --------------------------------------------------------------| -------- | ----------------- |
-| [chevron (mustache)](https://github.com/noahmorrison/chevron) | 31.7     | 31                |
-| [mako](https://github.com/sqlalchemy/mako)                    | 3.08     | 324               |
-| [Jinja](https://github.com/pallets/jinja)                     | 1.56     | 641               |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **0.44** | **2272**          |
+| Engine                                                            | Time, ms | templates / s     |
+| ----------------------------------------------------------------- | -------- | ----------------- |
+| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 39.54    | 25                |
+| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 30.93    | 32                |
+| [mako](https://github.com/sqlalchemy/mako)                        | 3.08     | 324               |
+| [Jinja](https://github.com/pallets/jinja)                         | 1.56     | 641               |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.44** | **2272**          |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------- | --------- |
@@ -71,12 +72,13 @@ Rendering 10x1000 table (mean of 10000 experiments):
 
 Rendering 100x10000 table (mean of 100 experiments)
 
-| Engine                                                        | Time, ms | templates / s     |
-| ------------------------------------------------------------- | -------- | ----------------- |
-| [chevron (mustache)](https://github.com/noahmorrison/chevron) | 13945    | 0 (0.07)          |
-| [mako](https://github.com/sqlalchemy/mako)                    | 198      | 5                 |
-| [Jinja](https://github.com/pallets/jinja)                     | 203      | 4                 |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)** | **39**   | **25**            |
+| Engine                                                            | Time, ms | templates / s     |
+| ----------------------------------------------------------------- | -------- | ----------------- |
+| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 3380     | 0 (0.30)          |
+| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 13945    | 0 (0.07)          |
+| [mako](https://github.com/sqlalchemy/mako)                        | 198      | 5                 |
+| [Jinja](https://github.com/pallets/jinja)                         | 203      | 4                 |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **39**   | **25**            |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------- | --------- |

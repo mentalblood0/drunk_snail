@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
 	setup(
 		name='drunk_snail',
-		version='6.2.0',
+		version='6.3.0',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',

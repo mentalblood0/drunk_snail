@@ -348,7 +348,7 @@ static PyObject *render (
 	}
 
 	PyObject *t = PyTuple_New(2);
-	PyTuple_SetItem(t, 0, PyUnicode_FromString(render_result.result));
+	PyTuple_SetItem(t, 0, PyUnicode_FromStringAndSize(render_result.result, _output_end-render_result.result));
 	PyTuple_SetItem(t, 1, PyLong_FromLong(buffer_size));
 	return t;
 

@@ -10,7 +10,6 @@
 
 #include "addTemplate.c"
 #include "getTemplate.c"
-#include "getTemplateRefs.c"
 #include "removeTemplate.c"
 
 #include "render.c"

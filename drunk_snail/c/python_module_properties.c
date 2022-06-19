@@ -12,12 +12,6 @@ static PyMethodDef methods[] = {
 		"Get template text by name"
 	},
 	{
-		"getTemplateRefs",
-		getTemplateRefs,
-		METH_VARARGS,
-		"Get template refs"
-	},
-	{
 		"removeTemplate",
 		removeTemplate,
 		METH_VARARGS,

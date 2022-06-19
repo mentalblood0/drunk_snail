@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
 	setup(
 		name='drunk_snail',
-		version='6.3.1',
+		version='6.4.0',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
@@ -39,8 +39,6 @@ if __name__ == '__main__':
 				extra_compile_args=['-O3']
 			)
 		],
-		install_requires=[
-			'watchdog'
-		],
+		install_requires=[],
 		data_files=list(data_files.items())
 	)

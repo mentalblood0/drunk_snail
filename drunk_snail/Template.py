@@ -11,21 +11,6 @@ from .Source import Source
 templates: dict[str, _Template] = {}
 
 
-def replaceValuesByPaths(o: dict | list | Any, prefix: str):
-	if type(o) == dict:
-		return {
-			k: replaceValuesByPaths(v, f'{prefix}["{k}"]')
-			for k, v in o.items()
-		}
-	elif type(o) == list:
-		return [
-			replaceValuesByPaths(e, f'{prefix}[{i}]')
-			for i, e in enumerate(o)
-		]
-	else:
-		return f'{{{prefix}}}'
-
-
 class Template:
 
 	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
@@ -102,8 +87,6 @@ class _Template:
 
 		drunk_snail_c.addTemplate(self.name, text)
 
-		self.source.onChange = self.reload
-
 	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
 	def reload(self, source: Source = None) -> None:
 		drunk_snail_c.removeTemplate(self.name)
@@ -142,14 +125,12 @@ class _Template:
 
 	def __del__(self) -> None:
 
-		there_was_template = drunk_snail_c.removeTemplate(self.name)
+		try:
+			del templates[self.name]
+		except KeyError:
+			pass
 
-		if there_was_template:
-
-			if self.name in templates:
-				del templates[self.name]
-
-			self.source.clean()
+		drunk_snail_c.removeTemplate(self.name)
 
 	def __hash__(self) -> int:
 		return hash(self.source)

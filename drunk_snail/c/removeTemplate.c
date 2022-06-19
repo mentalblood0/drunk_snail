@@ -5,9 +5,6 @@ int removeTemplate_(char *name) {
 		return 1;
 	
 	free(template->text);
-
-	clearRefs(template);
-	free(template->refs);
 	
 	treeRemove(_templates, name);
 

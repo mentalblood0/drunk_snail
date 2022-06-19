@@ -34,7 +34,7 @@ def test_empty_template():
 
 def test_nonexistent_file():
 	with pytest.raises(FileNotFoundError):
-		Template('test_render_nonexistent_file', FileSource('lalala', watch=False))
+		Template('test_render_nonexistent_file', FileSource('lalala'))
 
 
 def test_list():

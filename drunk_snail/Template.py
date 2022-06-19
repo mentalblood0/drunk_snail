@@ -3,75 +3,25 @@ from __future__ import annotations
 import pydantic
 
 import drunk_snail_c
-from typing import Any
 from .Source import Source
 
 
 
-templates: dict[str, _Template] = {}
+templates: dict[str, Template] = {}
 
 
 class Template:
 
-	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
-	def __init__(self, name: str, source: Source | None = None):
+	def __new__(_, name: str, source: Source = None):
 
-		if not name in templates:
-			templates[name] = _Template(
-				name=name, 
-				source=source
-			)
-		elif (
-				source and 
-				(source != templates[name].source)
-			):
-			templates[name].reload(source=source)
+		if name not in templates:
+			templates[name] = _Template(name, source)
 
-		self._actual_template_name = name
-	
-	@property
-	def _actual_template(self) -> _Template:
+		result = templates[name]
+		if source is not None:
+			result.reload(source)
 
-		try:
-			result = templates[self._actual_template_name]
-		except KeyError:
-			raise KeyError(f"Template '{self._actual_template_name}' deleted or not created yet")
-		
 		return result
-
-	def __getattribute__(self, name: str):
-
-		if name in ['_actual_template_name', '_actual_template', 'delete']:
-			return super().__getattribute__(name)
-		else:
-			return getattr(self._actual_template, name)
-
-	def __call__(self, *args, **kwargs):
-		return self._actual_template(*args, **kwargs)
-
-	def __repr__(self):
-		return self._actual_template.__repr__()
-
-	def __str__(self):
-		return self._actual_template.__str__()
-
-	def __len__(self):
-		return self._actual_template.__len__()
-
-	def __eq__(self, other):
-		return self._actual_template.__eq__(other)
-
-	def __dir__(self):
-		return self._actual_template.__dir__()
-
-	def __hash__(self):
-		return self._actual_template.__hash__()
-
-	def delete(self):
-		try:
-			self._actual_template.__del__()
-		except KeyError:
-			pass
 
 
 class _Template:
@@ -81,16 +31,23 @@ class _Template:
 
 		self._name = name
 		self._source = source
+		self._buffer_size = 1
 
-		text = self.source.get()
-		self._buffer_size = len(text) * 5 or 1
-
-		drunk_snail_c.addTemplate(self.name, text)
+		self.reload(source)
 
 	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
 	def reload(self, source: Source = None) -> None:
+
+		if source != self.source:
+			self._source = source
+
+		print(f'reload {self.name} from {source} == {self.source.get()}')
+
 		drunk_snail_c.removeTemplate(self.name)
-		drunk_snail_c.addTemplate(self.name, (source or self.source).get())
+
+		text = self.source.get()
+		self._buffer_size = len(text)
+		drunk_snail_c.addTemplate(self.name, text)
 
 	@property
 	def name(self) -> str:
@@ -122,15 +79,6 @@ class _Template:
 			isinstance(other, self.__class__)
 			and (hash(self) == hash(other))
 		)
-
-	def __del__(self) -> None:
-
-		try:
-			del templates[self.name]
-		except KeyError:
-			pass
-
-		drunk_snail_c.removeTemplate(self.name)
 
 	def __hash__(self) -> int:
 		return hash(self.source)

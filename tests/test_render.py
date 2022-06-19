@@ -1,7 +1,6 @@
 import pytest
 
 from drunk_snail import Template
-from drunk_snail.sources import StringSource, FileSource
 
 
 
@@ -9,46 +8,40 @@ def test_basic():
 	
 	assert Template(
 		'test_render_basic', 
-		StringSource('<!-- (param)x -->')
+		'<!-- (param)x -->'
 	)({
 		'x': 'lalala'
 	}) == 'lalala\n'
 
 	assert Template(
 		'test_render_basic', 
-		StringSource('<!-- (param)x -->\n')
+		'<!-- (param)x -->\n'
 	)({
 		'x': 'lalala'
 	}) == 'lalala\n'
 
 	assert Template(
 		'test_render_basic', 
-		StringSource('lalala')
+		'lalala'
 	)() == 'lalala\n'
 
 
-
 def test_empty_template():
-	assert Template('test_render_empty_template', StringSource(''))() == ''
-
-
-def test_nonexistent_file():
-	with pytest.raises(FileNotFoundError):
-		Template('test_render_nonexistent_file', FileSource('lalala'))
+	assert Template('test_render_empty_template', '')() == ''
 
 
 def test_list():
 
 	assert Template(
 		'test_render_list', 
-		StringSource('<!-- (param)some_param -->\n')
+		'<!-- (param)some_param -->\n'
 	)({
 		'some_param': ['1', '2', '3']
 	}) == '1\n2\n3\n'
 
 	assert Template(
 		'test_render_list', 
-		StringSource('<!-- (param)some_param -->')
+		'<!-- (param)some_param -->'
 	)({
 		'some_param': ['1', '2', '3']
 	}) == '1\n2\n3\n'
@@ -58,11 +51,11 @@ def test_ref():
 
 	Template(
 		'addition', 
-		StringSource('Nice to <!-- (param)action --> you')
+		'Nice to <!-- (param)action --> you'
 	)
 	t = Template(
 		'greeting', 
-		StringSource('Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n')
+		'Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n'
 	)
 	
 	assert t({
@@ -86,18 +79,16 @@ def test_consicutive_lines():
 
 	Template(
 		'test_consicutive_lines_1',
-		StringSource('a')
+		'a'
 	)
 	Template(
 		'test_consicutive_lines_2',
-		StringSource('b')
+		'b'
 	)
 	t = Template(
 		'test_consicutive_lines_3',
-		StringSource(
-			'\t<!-- (optional)(ref)test_consicutive_lines_1 -->\n'
-			'\t<!-- (optional)(ref)test_consicutive_lines_2 -->\n'
-		)
+		'\t<!-- (optional)(ref)test_consicutive_lines_1 -->\n'
+		'\t<!-- (optional)(ref)test_consicutive_lines_2 -->\n'
 	)
 
 	assert t({
@@ -109,7 +100,7 @@ def test_consicutive_lines():
 def test_optional_param():
 	assert Template(
 		'test_optional_param',
-		StringSource('<!-- (optional)(param)a -->')
+		'<!-- (optional)(param)a -->'
 	)() == ''
 
 
@@ -117,11 +108,11 @@ def test_optional_ref():
 
 	Template(
 		'test_optional_ref_1',
-		StringSource('lalala')
+		'lalala'
 	)
 	t = Template(
 		'test_optional_ref_2',
-		StringSource('<!-- (optional)(ref)test_optional_ref_1 -->')
+		'<!-- (optional)(ref)test_optional_ref_1 -->'
 	)
 	
 	assert t() == ''
@@ -133,16 +124,16 @@ def test_optional_ref():
 
 def test_table():
 
-	Template('Row', StringSource(
+	Template('Row',
 		'<tr>\n'
 		'	<td><!-- (strict)(param)cell --></td>\n'
 		'</tr>\n'
-	))
-	table = Template('Table', StringSource(
+	)
+	table = Template('Table',
 		'<table>\n'
 		'	<!-- (strict)(ref)Row -->\n'
 		'</table>\n'
-	))
+	)
 
 	args = {
 		"Row": [
@@ -175,10 +166,10 @@ def test_table():
 
 def test_other_deep_inject():
 
-	Template('test_other_deep_inject_a', StringSource('a'))
-	Template('test_other_deep_inject_b', StringSource('b<!-- (ref)test_other_deep_inject_a -->b'))
-	Template('test_other_deep_inject_c', StringSource('c<!-- (ref)test_other_deep_inject_b -->c'))
-	d = Template('test_other_deep_inject_d', StringSource('d<!-- (ref)test_other_deep_inject_c -->d'))
+	Template('test_other_deep_inject_a', 'a')
+	Template('test_other_deep_inject_b', 'b<!-- (ref)test_other_deep_inject_a -->b')
+	Template('test_other_deep_inject_c', 'c<!-- (ref)test_other_deep_inject_b -->c')
+	d = Template('test_other_deep_inject_d', 'd<!-- (ref)test_other_deep_inject_c -->d')
 
 	assert d({
 		'test_other_deep_inject_b': {
@@ -191,7 +182,7 @@ def test_other_deep_inject():
 
 def test_endpoint_template():
 
-	t = Template('test_compile_endpoint_template', StringSource(
+	t = Template('test_compile_endpoint_template', 
 		'from ..common import *\n'
 		'\n'
 		'\n'
@@ -205,7 +196,7 @@ def test_endpoint_template():
 		'	<!-- (param)handler_args -->\n'
 		'):\n'
 		'	return Response(status=200)'
-	))
+	)
 
 	assert t({
 		'route_to': 'route_to',

@@ -5,12 +5,13 @@ typedef struct Template {
 
 	char *text;
 	size_t length;
+	size_t buffer_size;
 
 } Template;
 
 
 void addTemplate_(char *name, char *text) {
-	
+
 	Template *template = malloc(sizeof(Template));
 
 	size_t text_length = strlen(text) + 1;
@@ -18,7 +19,8 @@ void addTemplate_(char *name, char *text) {
 	memcpy(template->text, text, text_length);
 
 	template->length = text_length - 1;
-	
+	template->buffer_size = template->length;
+
 	treeInsert(_templates, name, template);
 
 }
@@ -32,7 +34,7 @@ static PyObject *addTemplate (
 	char 
 		*name, 
 		*template;
-	
+
 	if (!PyArg_ParseTuple(args, "ss", &name, &template))
 		return PyLong_FromLong(1);
 

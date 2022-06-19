@@ -1,7 +1,6 @@
 import os
 import glob
-from setuptools import setup, Extension
-# from distutils.core import setup, Extension
+from setuptools import setup, Extension, find_packages
 
 
 
@@ -21,7 +20,7 @@ if __name__ == '__main__':
 
 	setup(
 		name='drunk_snail',
-		version='6.5.0',
+		version='6.6.0',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
@@ -31,7 +30,7 @@ if __name__ == '__main__':
 		maintainer_email='neceporenkostepan@gmail.com',
 		keywords=['template', 'engine', 'fast'],
 		url='https://github.com/MentalBlood/drunk_snail',
-		packages=['drunk_snail', 'drunk_snail.sources'],
+		packages=find_packages(),
 		ext_modules=[
 			Extension(
 				'drunk_snail_c',

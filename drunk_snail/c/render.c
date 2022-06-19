@@ -1,12 +1,12 @@
 
-/* #line 1 "compileComprehension_preprocessed.rl" */
+#line 1 "input_preprocessed.rl"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 
-/* #line 10 "compileComprehension.c" */
+#line 10 "output.c"
 static const int render_start = 0;
 static const int render_first_final = 0;
 static const int render_error = -1;
@@ -14,7 +14,7 @@ static const int render_error = -1;
 static const int render_en_main = 0;
 
 
-/* #line 9 "compileComprehension_preprocessed.rl" */
+#line 9 "input_preprocessed.rl"
 
 
 
@@ -123,7 +123,7 @@ void render_(
 	int template_name_length,
 	char **output_end,
 	int depth,
-	int *buffer_size,
+	size_t *buffer_size,
 	Other *other,
 	int *other_size,
 	char *name_buffer,
@@ -138,6 +138,12 @@ void render_(
 		memcpy(render_result->message, template_name, template_name_length);
 		render_result->message[template_name_length] = 0;
 		return;
+	}
+
+	if (!depth) {
+		buffer_size = &template->buffer_size;
+		render_result->result = malloc(sizeof(char) * (*buffer_size));
+		*output_end = render_result->result;
 	}
 
 	char *p = template->text;
@@ -163,21 +169,21 @@ void render_(
 	reset_line_properties();
 
 	
-/* #line 167 "compileComprehension.c" */
+#line 173 "output.c"
 	{
 	cs = render_start;
 	}
 
-/* #line 172 "compileComprehension.c" */
+#line 178 "output.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 158 "compileComprehension_preprocessed.rl" */
+#line 164 "input_preprocessed.rl"
 	{ start_line = p; }
-/* #line 159 "compileComprehension_preprocessed.rl" */
+#line 165 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -321,7 +327,7 @@ tr1:
 		}
 	goto st0;
 tr4:
-/* #line 159 "compileComprehension_preprocessed.rl" */
+#line 165 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -465,9 +471,9 @@ tr4:
 		}
 	goto st0;
 tr32:
-/* #line 313 "compileComprehension_preprocessed.rl" */
+#line 319 "input_preprocessed.rl"
 	{ end_expression = p; }
-/* #line 159 "compileComprehension_preprocessed.rl" */
+#line 165 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -614,60 +620,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 618 "compileComprehension.c" */
+#line 624 "output.c"
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 158 "compileComprehension_preprocessed.rl" */
+#line 164 "input_preprocessed.rl"
 	{ start_line = p; }
 	goto st1;
 tr31:
-/* #line 313 "compileComprehension_preprocessed.rl" */
+#line 319 "input_preprocessed.rl"
 	{ end_expression = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 636 "compileComprehension.c" */
+#line 642 "output.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 158 "compileComprehension_preprocessed.rl" */
+#line 164 "input_preprocessed.rl"
 	{ start_line = p; }
-/* #line 309 "compileComprehension_preprocessed.rl" */
+#line 315 "input_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr5:
-/* #line 309 "compileComprehension_preprocessed.rl" */
+#line 315 "input_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr33:
-/* #line 309 "compileComprehension_preprocessed.rl" */
+#line 315 "input_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
-/* #line 313 "compileComprehension_preprocessed.rl" */
+#line 319 "input_preprocessed.rl"
 	{ end_expression = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 671 "compileComprehension.c" */
+#line 677 "output.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -706,26 +712,26 @@ case 5:
 	}
 	goto st1;
 tr22:
-/* #line 303 "compileComprehension_preprocessed.rl" */
+#line 309 "input_preprocessed.rl"
 	{ optional = true; }
 	goto st6;
 tr39:
-/* #line 301 "compileComprehension_preprocessed.rl" */
+#line 307 "input_preprocessed.rl"
 	{ action_type = ACTION_PARAM; }
 	goto st6;
 tr44:
-/* #line 302 "compileComprehension_preprocessed.rl" */
+#line 308 "input_preprocessed.rl"
 	{ action_type = ACTION_REF; }
 	goto st6;
 tr52:
-/* #line 304 "compileComprehension_preprocessed.rl" */
+#line 310 "input_preprocessed.rl"
 	{ strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 729 "compileComprehension.c" */
+#line 735 "output.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -832,34 +838,34 @@ case 15:
 		goto tr23;
 	goto st1;
 tr23:
-/* #line 303 "compileComprehension_preprocessed.rl" */
+#line 309 "input_preprocessed.rl"
 	{ optional = true; }
-/* #line 306 "compileComprehension_preprocessed.rl" */
+#line 312 "input_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 tr40:
-/* #line 301 "compileComprehension_preprocessed.rl" */
+#line 307 "input_preprocessed.rl"
 	{ action_type = ACTION_PARAM; }
-/* #line 306 "compileComprehension_preprocessed.rl" */
+#line 312 "input_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 tr45:
-/* #line 302 "compileComprehension_preprocessed.rl" */
+#line 308 "input_preprocessed.rl"
 	{ action_type = ACTION_REF; }
-/* #line 306 "compileComprehension_preprocessed.rl" */
+#line 312 "input_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 tr53:
-/* #line 304 "compileComprehension_preprocessed.rl" */
+#line 310 "input_preprocessed.rl"
 	{ strict = true; }
-/* #line 306 "compileComprehension_preprocessed.rl" */
+#line 312 "input_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 863 "compileComprehension.c" */
+#line 869 "output.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr24;
@@ -877,14 +883,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr24:
-/* #line 307 "compileComprehension_preprocessed.rl" */
+#line 313 "input_preprocessed.rl"
 	{ name_end = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-/* #line 888 "compileComprehension.c" */
+#line 894 "output.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -893,14 +899,14 @@ case 17:
 	}
 	goto st1;
 tr25:
-/* #line 307 "compileComprehension_preprocessed.rl" */
+#line 313 "input_preprocessed.rl"
 	{ name_end = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-/* #line 904 "compileComprehension.c" */
+#line 910 "output.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -1194,7 +1200,7 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
-/* #line 159 "compileComprehension_preprocessed.rl" */
+#line 165 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -1338,9 +1344,9 @@ case 37:
 		}
 	break;
 	case 20: 
-/* #line 313 "compileComprehension_preprocessed.rl" */
+#line 319 "input_preprocessed.rl"
 	{ end_expression = p; }
-/* #line 159 "compileComprehension_preprocessed.rl" */
+#line 165 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -1483,18 +1489,19 @@ case 37:
 
 		}
 	break;
-/* #line 1487 "compileComprehension.c" */
+#line 1493 "output.c"
 	}
 	}
 
 	}
 
-/* #line 337 "compileComprehension_preprocessed.rl" */
+#line 343 "input_preprocessed.rl"
 
 
 	if (!depth) {
 		**output_end = 0;
 	}
+
 };
 
 
@@ -1504,15 +1511,14 @@ static PyObject *render (
 ) {
 
 	char *name;
-	int buffer_size;
 	PyObject *params;
-	
-	if (!PyArg_ParseTuple(args, "siO!", &name, &buffer_size, &PyDict_Type, &params))
+
+	if (!PyArg_ParseTuple(args, "sO!", &name, &PyDict_Type, &params))
 		return NULL;
 
 	RenderResult render_result;
 	render_result.message = NULL;
-	render_result.result = malloc(sizeof(char) * buffer_size);
+	render_result.result = NULL;
 
 	int other_size = 16;
 	Other *other = malloc(sizeof(Other) * other_size);
@@ -1520,15 +1526,15 @@ static PyObject *render (
 	int name_buffer_size = 128;
 	char *name_buffer = malloc(sizeof(char) * name_buffer_size);
 
-	char *_output_end = render_result.result;
+	char *output_end = NULL;
 
 	render_(
 		&render_result,
 		name,
 		strlen(name),
-		&_output_end,
+		&output_end,
 		0,
-		&buffer_size,
+		NULL,
 		other,
 		&other_size,
 		name_buffer,
@@ -1545,9 +1551,6 @@ static PyObject *render (
 		return NULL;
 	}
 
-	PyObject *t = PyTuple_New(2);
-	PyTuple_SetItem(t, 0, PyUnicode_FromStringAndSize(render_result.result, _output_end-render_result.result));
-	PyTuple_SetItem(t, 1, PyLong_FromLong(buffer_size));
-	return t;
+	return PyUnicode_FromStringAndSize(render_result.result, output_end-render_result.result);
 
 }

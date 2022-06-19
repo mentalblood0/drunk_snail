@@ -1,6 +1,5 @@
 from threading import Thread
 from drunk_snail import Template
-from drunk_snail.sources import StringSource
 
 
 
@@ -10,7 +9,7 @@ def test_create_show():
 	text = 'lalala'
 
 	def create():
-		Template(name, StringSource(text))
+		Template(name, text)
 
 	def show():
 		assert Template(name).text == text

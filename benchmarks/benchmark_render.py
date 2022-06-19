@@ -2,7 +2,6 @@ import json
 from sharpener import Benchmark
 
 from drunk_snail import Template
-from drunk_snail.sources import FileSource
 
 
 
@@ -12,9 +11,12 @@ class table(Benchmark):
 
 		if not hasattr(self, 'args'):
 
-			self.row = Template('Row', FileSource('templates/Row.xml'))
-			self.table = Template('Table', FileSource('templates/Table.xml'))
-			
+			with open('templates/Row.xml') as f:
+				self.row = Template('Row', f.read())
+
+			with open('templates/Table.xml') as f:
+				self.table = Template('Table', f.read())
+
 			self.args = {
 				"Row": [
 					{
@@ -26,7 +28,7 @@ class table(Benchmark):
 					for y in range(height)
 				]
 			}
-	
+
 	def run(self, **kwargs):
 		self.table(self.args)
 

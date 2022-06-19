@@ -72,7 +72,7 @@ void render_(
 	int template_name_length,
 	char **output_end,
 	int depth,
-	int *buffer_size,
+	size_t *buffer_size,
 	Other *other,
 	int *other_size,
 	char *name_buffer,
@@ -87,6 +87,12 @@ void render_(
 		memcpy(render_result->message, template_name, template_name_length);
 		render_result->message[template_name_length] = 0;
 		return;
+	}
+
+	if (!depth) {
+		buffer_size = &template->buffer_size;
+		render_result->result = malloc(sizeof(char) * (*buffer_size));
+		*output_end = render_result->result;
 	}
 
 	char *p = template->text;
@@ -297,6 +303,7 @@ void render_(
 	if (!depth) {
 		**output_end = 0;
 	}
+
 };
 
 
@@ -306,15 +313,14 @@ static PyObject *render (
 ) {
 
 	char *name;
-	int buffer_size;
 	PyObject *params;
-	
-	if (!PyArg_ParseTuple(args, "siO!", &name, &buffer_size, &PyDict_Type, &params))
+
+	if (!PyArg_ParseTuple(args, "sO!", &name, &PyDict_Type, &params))
 		return NULL;
 
 	RenderResult render_result;
 	render_result.message = NULL;
-	render_result.result = malloc(sizeof(char) * buffer_size);
+	render_result.result = NULL;
 
 	int other_size = 16;
 	Other *other = malloc(sizeof(Other) * other_size);
@@ -322,15 +328,15 @@ static PyObject *render (
 	int name_buffer_size = 128;
 	char *name_buffer = malloc(sizeof(char) * name_buffer_size);
 
-	char *_output_end = render_result.result;
+	char *output_end = NULL;
 
 	render_(
 		&render_result,
 		name,
 		strlen(name),
-		&_output_end,
+		&output_end,
 		0,
-		&buffer_size,
+		NULL,
 		other,
 		&other_size,
 		name_buffer,
@@ -347,9 +353,6 @@ static PyObject *render (
 		return NULL;
 	}
 
-	PyObject *t = PyTuple_New(2);
-	PyTuple_SetItem(t, 0, PyUnicode_FromStringAndSize(render_result.result, _output_end-render_result.result));
-	PyTuple_SetItem(t, 1, PyLong_FromLong(buffer_size));
-	return t;
+	return PyUnicode_FromStringAndSize(render_result.result, output_end-render_result.result);
 
 }

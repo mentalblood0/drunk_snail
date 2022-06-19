@@ -40,8 +40,6 @@ class _Template:
 		if source != self.source:
 			self.source = source
 
-		print(f'reload {self.name} from {source} == {self.source.get()}')
-
 		drunk_snail_c.removeTemplate(self.name)
 
 		text = self.source.get()

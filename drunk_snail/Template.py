@@ -24,45 +24,36 @@ class Template:
 		return result
 
 
+@pydantic.dataclasses.dataclass(config=type('Config', tuple(), {'arbitrary_types_allowed': True}))
 class _Template:
 
-	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
-	def __init__(self, name: str, source: Source):
+	name: str
+	source: Source
+	buffer_size: int = 1
 
-		self._name = name
-		self._source = source
-		self._buffer_size = 1
-
-		self.reload(source)
+	def __post_init__(self):
+		self.reload(self.source)
 
 	@pydantic.validate_arguments(config={'arbitrary_types_allowed': True})
 	def reload(self, source: Source = None) -> None:
 
 		if source != self.source:
-			self._source = source
+			self.source = source
 
 		print(f'reload {self.name} from {source} == {self.source.get()}')
 
 		drunk_snail_c.removeTemplate(self.name)
 
 		text = self.source.get()
-		self._buffer_size = len(text)
+		self.buffer_size = len(text)
 		drunk_snail_c.addTemplate(self.name, text)
-
-	@property
-	def name(self) -> str:
-		return self._name
-
-	@property
-	def source(self) -> Source:
-		return self._source
 
 	@property
 	def text(self) -> str:
 		return drunk_snail_c.getTemplate(self.name)
 
 	def __call__(self, parameters: dict = None) -> str:
-		result, self._buffer_size = drunk_snail_c.render(self.name, self._buffer_size, parameters or {})
+		result, self.buffer_size = drunk_snail_c.render(self.name, self.buffer_size, parameters or {})
 		return result
 
 	def __repr__(self) -> str:

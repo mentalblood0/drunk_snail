@@ -106,20 +106,18 @@ pip install git+https://github.com/MentalBlood/drunk_snail
 
 ```python
 from drunk_snail import Template
-from drunk_snail.sources import StringSource
 
 
-Template('Row', StringSource(
+Template('Row',
     '<tr>\n'
-    '    <td><!-- (param)cell --></td>\n'
+    '	<td><!-- (strict)(param)cell --></td>\n'
     '</tr>\n'
-))
-
-table = Template('Table', StringSource(
+)
+table = Template('Table',
     '<table>\n'
-    '    <!-- (ref)Row -->\n'
+    '	<!-- (strict)(ref)Row -->\n'
     '</table>\n'
-))
+)
 
 width = 10
 height = 1000
@@ -184,19 +182,15 @@ template = (line delimeter)* (line - zlen)?
 Template(
     self,
     name: str,
-    source: Source
+    _text: str = None
 )
 
+Template.name: str
 Template.text -> str
-Template.source -> str
-Template.name -> str
-
-Template.reload(self, source: Source = None) -> int
-Template.delete(self) -> None
 
 Template.__len__(self) -> int
-Template.__eq__(self, other: _Template) -> bool
-Template.__call__(self, parameters: dict) -> str
+Template.__eq__(self, other: Any) -> bool
+Template.__call__(self, parameters: dict = None) -> str
 ```
 
 

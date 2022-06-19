@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pydantic
 import dataclasses
+from typing import Any
 
 import drunk_snail_c
 
@@ -14,11 +15,11 @@ import drunk_snail_c
 class Template:
 
 	name: str
-	text: dataclasses.InitVar[str] = None
+	_text: dataclasses.InitVar[str] = None
 
-	def __post_init__(self, text):
-		if type(text) == str:
-			drunk_snail_c.addTemplate(self.name, text)
+	def __post_init__(self, _text):
+		if type(_text) == str:
+			drunk_snail_c.addTemplate(self.name, _text)
 
 	@property
 	def text(self) -> str:
@@ -36,7 +37,7 @@ class Template:
 	def __len__(self) -> int:
 		return len(self.text)
 
-	def __eq__(self, other) -> bool:
+	def __eq__(self, other: Any) -> bool:
 		return (
 			isinstance(other, self.__class__)
 			and (hash(self) == hash(other))

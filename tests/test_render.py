@@ -17,7 +17,7 @@ def param_value():
 
 @pytest.fixture
 def param_values():
-	return [str(i) for i in range(16)]
+	return [str(i) for i in range(18)]
 
 
 @pytest.fixture

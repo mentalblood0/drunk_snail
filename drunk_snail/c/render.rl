@@ -77,6 +77,7 @@ void render_(
 	int *other_size,
 	char **name_buffer,
 	int *name_buffer_size,
+	int subarrays_length,
 	PyObject *params
 )
 {
@@ -107,7 +108,6 @@ void render_(
 	PyObject *item;
 
 	int i;
-	int subarrays_length;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
@@ -217,6 +217,7 @@ void render_(
 									other_size,
 									name_buffer,
 									name_buffer_size,
+									subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
 									PyList_GetItem(ref_values, j)
 								);
 							}
@@ -232,6 +233,7 @@ void render_(
 								other_size,
 								name_buffer,
 								name_buffer_size,
+								subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
 								ref_values
 							);
 						}
@@ -247,6 +249,7 @@ void render_(
 							other_size,
 							name_buffer,
 							name_buffer_size,
+							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
 							empty_dict
 						);
 					}
@@ -342,6 +345,7 @@ static PyObject *render (
 		&other_size,
 		&name_buffer,
 		&name_buffer_size,
+		0,
 		params
 	);
 

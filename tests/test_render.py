@@ -1,71 +1,64 @@
 import pytest
 
-from drunk_snail import Template
+from drunk_snail_c import render, addTemplate
+
+from .common import render_lambda
 
 
+@pytest.fixture
+def param_name():
+	return 'x'
 
-def test_basic():
-	
-	assert Template(
-		'test_render_basic', 
-		'<!-- (param)x -->'
-	)({
-		'x': 'lalala'
-	}) == 'lalala\n'
 
-	assert Template(
-		'test_render_basic', 
-		'<!-- (param)x -->\n'
-	)({
-		'x': 'lalala'
-	}) == 'lalala\n'
+@pytest.fixture
+def param_value():
+	return 'lalala'
 
-	assert Template(
-		'test_render_basic', 
-		'lalala'
-	)() == 'lalala\n'
+
+@pytest.fixture
+def param_values():
+	return [str(i) for i in range(16)]
+
+
+@pytest.fixture
+def params_one(param_name, param_value):
+	return {param_name: param_value}
+
+
+@pytest.fixture
+def params_list(param_name, param_values):
+	return {param_name: param_values}
+
+
+def test_basic(param_name, param_value, params_one):
+
+	assert render_lambda(f'<!-- (param){param_name} -->', params_one) == f'{param_value}\n'
+	assert render_lambda(f'<!-- (param){param_name} -->\n', params_one) == f'{param_value}\n'
+	assert render_lambda(f'{param_value}') == f'{param_value}\n'
 
 
 def test_empty_template():
-	assert Template('test_render_empty_template', '')() == ''
+	assert render_lambda('') == ''
 
 
-def test_list():
+def test_list(param_name, param_values, params_list):
 
-	assert Template(
-		'test_render_list', 
-		'<!-- (param)some_param -->\n'
-	)({
-		'some_param': ['1', '2', '3']
-	}) == '1\n2\n3\n'
-
-	assert Template(
-		'test_render_list', 
-		'<!-- (param)some_param -->'
-	)({
-		'some_param': ['1', '2', '3']
-	}) == '1\n2\n3\n'
+	assert render_lambda(f'<!-- (param){param_name} -->', params_list) == ''.join([f'{i}\n' for i in param_values])
+	assert render_lambda(f'<!-- (param){param_name} -->\n', params_list) == ''.join([f'{i}\n' for i in param_values])
 
 
 def test_ref():
 
-	Template(
-		'addition', 
-		'Nice to <!-- (param)action --> you'
-	)
-	t = Template(
-		'greeting', 
-		'Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n'
-	)
-	
-	assert t({
+	addTemplate('addition', 'Nice to <!-- (param)action --> you')
+	addTemplate('greeting', 'Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n')
+
+	assert render('greeting', {
 		'name': 'username',
 		'addition': {
 			'action': 'eat'
 		}
 	}) == 'Hello, username!\nNice to eat you!\n'
-
-	assert Template('greeting')({
+	assert render('greeting', {
 		'name': 'username',
 		'addition': [{
 			'action': 'meet'
@@ -75,75 +68,59 @@ def test_ref():
 	}) == 'Hello, username!\nNice to meet you!\nNice to eat you!\n'
 
 
-def test_consicutive_lines():
+def test_consicutive_lines(number=2):
 
-	Template(
-		'test_consicutive_lines_1',
-		'a'
+	for i in range(number):
+		addTemplate(f'test_consicutive_lines_{i}', str(i))
+	
+	render_lambda(
+		''.join(
+			f'\t<!-- (ref)test_consicutive_lines_{i} -->\n'
+			for i in range(number)
+		),
+		{}
+	) == ''.join(
+		f'\t{i}\n'
+		for i in range(number)
 	)
-	Template(
-		'test_consicutive_lines_2',
-		'b'
-	)
-	t = Template(
-		'test_consicutive_lines_3',
-		'\t<!-- (optional)(ref)test_consicutive_lines_1 -->\n'
-		'\t<!-- (optional)(ref)test_consicutive_lines_2 -->\n'
-	)
-
-	assert t({
-		'test_consicutive_lines_1': {},
-		'test_consicutive_lines_2': {}
-	}) == '\ta\n\tb\n'
 
 
 def test_optional_param():
-	assert Template(
-		'test_optional_param',
-		'<!-- (optional)(param)a -->'
-	)() == ''
+	assert render_lambda('<!-- (optional)(param)a -->') == ''
 
 
 def test_optional_ref():
 
-	Template(
-		'test_optional_ref_1',
-		'lalala'
-	)
-	t = Template(
-		'test_optional_ref_2',
-		'<!-- (optional)(ref)test_optional_ref_1 -->'
-	)
-	
-	assert t() == ''
-	
-	assert t({
-		'test_optional_ref_1': [None]
-	}) == 'lalala\n'
+	addTemplate('test_optional_ref_1', 'lalala')
+	assert render_lambda('<!-- (optional)(ref)test_optional_ref_1 -->') == ''
+	assert render_lambda(
+		'<!-- (optional)(ref)test_optional_ref_1 -->',
+		{
+			'test_optional_ref_1': [None]
+		}
+	) == 'lalala\n'
 
 
 def test_table():
 
-	Template('Row',
+	addTemplate('Row',
 		'<tr>\n'
 		'	<td><!-- (strict)(param)cell --></td>\n'
 		'</tr>\n'
 	)
-	table = Template('Table',
+	
+	assert render_lambda(
 		'<table>\n'
 		'	<!-- (strict)(ref)Row -->\n'
-		'</table>\n'
-	)
-
-	args = {
-		"Row": [
-			{"cell": ["1.1", "2.1", "3.1"]},
-			{"cell": ["1.2", "2.2", "3.2"]},
-			{"cell": ["1.3", "2.3", "3.3"]}
-		]
-	}
-
-	assert table(args) == (
+		'</table>\n',
+		{
+			"Row": [
+				{"cell": ["1.1", "2.1", "3.1"]},
+				{"cell": ["1.2", "2.2", "3.2"]},
+				{"cell": ["1.3", "2.3", "3.3"]}
+			]
+		}
+	) == (
 		'<table>\n'
 		'	<tr>\n'
 		'		<td>1.1</td>\n'
@@ -164,56 +141,18 @@ def test_table():
 	)
 
 
-def test_other_deep_inject():
+def test_other_deep_inject(param_values):
 
-	Template('test_other_deep_inject_a', 'a')
-	Template('test_other_deep_inject_b', 'b<!-- (ref)test_other_deep_inject_a -->b')
-	Template('test_other_deep_inject_c', 'c<!-- (ref)test_other_deep_inject_b -->c')
-	d = Template('test_other_deep_inject_d', 'd<!-- (ref)test_other_deep_inject_c -->d')
+	for name in param_values[:1]:
+		addTemplate(f'test_other_deep_inject_{name}', name)
 
-	assert d({
-		'test_other_deep_inject_b': {
-			'test_other_deep_inject_b': {
-				'test_other_deep_inject_a': {}
-			}
-		}
-	}) == 'dcbabcd\n'
+	for i, name in enumerate(param_values[1:]):
+		addTemplate(
+			f'test_other_deep_inject_{name}',
+			f'{name}<!-- (ref)test_other_deep_inject_{param_values[i]} -->{name}'
+		)
 
-
-def test_endpoint_template():
-
-	t = Template('test_compile_endpoint_template', 
-		'from ..common import *\n'
-		'\n'
-		'\n'
-		'\n'
-		'@route(\n'
-		'	None, \n'
-		"	'<!-- (param)route_to -->', \n"
-		'	methods=<!-- (param)methods -->\n'
-		')\n'
-		'def <!-- (param)handler_name -->(\n'
-		'	<!-- (param)handler_args -->\n'
-		'):\n'
-		'	return Response(status=200)'
-	)
-
-	assert t({
-		'route_to': 'route_to',
-		'methods': 'methods',
-		'handler_name': 'handler_name',
-		'handler_args': ', '.join(['a', 'b'])
-	}) == """from ..common import *
-
-
-
-@route(
-	None, 
-	'route_to', 
-	methods=methods
-)
-def handler_name(
-	a, b
-):
-	return Response(status=200)
-"""
+	assert render(
+		f'test_other_deep_inject_{param_values[-1]}',
+		{}
+	) == f"{''.join(reversed(param_values))[:-1]}{''.join(param_values)}\n"

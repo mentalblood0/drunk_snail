@@ -1,44 +1,39 @@
 import pytest
 
 from drunk_snail import Template
+from drunk_snail_c import addTemplate, render
+
+from .common import render_lambda
 
 
 
 def test_nonexistent_template():
 	with pytest.raises(KeyError):
-		Template('test_nonexistent_template', '<!-- (ref)something -->')()
+		render_lambda('<!-- (ref)something -->')
 
 
 def test_buf_overflow():
-
-	Template(
-		'test_buf_overflow_1', 
-		' ' * 1000
-	)
-
-	assert Template(
-		'test_buf_overflow_2', 
-		'<!-- (ref)test_buf_overflow_1 -->'
-	)()
+	assert render_lambda(' ' * 1000)
 
 
 def test_cyrillic_source():
-	assert Template('test_render_cyrillic', 'ляляля')() == 'ляляля\n'
+	assert render_lambda('ляляля') == 'ляляля\n'
 
 
 def test_cyrillic_name():
-	assert Template('тест_сириллик_нейм', 'lalala')() == 'lalala\n'
+	addTemplate('тест_кириллик_нейм', 'lalala')
+	assert render('тест_кириллик_нейм', {}) == 'lalala\n'
 
 
 def test_backslash():
-	assert Template('test_backslash', '\\')() == '\\\n'
+	assert render_lambda('\\') == '\\\n'
 
 
 def test_quote():
-	assert Template('test_quote', '\'')() == '\'\n'
+	assert render_lambda('\'') == '\'\n'
 
 
 def test_brackets():
-	assert Template('test_brackets', '{<!-- (param)x -->}')({
+	assert render_lambda('{<!-- (param)x -->}', {
 		'x': 'lalala'
 	}) == '{lalala}\n'

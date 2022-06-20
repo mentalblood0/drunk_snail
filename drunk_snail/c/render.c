@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 
-#line 10 "output.c"
+#line 10 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 static const int render_start = 0;
 static const int render_first_final = 0;
 static const int render_error = -1;
@@ -20,59 +20,49 @@ static const int render_en_main = 0;
 
 
 #define render__empty(target, LINE, LINE_length) {\
-	while ((*target - render_result->result) + (0+0+LINE_length+0+1+1) + subarrays_length >= *buffer_size) {\
+	while ((*target - render_result->result) + (LINE_length+1+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - render_result->result);\
 		render_result->result = new_result;\
 	}\
-	memcpy(*target, "", 0); *target += 0;\
 	for (i = 0; i < depth; i++) {\
 		memcpy(*target, (*other)[i].left.start, (*other)[i].left.length); *target += (*other)[i].left.length;\
 	}\
-	memcpy(*target, "", 0); *target += 0;\
 	memcpy(*target, LINE, LINE_length); *target += LINE_length;\
-	memcpy(*target, "", 0); *target += 0;\
 	for (i = depth-1; i >= 0; i--) {\
 		memcpy(*target, (*other)[i].right.start, (*other)[i].right.length); *target += (*other)[i].right.length;\
 	}\
-	memcpy(*target, "\n", 1); *target += 1;\
+	memcpy(*target, "", 1); *target += 1;\
 };
 
 #define render__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
-	while ((*target - render_result->result) + (0+OTHER_LEFT_length+0+ARG_length+0+OTHER_RIGHT_length+0+1) + subarrays_length >= *buffer_size) {\
+	while ((*target - render_result->result) + (OTHER_LEFT_length+ARG_length+OTHER_RIGHT_length+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - render_result->result);\
 		render_result->result = new_result;\
 	}\
-	memcpy(*target, "", 0); *target += 0;\
 	memcpy(*target, OTHER_LEFT, OTHER_LEFT_length); *target += OTHER_LEFT_length;\
-	memcpy(*target, "", 0); *target += 0;\
 	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
-	memcpy(*target, "", 0); *target += 0;\
 	memcpy(*target, OTHER_RIGHT, OTHER_RIGHT_length); *target += OTHER_RIGHT_length;\
-	memcpy(*target, "", 0); *target += 0;\
 };
 
 #define render__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
-	while ((*target - render_result->result) + (0+0+0+OTHER_LEFT_length+0+ARG_length+0+OTHER_RIGHT_length+0+0+1+1) + subarrays_length >= *buffer_size) {\
+	while ((*target - render_result->result) + (OTHER_LEFT_length+ARG_length+OTHER_RIGHT_length+1+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - render_result->result);\
 		render_result->result = new_result;\
 	}\
-	memcpy(*target, "", 0); *target += 0;\
 	for (i = 0; i < depth; i++) {\
 		memcpy(*target, (*other)[i].left.start, (*other)[i].left.length); *target += (*other)[i].left.length;\
 	}\
-	memcpy(*target, "", 0); *target += 0;\
 	render__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length);\
-	memcpy(*target, "", 0); *target += 0;\
 	for (i = depth-1; i >= 0; i--) {\
 		memcpy(*target, (*other)[i].right.start, (*other)[i].right.length); *target += (*other)[i].right.length;\
 	}\
-	memcpy(*target, "\n", 1); *target += 1;\
+	memcpy(*target, "", 1); *target += 1;\
 };
 
 
@@ -170,21 +160,21 @@ void render_(
 	reset_line_properties();
 
 	
-#line 174 "output.c"
+#line 164 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	{
 	cs = render_start;
 	}
 
-#line 179 "output.c"
+#line 169 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-#line 165 "input_preprocessed.rl"
+#line 155 "input_preprocessed.rl"
 	{ start_line = p; }
-#line 166 "input_preprocessed.rl"
+#line 156 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -331,7 +321,7 @@ tr1:
 		}
 	goto st0;
 tr4:
-#line 166 "input_preprocessed.rl"
+#line 156 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -478,9 +468,9 @@ tr4:
 		}
 	goto st0;
 tr32:
-#line 323 "input_preprocessed.rl"
+#line 313 "input_preprocessed.rl"
 	{ end_expression = p; }
-#line 166 "input_preprocessed.rl"
+#line 156 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -630,60 +620,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-#line 634 "output.c"
+#line 624 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-#line 165 "input_preprocessed.rl"
+#line 155 "input_preprocessed.rl"
 	{ start_line = p; }
 	goto st1;
 tr31:
-#line 323 "input_preprocessed.rl"
+#line 313 "input_preprocessed.rl"
 	{ end_expression = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-#line 652 "output.c"
+#line 642 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-#line 165 "input_preprocessed.rl"
+#line 155 "input_preprocessed.rl"
 	{ start_line = p; }
-#line 319 "input_preprocessed.rl"
+#line 309 "input_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr5:
-#line 319 "input_preprocessed.rl"
+#line 309 "input_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr33:
-#line 319 "input_preprocessed.rl"
+#line 309 "input_preprocessed.rl"
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
-#line 323 "input_preprocessed.rl"
+#line 313 "input_preprocessed.rl"
 	{ end_expression = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-#line 687 "output.c"
+#line 677 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -722,26 +712,26 @@ case 5:
 	}
 	goto st1;
 tr22:
-#line 313 "input_preprocessed.rl"
+#line 303 "input_preprocessed.rl"
 	{ optional = true; }
 	goto st6;
 tr39:
-#line 311 "input_preprocessed.rl"
+#line 301 "input_preprocessed.rl"
 	{ action_type = ACTION_PARAM; }
 	goto st6;
 tr44:
-#line 312 "input_preprocessed.rl"
+#line 302 "input_preprocessed.rl"
 	{ action_type = ACTION_REF; }
 	goto st6;
 tr52:
-#line 314 "input_preprocessed.rl"
+#line 304 "input_preprocessed.rl"
 	{ strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-#line 745 "output.c"
+#line 735 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -848,34 +838,34 @@ case 15:
 		goto tr23;
 	goto st1;
 tr23:
-#line 313 "input_preprocessed.rl"
+#line 303 "input_preprocessed.rl"
 	{ optional = true; }
-#line 316 "input_preprocessed.rl"
+#line 306 "input_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 tr40:
-#line 311 "input_preprocessed.rl"
+#line 301 "input_preprocessed.rl"
 	{ action_type = ACTION_PARAM; }
-#line 316 "input_preprocessed.rl"
+#line 306 "input_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 tr45:
-#line 312 "input_preprocessed.rl"
+#line 302 "input_preprocessed.rl"
 	{ action_type = ACTION_REF; }
-#line 316 "input_preprocessed.rl"
+#line 306 "input_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 tr53:
-#line 314 "input_preprocessed.rl"
+#line 304 "input_preprocessed.rl"
 	{ strict = true; }
-#line 316 "input_preprocessed.rl"
+#line 306 "input_preprocessed.rl"
 	{ name_start = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-#line 879 "output.c"
+#line 869 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr24;
@@ -893,14 +883,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr24:
-#line 317 "input_preprocessed.rl"
+#line 307 "input_preprocessed.rl"
 	{ name_end = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-#line 904 "output.c"
+#line 894 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -909,14 +899,14 @@ case 17:
 	}
 	goto st1;
 tr25:
-#line 317 "input_preprocessed.rl"
+#line 307 "input_preprocessed.rl"
 	{ name_end = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-#line 920 "output.c"
+#line 910 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -1210,7 +1200,7 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
-#line 166 "input_preprocessed.rl"
+#line 156 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -1357,9 +1347,9 @@ case 37:
 		}
 	break;
 	case 20: 
-#line 323 "input_preprocessed.rl"
+#line 313 "input_preprocessed.rl"
 	{ end_expression = p; }
-#line 166 "input_preprocessed.rl"
+#line 156 "input_preprocessed.rl"
 	{
 
 			end_line = p;
@@ -1505,13 +1495,13 @@ case 37:
 
 		}
 	break;
-#line 1509 "output.c"
+#line 1499 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
 	}
 	}
 
 	}
 
-#line 347 "input_preprocessed.rl"
+#line 337 "input_preprocessed.rl"
 
 
 	if (!depth) {

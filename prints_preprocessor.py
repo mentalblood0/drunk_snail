@@ -75,7 +75,7 @@ def compilePrint(expression, name=None, defined=None):
 	for e in parsed:
 
 		if e['type'] == 'raw':
-			if not len(e['s']):
+			if not len(raw_strings[strings_copied]):
 				continue
 			cpy_definition_list.append(
 				f'\tmemcpy(*target, {json.dumps(raw_strings[strings_copied])}, {len(e["s"])}); *target += {len(e["s"])};'

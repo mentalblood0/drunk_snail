@@ -72,7 +72,6 @@ def compilePrint(expression, name=None, defined=None):
 	cpy_definition_list = []
 	lengths_copied = []
 	strings_copied = 0
-	subarrays_lengths_summing = []
 	for e in parsed:
 
 		if e['type'] == 'raw':
@@ -182,20 +181,8 @@ def compilePrint(expression, name=None, defined=None):
 				f'\t}}'
 			]
 
-			subarrays_lengths_summing += [
-				f'\tfor (i = 0; i < {length}; i++) {{'
-				if direction == '+'
-				else f'\tfor (i = {length}-1; i >= 0; i--) {{',
-				f'\t\tsubarrays_length += {m}[i]{path_to_substring}.length;',
-				f'\t}}'
-			]
-
-	subarrays_lengths_summing = [
-		f'\tsubarrays_length = 0;'
-	] + subarrays_lengths_summing
-
 	lengths_sum = '+'.join([str(n) for n in lengths_copied + [1]])
-	cpy_definition_list = subarrays_lengths_summing + [
+	cpy_definition_list = [
 		f'\twhile ((*target - render_result->result) + ({lengths_sum}) + subarrays_length >= *buffer_size) {{',
 		f'\t\t(*buffer_size) *= 2;',
 		f'\t\tnew_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));',

@@ -1,12 +1,12 @@
 
-#line 1 "input_preprocessed.rl"
+/* #line 1 "compileComprehension_preprocessed.rl" */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 
-#line 10 "output.c"
+/* #line 10 "compileComprehension.c" */
 static const int render_start = 0;
 static const int render_first_final = 0;
 static const int render_error = -1;
@@ -14,13 +14,20 @@ static const int render_error = -1;
 static const int render_en_main = 0;
 
 
-#line 9 "input_preprocessed.rl"
+/* #line 9 "compileComprehension_preprocessed.rl" */
 
 
 
 
 #define render__empty(target, LINE, LINE_length) {\
-	while ((*target - render_result->result) + (0+0+LINE_length+0+1+1) >= *buffer_size) {\
+	subarrays_length = 0;\
+	for (i = 0; i < depth; i++) {\
+		subarrays_length += (*other)[i].left.length;\
+	}\
+	for (i = depth-1; i >= 0; i--) {\
+		subarrays_length += (*other)[i].right.length;\
+	}\
+	while ((*target - render_result->result) + (0+0+LINE_length+0+1+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - render_result->result);\
@@ -28,19 +35,20 @@ static const int render_en_main = 0;
 	}\
 	memcpy(*target, "", 0); *target += 0;\
 	for (i = 0; i < depth; i++) {\
-		memcpy(*target, other[i].left.start, other[i].left.length); *target += other[i].left.length;\
+		memcpy(*target, (*other)[i].left.start, (*other)[i].left.length); *target += (*other)[i].left.length;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
 	memcpy(*target, LINE, LINE_length); *target += LINE_length;\
 	memcpy(*target, "", 0); *target += 0;\
 	for (i = depth-1; i >= 0; i--) {\
-		memcpy(*target, other[i].right.start, other[i].right.length); *target += other[i].right.length;\
+		memcpy(*target, (*other)[i].right.start, (*other)[i].right.length); *target += (*other)[i].right.length;\
 	}\
 	memcpy(*target, "\n", 1); *target += 1;\
 };
 
 #define render__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
-	while ((*target - render_result->result) + (0+OTHER_LEFT_length+0+ARG_length+0+OTHER_RIGHT_length+0+1) >= *buffer_size) {\
+	subarrays_length = 0;\
+	while ((*target - render_result->result) + (0+OTHER_LEFT_length+0+ARG_length+0+OTHER_RIGHT_length+0+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - render_result->result);\
@@ -56,7 +64,14 @@ static const int render_en_main = 0;
 };
 
 #define render__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
-	while ((*target - render_result->result) + (0+0+0+OTHER_LEFT_length+0+ARG_length+0+OTHER_RIGHT_length+0+0+1+1) >= *buffer_size) {\
+	subarrays_length = 0;\
+	for (i = 0; i < depth; i++) {\
+		subarrays_length += (*other)[i].left.length;\
+	}\
+	for (i = depth-1; i >= 0; i--) {\
+		subarrays_length += (*other)[i].right.length;\
+	}\
+	while ((*target - render_result->result) + (0+0+0+OTHER_LEFT_length+0+ARG_length+0+OTHER_RIGHT_length+0+0+1+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
 		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
 		*target = new_result + (*target - render_result->result);\
@@ -64,13 +79,13 @@ static const int render_en_main = 0;
 	}\
 	memcpy(*target, "", 0); *target += 0;\
 	for (i = 0; i < depth; i++) {\
-		memcpy(*target, other[i].left.start, other[i].left.length); *target += other[i].left.length;\
+		memcpy(*target, (*other)[i].left.start, (*other)[i].left.length); *target += (*other)[i].left.length;\
 	}\
 	memcpy(*target, "", 0); *target += 0;\
 	render__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length);\
 	memcpy(*target, "", 0); *target += 0;\
 	for (i = depth-1; i >= 0; i--) {\
-		memcpy(*target, other[i].right.start, other[i].right.length); *target += other[i].right.length;\
+		memcpy(*target, (*other)[i].right.start, (*other)[i].right.length); *target += (*other)[i].right.length;\
 	}\
 	memcpy(*target, "\n", 1); *target += 1;\
 };
@@ -124,9 +139,9 @@ void render_(
 	char **output_end,
 	int depth,
 	size_t *buffer_size,
-	Other *other,
+	Other **other,
 	int *other_size,
-	char *name_buffer,
+	char **name_buffer,
 	int *name_buffer_size,
 	PyObject *params
 )
@@ -158,6 +173,7 @@ void render_(
 	PyObject *item;
 
 	int i;
+	int subarrays_length;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
@@ -169,21 +185,21 @@ void render_(
 	reset_line_properties();
 
 	
-#line 173 "output.c"
+/* #line 189 "compileComprehension.c" */
 	{
 	cs = render_start;
 	}
 
-#line 178 "output.c"
+/* #line 194 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-#line 164 "input_preprocessed.rl"
+/* #line 180 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
-#line 165 "input_preprocessed.rl"
+/* #line 181 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -192,14 +208,14 @@ tr1:
 
 				if (action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					param_values = PyDict_GetItemString(params, name_buffer);
+					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
@@ -249,22 +265,22 @@ tr1:
 				else if (action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
-						*other_size *= 2;
-						other = realloc(other, sizeof(other) * (*other_size));
+						*other_size = depth * 2;
+						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					other[depth].left.start = start_line;
-					other[depth].left.length = start_expression - start_line;
-					other[depth].right.start = end_expression;
-					other[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = start_line;
+					(*other)[depth].left.length = start_expression - start_line;
+					(*other)[depth].right.start = end_expression;
+					(*other)[depth].right.length = end_line - end_expression;
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					ref_values = PyDict_GetItemString(params, name_buffer);
+					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
 						if (strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
@@ -327,7 +343,7 @@ tr1:
 		}
 	goto st0;
 tr4:
-#line 165 "input_preprocessed.rl"
+/* #line 181 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -336,14 +352,14 @@ tr4:
 
 				if (action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					param_values = PyDict_GetItemString(params, name_buffer);
+					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
@@ -393,22 +409,22 @@ tr4:
 				else if (action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
-						*other_size *= 2;
-						other = realloc(other, sizeof(other) * (*other_size));
+						*other_size = depth * 2;
+						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					other[depth].left.start = start_line;
-					other[depth].left.length = start_expression - start_line;
-					other[depth].right.start = end_expression;
-					other[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = start_line;
+					(*other)[depth].left.length = start_expression - start_line;
+					(*other)[depth].right.start = end_expression;
+					(*other)[depth].right.length = end_line - end_expression;
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					ref_values = PyDict_GetItemString(params, name_buffer);
+					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
 						if (strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
@@ -471,9 +487,9 @@ tr4:
 		}
 	goto st0;
 tr32:
-#line 319 "input_preprocessed.rl"
+/* #line 335 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
-#line 165 "input_preprocessed.rl"
+/* #line 181 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -482,14 +498,14 @@ tr32:
 
 				if (action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					param_values = PyDict_GetItemString(params, name_buffer);
+					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
@@ -539,22 +555,22 @@ tr32:
 				else if (action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
-						*other_size *= 2;
-						other = realloc(other, sizeof(other) * (*other_size));
+						*other_size = depth * 2;
+						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					other[depth].left.start = start_line;
-					other[depth].left.length = start_expression - start_line;
-					other[depth].right.start = end_expression;
-					other[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = start_line;
+					(*other)[depth].left.length = start_expression - start_line;
+					(*other)[depth].right.start = end_expression;
+					(*other)[depth].right.length = end_line - end_expression;
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					ref_values = PyDict_GetItemString(params, name_buffer);
+					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
 						if (strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
@@ -620,60 +636,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-#line 624 "output.c"
+/* #line 640 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-#line 164 "input_preprocessed.rl"
+/* #line 180 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
 	goto st1;
 tr31:
-#line 319 "input_preprocessed.rl"
+/* #line 335 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-#line 642 "output.c"
+/* #line 658 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-#line 164 "input_preprocessed.rl"
+/* #line 180 "compileComprehension_preprocessed.rl" */
 	{ start_line = p; }
-#line 315 "input_preprocessed.rl"
+/* #line 331 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr5:
-#line 315 "input_preprocessed.rl"
+/* #line 331 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
 	goto st2;
 tr33:
-#line 315 "input_preprocessed.rl"
+/* #line 331 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(start_expression && name_end))
 				start_expression = p;
 		}
-#line 319 "input_preprocessed.rl"
+/* #line 335 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-#line 677 "output.c"
+/* #line 693 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -712,26 +728,26 @@ case 5:
 	}
 	goto st1;
 tr22:
-#line 309 "input_preprocessed.rl"
+/* #line 325 "compileComprehension_preprocessed.rl" */
 	{ optional = true; }
 	goto st6;
 tr39:
-#line 307 "input_preprocessed.rl"
+/* #line 323 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_PARAM; }
 	goto st6;
 tr44:
-#line 308 "input_preprocessed.rl"
+/* #line 324 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_REF; }
 	goto st6;
 tr52:
-#line 310 "input_preprocessed.rl"
+/* #line 326 "compileComprehension_preprocessed.rl" */
 	{ strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-#line 735 "output.c"
+/* #line 751 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -838,34 +854,34 @@ case 15:
 		goto tr23;
 	goto st1;
 tr23:
-#line 309 "input_preprocessed.rl"
+/* #line 325 "compileComprehension_preprocessed.rl" */
 	{ optional = true; }
-#line 312 "input_preprocessed.rl"
+/* #line 328 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr40:
-#line 307 "input_preprocessed.rl"
+/* #line 323 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_PARAM; }
-#line 312 "input_preprocessed.rl"
+/* #line 328 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr45:
-#line 308 "input_preprocessed.rl"
+/* #line 324 "compileComprehension_preprocessed.rl" */
 	{ action_type = ACTION_REF; }
-#line 312 "input_preprocessed.rl"
+/* #line 328 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 tr53:
-#line 310 "input_preprocessed.rl"
+/* #line 326 "compileComprehension_preprocessed.rl" */
 	{ strict = true; }
-#line 312 "input_preprocessed.rl"
+/* #line 328 "compileComprehension_preprocessed.rl" */
 	{ name_start = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-#line 869 "output.c"
+/* #line 885 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr24;
@@ -883,14 +899,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr24:
-#line 313 "input_preprocessed.rl"
+/* #line 329 "compileComprehension_preprocessed.rl" */
 	{ name_end = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-#line 894 "output.c"
+/* #line 910 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -899,14 +915,14 @@ case 17:
 	}
 	goto st1;
 tr25:
-#line 313 "input_preprocessed.rl"
+/* #line 329 "compileComprehension_preprocessed.rl" */
 	{ name_end = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-#line 910 "output.c"
+/* #line 926 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -1200,7 +1216,7 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
-#line 165 "input_preprocessed.rl"
+/* #line 181 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -1209,14 +1225,14 @@ case 37:
 
 				if (action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					param_values = PyDict_GetItemString(params, name_buffer);
+					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
@@ -1266,22 +1282,22 @@ case 37:
 				else if (action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
-						*other_size *= 2;
-						other = realloc(other, sizeof(other) * (*other_size));
+						*other_size = depth * 2;
+						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					other[depth].left.start = start_line;
-					other[depth].left.length = start_expression - start_line;
-					other[depth].right.start = end_expression;
-					other[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = start_line;
+					(*other)[depth].left.length = start_expression - start_line;
+					(*other)[depth].right.start = end_expression;
+					(*other)[depth].right.length = end_line - end_expression;
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					ref_values = PyDict_GetItemString(params, name_buffer);
+					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
 						if (strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
@@ -1344,9 +1360,9 @@ case 37:
 		}
 	break;
 	case 20: 
-#line 319 "input_preprocessed.rl"
+/* #line 335 "compileComprehension_preprocessed.rl" */
 	{ end_expression = p; }
-#line 165 "input_preprocessed.rl"
+/* #line 181 "compileComprehension_preprocessed.rl" */
 	{
 
 			end_line = p;
@@ -1355,14 +1371,14 @@ case 37:
 
 				if (action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					param_values = PyDict_GetItemString(params, name_buffer);
+					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
@@ -1412,22 +1428,22 @@ case 37:
 				else if (action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
-						*other_size *= 2;
-						other = realloc(other, sizeof(other) * (*other_size));
+						*other_size = depth * 2;
+						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					other[depth].left.start = start_line;
-					other[depth].left.length = start_expression - start_line;
-					other[depth].right.start = end_expression;
-					other[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = start_line;
+					(*other)[depth].left.length = start_expression - start_line;
+					(*other)[depth].right.start = end_expression;
+					(*other)[depth].right.length = end_line - end_expression;
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					ref_values = PyDict_GetItemString(params, name_buffer);
+					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
 						if (strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
@@ -1489,13 +1505,13 @@ case 37:
 
 		}
 	break;
-#line 1493 "output.c"
+/* #line 1509 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-#line 343 "input_preprocessed.rl"
+/* #line 359 "compileComprehension_preprocessed.rl" */
 
 
 	if (!depth) {
@@ -1535,9 +1551,9 @@ static PyObject *render (
 		&output_end,
 		0,
 		NULL,
-		other,
+		&other,
 		&other_size,
-		name_buffer,
+		&name_buffer,
 		&name_buffer_size,
 		params
 	);

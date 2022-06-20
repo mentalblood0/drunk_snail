@@ -11,7 +11,7 @@
 
 
 render__empty {%
-<other[:depth].left+><LINE><other[:depth].right->
+<*other[:depth].left+><LINE><*other[:depth].right->
 
 %}
 
@@ -20,7 +20,7 @@ render__arg {%
 %}
 
 render__param {%
-<other[:depth].left+><render__arg><other[:depth].right->
+<*other[:depth].left+><render__arg><*other[:depth].right->
 
 %}
 
@@ -73,9 +73,9 @@ void render_(
 	char **output_end,
 	int depth,
 	size_t *buffer_size,
-	Other *other,
+	Other **other,
 	int *other_size,
-	char *name_buffer,
+	char **name_buffer,
 	int *name_buffer_size,
 	PyObject *params
 )
@@ -107,6 +107,7 @@ void render_(
 	PyObject *item;
 
 	int i;
+	int subarrays_length;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
@@ -128,14 +129,14 @@ void render_(
 
 				if (action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					param_values = PyDict_GetItemString(params, name_buffer);
+					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
 						if (strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
@@ -185,22 +186,22 @@ void render_(
 				else if (action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
-						*other_size *= 2;
-						other = realloc(other, sizeof(other) * (*other_size));
+						*other_size = depth * 2;
+						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					other[depth].left.start = start_line;
-					other[depth].left.length = start_expression - start_line;
-					other[depth].right.start = end_expression;
-					other[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = start_line;
+					(*other)[depth].left.length = start_expression - start_line;
+					(*other)[depth].right.start = end_expression;
+					(*other)[depth].right.length = end_line - end_expression;
 
-					if (name_end - name_start + 1 > name_buffer_size) {
+					if (name_end - name_start + 1 > *name_buffer_size) {
 						*name_buffer_size = name_end - name_start + 1;
-						name_buffer = realloc(name_buffer, sizeof(char) * (*name_buffer_size));
+						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(name_buffer, name_start, name_end - name_start);
-					name_buffer[name_end - name_start] = 0;
+					memcpy(*name_buffer, name_start, name_end - name_start);
+					(*name_buffer)[name_end - name_start] = 0;
 
-					ref_values = PyDict_GetItemString(params, name_buffer);
+					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
 						if (strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
@@ -337,9 +338,9 @@ static PyObject *render (
 		&output_end,
 		0,
 		NULL,
-		other,
+		&other,
 		&other_size,
-		name_buffer,
+		&name_buffer,
 		&name_buffer_size,
 		params
 	);

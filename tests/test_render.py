@@ -2,7 +2,7 @@ import pytest
 
 from drunk_snail_c import render, addTemplate
 
-from .common import render_lambda
+from .common import render_lambda, param_values
 
 
 @pytest.fixture
@@ -13,11 +13,6 @@ def param_name():
 @pytest.fixture
 def param_value():
 	return 'lalala'
-
-
-@pytest.fixture
-def param_values():
-	return [str(i) for i in range(18)]
 
 
 @pytest.fixture
@@ -139,20 +134,3 @@ def test_table():
 		'	</tr>\n'
 		'</table>\n'
 	)
-
-
-def test_other_deep_inject(param_values):
-
-	for name in param_values[:1]:
-		addTemplate(f'test_other_deep_inject_{name}', name)
-
-	for i, name in enumerate(param_values[1:]):
-		addTemplate(
-			f'test_other_deep_inject_{name}',
-			f'{name}<!-- (ref)test_other_deep_inject_{param_values[i]} -->{name}'
-		)
-
-	assert render(
-		f'test_other_deep_inject_{param_values[-1]}',
-		{}
-	) == f"{''.join(reversed(param_values))[:-1]}{''.join(param_values)}\n"

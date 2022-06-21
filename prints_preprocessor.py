@@ -175,13 +175,18 @@ def compilePrint(expression, name=None, defined=None):
 			if '*' in m:
 				m = f'({m})'
 
-			cpy_definition_list += [
-				f'\tfor (i = 0; i < {length}; i++) {{'
-				if direction == '+'
-				else f'\tfor (i = {length}-1; i >= 0; i--) {{',
-				f'\t\tmemcpy(*target, {m}[i]{path_to_substring}.start, {m}[i]{path_to_substring}.length); *target += {m}[i]{path_to_substring}.length;',
-				f'\t}}'
-			]
+			if direction == '+':
+				cpy_definition_list += [
+					f'\tfor (i = 0; i < {length}; i++) {{'
+					f'\t\tmemcpy(*target, {m}[i]{path_to_substring}.start, {m}[i]{path_to_substring}.length); *target += {m}[i]{path_to_substring}.length;',
+					f'\t}}'
+				]
+			else:
+				cpy_definition_list += [
+					f'\tfor (i = {length}; i > 0; i--) {{',
+					f'\t\tmemcpy(*target, {m}[i-1]{path_to_substring}.start, {m}[i-1]{path_to_substring}.length); *target += {m}[i-1]{path_to_substring}.length;',
+					f'\t}}'
+				]
 
 			subarrays_lengths_summing += [
 				f'\tfor (i = 0; i < {length}; i++) {{'

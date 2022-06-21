@@ -2,7 +2,7 @@ import pytest
 
 from drunk_snail_c import render, addTemplate
 
-from .common import render_lambda, param_values
+from tests.common import render_lambda, param_values
 
 
 @pytest.fixture
@@ -134,3 +134,5 @@ def test_table():
 		'	</tr>\n'
 		'</table>\n'
 	)
+
+test_table()

@@ -98,23 +98,151 @@ enum ActionType {
 }
 
 
-typedef struct RenderState {
-	char *start_line;
-	char *end_line;
-	char *start_expression;
-	char *end_expression;
-	char *start_name;
-	char *end_name;
-	enum ActionType action_type;
-	bool optional;
-	bool strict;
-} RenderState;
-
-
 typedef struct RenderResult {
 	char *message;
 	char *result;
 } RenderResult;
+
+
+#define ACTION_END_LINE(state) {\
+\
+	if ((state).end_name && (state).end_expression) {\
+\
+		if ((state).action_type == ACTION_PARAM) {\
+\
+			if ((state).end_name - (state).start_name + 1 > *name_buffer_size) {\
+				*name_buffer_size = (state).end_name - (state).start_name + 1;\
+				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
+			}\
+			memcpy(*name_buffer, (state).start_name, (state).end_name - (state).start_name);\
+			(*name_buffer)[(state).end_name - (state).start_name] = 0;\
+\
+			param_values = PyDict_GetItemString(params, *name_buffer);\
+			if (param_values) {\
+				if ((state).strict || PyList_Check(param_values)) {\
+					list_size = PyList_Size(param_values);\
+					for (j = 0; j < list_size; j++) {\
+						item = PyList_GetItem(param_values, j);\
+						if (!PyUnicode_Check(item)) {\
+							item = PyObject_Str(item);\
+						}\
+						value = PyUnicode_AsUTF8AndSize(\
+							item,\
+							&value_size\
+						);\
+						render__param(\
+							output_end,\
+							(state).start_line, (state).start_expression - (state).start_line,\
+							value, value_size,\
+							(state).end_expression, (state).end_line - (state).end_expression\
+						);\
+					}\
+				} else {\
+					if (!PyUnicode_Check(param_values)) {\
+						item = PyObject_Str(param_values);\
+					} else {\
+						item = param_values;\
+					}\
+					value = PyUnicode_AsUTF8AndSize(\
+						item,\
+						&value_size\
+					);\
+					render__param(\
+						output_end,\
+						(state).start_line, (state).start_expression - (state).start_line,\
+						value, value_size,\
+						(state).end_expression, (state).end_line - (state).end_expression\
+					);\
+				}\
+			} else if (!(state).optional) {\
+				render__param(\
+					output_end,\
+					(state).start_line, (state).start_expression - (state).start_line,\
+					"", 0,\
+					(state).end_expression, (state).end_line - (state).end_expression\
+				);\
+			}\
+\
+		}\
+		else if ((state).action_type == ACTION_REF) {\
+\
+			if (depth >= *other_size) {\
+				*other_size = depth * 2;\
+				*other = realloc(*other, sizeof(Other) * (*other_size));\
+			}\
+			(*other)[depth].left.start = (state).start_line;\
+			(*other)[depth].left.length = (state).start_expression - (state).start_line;\
+			(*other)[depth].right.start = (state).end_expression;\
+			(*other)[depth].right.length = (state).end_line - (state).end_expression;\
+\
+			if ((state).end_name - (state).start_name + 1 > *name_buffer_size) {\
+				*name_buffer_size = (state).end_name - (state).start_name + 1;\
+				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
+			}\
+			memcpy(*name_buffer, (state).start_name, (state).end_name - (state).start_name);\
+			(*name_buffer)[(state).end_name - (state).start_name] = 0;\
+\
+			ref_values = PyDict_GetItemString(params, *name_buffer);\
+			if (ref_values) {\
+				if ((state).strict || PyList_Check(ref_values)) {\
+					list_size = PyList_Size(ref_values);\
+					for (j = 0; j < list_size; j++) {\
+						render_(\
+							render_result,\
+							(state).start_name,\
+							(state).end_name - (state).start_name,\
+							output_end,\
+							depth + 1,\
+							buffer_size,\
+							other,\
+							other_size,\
+							name_buffer,\
+							name_buffer_size,\
+							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+							PyList_GetItem(ref_values, j)\
+						);\
+					}\
+				} else {\
+					render_(\
+						render_result,\
+						(state).start_name,\
+						(state).end_name - (state).start_name,\
+						output_end,\
+						depth + 1,\
+						buffer_size,\
+						other,\
+						other_size,\
+						name_buffer,\
+						name_buffer_size,\
+						subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+						ref_values\
+					);\
+				}\
+			} else if (!(state).optional) {\
+				render_(\
+					render_result,\
+					(state).start_name,\
+					(state).end_name - (state).start_name,\
+					output_end,\
+					depth + 1,\
+					buffer_size,\
+					other,\
+					other_size,\
+					name_buffer,\
+					name_buffer_size,\
+					subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+					empty_dict\
+				);\
+			}\
+\
+		}\
+\
+	}\
+\
+	if ((state).action_type == ACTION_NONE) {\
+		render__empty(output_end, (state).start_line, (state).end_line - (state).start_line);\
+	}\
+}
 
 
 PyObject *empty_dict;
@@ -165,524 +293,112 @@ void render_(
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
-	RenderState state;
-	resetState(state);
+	if (template->render_states == NULL) {
 
-	
-/* #line 173 "compileComprehension.c" */
+		RenderState state;
+		resetState(state);
+
+		
+/* #line 303 "compileComprehension.c" */
 	{
 	cs = render_start;
 	}
 
-/* #line 178 "compileComprehension.c" */
+/* #line 308 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 164 "compileComprehension_preprocessed.rl" */
+/* #line 294 "compileComprehension_preprocessed.rl" */
 	{ state.start_line = p; }
-/* #line 165 "compileComprehension_preprocessed.rl" */
+/* #line 295 "compileComprehension_preprocessed.rl" */
 	{
-
-			state.end_line = p;
-
-			if (state.end_name && state.end_expression) {
-
-				if (state.action_type == ACTION_PARAM) {
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					param_values = PyDict_GetItemString(params, *name_buffer);
-					if (param_values) {
-						if (state.strict || PyList_Check(param_values)) {
-							list_size = PyList_Size(param_values);
-							for (j = 0; j < list_size; j++) {
-								item = PyList_GetItem(param_values, j);
-								if (!PyUnicode_Check(item)) {
-									item = PyObject_Str(item);
-								}
-								value = PyUnicode_AsUTF8AndSize(
-									item,
-									&value_size
-								);
-								render__param(
-									output_end,
-									state.start_line, state.start_expression - state.start_line,
-									value, value_size,
-									state.end_expression, state.end_line - state.end_expression
-								);
-							}
-						} else {
-							if (!PyUnicode_Check(param_values)) {
-								item = PyObject_Str(param_values);
-							} else {
-								item = param_values;
-							}
-							value = PyUnicode_AsUTF8AndSize(
-								item,
-								&value_size
-							);
-							render__param(
-								output_end,
-								state.start_line, state.start_expression - state.start_line,
-								value, value_size,
-								state.end_expression, state.end_line - state.end_expression
-							);
-						}
-					} else if (!state.optional) {
-						render__param(
-							output_end,
-							state.start_line, state.start_expression - state.start_line,
-							"", 0,
-							state.end_expression, state.end_line - state.end_expression
-						);
-					}
-
-				}
-				else if (state.action_type == ACTION_REF) {
-
-					if (depth >= *other_size) {
-						*other_size = depth * 2;
-						*other = realloc(*other, sizeof(Other) * (*other_size));
-					}
-					(*other)[depth].left.start = state.start_line;
-					(*other)[depth].left.length = state.start_expression - state.start_line;
-					(*other)[depth].right.start = state.end_expression;
-					(*other)[depth].right.length = state.end_line - state.end_expression;
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					ref_values = PyDict_GetItemString(params, *name_buffer);
-					if (ref_values) {
-						if (state.strict || PyList_Check(ref_values)) {
-							list_size = PyList_Size(ref_values);
-							for (j = 0; j < list_size; j++) {
-								render_(
-									render_result,
-									state.start_name,
-									state.end_name - state.start_name,
-									output_end,
-									depth + 1,
-									buffer_size,
-									other,
-									other_size,
-									name_buffer,
-									name_buffer_size,
-									subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-									PyList_GetItem(ref_values, j)
-								);
-							}
-						} else {
-							render_(
-								render_result,
-								state.start_name,
-								state.end_name - state.start_name,
-								output_end,
-								depth + 1,
-								buffer_size,
-								other,
-								other_size,
-								name_buffer,
-								name_buffer_size,
-								subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-								ref_values
-							);
-						}
-					} else if (!state.optional) {
-						render_(
-							render_result,
-							state.start_name,
-							state.end_name - state.start_name,
-							output_end,
-							depth + 1,
-							buffer_size,
-							other,
-							other_size,
-							name_buffer,
-							name_buffer_size,
-							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-							empty_dict
-						);
-					}
-
-				}
-
+				state.end_line = p;
+				addRenderState(template, state);
+				ACTION_END_LINE(state);
+				resetState(state);
 			}
-
-			if (state.action_type == ACTION_NONE) {
-				render__empty(output_end, state.start_line, state.end_line - state.start_line);
-			}
-
-			resetState(state);
-
-		}
 	goto st0;
 tr4:
-/* #line 165 "compileComprehension_preprocessed.rl" */
+/* #line 295 "compileComprehension_preprocessed.rl" */
 	{
-
-			state.end_line = p;
-
-			if (state.end_name && state.end_expression) {
-
-				if (state.action_type == ACTION_PARAM) {
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					param_values = PyDict_GetItemString(params, *name_buffer);
-					if (param_values) {
-						if (state.strict || PyList_Check(param_values)) {
-							list_size = PyList_Size(param_values);
-							for (j = 0; j < list_size; j++) {
-								item = PyList_GetItem(param_values, j);
-								if (!PyUnicode_Check(item)) {
-									item = PyObject_Str(item);
-								}
-								value = PyUnicode_AsUTF8AndSize(
-									item,
-									&value_size
-								);
-								render__param(
-									output_end,
-									state.start_line, state.start_expression - state.start_line,
-									value, value_size,
-									state.end_expression, state.end_line - state.end_expression
-								);
-							}
-						} else {
-							if (!PyUnicode_Check(param_values)) {
-								item = PyObject_Str(param_values);
-							} else {
-								item = param_values;
-							}
-							value = PyUnicode_AsUTF8AndSize(
-								item,
-								&value_size
-							);
-							render__param(
-								output_end,
-								state.start_line, state.start_expression - state.start_line,
-								value, value_size,
-								state.end_expression, state.end_line - state.end_expression
-							);
-						}
-					} else if (!state.optional) {
-						render__param(
-							output_end,
-							state.start_line, state.start_expression - state.start_line,
-							"", 0,
-							state.end_expression, state.end_line - state.end_expression
-						);
-					}
-
-				}
-				else if (state.action_type == ACTION_REF) {
-
-					if (depth >= *other_size) {
-						*other_size = depth * 2;
-						*other = realloc(*other, sizeof(Other) * (*other_size));
-					}
-					(*other)[depth].left.start = state.start_line;
-					(*other)[depth].left.length = state.start_expression - state.start_line;
-					(*other)[depth].right.start = state.end_expression;
-					(*other)[depth].right.length = state.end_line - state.end_expression;
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					ref_values = PyDict_GetItemString(params, *name_buffer);
-					if (ref_values) {
-						if (state.strict || PyList_Check(ref_values)) {
-							list_size = PyList_Size(ref_values);
-							for (j = 0; j < list_size; j++) {
-								render_(
-									render_result,
-									state.start_name,
-									state.end_name - state.start_name,
-									output_end,
-									depth + 1,
-									buffer_size,
-									other,
-									other_size,
-									name_buffer,
-									name_buffer_size,
-									subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-									PyList_GetItem(ref_values, j)
-								);
-							}
-						} else {
-							render_(
-								render_result,
-								state.start_name,
-								state.end_name - state.start_name,
-								output_end,
-								depth + 1,
-								buffer_size,
-								other,
-								other_size,
-								name_buffer,
-								name_buffer_size,
-								subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-								ref_values
-							);
-						}
-					} else if (!state.optional) {
-						render_(
-							render_result,
-							state.start_name,
-							state.end_name - state.start_name,
-							output_end,
-							depth + 1,
-							buffer_size,
-							other,
-							other_size,
-							name_buffer,
-							name_buffer_size,
-							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-							empty_dict
-						);
-					}
-
-				}
-
+				state.end_line = p;
+				addRenderState(template, state);
+				ACTION_END_LINE(state);
+				resetState(state);
 			}
-
-			if (state.action_type == ACTION_NONE) {
-				render__empty(output_end, state.start_line, state.end_line - state.start_line);
-			}
-
-			resetState(state);
-
-		}
 	goto st0;
 tr32:
-/* #line 322 "compileComprehension_preprocessed.rl" */
+/* #line 314 "compileComprehension_preprocessed.rl" */
 	{ state.end_expression = p; }
-/* #line 165 "compileComprehension_preprocessed.rl" */
+/* #line 295 "compileComprehension_preprocessed.rl" */
 	{
-
-			state.end_line = p;
-
-			if (state.end_name && state.end_expression) {
-
-				if (state.action_type == ACTION_PARAM) {
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					param_values = PyDict_GetItemString(params, *name_buffer);
-					if (param_values) {
-						if (state.strict || PyList_Check(param_values)) {
-							list_size = PyList_Size(param_values);
-							for (j = 0; j < list_size; j++) {
-								item = PyList_GetItem(param_values, j);
-								if (!PyUnicode_Check(item)) {
-									item = PyObject_Str(item);
-								}
-								value = PyUnicode_AsUTF8AndSize(
-									item,
-									&value_size
-								);
-								render__param(
-									output_end,
-									state.start_line, state.start_expression - state.start_line,
-									value, value_size,
-									state.end_expression, state.end_line - state.end_expression
-								);
-							}
-						} else {
-							if (!PyUnicode_Check(param_values)) {
-								item = PyObject_Str(param_values);
-							} else {
-								item = param_values;
-							}
-							value = PyUnicode_AsUTF8AndSize(
-								item,
-								&value_size
-							);
-							render__param(
-								output_end,
-								state.start_line, state.start_expression - state.start_line,
-								value, value_size,
-								state.end_expression, state.end_line - state.end_expression
-							);
-						}
-					} else if (!state.optional) {
-						render__param(
-							output_end,
-							state.start_line, state.start_expression - state.start_line,
-							"", 0,
-							state.end_expression, state.end_line - state.end_expression
-						);
-					}
-
-				}
-				else if (state.action_type == ACTION_REF) {
-
-					if (depth >= *other_size) {
-						*other_size = depth * 2;
-						*other = realloc(*other, sizeof(Other) * (*other_size));
-					}
-					(*other)[depth].left.start = state.start_line;
-					(*other)[depth].left.length = state.start_expression - state.start_line;
-					(*other)[depth].right.start = state.end_expression;
-					(*other)[depth].right.length = state.end_line - state.end_expression;
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					ref_values = PyDict_GetItemString(params, *name_buffer);
-					if (ref_values) {
-						if (state.strict || PyList_Check(ref_values)) {
-							list_size = PyList_Size(ref_values);
-							for (j = 0; j < list_size; j++) {
-								render_(
-									render_result,
-									state.start_name,
-									state.end_name - state.start_name,
-									output_end,
-									depth + 1,
-									buffer_size,
-									other,
-									other_size,
-									name_buffer,
-									name_buffer_size,
-									subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-									PyList_GetItem(ref_values, j)
-								);
-							}
-						} else {
-							render_(
-								render_result,
-								state.start_name,
-								state.end_name - state.start_name,
-								output_end,
-								depth + 1,
-								buffer_size,
-								other,
-								other_size,
-								name_buffer,
-								name_buffer_size,
-								subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-								ref_values
-							);
-						}
-					} else if (!state.optional) {
-						render_(
-							render_result,
-							state.start_name,
-							state.end_name - state.start_name,
-							output_end,
-							depth + 1,
-							buffer_size,
-							other,
-							other_size,
-							name_buffer,
-							name_buffer_size,
-							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-							empty_dict
-						);
-					}
-
-				}
-
+				state.end_line = p;
+				addRenderState(template, state);
+				ACTION_END_LINE(state);
+				resetState(state);
 			}
-
-			if (state.action_type == ACTION_NONE) {
-				render__empty(output_end, state.start_line, state.end_line - state.start_line);
-			}
-
-			resetState(state);
-
-		}
 	goto st0;
 st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 633 "compileComprehension.c" */
+/* #line 349 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 164 "compileComprehension_preprocessed.rl" */
+/* #line 294 "compileComprehension_preprocessed.rl" */
 	{ state.start_line = p; }
 	goto st1;
 tr31:
-/* #line 322 "compileComprehension_preprocessed.rl" */
+/* #line 314 "compileComprehension_preprocessed.rl" */
 	{ state.end_expression = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 651 "compileComprehension.c" */
+/* #line 367 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 164 "compileComprehension_preprocessed.rl" */
+/* #line 294 "compileComprehension_preprocessed.rl" */
 	{ state.start_line = p; }
-/* #line 318 "compileComprehension_preprocessed.rl" */
+/* #line 310 "compileComprehension_preprocessed.rl" */
 	{
-			if (!(state.start_expression && state.end_name))
-				state.start_expression = p;
-		}
+				if (!(state.start_expression && state.end_name))
+					state.start_expression = p;
+			}
 	goto st2;
 tr5:
-/* #line 318 "compileComprehension_preprocessed.rl" */
+/* #line 310 "compileComprehension_preprocessed.rl" */
 	{
-			if (!(state.start_expression && state.end_name))
-				state.start_expression = p;
-		}
+				if (!(state.start_expression && state.end_name))
+					state.start_expression = p;
+			}
 	goto st2;
 tr33:
-/* #line 318 "compileComprehension_preprocessed.rl" */
+/* #line 310 "compileComprehension_preprocessed.rl" */
 	{
-			if (!(state.start_expression && state.end_name))
-				state.start_expression = p;
-		}
-/* #line 322 "compileComprehension_preprocessed.rl" */
+				if (!(state.start_expression && state.end_name))
+					state.start_expression = p;
+			}
+/* #line 314 "compileComprehension_preprocessed.rl" */
 	{ state.end_expression = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 686 "compileComprehension.c" */
+/* #line 402 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -721,26 +437,26 @@ case 5:
 	}
 	goto st1;
 tr22:
-/* #line 312 "compileComprehension_preprocessed.rl" */
+/* #line 304 "compileComprehension_preprocessed.rl" */
 	{ state.optional = true; }
 	goto st6;
 tr39:
-/* #line 310 "compileComprehension_preprocessed.rl" */
+/* #line 302 "compileComprehension_preprocessed.rl" */
 	{ state.action_type = ACTION_PARAM; }
 	goto st6;
 tr44:
-/* #line 311 "compileComprehension_preprocessed.rl" */
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ state.action_type = ACTION_REF; }
 	goto st6;
 tr52:
-/* #line 313 "compileComprehension_preprocessed.rl" */
+/* #line 305 "compileComprehension_preprocessed.rl" */
 	{ state.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 744 "compileComprehension.c" */
+/* #line 460 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -847,34 +563,34 @@ case 15:
 		goto tr23;
 	goto st1;
 tr23:
-/* #line 312 "compileComprehension_preprocessed.rl" */
+/* #line 304 "compileComprehension_preprocessed.rl" */
 	{ state.optional = true; }
-/* #line 315 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{ state.start_name = p; }
 	goto st16;
 tr40:
-/* #line 310 "compileComprehension_preprocessed.rl" */
+/* #line 302 "compileComprehension_preprocessed.rl" */
 	{ state.action_type = ACTION_PARAM; }
-/* #line 315 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{ state.start_name = p; }
 	goto st16;
 tr45:
-/* #line 311 "compileComprehension_preprocessed.rl" */
+/* #line 303 "compileComprehension_preprocessed.rl" */
 	{ state.action_type = ACTION_REF; }
-/* #line 315 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{ state.start_name = p; }
 	goto st16;
 tr53:
-/* #line 313 "compileComprehension_preprocessed.rl" */
+/* #line 305 "compileComprehension_preprocessed.rl" */
 	{ state.strict = true; }
-/* #line 315 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{ state.start_name = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 878 "compileComprehension.c" */
+/* #line 594 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr24;
@@ -892,14 +608,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr24:
-/* #line 316 "compileComprehension_preprocessed.rl" */
+/* #line 308 "compileComprehension_preprocessed.rl" */
 	{ state.end_name = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-/* #line 903 "compileComprehension.c" */
+/* #line 619 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -908,14 +624,14 @@ case 17:
 	}
 	goto st1;
 tr25:
-/* #line 316 "compileComprehension_preprocessed.rl" */
+/* #line 308 "compileComprehension_preprocessed.rl" */
 	{ state.end_name = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-/* #line 919 "compileComprehension.c" */
+/* #line 635 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -1209,309 +925,44 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
-/* #line 165 "compileComprehension_preprocessed.rl" */
+/* #line 295 "compileComprehension_preprocessed.rl" */
 	{
-
-			state.end_line = p;
-
-			if (state.end_name && state.end_expression) {
-
-				if (state.action_type == ACTION_PARAM) {
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					param_values = PyDict_GetItemString(params, *name_buffer);
-					if (param_values) {
-						if (state.strict || PyList_Check(param_values)) {
-							list_size = PyList_Size(param_values);
-							for (j = 0; j < list_size; j++) {
-								item = PyList_GetItem(param_values, j);
-								if (!PyUnicode_Check(item)) {
-									item = PyObject_Str(item);
-								}
-								value = PyUnicode_AsUTF8AndSize(
-									item,
-									&value_size
-								);
-								render__param(
-									output_end,
-									state.start_line, state.start_expression - state.start_line,
-									value, value_size,
-									state.end_expression, state.end_line - state.end_expression
-								);
-							}
-						} else {
-							if (!PyUnicode_Check(param_values)) {
-								item = PyObject_Str(param_values);
-							} else {
-								item = param_values;
-							}
-							value = PyUnicode_AsUTF8AndSize(
-								item,
-								&value_size
-							);
-							render__param(
-								output_end,
-								state.start_line, state.start_expression - state.start_line,
-								value, value_size,
-								state.end_expression, state.end_line - state.end_expression
-							);
-						}
-					} else if (!state.optional) {
-						render__param(
-							output_end,
-							state.start_line, state.start_expression - state.start_line,
-							"", 0,
-							state.end_expression, state.end_line - state.end_expression
-						);
-					}
-
-				}
-				else if (state.action_type == ACTION_REF) {
-
-					if (depth >= *other_size) {
-						*other_size = depth * 2;
-						*other = realloc(*other, sizeof(Other) * (*other_size));
-					}
-					(*other)[depth].left.start = state.start_line;
-					(*other)[depth].left.length = state.start_expression - state.start_line;
-					(*other)[depth].right.start = state.end_expression;
-					(*other)[depth].right.length = state.end_line - state.end_expression;
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					ref_values = PyDict_GetItemString(params, *name_buffer);
-					if (ref_values) {
-						if (state.strict || PyList_Check(ref_values)) {
-							list_size = PyList_Size(ref_values);
-							for (j = 0; j < list_size; j++) {
-								render_(
-									render_result,
-									state.start_name,
-									state.end_name - state.start_name,
-									output_end,
-									depth + 1,
-									buffer_size,
-									other,
-									other_size,
-									name_buffer,
-									name_buffer_size,
-									subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-									PyList_GetItem(ref_values, j)
-								);
-							}
-						} else {
-							render_(
-								render_result,
-								state.start_name,
-								state.end_name - state.start_name,
-								output_end,
-								depth + 1,
-								buffer_size,
-								other,
-								other_size,
-								name_buffer,
-								name_buffer_size,
-								subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-								ref_values
-							);
-						}
-					} else if (!state.optional) {
-						render_(
-							render_result,
-							state.start_name,
-							state.end_name - state.start_name,
-							output_end,
-							depth + 1,
-							buffer_size,
-							other,
-							other_size,
-							name_buffer,
-							name_buffer_size,
-							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-							empty_dict
-						);
-					}
-
-				}
-
+				state.end_line = p;
+				addRenderState(template, state);
+				ACTION_END_LINE(state);
+				resetState(state);
 			}
-
-			if (state.action_type == ACTION_NONE) {
-				render__empty(output_end, state.start_line, state.end_line - state.start_line);
-			}
-
-			resetState(state);
-
-		}
 	break;
 	case 20: 
-/* #line 322 "compileComprehension_preprocessed.rl" */
+/* #line 314 "compileComprehension_preprocessed.rl" */
 	{ state.end_expression = p; }
-/* #line 165 "compileComprehension_preprocessed.rl" */
+/* #line 295 "compileComprehension_preprocessed.rl" */
 	{
-
-			state.end_line = p;
-
-			if (state.end_name && state.end_expression) {
-
-				if (state.action_type == ACTION_PARAM) {
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					param_values = PyDict_GetItemString(params, *name_buffer);
-					if (param_values) {
-						if (state.strict || PyList_Check(param_values)) {
-							list_size = PyList_Size(param_values);
-							for (j = 0; j < list_size; j++) {
-								item = PyList_GetItem(param_values, j);
-								if (!PyUnicode_Check(item)) {
-									item = PyObject_Str(item);
-								}
-								value = PyUnicode_AsUTF8AndSize(
-									item,
-									&value_size
-								);
-								render__param(
-									output_end,
-									state.start_line, state.start_expression - state.start_line,
-									value, value_size,
-									state.end_expression, state.end_line - state.end_expression
-								);
-							}
-						} else {
-							if (!PyUnicode_Check(param_values)) {
-								item = PyObject_Str(param_values);
-							} else {
-								item = param_values;
-							}
-							value = PyUnicode_AsUTF8AndSize(
-								item,
-								&value_size
-							);
-							render__param(
-								output_end,
-								state.start_line, state.start_expression - state.start_line,
-								value, value_size,
-								state.end_expression, state.end_line - state.end_expression
-							);
-						}
-					} else if (!state.optional) {
-						render__param(
-							output_end,
-							state.start_line, state.start_expression - state.start_line,
-							"", 0,
-							state.end_expression, state.end_line - state.end_expression
-						);
-					}
-
-				}
-				else if (state.action_type == ACTION_REF) {
-
-					if (depth >= *other_size) {
-						*other_size = depth * 2;
-						*other = realloc(*other, sizeof(Other) * (*other_size));
-					}
-					(*other)[depth].left.start = state.start_line;
-					(*other)[depth].left.length = state.start_expression - state.start_line;
-					(*other)[depth].right.start = state.end_expression;
-					(*other)[depth].right.length = state.end_line - state.end_expression;
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					ref_values = PyDict_GetItemString(params, *name_buffer);
-					if (ref_values) {
-						if (state.strict || PyList_Check(ref_values)) {
-							list_size = PyList_Size(ref_values);
-							for (j = 0; j < list_size; j++) {
-								render_(
-									render_result,
-									state.start_name,
-									state.end_name - state.start_name,
-									output_end,
-									depth + 1,
-									buffer_size,
-									other,
-									other_size,
-									name_buffer,
-									name_buffer_size,
-									subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-									PyList_GetItem(ref_values, j)
-								);
-							}
-						} else {
-							render_(
-								render_result,
-								state.start_name,
-								state.end_name - state.start_name,
-								output_end,
-								depth + 1,
-								buffer_size,
-								other,
-								other_size,
-								name_buffer,
-								name_buffer_size,
-								subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-								ref_values
-							);
-						}
-					} else if (!state.optional) {
-						render_(
-							render_result,
-							state.start_name,
-							state.end_name - state.start_name,
-							output_end,
-							depth + 1,
-							buffer_size,
-							other,
-							other_size,
-							name_buffer,
-							name_buffer_size,
-							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-							empty_dict
-						);
-					}
-
-				}
-
+				state.end_line = p;
+				addRenderState(template, state);
+				ACTION_END_LINE(state);
+				resetState(state);
 			}
-
-			if (state.action_type == ACTION_NONE) {
-				render__empty(output_end, state.start_line, state.end_line - state.start_line);
-			}
-
-			resetState(state);
-
-		}
 	break;
-/* #line 1508 "compileComprehension.c" */
+/* #line 948 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-/* #line 346 "compileComprehension_preprocessed.rl" */
+/* #line 339 "compileComprehension_preprocessed.rl" */
 
+
+	} else {
+
+		RenderState *state;
+		size_t i_template = 0;
+		for (i_template = 0; i_template < template->render_states_current_size; i_template++) {
+			state = template->render_states + i_template;
+			ACTION_END_LINE(*state);
+		}
+
+	}
 
 	if (!depth) {
 		**output_end = 0;

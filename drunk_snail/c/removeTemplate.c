@@ -3,9 +3,10 @@ int removeTemplate_(char *name) {
 	Template *template = dictionaryLookup(_templates, name);
 	if (template == NULL)
 		return 1;
-	
+
 	free(template->text);
-	
+	free(template->render_states);
+
 	treeRemove(_templates, name);
 
 	return 0;
@@ -19,7 +20,7 @@ static PyObject *removeTemplate (
 ) {
 
 	char *name;
-	
+
 	if (!PyArg_ParseTuple(args, "s", &name))
 		Py_RETURN_FALSE;
 

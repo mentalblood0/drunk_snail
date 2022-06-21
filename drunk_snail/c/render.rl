@@ -57,23 +57,151 @@ enum ActionType {
 }
 
 
-typedef struct RenderState {
-	char *start_line;
-	char *end_line;
-	char *start_expression;
-	char *end_expression;
-	char *start_name;
-	char *end_name;
-	enum ActionType action_type;
-	bool optional;
-	bool strict;
-} RenderState;
-
-
 typedef struct RenderResult {
 	char *message;
 	char *result;
 } RenderResult;
+
+
+#define ACTION_END_LINE(state) {\
+\
+	if ((state).end_name && (state).end_expression) {\
+\
+		if ((state).action_type == ACTION_PARAM) {\
+\
+			if ((state).end_name - (state).start_name + 1 > *name_buffer_size) {\
+				*name_buffer_size = (state).end_name - (state).start_name + 1;\
+				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
+			}\
+			memcpy(*name_buffer, (state).start_name, (state).end_name - (state).start_name);\
+			(*name_buffer)[(state).end_name - (state).start_name] = 0;\
+\
+			param_values = PyDict_GetItemString(params, *name_buffer);\
+			if (param_values) {\
+				if ((state).strict || PyList_Check(param_values)) {\
+					list_size = PyList_Size(param_values);\
+					for (j = 0; j < list_size; j++) {\
+						item = PyList_GetItem(param_values, j);\
+						if (!PyUnicode_Check(item)) {\
+							item = PyObject_Str(item);\
+						}\
+						value = PyUnicode_AsUTF8AndSize(\
+							item,\
+							&value_size\
+						);\
+						render__param(\
+							output_end,\
+							(state).start_line, (state).start_expression - (state).start_line,\
+							value, value_size,\
+							(state).end_expression, (state).end_line - (state).end_expression\
+						);\
+					}\
+				} else {\
+					if (!PyUnicode_Check(param_values)) {\
+						item = PyObject_Str(param_values);\
+					} else {\
+						item = param_values;\
+					}\
+					value = PyUnicode_AsUTF8AndSize(\
+						item,\
+						&value_size\
+					);\
+					render__param(\
+						output_end,\
+						(state).start_line, (state).start_expression - (state).start_line,\
+						value, value_size,\
+						(state).end_expression, (state).end_line - (state).end_expression\
+					);\
+				}\
+			} else if (!(state).optional) {\
+				render__param(\
+					output_end,\
+					(state).start_line, (state).start_expression - (state).start_line,\
+					"", 0,\
+					(state).end_expression, (state).end_line - (state).end_expression\
+				);\
+			}\
+\
+		}\
+		else if ((state).action_type == ACTION_REF) {\
+\
+			if (depth >= *other_size) {\
+				*other_size = depth * 2;\
+				*other = realloc(*other, sizeof(Other) * (*other_size));\
+			}\
+			(*other)[depth].left.start = (state).start_line;\
+			(*other)[depth].left.length = (state).start_expression - (state).start_line;\
+			(*other)[depth].right.start = (state).end_expression;\
+			(*other)[depth].right.length = (state).end_line - (state).end_expression;\
+\
+			if ((state).end_name - (state).start_name + 1 > *name_buffer_size) {\
+				*name_buffer_size = (state).end_name - (state).start_name + 1;\
+				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
+			}\
+			memcpy(*name_buffer, (state).start_name, (state).end_name - (state).start_name);\
+			(*name_buffer)[(state).end_name - (state).start_name] = 0;\
+\
+			ref_values = PyDict_GetItemString(params, *name_buffer);\
+			if (ref_values) {\
+				if ((state).strict || PyList_Check(ref_values)) {\
+					list_size = PyList_Size(ref_values);\
+					for (j = 0; j < list_size; j++) {\
+						render_(\
+							render_result,\
+							(state).start_name,\
+							(state).end_name - (state).start_name,\
+							output_end,\
+							depth + 1,\
+							buffer_size,\
+							other,\
+							other_size,\
+							name_buffer,\
+							name_buffer_size,\
+							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+							PyList_GetItem(ref_values, j)\
+						);\
+					}\
+				} else {\
+					render_(\
+						render_result,\
+						(state).start_name,\
+						(state).end_name - (state).start_name,\
+						output_end,\
+						depth + 1,\
+						buffer_size,\
+						other,\
+						other_size,\
+						name_buffer,\
+						name_buffer_size,\
+						subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+						ref_values\
+					);\
+				}\
+			} else if (!(state).optional) {\
+				render_(\
+					render_result,\
+					(state).start_name,\
+					(state).end_name - (state).start_name,\
+					output_end,\
+					depth + 1,\
+					buffer_size,\
+					other,\
+					other_size,\
+					name_buffer,\
+					name_buffer_size,\
+					subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+					empty_dict\
+				);\
+			}\
+\
+		}\
+\
+	}\
+\
+	if ((state).action_type == ACTION_NONE) {\
+		render__empty(output_end, (state).start_line, (state).end_line - (state).start_line);\
+	}\
+}
 
 
 PyObject *empty_dict;
@@ -124,194 +252,70 @@ void render_(
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
-	RenderState state;
-	resetState(state);
+	if (template->render_states == NULL) {
 
-	%%{
-	
-		action action_start_line { state.start_line = p; }
-		action action_end_line {
+		RenderState state;
+		resetState(state);
 
-			state.end_line = p;
+		%%{
 
-			if (state.end_name && state.end_expression) {
-
-				if (state.action_type == ACTION_PARAM) {
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					param_values = PyDict_GetItemString(params, *name_buffer);
-					if (param_values) {
-						if (state.strict || PyList_Check(param_values)) {
-							list_size = PyList_Size(param_values);
-							for (j = 0; j < list_size; j++) {
-								item = PyList_GetItem(param_values, j);
-								if (!PyUnicode_Check(item)) {
-									item = PyObject_Str(item);
-								}
-								value = PyUnicode_AsUTF8AndSize(
-									item,
-									&value_size
-								);
-								render__param(
-									output_end,
-									state.start_line, state.start_expression - state.start_line,
-									value, value_size,
-									state.end_expression, state.end_line - state.end_expression
-								);
-							}
-						} else {
-							if (!PyUnicode_Check(param_values)) {
-								item = PyObject_Str(param_values);
-							} else {
-								item = param_values;
-							}
-							value = PyUnicode_AsUTF8AndSize(
-								item,
-								&value_size
-							);
-							render__param(
-								output_end,
-								state.start_line, state.start_expression - state.start_line,
-								value, value_size,
-								state.end_expression, state.end_line - state.end_expression
-							);
-						}
-					} else if (!state.optional) {
-						render__param(
-							output_end,
-							state.start_line, state.start_expression - state.start_line,
-							"", 0,
-							state.end_expression, state.end_line - state.end_expression
-						);
-					}
-
-				}
-				else if (state.action_type == ACTION_REF) {
-
-					if (depth >= *other_size) {
-						*other_size = depth * 2;
-						*other = realloc(*other, sizeof(Other) * (*other_size));
-					}
-					(*other)[depth].left.start = state.start_line;
-					(*other)[depth].left.length = state.start_expression - state.start_line;
-					(*other)[depth].right.start = state.end_expression;
-					(*other)[depth].right.length = state.end_line - state.end_expression;
-
-					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
-						*name_buffer_size = state.end_name - state.start_name + 1;
-						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
-					}
-					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
-					(*name_buffer)[state.end_name - state.start_name] = 0;
-
-					ref_values = PyDict_GetItemString(params, *name_buffer);
-					if (ref_values) {
-						if (state.strict || PyList_Check(ref_values)) {
-							list_size = PyList_Size(ref_values);
-							for (j = 0; j < list_size; j++) {
-								render_(
-									render_result,
-									state.start_name,
-									state.end_name - state.start_name,
-									output_end,
-									depth + 1,
-									buffer_size,
-									other,
-									other_size,
-									name_buffer,
-									name_buffer_size,
-									subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-									PyList_GetItem(ref_values, j)
-								);
-							}
-						} else {
-							render_(
-								render_result,
-								state.start_name,
-								state.end_name - state.start_name,
-								output_end,
-								depth + 1,
-								buffer_size,
-								other,
-								other_size,
-								name_buffer,
-								name_buffer_size,
-								subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-								ref_values
-							);
-						}
-					} else if (!state.optional) {
-						render_(
-							render_result,
-							state.start_name,
-							state.end_name - state.start_name,
-							output_end,
-							depth + 1,
-							buffer_size,
-							other,
-							other_size,
-							name_buffer,
-							name_buffer_size,
-							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,
-							empty_dict
-						);
-					}
-
-				}
-
+			action action_start_line { state.start_line = p; }
+			action action_end_line {
+				state.end_line = p;
+				addRenderState(template, state);
+				ACTION_END_LINE(state);
+				resetState(state);
 			}
 
-			if (state.action_type == ACTION_NONE) {
-				render__empty(output_end, state.start_line, state.end_line - state.start_line);
+			action action_param { state.action_type = ACTION_PARAM; }
+			action action_ref { state.action_type = ACTION_REF; }
+			action action_optional { state.optional = true; }
+			action action_strict { state.strict = true; }
+
+			action action_start_name { state.start_name = p; }
+			action action_end_name { state.end_name = p; }
+
+			action action_start_expression {
+				if (!(state.start_expression && state.end_name))
+					state.start_expression = p;
 			}
+			action action_end_expression { state.end_expression = p; }
 
-			resetState(state);
+			open = '<!--';
+			close = '-->';
+			param = '(param)' %action_param;
+			ref = '(ref)' %action_ref;
+			optional = '(optional)' %action_optional;
+			strict = '(strict)' %action_strict;
 
+			delimeter = '\n';
+			other = (any - delimeter)+;
+
+			operator = param | ref | optional | strict;
+			name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
+
+			expression = (open ' '* operator+ name ' '* close) >action_start_expression %action_end_expression;
+
+			line = (other? expression? other?) >action_start_line %action_end_line;
+
+			template = (line delimeter)* (line - zlen)?;
+			main := template;
+
+			write init;
+			write exec;
+
+		}%%
+
+	} else {
+
+		RenderState *state;
+		size_t i_template = 0;
+		for (i_template = 0; i_template < template->render_states_current_size; i_template++) {
+			state = template->render_states + i_template;
+			ACTION_END_LINE(*state);
 		}
 
-		action action_param { state.action_type = ACTION_PARAM; }
-		action action_ref { state.action_type = ACTION_REF; }
-		action action_optional { state.optional = true; }
-		action action_strict { state.strict = true; }
-
-		action action_start_name { state.start_name = p; }
-		action action_end_name { state.end_name = p; }
-
-		action action_start_expression {
-			if (!(state.start_expression && state.end_name))
-				state.start_expression = p;
-		}
-		action action_end_expression { state.end_expression = p; }
-
-		open = '<!--';
-		close = '-->';
-		param = '(param)' %action_param;
-		ref = '(ref)' %action_ref;
-		optional = '(optional)' %action_optional;
-		strict = '(strict)' %action_strict;
-
-		delimeter = '\n';
-		other = (any - delimeter)+;
-
-		operator = param | ref | optional | strict;
-		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
-
-		expression = (open ' '* operator+ name ' '* close) >action_start_expression %action_end_expression;
-
-		line = (other? expression? other?) >action_start_line %action_end_line;
-
-		template = (line delimeter)* (line - zlen)?;
-		main := template;
-
-		write init;
-		write exec;
-	}%%
+	}
 
 	if (!depth) {
 		**output_end = 0;

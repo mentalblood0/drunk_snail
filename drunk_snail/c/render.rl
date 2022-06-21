@@ -27,7 +27,7 @@ render__param {%
 
 typedef struct Substring {
 	char *start;
-	int length;
+	size_t length;
 } Substring;
 
 
@@ -210,15 +210,15 @@ PyObject *empty_dict;
 void render_(
 	RenderResult *render_result,
 	char *template_name,
-	int template_name_length,
+	size_t template_name_length,
 	char **output_end,
-	int depth,
+	size_t depth,
 	size_t *buffer_size,
 	Other **other,
-	int *other_size,
+	size_t *other_size,
 	char **name_buffer,
-	int *name_buffer_size,
-	int subarrays_length,
+	size_t *name_buffer_size,
+	size_t subarrays_length,
 	PyObject *params
 )
 {
@@ -240,7 +240,7 @@ void render_(
 	char *p = template->text;
 	char *pe = template->text + template->length;
 	char *eof = pe;
-	int cs;
+	size_t cs;
 	char *new_result;
 	char *value;
 	Py_ssize_t value_size;
@@ -248,7 +248,7 @@ void render_(
 	PyObject *ref_values;
 	PyObject *item;
 
-	int i;
+	size_t i;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
@@ -339,10 +339,10 @@ static PyObject *render (
 	render_result.message = NULL;
 	render_result.result = NULL;
 
-	int other_size = 16;
+	size_t other_size = 16;
 	Other *other = malloc(sizeof(Other) * other_size);
 
-	int name_buffer_size = 128;
+	size_t name_buffer_size = 128;
 	char *name_buffer = malloc(sizeof(char) * name_buffer_size);
 
 	char *output_end = NULL;

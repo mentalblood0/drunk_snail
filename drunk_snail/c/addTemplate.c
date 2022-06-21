@@ -55,11 +55,11 @@ void addTemplate_(char *name, char *text) {
 	template->render_states_current_size += 1;\
 \
 	if (template->render_states_current_size > template->render_states_allocated_size) {\
-		template->render_states_allocated_size += 1;\
-		template->render_states_allocated_size *= 2;\
 		if (template->render_states == NULL) {\
+			template->render_states_allocated_size = 16;\
 			template->render_states = malloc(sizeof(RenderState) * template->render_states_allocated_size);\
 		} else {\
+			template->render_states_allocated_size *= 2;\
 			template->render_states = realloc(template->render_states, sizeof(RenderState) * template->render_states_allocated_size);\
 		}\
 	}\

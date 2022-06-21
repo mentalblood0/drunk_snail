@@ -44,23 +44,36 @@ enum ActionType {
 };
 
 
+#define resetState(state) {\
+	state.start_line = NULL;\
+	state.end_line = NULL;\
+	state.start_expression = NULL;\
+	state.end_expression = NULL;\
+	state.start_name = NULL;\
+	state.end_name = NULL;\
+	state.action_type = ACTION_NONE;\
+	state.optional = false;\
+	state.strict = false;\
+}
+
+
+typedef struct RenderState {
+	char *start_line;
+	char *end_line;
+	char *start_expression;
+	char *end_expression;
+	char *start_name;
+	char *end_name;
+	enum ActionType action_type;
+	bool optional;
+	bool strict;
+} RenderState;
+
+
 typedef struct RenderResult {
 	char *message;
 	char *result;
 } RenderResult;
-
-
-#define reset_line_properties() {\
-	start_line = NULL;\
-	end_line = NULL;\
-	start_expression = NULL;\
-	end_expression = NULL;\
-	name_start = NULL;\
-	name_end = NULL;\
-	action_type = ACTION_NONE;\
-	optional = false;\
-	strict = false;\
-}
 
 
 PyObject *empty_dict;
@@ -111,34 +124,30 @@ void render_(
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
-	enum ActionType action_type = ACTION_NONE;
-	bool optional = false;
-	bool strict = false;
-
-	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
-	reset_line_properties();
+	RenderState state;
+	resetState(state);
 
 	%%{
 	
-		action action_start_line { start_line = p; }
+		action action_start_line { state.start_line = p; }
 		action action_end_line {
 
-			end_line = p;
+			state.end_line = p;
 
-			if (name_end && end_expression) {
+			if (state.end_name && state.end_expression) {
 
-				if (action_type == ACTION_PARAM) {
+				if (state.action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
-						if (strict || PyList_Check(param_values)) {
+						if (state.strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
 								item = PyList_GetItem(param_values, j);
@@ -151,9 +160,9 @@ void render_(
 								);
 								render__param(
 									output_end,
-									start_line, start_expression - start_line,
+									state.start_line, state.start_expression - state.start_line,
 									value, value_size,
-									end_expression, end_line - end_expression
+									state.end_expression, state.end_line - state.end_expression
 								);
 							}
 						} else {
@@ -168,48 +177,48 @@ void render_(
 							);
 							render__param(
 								output_end,
-								start_line, start_expression - start_line,
+								state.start_line, state.start_expression - state.start_line,
 								value, value_size,
-								end_expression, end_line - end_expression
+								state.end_expression, state.end_line - state.end_expression
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render__param(
 							output_end,
-							start_line, start_expression - start_line,
+							state.start_line, state.start_expression - state.start_line,
 							"", 0,
-							end_expression, end_line - end_expression
+							state.end_expression, state.end_line - state.end_expression
 						);
 					}
 
 				}
-				else if (action_type == ACTION_REF) {
+				else if (state.action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
 						*other_size = depth * 2;
 						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					(*other)[depth].left.start = start_line;
-					(*other)[depth].left.length = start_expression - start_line;
-					(*other)[depth].right.start = end_expression;
-					(*other)[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = state.start_line;
+					(*other)[depth].left.length = state.start_expression - state.start_line;
+					(*other)[depth].right.start = state.end_expression;
+					(*other)[depth].right.length = state.end_line - state.end_expression;
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
-						if (strict || PyList_Check(ref_values)) {
+						if (state.strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
 							for (j = 0; j < list_size; j++) {
 								render_(
 									render_result,
-									name_start,
-									name_end - name_start,
+									state.start_name,
+									state.end_name - state.start_name,
 									output_end,
 									depth + 1,
 									buffer_size,
@@ -224,8 +233,8 @@ void render_(
 						} else {
 							render_(
 								render_result,
-								name_start,
-								name_end - name_start,
+								state.start_name,
+								state.end_name - state.start_name,
 								output_end,
 								depth + 1,
 								buffer_size,
@@ -237,11 +246,11 @@ void render_(
 								ref_values
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render_(
 							render_result,
-							name_start,
-							name_end - name_start,
+							state.start_name,
+							state.end_name - state.start_name,
 							output_end,
 							depth + 1,
 							buffer_size,
@@ -258,27 +267,27 @@ void render_(
 
 			}
 
-			if (action_type == ACTION_NONE) {
-				render__empty(output_end, start_line, end_line - start_line);
+			if (state.action_type == ACTION_NONE) {
+				render__empty(output_end, state.start_line, state.end_line - state.start_line);
 			}
 
-			reset_line_properties();
+			resetState(state);
 
 		}
 
-		action action_param { action_type = ACTION_PARAM; }
-		action action_ref { action_type = ACTION_REF; }
-		action action_optional { optional = true; }
-		action action_strict { strict = true; }
+		action action_param { state.action_type = ACTION_PARAM; }
+		action action_ref { state.action_type = ACTION_REF; }
+		action action_optional { state.optional = true; }
+		action action_strict { state.strict = true; }
 
-		action action_name_start { name_start = p; }
-		action action_name_end { name_end = p; }
+		action action_start_name { state.start_name = p; }
+		action action_end_name { state.end_name = p; }
 
 		action action_start_expression {
-			if (!(start_expression && name_end))
-				start_expression = p;
+			if (!(state.start_expression && state.end_name))
+				state.start_expression = p;
 		}
-		action action_end_expression { end_expression = p; }
+		action action_end_expression { state.end_expression = p; }
 
 		open = '<!--';
 		close = '-->';
@@ -291,7 +300,7 @@ void render_(
 		other = (any - delimeter)+;
 
 		operator = param | ref | optional | strict;
-		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_name_start %action_name_end;
+		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
 
 		expression = (open ' '* operator+ name ' '* close) >action_start_expression %action_end_expression;
 

@@ -1,12 +1,12 @@
 
-#line 1 "input_preprocessed.rl"
+/* #line 1 "compileComprehension_preprocessed.rl" */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 
-#line 10 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 10 "compileComprehension.c" */
 static const int render_start = 0;
 static const int render_first_final = 0;
 static const int render_error = -1;
@@ -14,7 +14,7 @@ static const int render_error = -1;
 static const int render_en_main = 0;
 
 
-#line 9 "input_preprocessed.rl"
+/* #line 9 "compileComprehension_preprocessed.rl" */
 
 
 
@@ -85,23 +85,36 @@ enum ActionType {
 };
 
 
+#define resetState(state) {\
+	state.start_line = NULL;\
+	state.end_line = NULL;\
+	state.start_expression = NULL;\
+	state.end_expression = NULL;\
+	state.start_name = NULL;\
+	state.end_name = NULL;\
+	state.action_type = ACTION_NONE;\
+	state.optional = false;\
+	state.strict = false;\
+}
+
+
+typedef struct RenderState {
+	char *start_line;
+	char *end_line;
+	char *start_expression;
+	char *end_expression;
+	char *start_name;
+	char *end_name;
+	enum ActionType action_type;
+	bool optional;
+	bool strict;
+} RenderState;
+
+
 typedef struct RenderResult {
 	char *message;
 	char *result;
 } RenderResult;
-
-
-#define reset_line_properties() {\
-	start_line = NULL;\
-	end_line = NULL;\
-	start_expression = NULL;\
-	end_expression = NULL;\
-	name_start = NULL;\
-	name_end = NULL;\
-	action_type = ACTION_NONE;\
-	optional = false;\
-	strict = false;\
-}
 
 
 PyObject *empty_dict;
@@ -152,47 +165,43 @@ void render_(
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
-	enum ActionType action_type = ACTION_NONE;
-	bool optional = false;
-	bool strict = false;
-
-	char *start_line, *end_line, *start_expression, *end_expression, *name_start, *name_end;
-	reset_line_properties();
+	RenderState state;
+	resetState(state);
 
 	
-#line 164 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 173 "compileComprehension.c" */
 	{
 	cs = render_start;
 	}
 
-#line 169 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 178 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-#line 155 "input_preprocessed.rl"
-	{ start_line = p; }
-#line 156 "input_preprocessed.rl"
+/* #line 164 "compileComprehension_preprocessed.rl" */
+	{ state.start_line = p; }
+/* #line 165 "compileComprehension_preprocessed.rl" */
 	{
 
-			end_line = p;
+			state.end_line = p;
 
-			if (name_end && end_expression) {
+			if (state.end_name && state.end_expression) {
 
-				if (action_type == ACTION_PARAM) {
+				if (state.action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
-						if (strict || PyList_Check(param_values)) {
+						if (state.strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
 								item = PyList_GetItem(param_values, j);
@@ -205,9 +214,9 @@ tr1:
 								);
 								render__param(
 									output_end,
-									start_line, start_expression - start_line,
+									state.start_line, state.start_expression - state.start_line,
 									value, value_size,
-									end_expression, end_line - end_expression
+									state.end_expression, state.end_line - state.end_expression
 								);
 							}
 						} else {
@@ -222,48 +231,48 @@ tr1:
 							);
 							render__param(
 								output_end,
-								start_line, start_expression - start_line,
+								state.start_line, state.start_expression - state.start_line,
 								value, value_size,
-								end_expression, end_line - end_expression
+								state.end_expression, state.end_line - state.end_expression
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render__param(
 							output_end,
-							start_line, start_expression - start_line,
+							state.start_line, state.start_expression - state.start_line,
 							"", 0,
-							end_expression, end_line - end_expression
+							state.end_expression, state.end_line - state.end_expression
 						);
 					}
 
 				}
-				else if (action_type == ACTION_REF) {
+				else if (state.action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
 						*other_size = depth * 2;
 						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					(*other)[depth].left.start = start_line;
-					(*other)[depth].left.length = start_expression - start_line;
-					(*other)[depth].right.start = end_expression;
-					(*other)[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = state.start_line;
+					(*other)[depth].left.length = state.start_expression - state.start_line;
+					(*other)[depth].right.start = state.end_expression;
+					(*other)[depth].right.length = state.end_line - state.end_expression;
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
-						if (strict || PyList_Check(ref_values)) {
+						if (state.strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
 							for (j = 0; j < list_size; j++) {
 								render_(
 									render_result,
-									name_start,
-									name_end - name_start,
+									state.start_name,
+									state.end_name - state.start_name,
 									output_end,
 									depth + 1,
 									buffer_size,
@@ -278,8 +287,8 @@ tr1:
 						} else {
 							render_(
 								render_result,
-								name_start,
-								name_end - name_start,
+								state.start_name,
+								state.end_name - state.start_name,
 								output_end,
 								depth + 1,
 								buffer_size,
@@ -291,11 +300,11 @@ tr1:
 								ref_values
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render_(
 							render_result,
-							name_start,
-							name_end - name_start,
+							state.start_name,
+							state.end_name - state.start_name,
 							output_end,
 							depth + 1,
 							buffer_size,
@@ -312,34 +321,34 @@ tr1:
 
 			}
 
-			if (action_type == ACTION_NONE) {
-				render__empty(output_end, start_line, end_line - start_line);
+			if (state.action_type == ACTION_NONE) {
+				render__empty(output_end, state.start_line, state.end_line - state.start_line);
 			}
 
-			reset_line_properties();
+			resetState(state);
 
 		}
 	goto st0;
 tr4:
-#line 156 "input_preprocessed.rl"
+/* #line 165 "compileComprehension_preprocessed.rl" */
 	{
 
-			end_line = p;
+			state.end_line = p;
 
-			if (name_end && end_expression) {
+			if (state.end_name && state.end_expression) {
 
-				if (action_type == ACTION_PARAM) {
+				if (state.action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
-						if (strict || PyList_Check(param_values)) {
+						if (state.strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
 								item = PyList_GetItem(param_values, j);
@@ -352,9 +361,9 @@ tr4:
 								);
 								render__param(
 									output_end,
-									start_line, start_expression - start_line,
+									state.start_line, state.start_expression - state.start_line,
 									value, value_size,
-									end_expression, end_line - end_expression
+									state.end_expression, state.end_line - state.end_expression
 								);
 							}
 						} else {
@@ -369,48 +378,48 @@ tr4:
 							);
 							render__param(
 								output_end,
-								start_line, start_expression - start_line,
+								state.start_line, state.start_expression - state.start_line,
 								value, value_size,
-								end_expression, end_line - end_expression
+								state.end_expression, state.end_line - state.end_expression
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render__param(
 							output_end,
-							start_line, start_expression - start_line,
+							state.start_line, state.start_expression - state.start_line,
 							"", 0,
-							end_expression, end_line - end_expression
+							state.end_expression, state.end_line - state.end_expression
 						);
 					}
 
 				}
-				else if (action_type == ACTION_REF) {
+				else if (state.action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
 						*other_size = depth * 2;
 						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					(*other)[depth].left.start = start_line;
-					(*other)[depth].left.length = start_expression - start_line;
-					(*other)[depth].right.start = end_expression;
-					(*other)[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = state.start_line;
+					(*other)[depth].left.length = state.start_expression - state.start_line;
+					(*other)[depth].right.start = state.end_expression;
+					(*other)[depth].right.length = state.end_line - state.end_expression;
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
-						if (strict || PyList_Check(ref_values)) {
+						if (state.strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
 							for (j = 0; j < list_size; j++) {
 								render_(
 									render_result,
-									name_start,
-									name_end - name_start,
+									state.start_name,
+									state.end_name - state.start_name,
 									output_end,
 									depth + 1,
 									buffer_size,
@@ -425,8 +434,8 @@ tr4:
 						} else {
 							render_(
 								render_result,
-								name_start,
-								name_end - name_start,
+								state.start_name,
+								state.end_name - state.start_name,
 								output_end,
 								depth + 1,
 								buffer_size,
@@ -438,11 +447,11 @@ tr4:
 								ref_values
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render_(
 							render_result,
-							name_start,
-							name_end - name_start,
+							state.start_name,
+							state.end_name - state.start_name,
 							output_end,
 							depth + 1,
 							buffer_size,
@@ -459,36 +468,36 @@ tr4:
 
 			}
 
-			if (action_type == ACTION_NONE) {
-				render__empty(output_end, start_line, end_line - start_line);
+			if (state.action_type == ACTION_NONE) {
+				render__empty(output_end, state.start_line, state.end_line - state.start_line);
 			}
 
-			reset_line_properties();
+			resetState(state);
 
 		}
 	goto st0;
 tr32:
-#line 313 "input_preprocessed.rl"
-	{ end_expression = p; }
-#line 156 "input_preprocessed.rl"
+/* #line 322 "compileComprehension_preprocessed.rl" */
+	{ state.end_expression = p; }
+/* #line 165 "compileComprehension_preprocessed.rl" */
 	{
 
-			end_line = p;
+			state.end_line = p;
 
-			if (name_end && end_expression) {
+			if (state.end_name && state.end_expression) {
 
-				if (action_type == ACTION_PARAM) {
+				if (state.action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
-						if (strict || PyList_Check(param_values)) {
+						if (state.strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
 								item = PyList_GetItem(param_values, j);
@@ -501,9 +510,9 @@ tr32:
 								);
 								render__param(
 									output_end,
-									start_line, start_expression - start_line,
+									state.start_line, state.start_expression - state.start_line,
 									value, value_size,
-									end_expression, end_line - end_expression
+									state.end_expression, state.end_line - state.end_expression
 								);
 							}
 						} else {
@@ -518,48 +527,48 @@ tr32:
 							);
 							render__param(
 								output_end,
-								start_line, start_expression - start_line,
+								state.start_line, state.start_expression - state.start_line,
 								value, value_size,
-								end_expression, end_line - end_expression
+								state.end_expression, state.end_line - state.end_expression
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render__param(
 							output_end,
-							start_line, start_expression - start_line,
+							state.start_line, state.start_expression - state.start_line,
 							"", 0,
-							end_expression, end_line - end_expression
+							state.end_expression, state.end_line - state.end_expression
 						);
 					}
 
 				}
-				else if (action_type == ACTION_REF) {
+				else if (state.action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
 						*other_size = depth * 2;
 						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					(*other)[depth].left.start = start_line;
-					(*other)[depth].left.length = start_expression - start_line;
-					(*other)[depth].right.start = end_expression;
-					(*other)[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = state.start_line;
+					(*other)[depth].left.length = state.start_expression - state.start_line;
+					(*other)[depth].right.start = state.end_expression;
+					(*other)[depth].right.length = state.end_line - state.end_expression;
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
-						if (strict || PyList_Check(ref_values)) {
+						if (state.strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
 							for (j = 0; j < list_size; j++) {
 								render_(
 									render_result,
-									name_start,
-									name_end - name_start,
+									state.start_name,
+									state.end_name - state.start_name,
 									output_end,
 									depth + 1,
 									buffer_size,
@@ -574,8 +583,8 @@ tr32:
 						} else {
 							render_(
 								render_result,
-								name_start,
-								name_end - name_start,
+								state.start_name,
+								state.end_name - state.start_name,
 								output_end,
 								depth + 1,
 								buffer_size,
@@ -587,11 +596,11 @@ tr32:
 								ref_values
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render_(
 							render_result,
-							name_start,
-							name_end - name_start,
+							state.start_name,
+							state.end_name - state.start_name,
 							output_end,
 							depth + 1,
 							buffer_size,
@@ -608,11 +617,11 @@ tr32:
 
 			}
 
-			if (action_type == ACTION_NONE) {
-				render__empty(output_end, start_line, end_line - start_line);
+			if (state.action_type == ACTION_NONE) {
+				render__empty(output_end, state.start_line, state.end_line - state.start_line);
 			}
 
-			reset_line_properties();
+			resetState(state);
 
 		}
 	goto st0;
@@ -620,60 +629,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-#line 624 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 633 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-#line 155 "input_preprocessed.rl"
-	{ start_line = p; }
+/* #line 164 "compileComprehension_preprocessed.rl" */
+	{ state.start_line = p; }
 	goto st1;
 tr31:
-#line 313 "input_preprocessed.rl"
-	{ end_expression = p; }
+/* #line 322 "compileComprehension_preprocessed.rl" */
+	{ state.end_expression = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-#line 642 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 651 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-#line 155 "input_preprocessed.rl"
-	{ start_line = p; }
-#line 309 "input_preprocessed.rl"
+/* #line 164 "compileComprehension_preprocessed.rl" */
+	{ state.start_line = p; }
+/* #line 318 "compileComprehension_preprocessed.rl" */
 	{
-			if (!(start_expression && name_end))
-				start_expression = p;
+			if (!(state.start_expression && state.end_name))
+				state.start_expression = p;
 		}
 	goto st2;
 tr5:
-#line 309 "input_preprocessed.rl"
+/* #line 318 "compileComprehension_preprocessed.rl" */
 	{
-			if (!(start_expression && name_end))
-				start_expression = p;
+			if (!(state.start_expression && state.end_name))
+				state.start_expression = p;
 		}
 	goto st2;
 tr33:
-#line 309 "input_preprocessed.rl"
+/* #line 318 "compileComprehension_preprocessed.rl" */
 	{
-			if (!(start_expression && name_end))
-				start_expression = p;
+			if (!(state.start_expression && state.end_name))
+				state.start_expression = p;
 		}
-#line 313 "input_preprocessed.rl"
-	{ end_expression = p; }
+/* #line 322 "compileComprehension_preprocessed.rl" */
+	{ state.end_expression = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-#line 677 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 686 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -712,26 +721,26 @@ case 5:
 	}
 	goto st1;
 tr22:
-#line 303 "input_preprocessed.rl"
-	{ optional = true; }
+/* #line 312 "compileComprehension_preprocessed.rl" */
+	{ state.optional = true; }
 	goto st6;
 tr39:
-#line 301 "input_preprocessed.rl"
-	{ action_type = ACTION_PARAM; }
+/* #line 310 "compileComprehension_preprocessed.rl" */
+	{ state.action_type = ACTION_PARAM; }
 	goto st6;
 tr44:
-#line 302 "input_preprocessed.rl"
-	{ action_type = ACTION_REF; }
+/* #line 311 "compileComprehension_preprocessed.rl" */
+	{ state.action_type = ACTION_REF; }
 	goto st6;
 tr52:
-#line 304 "input_preprocessed.rl"
-	{ strict = true; }
+/* #line 313 "compileComprehension_preprocessed.rl" */
+	{ state.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-#line 735 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 744 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -838,34 +847,34 @@ case 15:
 		goto tr23;
 	goto st1;
 tr23:
-#line 303 "input_preprocessed.rl"
-	{ optional = true; }
-#line 306 "input_preprocessed.rl"
-	{ name_start = p; }
+/* #line 312 "compileComprehension_preprocessed.rl" */
+	{ state.optional = true; }
+/* #line 315 "compileComprehension_preprocessed.rl" */
+	{ state.start_name = p; }
 	goto st16;
 tr40:
-#line 301 "input_preprocessed.rl"
-	{ action_type = ACTION_PARAM; }
-#line 306 "input_preprocessed.rl"
-	{ name_start = p; }
+/* #line 310 "compileComprehension_preprocessed.rl" */
+	{ state.action_type = ACTION_PARAM; }
+/* #line 315 "compileComprehension_preprocessed.rl" */
+	{ state.start_name = p; }
 	goto st16;
 tr45:
-#line 302 "input_preprocessed.rl"
-	{ action_type = ACTION_REF; }
-#line 306 "input_preprocessed.rl"
-	{ name_start = p; }
+/* #line 311 "compileComprehension_preprocessed.rl" */
+	{ state.action_type = ACTION_REF; }
+/* #line 315 "compileComprehension_preprocessed.rl" */
+	{ state.start_name = p; }
 	goto st16;
 tr53:
-#line 304 "input_preprocessed.rl"
-	{ strict = true; }
-#line 306 "input_preprocessed.rl"
-	{ name_start = p; }
+/* #line 313 "compileComprehension_preprocessed.rl" */
+	{ state.strict = true; }
+/* #line 315 "compileComprehension_preprocessed.rl" */
+	{ state.start_name = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-#line 869 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 878 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr24;
@@ -883,14 +892,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr24:
-#line 307 "input_preprocessed.rl"
-	{ name_end = p; }
+/* #line 316 "compileComprehension_preprocessed.rl" */
+	{ state.end_name = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-#line 894 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 903 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -899,14 +908,14 @@ case 17:
 	}
 	goto st1;
 tr25:
-#line 307 "input_preprocessed.rl"
-	{ name_end = p; }
+/* #line 316 "compileComprehension_preprocessed.rl" */
+	{ state.end_name = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-#line 910 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 919 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -1200,25 +1209,25 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
-#line 156 "input_preprocessed.rl"
+/* #line 165 "compileComprehension_preprocessed.rl" */
 	{
 
-			end_line = p;
+			state.end_line = p;
 
-			if (name_end && end_expression) {
+			if (state.end_name && state.end_expression) {
 
-				if (action_type == ACTION_PARAM) {
+				if (state.action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
-						if (strict || PyList_Check(param_values)) {
+						if (state.strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
 								item = PyList_GetItem(param_values, j);
@@ -1231,9 +1240,9 @@ case 37:
 								);
 								render__param(
 									output_end,
-									start_line, start_expression - start_line,
+									state.start_line, state.start_expression - state.start_line,
 									value, value_size,
-									end_expression, end_line - end_expression
+									state.end_expression, state.end_line - state.end_expression
 								);
 							}
 						} else {
@@ -1248,48 +1257,48 @@ case 37:
 							);
 							render__param(
 								output_end,
-								start_line, start_expression - start_line,
+								state.start_line, state.start_expression - state.start_line,
 								value, value_size,
-								end_expression, end_line - end_expression
+								state.end_expression, state.end_line - state.end_expression
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render__param(
 							output_end,
-							start_line, start_expression - start_line,
+							state.start_line, state.start_expression - state.start_line,
 							"", 0,
-							end_expression, end_line - end_expression
+							state.end_expression, state.end_line - state.end_expression
 						);
 					}
 
 				}
-				else if (action_type == ACTION_REF) {
+				else if (state.action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
 						*other_size = depth * 2;
 						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					(*other)[depth].left.start = start_line;
-					(*other)[depth].left.length = start_expression - start_line;
-					(*other)[depth].right.start = end_expression;
-					(*other)[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = state.start_line;
+					(*other)[depth].left.length = state.start_expression - state.start_line;
+					(*other)[depth].right.start = state.end_expression;
+					(*other)[depth].right.length = state.end_line - state.end_expression;
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
-						if (strict || PyList_Check(ref_values)) {
+						if (state.strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
 							for (j = 0; j < list_size; j++) {
 								render_(
 									render_result,
-									name_start,
-									name_end - name_start,
+									state.start_name,
+									state.end_name - state.start_name,
 									output_end,
 									depth + 1,
 									buffer_size,
@@ -1304,8 +1313,8 @@ case 37:
 						} else {
 							render_(
 								render_result,
-								name_start,
-								name_end - name_start,
+								state.start_name,
+								state.end_name - state.start_name,
 								output_end,
 								depth + 1,
 								buffer_size,
@@ -1317,11 +1326,11 @@ case 37:
 								ref_values
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render_(
 							render_result,
-							name_start,
-							name_end - name_start,
+							state.start_name,
+							state.end_name - state.start_name,
 							output_end,
 							depth + 1,
 							buffer_size,
@@ -1338,36 +1347,36 @@ case 37:
 
 			}
 
-			if (action_type == ACTION_NONE) {
-				render__empty(output_end, start_line, end_line - start_line);
+			if (state.action_type == ACTION_NONE) {
+				render__empty(output_end, state.start_line, state.end_line - state.start_line);
 			}
 
-			reset_line_properties();
+			resetState(state);
 
 		}
 	break;
 	case 20: 
-#line 313 "input_preprocessed.rl"
-	{ end_expression = p; }
-#line 156 "input_preprocessed.rl"
+/* #line 322 "compileComprehension_preprocessed.rl" */
+	{ state.end_expression = p; }
+/* #line 165 "compileComprehension_preprocessed.rl" */
 	{
 
-			end_line = p;
+			state.end_line = p;
 
-			if (name_end && end_expression) {
+			if (state.end_name && state.end_expression) {
 
-				if (action_type == ACTION_PARAM) {
+				if (state.action_type == ACTION_PARAM) {
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					param_values = PyDict_GetItemString(params, *name_buffer);
 					if (param_values) {
-						if (strict || PyList_Check(param_values)) {
+						if (state.strict || PyList_Check(param_values)) {
 							list_size = PyList_Size(param_values);
 							for (j = 0; j < list_size; j++) {
 								item = PyList_GetItem(param_values, j);
@@ -1380,9 +1389,9 @@ case 37:
 								);
 								render__param(
 									output_end,
-									start_line, start_expression - start_line,
+									state.start_line, state.start_expression - state.start_line,
 									value, value_size,
-									end_expression, end_line - end_expression
+									state.end_expression, state.end_line - state.end_expression
 								);
 							}
 						} else {
@@ -1397,48 +1406,48 @@ case 37:
 							);
 							render__param(
 								output_end,
-								start_line, start_expression - start_line,
+								state.start_line, state.start_expression - state.start_line,
 								value, value_size,
-								end_expression, end_line - end_expression
+								state.end_expression, state.end_line - state.end_expression
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render__param(
 							output_end,
-							start_line, start_expression - start_line,
+							state.start_line, state.start_expression - state.start_line,
 							"", 0,
-							end_expression, end_line - end_expression
+							state.end_expression, state.end_line - state.end_expression
 						);
 					}
 
 				}
-				else if (action_type == ACTION_REF) {
+				else if (state.action_type == ACTION_REF) {
 
 					if (depth >= *other_size) {
 						*other_size = depth * 2;
 						*other = realloc(*other, sizeof(Other) * (*other_size));
 					}
-					(*other)[depth].left.start = start_line;
-					(*other)[depth].left.length = start_expression - start_line;
-					(*other)[depth].right.start = end_expression;
-					(*other)[depth].right.length = end_line - end_expression;
+					(*other)[depth].left.start = state.start_line;
+					(*other)[depth].left.length = state.start_expression - state.start_line;
+					(*other)[depth].right.start = state.end_expression;
+					(*other)[depth].right.length = state.end_line - state.end_expression;
 
-					if (name_end - name_start + 1 > *name_buffer_size) {
-						*name_buffer_size = name_end - name_start + 1;
+					if (state.end_name - state.start_name + 1 > *name_buffer_size) {
+						*name_buffer_size = state.end_name - state.start_name + 1;
 						*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));
 					}
-					memcpy(*name_buffer, name_start, name_end - name_start);
-					(*name_buffer)[name_end - name_start] = 0;
+					memcpy(*name_buffer, state.start_name, state.end_name - state.start_name);
+					(*name_buffer)[state.end_name - state.start_name] = 0;
 
 					ref_values = PyDict_GetItemString(params, *name_buffer);
 					if (ref_values) {
-						if (strict || PyList_Check(ref_values)) {
+						if (state.strict || PyList_Check(ref_values)) {
 							list_size = PyList_Size(ref_values);
 							for (j = 0; j < list_size; j++) {
 								render_(
 									render_result,
-									name_start,
-									name_end - name_start,
+									state.start_name,
+									state.end_name - state.start_name,
 									output_end,
 									depth + 1,
 									buffer_size,
@@ -1453,8 +1462,8 @@ case 37:
 						} else {
 							render_(
 								render_result,
-								name_start,
-								name_end - name_start,
+								state.start_name,
+								state.end_name - state.start_name,
 								output_end,
 								depth + 1,
 								buffer_size,
@@ -1466,11 +1475,11 @@ case 37:
 								ref_values
 							);
 						}
-					} else if (!optional) {
+					} else if (!state.optional) {
 						render_(
 							render_result,
-							name_start,
-							name_end - name_start,
+							state.start_name,
+							state.end_name - state.start_name,
 							output_end,
 							depth + 1,
 							buffer_size,
@@ -1487,21 +1496,21 @@ case 37:
 
 			}
 
-			if (action_type == ACTION_NONE) {
-				render__empty(output_end, start_line, end_line - start_line);
+			if (state.action_type == ACTION_NONE) {
+				render__empty(output_end, state.start_line, state.end_line - state.start_line);
 			}
 
-			reset_line_properties();
+			resetState(state);
 
 		}
 	break;
-#line 1499 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/c/render.c"
+/* #line 1508 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-#line 337 "input_preprocessed.rl"
+/* #line 346 "compileComprehension_preprocessed.rl" */
 
 
 	if (!depth) {

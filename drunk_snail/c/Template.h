@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+#include "List.h"
+
 
 
 typedef struct {
@@ -39,28 +41,10 @@ typedef struct {
 	size_t length;
 	size_t buffer_size;
 
-	size_t render_states_current_size;
-	size_t render_states_allocated_size;
-	RenderState *render_states;
+	List render_states;
 
 } Template;
 
-
-#define addRenderState(template, state) {\
-\
-	template->render_states_current_size += 1;\
-\
-	if (template->render_states == NULL) {\
-		template->render_states_allocated_size = 16;\
-		template->render_states = malloc(sizeof(RenderState) * template->render_states_allocated_size);\
-	} else if (template->render_states_current_size > template->render_states_allocated_size) {\
-		template->render_states_allocated_size *= 2;\
-		template->render_states = realloc(template->render_states, sizeof(RenderState) * template->render_states_allocated_size);\
-	}\
-\
-	template->render_states[template->render_states_current_size-1] = state;\
-\
-}
 
 #define resetToken(token) {\
 	token.start = NULL;\
@@ -72,10 +56,10 @@ typedef struct {
 }
 
 #define resetRenderState(state) {\
-	resetToken(state.tokens.line);\
-	resetToken(state.tokens.expression);\
-	resetToken(state.tokens.name);\
-	state.action = ACTION_NONE;\
-	resetFlag(state.flags.optional);\
-	resetFlag(state.flags.strict);\
+	resetToken((state).tokens.line);\
+	resetToken((state).tokens.expression);\
+	resetToken((state).tokens.name);\
+	(state).action = ACTION_NONE;\
+	resetFlag((state).flags.optional);\
+	resetFlag((state).flags.strict);\
 }

@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <Python.h>
 
+#include "List.h"
 #include "Other.h"
 #include "Template.h"
 #include "templates.h"
@@ -216,39 +217,44 @@ void render_(
 	PyObject *item;
 
 	size_t i;
-	RenderState *state;
+	RenderState *state = NULL;
 	size_t i_template = 0;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
-	if (template->render_states == NULL) {
+	if (template->render_states.length == 0) {
 
-		RenderState state;
-		resetRenderState(state);
+		state = malloc(sizeof(RenderState) * 1);
+		resetRenderState(*state);
 
 		%%{
 
-			action action_start_line { state.tokens.line.start = p; }
+			action action_start_line { state->tokens.line.start = p; }
 			action action_end_line {
-				state.tokens.line.end = p;
-				addRenderState(template, state);
-				ACTION_END_LINE(state);
-				resetRenderState(state);
+
+				state->tokens.line.end = p;
+				listPush(template->render_states, state);
+
+				ACTION_END_LINE(*state);
+
+				state = malloc(sizeof(RenderState) * 1);
+				resetRenderState(*state)
+
 			}
 
-			action action_param { state.action = ACTION_PARAM; }
-			action action_ref { state.action = ACTION_REF; }
-			action action_optional { state.flags.optional = true; }
-			action action_strict { state.flags.strict = true; }
+			action action_param { state->action = ACTION_PARAM; }
+			action action_ref { state->action = ACTION_REF; }
+			action action_optional { state->flags.optional = true; }
+			action action_strict { state->flags.strict = true; }
 
-			action action_start_name { state.tokens.name.start = p; }
-			action action_end_name { state.tokens.name.end = p; }
+			action action_start_name { state->tokens.name.start = p; }
+			action action_end_name { state->tokens.name.end = p; }
 
 			action action_start_expression {
-				if (!(state.tokens.expression.start && state.tokens.name.end))
-					state.tokens.expression.start = p;
+				if (!(state->tokens.expression.start && state->tokens.name.end))
+					state->tokens.expression.start = p;
 			}
-			action action_end_expression { state.tokens.expression.end = p; }
+			action action_end_expression { state->tokens.expression.end = p; }
 
 			open = '<!--';
 			close = '-->';
@@ -275,10 +281,12 @@ void render_(
 
 		}%%
 
+		free(state);
+
 	} else {
 
-		for (i_template = 0; i_template < template->render_states_current_size; i_template++) {
-			state = template->render_states + i_template;
+		for (i_template = 0; i_template < template->render_states.length; i_template++) {
+			state = template->render_states.start[i_template];
 			ACTION_END_LINE(*state);
 		}
 

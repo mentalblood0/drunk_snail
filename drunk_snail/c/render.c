@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <Python.h>
 
+#include "List.h"
 #include "Other.h"
 #include "Template.h"
 #include "templates.h"
@@ -16,7 +17,7 @@
 
 
 
-/* #line 20 "compileComprehension.c" */
+/* #line 21 "compileComprehension.c" */
 static const int render_start = 0;
 static const int render_first_final = 0;
 static const int render_error = -1;
@@ -24,7 +25,7 @@ static const int render_error = -1;
 static const int render_en_main = 0;
 
 
-/* #line 19 "compileComprehension_preprocessed.rl" */
+/* #line 20 "compileComprehension_preprocessed.rl" */
 
 
 
@@ -257,117 +258,132 @@ void render_(
 	PyObject *item;
 
 	size_t i;
-	RenderState *state;
+	RenderState *state = NULL;
 	size_t i_template = 0;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
-	if (template->render_states == NULL) {
+	if (template->render_states.length == 0) {
 
-		RenderState state;
-		resetRenderState(state);
+		state = malloc(sizeof(RenderState) * 1);
+		resetRenderState(*state);
 
 		
-/* #line 272 "compileComprehension.c" */
+/* #line 273 "compileComprehension.c" */
 	{
 	cs = render_start;
 	}
 
-/* #line 277 "compileComprehension.c" */
+/* #line 278 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 263 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.line.start = p; }
 /* #line 264 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.line.start = p; }
+/* #line 265 "compileComprehension_preprocessed.rl" */
 	{
-				state.tokens.line.end = p;
-				addRenderState(template, state);
-				ACTION_END_LINE(state);
-				resetRenderState(state);
+
+				state->tokens.line.end = p;
+				listPush(template->render_states, state);
+
+				ACTION_END_LINE(*state);
+
+				state = malloc(sizeof(RenderState) * 1);
+				resetRenderState(*state)
+
 			}
 	goto st0;
 tr4:
-/* #line 264 "compileComprehension_preprocessed.rl" */
+/* #line 265 "compileComprehension_preprocessed.rl" */
 	{
-				state.tokens.line.end = p;
-				addRenderState(template, state);
-				ACTION_END_LINE(state);
-				resetRenderState(state);
+
+				state->tokens.line.end = p;
+				listPush(template->render_states, state);
+
+				ACTION_END_LINE(*state);
+
+				state = malloc(sizeof(RenderState) * 1);
+				resetRenderState(*state)
+
 			}
 	goto st0;
 tr32:
-/* #line 283 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.expression.end = p; }
-/* #line 264 "compileComprehension_preprocessed.rl" */
+/* #line 289 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.expression.end = p; }
+/* #line 265 "compileComprehension_preprocessed.rl" */
 	{
-				state.tokens.line.end = p;
-				addRenderState(template, state);
-				ACTION_END_LINE(state);
-				resetRenderState(state);
+
+				state->tokens.line.end = p;
+				listPush(template->render_states, state);
+
+				ACTION_END_LINE(*state);
+
+				state = malloc(sizeof(RenderState) * 1);
+				resetRenderState(*state)
+
 			}
 	goto st0;
 st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 318 "compileComprehension.c" */
+/* #line 334 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 263 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.line.start = p; }
+/* #line 264 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.line.start = p; }
 	goto st1;
 tr31:
-/* #line 283 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.expression.end = p; }
+/* #line 289 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.expression.end = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 336 "compileComprehension.c" */
+/* #line 352 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 263 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.line.start = p; }
-/* #line 279 "compileComprehension_preprocessed.rl" */
+/* #line 264 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.line.start = p; }
+/* #line 285 "compileComprehension_preprocessed.rl" */
 	{
-				if (!(state.tokens.expression.start && state.tokens.name.end))
-					state.tokens.expression.start = p;
+				if (!(state->tokens.expression.start && state->tokens.name.end))
+					state->tokens.expression.start = p;
 			}
 	goto st2;
 tr5:
-/* #line 279 "compileComprehension_preprocessed.rl" */
+/* #line 285 "compileComprehension_preprocessed.rl" */
 	{
-				if (!(state.tokens.expression.start && state.tokens.name.end))
-					state.tokens.expression.start = p;
+				if (!(state->tokens.expression.start && state->tokens.name.end))
+					state->tokens.expression.start = p;
 			}
 	goto st2;
 tr33:
-/* #line 279 "compileComprehension_preprocessed.rl" */
+/* #line 285 "compileComprehension_preprocessed.rl" */
 	{
-				if (!(state.tokens.expression.start && state.tokens.name.end))
-					state.tokens.expression.start = p;
+				if (!(state->tokens.expression.start && state->tokens.name.end))
+					state->tokens.expression.start = p;
 			}
-/* #line 283 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.expression.end = p; }
+/* #line 289 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.expression.end = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 371 "compileComprehension.c" */
+/* #line 387 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -406,26 +422,26 @@ case 5:
 	}
 	goto st1;
 tr22:
-/* #line 273 "compileComprehension_preprocessed.rl" */
-	{ state.flags.optional = true; }
+/* #line 279 "compileComprehension_preprocessed.rl" */
+	{ state->flags.optional = true; }
 	goto st6;
 tr39:
-/* #line 271 "compileComprehension_preprocessed.rl" */
-	{ state.action = ACTION_PARAM; }
+/* #line 277 "compileComprehension_preprocessed.rl" */
+	{ state->action = ACTION_PARAM; }
 	goto st6;
 tr44:
-/* #line 272 "compileComprehension_preprocessed.rl" */
-	{ state.action = ACTION_REF; }
+/* #line 278 "compileComprehension_preprocessed.rl" */
+	{ state->action = ACTION_REF; }
 	goto st6;
 tr52:
-/* #line 274 "compileComprehension_preprocessed.rl" */
-	{ state.flags.strict = true; }
+/* #line 280 "compileComprehension_preprocessed.rl" */
+	{ state->flags.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 429 "compileComprehension.c" */
+/* #line 445 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -532,34 +548,34 @@ case 15:
 		goto tr23;
 	goto st1;
 tr23:
-/* #line 273 "compileComprehension_preprocessed.rl" */
-	{ state.flags.optional = true; }
-/* #line 276 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.name.start = p; }
+/* #line 279 "compileComprehension_preprocessed.rl" */
+	{ state->flags.optional = true; }
+/* #line 282 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.name.start = p; }
 	goto st16;
 tr40:
-/* #line 271 "compileComprehension_preprocessed.rl" */
-	{ state.action = ACTION_PARAM; }
-/* #line 276 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.name.start = p; }
+/* #line 277 "compileComprehension_preprocessed.rl" */
+	{ state->action = ACTION_PARAM; }
+/* #line 282 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.name.start = p; }
 	goto st16;
 tr45:
-/* #line 272 "compileComprehension_preprocessed.rl" */
-	{ state.action = ACTION_REF; }
-/* #line 276 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.name.start = p; }
+/* #line 278 "compileComprehension_preprocessed.rl" */
+	{ state->action = ACTION_REF; }
+/* #line 282 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.name.start = p; }
 	goto st16;
 tr53:
-/* #line 274 "compileComprehension_preprocessed.rl" */
-	{ state.flags.strict = true; }
-/* #line 276 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.name.start = p; }
+/* #line 280 "compileComprehension_preprocessed.rl" */
+	{ state->flags.strict = true; }
+/* #line 282 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.name.start = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 563 "compileComprehension.c" */
+/* #line 579 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr24;
@@ -577,14 +593,14 @@ case 16:
 		goto st16;
 	goto st1;
 tr24:
-/* #line 277 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.name.end = p; }
+/* #line 283 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.name.end = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-/* #line 588 "compileComprehension.c" */
+/* #line 604 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st17;
@@ -593,14 +609,14 @@ case 17:
 	}
 	goto st1;
 tr25:
-/* #line 277 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.name.end = p; }
+/* #line 283 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.name.end = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-/* #line 604 "compileComprehension.c" */
+/* #line 620 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st19;
@@ -894,38 +910,50 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
-/* #line 264 "compileComprehension_preprocessed.rl" */
+/* #line 265 "compileComprehension_preprocessed.rl" */
 	{
-				state.tokens.line.end = p;
-				addRenderState(template, state);
-				ACTION_END_LINE(state);
-				resetRenderState(state);
+
+				state->tokens.line.end = p;
+				listPush(template->render_states, state);
+
+				ACTION_END_LINE(*state);
+
+				state = malloc(sizeof(RenderState) * 1);
+				resetRenderState(*state)
+
 			}
 	break;
 	case 20: 
-/* #line 283 "compileComprehension_preprocessed.rl" */
-	{ state.tokens.expression.end = p; }
-/* #line 264 "compileComprehension_preprocessed.rl" */
+/* #line 289 "compileComprehension_preprocessed.rl" */
+	{ state->tokens.expression.end = p; }
+/* #line 265 "compileComprehension_preprocessed.rl" */
 	{
-				state.tokens.line.end = p;
-				addRenderState(template, state);
-				ACTION_END_LINE(state);
-				resetRenderState(state);
+
+				state->tokens.line.end = p;
+				listPush(template->render_states, state);
+
+				ACTION_END_LINE(*state);
+
+				state = malloc(sizeof(RenderState) * 1);
+				resetRenderState(*state)
+
 			}
 	break;
-/* #line 917 "compileComprehension.c" */
+/* #line 943 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-/* #line 308 "compileComprehension_preprocessed.rl" */
+/* #line 314 "compileComprehension_preprocessed.rl" */
 
+
+		free(state);
 
 	} else {
 
-		for (i_template = 0; i_template < template->render_states_current_size; i_template++) {
-			state = template->render_states + i_template;
+		for (i_template = 0; i_template < template->render_states.length; i_template++) {
+			state = template->render_states.start[i_template];
 			ACTION_END_LINE(*state);
 		}
 

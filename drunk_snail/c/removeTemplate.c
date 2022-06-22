@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <Python.h>
 
+#include "List.h"
 #include "Template.h"
 #include "templates.h"
 #include "prefix_tree.h"
@@ -14,9 +15,8 @@ int removeTemplate_(char *name) {
 		return 1;
 
 	free(template->text);
-	if (template->render_states) {
-		free(template->render_states);
-	}
+	size_t i;
+	listClear(template->render_states, i);
 
 	treeRemove(templates, name);
 

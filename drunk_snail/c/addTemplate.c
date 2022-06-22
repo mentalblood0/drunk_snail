@@ -2,6 +2,7 @@
 #include <Python.h>
 #include <sys/types.h>
 
+#include "List.h"
 #include "Template.h"
 #include "templates.h"
 #include "prefix_tree.h"
@@ -18,9 +19,7 @@ void addTemplate_(char *name, char *text) {
 
 	template->length = text_length - 1;
 	template->buffer_size = template->length;
-	template->render_states = NULL;
-	template->render_states_current_size = 0;
-	template->render_states_allocated_size = 0;
+	listCreate(template->render_states, 16);
 
 	treeInsert(templates, name, template);
 

@@ -16,3 +16,8 @@ a.out
 test.py
 compile_with_comments.c
 notes.txt
+CMake*
+*.cmake
+*.props
+*.vc*
+*.sln

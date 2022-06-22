@@ -2,10 +2,10 @@
 #include <Python.h>
 #include <sys/types.h>
 
-#include "List.h"
-#include "Template.h"
-#include "templates.h"
-#include "prefix_tree.h"
+#include "../modules/List/include/List.h"
+#include "../include/Template.h"
+#include "../include/templates.h"
+#include "../modules/prefix_tree/include/prefix_tree.h"
 
 
 

@@ -1,10 +1,10 @@
 #include <Python.h>
 
-#include "render.h"
-#include "templates.h"
-#include "addTemplate.h"
-#include "getTemplate.h"
-#include "removeTemplate.h"
+#include "../include/render.h"
+#include "../include/templates.h"
+#include "../include/addTemplate.h"
+#include "../include/getTemplate.h"
+#include "../include/removeTemplate.h"
 
 
 

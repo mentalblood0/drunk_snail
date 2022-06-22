@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-#include "Template.h"
-#include "templates.h"
+#include "../include/Template.h"
+#include "../include/templates.h"
 
 
 

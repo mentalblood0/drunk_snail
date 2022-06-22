@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "prefix_tree.h"
+#include "../include/prefix_tree.h"
 
 #define ALPHABET_SIZE 256
 

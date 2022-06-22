@@ -5,12 +5,12 @@
 #include <sys/types.h>
 #include <Python.h>
 
-#include "List.h"
-#include "Other.h"
-#include "Template.h"
-#include "templates.h"
-#include "prefix_tree.h"
-#include "RenderResult.h"
+#include "../modules/List/include/List.h"
+#include "../include/Other.h"
+#include "../include/Template.h"
+#include "../include/templates.h"
+#include "../modules/prefix_tree/include/prefix_tree.h"
+#include "../include/RenderResult.h"
 
 
 

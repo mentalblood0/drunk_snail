@@ -234,7 +234,7 @@ void render_(
 	Template *template = dictionaryLookupUnterminated(templates, template_name, template_name_length);
 	if (template == NULL) {
 		render_result->message = malloc(sizeof(char) * (template_name_length + 1));
-		memcpy(render_result->message, template_name, template_name_length);
+		memcpy_s(render_result->message, template_name_length, template_name, template_name_length);
 		render_result->message[template_name_length] = 0;
 		return;
 	}

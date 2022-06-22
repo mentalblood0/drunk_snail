@@ -31,7 +31,7 @@ PyObject *getTemplate (
 	size_t length = strlen(source_text) + 1;
 
 	char *result = malloc(sizeof(char) * (length + 1));
-	memcpy(result, source_text, length);
+	memcpy_s(result, length, source_text, length);
 
 	return PyUnicode_FromStringAndSize(result, length - 1);
 

@@ -14,7 +14,7 @@ void addTemplate_(char *name, char *text) {
 
 	size_t text_length = strlen(text) + 1;
 	template->text = malloc(sizeof(char) * text_length);
-	memcpy(template->text, text, text_length);
+	memcpy_s(template->text, text_length, text, text_length);
 
 	template->length = text_length - 1;
 	template->buffer_size = template->length;

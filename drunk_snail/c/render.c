@@ -79,20 +79,20 @@ static const int render_en_main = 0;
 
 #define ACTION_END_LINE(state) {\
 \
-	if ((state).end_name && (state).end_expression) {\
+	if ((state).tokens.name.end && (state).tokens.expression.end) {\
 \
-		if ((state).action_type == ACTION_PARAM) {\
+		if ((state).action == ACTION_PARAM) {\
 \
-			if ((state).end_name - (state).start_name + 1 > *name_buffer_size) {\
-				*name_buffer_size = (state).end_name - (state).start_name + 1;\
+			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
+				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
 				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
 			}\
-			memcpy(*name_buffer, (state).start_name, (state).end_name - (state).start_name);\
-			(*name_buffer)[(state).end_name - (state).start_name] = 0;\
+			memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
+			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
 \
 			param_values = PyDict_GetItemString(params, *name_buffer);\
 			if (param_values) {\
-				if ((state).strict || PyList_Check(param_values)) {\
+				if ((state).flags.strict || PyList_Check(param_values)) {\
 					list_size = PyList_Size(param_values);\
 					for (j = 0; j < list_size; j++) {\
 						item = PyList_GetItem(param_values, j);\
@@ -102,9 +102,9 @@ static const int render_en_main = 0;
 						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 						render__param(\
 							output_end,\
-							(state).start_line, (state).start_expression - (state).start_line,\
+							(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 							value, value_size,\
-							(state).end_expression, (state).end_line - (state).end_expression\
+							(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
 						);\
 					}\
 				} else {\
@@ -116,48 +116,48 @@ static const int render_en_main = 0;
 					value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 					render__param(\
 						output_end,\
-						(state).start_line, (state).start_expression - (state).start_line,\
+						(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 						value, value_size,\
-						(state).end_expression, (state).end_line - (state).end_expression\
+						(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
 					);\
 				}\
-			} else if (!(state).optional) {\
+			} else if (!(state).flags.optional) {\
 				render__param(\
 					output_end,\
-					(state).start_line, (state).start_expression - (state).start_line,\
+					(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 					"", 0,\
-					(state).end_expression, (state).end_line - (state).end_expression\
+					(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
 				);\
 			}\
 \
 		}\
-		else if ((state).action_type == ACTION_REF) {\
+		else if ((state).action == ACTION_REF) {\
 \
 			if (depth >= *other_size) {\
 				*other_size = depth * 2;\
 				*other = realloc(*other, sizeof(Other) * (*other_size));\
 			}\
-			(*other)[depth].left.start = (state).start_line;\
-			(*other)[depth].left.length = (state).start_expression - (state).start_line;\
-			(*other)[depth].right.start = (state).end_expression;\
-			(*other)[depth].right.length = (state).end_line - (state).end_expression;\
+			(*other)[depth].left.start = (state).tokens.line.start;\
+			(*other)[depth].left.length = (state).tokens.expression.start - (state).tokens.line.start;\
+			(*other)[depth].right.start = (state).tokens.expression.end;\
+			(*other)[depth].right.length = (state).tokens.line.end - (state).tokens.expression.end;\
 \
-			if ((state).end_name - (state).start_name + 1 > *name_buffer_size) {\
-				*name_buffer_size = (state).end_name - (state).start_name + 1;\
+			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
+				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
 				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
 			}\
-			memcpy(*name_buffer, (state).start_name, (state).end_name - (state).start_name);\
-			(*name_buffer)[(state).end_name - (state).start_name] = 0;\
+			memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
+			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
 \
 			ref_values = PyDict_GetItemString(params, *name_buffer);\
 			if (ref_values) {\
-				if ((state).strict || PyList_Check(ref_values)) {\
+				if ((state).flags.strict || PyList_Check(ref_values)) {\
 					list_size = PyList_Size(ref_values);\
 					for (j = 0; j < list_size; j++) {\
 						render_(\
 							render_result,\
-							(state).start_name,\
-							(state).end_name - (state).start_name,\
+							(state).tokens.name.start,\
+							(state).tokens.name.end - (state).tokens.name.start,\
 							output_end,\
 							depth + 1,\
 							buffer_size,\
@@ -172,8 +172,8 @@ static const int render_en_main = 0;
 				} else {\
 					render_(\
 						render_result,\
-						(state).start_name,\
-						(state).end_name - (state).start_name,\
+						(state).tokens.name.start,\
+						(state).tokens.name.end - (state).tokens.name.start,\
 						output_end,\
 						depth + 1,\
 						buffer_size,\
@@ -185,11 +185,11 @@ static const int render_en_main = 0;
 						ref_values\
 					);\
 				}\
-			} else if (!(state).optional) {\
+			} else if (!(state).flags.optional) {\
 				render_(\
 					render_result,\
-					(state).start_name,\
-					(state).end_name - (state).start_name,\
+					(state).tokens.name.start,\
+					(state).tokens.name.end - (state).tokens.name.start,\
 					output_end,\
 					depth + 1,\
 					buffer_size,\
@@ -206,8 +206,8 @@ static const int render_en_main = 0;
 \
 	}\
 \
-	if ((state).action_type == ACTION_NONE) {\
-		render__empty(output_end, (state).start_line, (state).end_line - (state).start_line);\
+	if ((state).action == ACTION_NONE) {\
+		render__empty(output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
 	}\
 }
 
@@ -281,10 +281,10 @@ void render_(
 	{
 tr1:
 /* #line 263 "compileComprehension_preprocessed.rl" */
-	{ state.start_line = p; }
+	{ state.tokens.line.start = p; }
 /* #line 264 "compileComprehension_preprocessed.rl" */
 	{
-				state.end_line = p;
+				state.tokens.line.end = p;
 				addRenderState(template, state);
 				ACTION_END_LINE(state);
 				resetRenderState(state);
@@ -293,7 +293,7 @@ tr1:
 tr4:
 /* #line 264 "compileComprehension_preprocessed.rl" */
 	{
-				state.end_line = p;
+				state.tokens.line.end = p;
 				addRenderState(template, state);
 				ACTION_END_LINE(state);
 				resetRenderState(state);
@@ -301,10 +301,10 @@ tr4:
 	goto st0;
 tr32:
 /* #line 283 "compileComprehension_preprocessed.rl" */
-	{ state.end_expression = p; }
+	{ state.tokens.expression.end = p; }
 /* #line 264 "compileComprehension_preprocessed.rl" */
 	{
-				state.end_line = p;
+				state.tokens.line.end = p;
 				addRenderState(template, state);
 				ACTION_END_LINE(state);
 				resetRenderState(state);
@@ -322,11 +322,11 @@ case 0:
 	goto tr0;
 tr0:
 /* #line 263 "compileComprehension_preprocessed.rl" */
-	{ state.start_line = p; }
+	{ state.tokens.line.start = p; }
 	goto st1;
 tr31:
 /* #line 283 "compileComprehension_preprocessed.rl" */
-	{ state.end_expression = p; }
+	{ state.tokens.expression.end = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
@@ -340,28 +340,28 @@ case 1:
 	goto st1;
 tr2:
 /* #line 263 "compileComprehension_preprocessed.rl" */
-	{ state.start_line = p; }
+	{ state.tokens.line.start = p; }
 /* #line 279 "compileComprehension_preprocessed.rl" */
 	{
-				if (!(state.start_expression && state.end_name))
-					state.start_expression = p;
+				if (!(state.tokens.expression.start && state.tokens.name.end))
+					state.tokens.expression.start = p;
 			}
 	goto st2;
 tr5:
 /* #line 279 "compileComprehension_preprocessed.rl" */
 	{
-				if (!(state.start_expression && state.end_name))
-					state.start_expression = p;
+				if (!(state.tokens.expression.start && state.tokens.name.end))
+					state.tokens.expression.start = p;
 			}
 	goto st2;
 tr33:
 /* #line 279 "compileComprehension_preprocessed.rl" */
 	{
-				if (!(state.start_expression && state.end_name))
-					state.start_expression = p;
+				if (!(state.tokens.expression.start && state.tokens.name.end))
+					state.tokens.expression.start = p;
 			}
 /* #line 283 "compileComprehension_preprocessed.rl" */
-	{ state.end_expression = p; }
+	{ state.tokens.expression.end = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
@@ -407,19 +407,19 @@ case 5:
 	goto st1;
 tr22:
 /* #line 273 "compileComprehension_preprocessed.rl" */
-	{ state.optional = true; }
+	{ state.flags.optional = true; }
 	goto st6;
 tr39:
 /* #line 271 "compileComprehension_preprocessed.rl" */
-	{ state.action_type = ACTION_PARAM; }
+	{ state.action = ACTION_PARAM; }
 	goto st6;
 tr44:
 /* #line 272 "compileComprehension_preprocessed.rl" */
-	{ state.action_type = ACTION_REF; }
+	{ state.action = ACTION_REF; }
 	goto st6;
 tr52:
 /* #line 274 "compileComprehension_preprocessed.rl" */
-	{ state.strict = true; }
+	{ state.flags.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
@@ -533,27 +533,27 @@ case 15:
 	goto st1;
 tr23:
 /* #line 273 "compileComprehension_preprocessed.rl" */
-	{ state.optional = true; }
+	{ state.flags.optional = true; }
 /* #line 276 "compileComprehension_preprocessed.rl" */
-	{ state.start_name = p; }
+	{ state.tokens.name.start = p; }
 	goto st16;
 tr40:
 /* #line 271 "compileComprehension_preprocessed.rl" */
-	{ state.action_type = ACTION_PARAM; }
+	{ state.action = ACTION_PARAM; }
 /* #line 276 "compileComprehension_preprocessed.rl" */
-	{ state.start_name = p; }
+	{ state.tokens.name.start = p; }
 	goto st16;
 tr45:
 /* #line 272 "compileComprehension_preprocessed.rl" */
-	{ state.action_type = ACTION_REF; }
+	{ state.action = ACTION_REF; }
 /* #line 276 "compileComprehension_preprocessed.rl" */
-	{ state.start_name = p; }
+	{ state.tokens.name.start = p; }
 	goto st16;
 tr53:
 /* #line 274 "compileComprehension_preprocessed.rl" */
-	{ state.strict = true; }
+	{ state.flags.strict = true; }
 /* #line 276 "compileComprehension_preprocessed.rl" */
-	{ state.start_name = p; }
+	{ state.tokens.name.start = p; }
 	goto st16;
 st16:
 	if ( ++p == pe )
@@ -578,7 +578,7 @@ case 16:
 	goto st1;
 tr24:
 /* #line 277 "compileComprehension_preprocessed.rl" */
-	{ state.end_name = p; }
+	{ state.tokens.name.end = p; }
 	goto st17;
 st17:
 	if ( ++p == pe )
@@ -594,7 +594,7 @@ case 17:
 	goto st1;
 tr25:
 /* #line 277 "compileComprehension_preprocessed.rl" */
-	{ state.end_name = p; }
+	{ state.tokens.name.end = p; }
 	goto st18;
 st18:
 	if ( ++p == pe )
@@ -896,7 +896,7 @@ case 37:
 	case 37: 
 /* #line 264 "compileComprehension_preprocessed.rl" */
 	{
-				state.end_line = p;
+				state.tokens.line.end = p;
 				addRenderState(template, state);
 				ACTION_END_LINE(state);
 				resetRenderState(state);
@@ -904,10 +904,10 @@ case 37:
 	break;
 	case 20: 
 /* #line 283 "compileComprehension_preprocessed.rl" */
-	{ state.end_expression = p; }
+	{ state.tokens.expression.end = p; }
 /* #line 264 "compileComprehension_preprocessed.rl" */
 	{
-				state.end_line = p;
+				state.tokens.line.end = p;
 				addRenderState(template, state);
 				ACTION_END_LINE(state);
 				resetRenderState(state);

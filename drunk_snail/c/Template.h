@@ -5,25 +5,35 @@
 
 
 
+typedef struct {
+	char *start;
+	char *end;
+} Token;
+typedef struct {
+	Token line;
+	Token expression;
+	Token name;
+} Tokens;
+
+typedef bool Flag;
+typedef struct {
+	Flag optional;
+	Flag strict;
+} Flags;
+
 enum ActionType {
 	ACTION_PARAM,
 	ACTION_REF,
 	ACTION_NONE
 };
 
-typedef struct RenderState {
-	char *start_line;
-	char *end_line;
-	char *start_expression;
-	char *end_expression;
-	char *start_name;
-	char *end_name;
-	enum ActionType action_type;
-	bool optional;
-	bool strict;
+typedef struct {
+	Tokens tokens;
+	enum ActionType action;
+	Flags flags;
 } RenderState;
 
-typedef struct Template {
+typedef struct {
 
 	char *text;
 	size_t length;
@@ -54,14 +64,20 @@ typedef struct Template {
 \
 }
 
+#define resetToken(token) {\
+	token.start = NULL;\
+	token.end = NULL;\
+}
+
+#define resetFlag(flag) {\
+	flag = false;\
+}
+
 #define resetRenderState(state) {\
-	state.start_line = NULL;\
-	state.end_line = NULL;\
-	state.start_expression = NULL;\
-	state.end_expression = NULL;\
-	state.start_name = NULL;\
-	state.end_name = NULL;\
-	state.action_type = ACTION_NONE;\
-	state.optional = false;\
-	state.strict = false;\
+	resetToken(state.tokens.line);\
+	resetToken(state.tokens.expression);\
+	resetToken(state.tokens.name);\
+	state.action = ACTION_NONE;\
+	resetFlag(state.flags.optional);\
+	resetFlag(state.flags.strict);\
 }

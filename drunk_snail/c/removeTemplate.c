@@ -14,7 +14,9 @@ int removeTemplate_(char *name) {
 		return 1;
 
 	free(template->text);
-	free(template->render_states);
+	if (template->render_states) {
+		free(template->render_states);
+	}
 
 	treeRemove(templates, name);
 

@@ -1,20 +1,29 @@
+#include <stdlib.h>
+#include <Python.h>
+
+#include "Template.h"
+#include "templates.h"
+#include "prefix_tree.h"
+
+
+
 int removeTemplate_(char *name) {
 
-	Template *template = dictionaryLookup(_templates, name);
+	Template *template = dictionaryLookup(templates, name);
 	if (template == NULL)
 		return 1;
 
 	free(template->text);
 	free(template->render_states);
 
-	treeRemove(_templates, name);
+	treeRemove(templates, name);
 
 	return 0;
 
 }
 
 
-static PyObject *removeTemplate (
+PyObject *removeTemplate (
 	PyObject *self,
 	PyObject *args
 ) {

@@ -1,4 +1,14 @@
-static PyMethodDef methods[] = {
+#include <Python.h>
+
+#include "render.h"
+#include "templates.h"
+#include "addTemplate.h"
+#include "getTemplate.h"
+#include "removeTemplate.h"
+
+
+
+PyMethodDef methods[5] = {
 	{
 		"addTemplate",
 		addTemplate,
@@ -26,7 +36,7 @@ static PyMethodDef methods[] = {
 	{NULL, NULL, 0, NULL}
 };
 
-static struct PyModuleDef drunk_snail_c_module = {
+struct PyModuleDef drunk_snail_c_module = {
 	PyModuleDef_HEAD_INIT,
 	"drunk_snail_c",
 	"Interface to drunk_snail C library",
@@ -36,7 +46,7 @@ static struct PyModuleDef drunk_snail_c_module = {
 
 PyMODINIT_FUNC PyInit_drunk_snail_c(void) {
 
-	_templates = createTree();
+	templates = createTree();
 	empty_dict = PyDict_New();
 
 	return PyModule_Create(&drunk_snail_c_module);

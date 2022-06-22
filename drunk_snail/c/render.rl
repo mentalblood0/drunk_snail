@@ -2,6 +2,16 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <sys/types.h>
+#include <Python.h>
+
+#include "Other.h"
+#include "Template.h"
+#include "templates.h"
+#include "prefix_tree.h"
+#include "RenderResult.h"
+
+
 
 %%{
 	machine render;
@@ -24,43 +34,6 @@ render__param {%
 
 %}
 
-
-typedef struct Substring {
-	char *start;
-	size_t length;
-} Substring;
-
-
-typedef struct Other {
-	Substring left;
-	Substring right;
-} Other;
-
-
-enum ActionType {
-	ACTION_PARAM,
-	ACTION_REF,
-	ACTION_NONE
-};
-
-
-#define resetState(state) {\
-	state.start_line = NULL;\
-	state.end_line = NULL;\
-	state.start_expression = NULL;\
-	state.end_expression = NULL;\
-	state.start_name = NULL;\
-	state.end_name = NULL;\
-	state.action_type = ACTION_NONE;\
-	state.optional = false;\
-	state.strict = false;\
-}
-
-
-typedef struct RenderResult {
-	char *message;
-	char *result;
-} RenderResult;
 
 
 #define ACTION_END_LINE(state) {\
@@ -85,10 +58,7 @@ typedef struct RenderResult {
 						if (!PyUnicode_Check(item)) {\
 							item = PyObject_Str(item);\
 						}\
-						value = PyUnicode_AsUTF8AndSize(\
-							item,\
-							&value_size\
-						);\
+						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 						render__param(\
 							output_end,\
 							(state).start_line, (state).start_expression - (state).start_line,\
@@ -102,10 +72,7 @@ typedef struct RenderResult {
 					} else {\
 						item = param_values;\
 					}\
-					value = PyUnicode_AsUTF8AndSize(\
-						item,\
-						&value_size\
-					);\
+					value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 					render__param(\
 						output_end,\
 						(state).start_line, (state).start_expression - (state).start_line,\
@@ -223,7 +190,7 @@ void render_(
 )
 {
 
-	Template *template = dictionaryLookupUnterminated(_templates, template_name, template_name_length);
+	Template *template = dictionaryLookupUnterminated(templates, template_name, template_name_length);
 	if (template == NULL) {
 		render_result->message = malloc(sizeof(char) * (template_name_length + 1));
 		memcpy(render_result->message, template_name, template_name_length);
@@ -249,13 +216,15 @@ void render_(
 	PyObject *item;
 
 	size_t i;
+	RenderState *state;
+	size_t i_template = 0;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
 	if (template->render_states == NULL) {
 
 		RenderState state;
-		resetState(state);
+		resetRenderState(state);
 
 		%%{
 
@@ -264,7 +233,7 @@ void render_(
 				state.end_line = p;
 				addRenderState(template, state);
 				ACTION_END_LINE(state);
-				resetState(state);
+				resetRenderState(state);
 			}
 
 			action action_param { state.action_type = ACTION_PARAM; }
@@ -308,8 +277,6 @@ void render_(
 
 	} else {
 
-		RenderState *state;
-		size_t i_template = 0;
 		for (i_template = 0; i_template < template->render_states_current_size; i_template++) {
 			state = template->render_states + i_template;
 			ACTION_END_LINE(*state);
@@ -324,7 +291,7 @@ void render_(
 };
 
 
-static PyObject *render (
+PyObject *render (
 	PyObject *self,
 	PyObject *args
 ) {

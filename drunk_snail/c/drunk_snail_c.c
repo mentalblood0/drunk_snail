@@ -1,17 +1,3 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <time.h>
-#include <stdio.h>
-#include <string.h>
-#include <Python.h>
-#include <sys/types.h>
-
-#include "prefix_tree.c"
-
-#include "addTemplate.c"
-#include "getTemplate.c"
-#include "removeTemplate.c"
-
-#include "render.c"
-
-#include "python_module_properties.c"
+#include "python_module_properties.h"

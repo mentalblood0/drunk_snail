@@ -2,19 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "prefix_tree.h"
+
 #define ALPHABET_SIZE 256
 
-
-
-typedef struct TreeNode {
-	void *value;
-	struct TreeNode **children;
-} TreeNode;
-
-
-typedef struct Tree {
-	TreeNode root;
-} Tree;
 
 
 Tree* createTree() {
@@ -25,50 +16,41 @@ Tree* createTree() {
 }
 
 
-int treeInsert(Tree* tree, char *key, void *value) {
-	
+void treeInsert(Tree* tree, char *key, void *value) {
+
 	TreeNode *node = &tree->root;
 	char *c = NULL;
 	
 	for (c = key; *c; c++) {
 
-		if ((int)(*c) == -1)
-			return 1;
-
 		TreeNode *parent = node;
-		node = node->children[(int)(*c)+128];
+		node = node->children[(unsigned char)(*c)];
 
 		if (!node) {
 			node = malloc(sizeof(TreeNode));
 			node->value = NULL;
 			node->children = calloc(ALPHABET_SIZE, sizeof(TreeNode*));
-			parent->children[(int)(*c)+128] = node;
+			parent->children[(unsigned char)(*c)] = node;
 		}
-	
+
 	}
 
 	if (node->value) {
 		free(node->value);
 	}
 	node->value = value;
-	
-	return 0;
 
 }
 
 
-int treeRemove(Tree* tree, char *key) {
+void treeRemove(Tree* tree, char *key) {
 	
 	TreeNode *node = &tree->root;
 	char *c = NULL;
-	
-	for (c = key; *c; c++) {
-	
-		if ((int)(*c) == -1)
-			return 1;
 
-		TreeNode *parent = node;
-		node = node->children[(int)(*c)+128];
+	for (c = key; *c; c++) {
+
+		node = node->children[(unsigned char)(*c)];
 		if (!node)
 			return 0;
 
@@ -78,8 +60,6 @@ int treeRemove(Tree* tree, char *key) {
 		free(node->value);
 		node->value = NULL;
 	}
-
-	return 0;
 
 }
 
@@ -97,7 +77,7 @@ void freeNodes(TreeNode *node) {
 	for (i = 0; i < ALPHABET_SIZE; i++)
 		if (children[i] != NULL)
 			freeNodes(children[i]);
-	
+
 	free(children);
 	free(node);
 
@@ -105,9 +85,8 @@ void freeNodes(TreeNode *node) {
 
 
 void clearTree(Tree *tree) {
-	
+
 	int i;
-	
 	for (i = 0; i < ALPHABET_SIZE; i++)
 		if (tree->root.children[i] != NULL) {
 			freeNodes(tree->root.children[i]);
@@ -119,17 +98,11 @@ void clearTree(Tree *tree) {
 
 void* treeGet(TreeNode *node, char *key) {
 
-	char *c = NULL;
-	
+	char *c;
 	for (c = key; *c; c++) {
-
-		if ((int)(*c) == -1)
-			return NULL;
-		
-		node = node->children[(int)(*c)+128];
+		node = node->children[(unsigned char)(*c)];
 		if (!node)
 			return NULL;
-	
 	}
 
 	return node->value;
@@ -137,19 +110,13 @@ void* treeGet(TreeNode *node, char *key) {
 }
 
 
-void* treeGetUnterminated(TreeNode *node, char *key, int length) {
+void* treeGetUnterminated(TreeNode *node, char *key, size_t length) {
 
-	char *c = NULL;
-	
-	for (c = key; c - key < length; c++) {
-
-		if ((int)(*c) == -1)
-			return NULL;
-		
-		node = node->children[(int)(*c)+128];
+	size_t i;
+	for (i = 0; i < length; i++) {
+		node = node->children[(unsigned char)(key[i])];
 		if (!node)
 			return NULL;
-	
 	}
 
 	return node->value;
@@ -162,6 +129,6 @@ void* dictionaryLookup(Tree *tree, char *key) {
 }
 
 
-void* dictionaryLookupUnterminated(Tree *tree, char *key, int length) {
+void* dictionaryLookupUnterminated(Tree *tree, char *key, size_t length) {
 	return treeGetUnterminated(&tree->root, key, length);
 }

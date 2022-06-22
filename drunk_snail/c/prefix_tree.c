@@ -52,7 +52,7 @@ void treeRemove(Tree* tree, char *key) {
 
 		node = node->children[(unsigned char)(*c)];
 		if (!node)
-			return 0;
+			return;
 
 	}
 

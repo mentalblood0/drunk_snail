@@ -258,18 +258,22 @@ void render_(
 
 			open = '<!--';
 			close = '-->';
-			param = '(param)' %action_param;
-			ref = '(ref)' %action_ref;
-			optional = '(optional)' %action_optional;
-			strict = '(strict)' %action_strict;
 
 			delimeter = '\n';
 			other = (any - delimeter)+;
 
-			operator = param | ref | optional | strict;
+			param = '(param)' %action_param;
+			ref = '(ref)' %action_ref;
+			type = param | ref;
+
+			optional = '(optional)' %action_optional;
+			strict = '(strict)' %action_strict;
+			flag = optional | strict;
+
+			prefix = flag* type flag*;
 			name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
 
-			expression = (open ' '* operator+ name ' '* close) >action_start_expression %action_end_expression;
+			expression = (open ' '* prefix name ' '* close) >action_start_expression %action_end_expression;
 
 			line = (other? expression? other?) >action_start_line %action_end_line;
 

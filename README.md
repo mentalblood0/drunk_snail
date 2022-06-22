@@ -142,26 +142,28 @@ print(result)
 ## Syntax
 
 ```
-open = '<!--'
-close = '-->'
+open = '<!--';
+close = '-->';
 
-param = '(param)'
-ref = '(ref)'
-optional = '(optional)'
-strict = '(strict)'
+delimeter = '\n';
+other = (any - delimeter)+;
 
-operator = param | ref | optional | strict
+param = '(param)' %action_param;
+ref = '(ref)' %action_ref;
+type = param | ref;
 
-name = [a-zA-Z_][a-zA-Z_0-9]*
+optional = '(optional)' %action_optional;
+strict = '(strict)' %action_strict;
+flag = optional | strict;
 
-expression = open ' '* operator+ name ' '* close
+prefix = flag* type flag*;
+name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
 
-delimeter = '\n'
-other = (any - delimeter)+
+expression = (open ' '* prefix name ' '* close) >action_start_expression %action_end_expression;
 
-line = other? expression? other?
+line = (other? expression? other?) >action_start_line %action_end_line;
 
-template = (line delimeter)* (line - zlen)?
+template = (line delimeter)* (line - zlen)?;
 ```
 
 

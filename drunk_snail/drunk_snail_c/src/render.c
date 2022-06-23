@@ -47,7 +47,7 @@ static const int render_en_main = 0;
 	for (i = depth; i > 0; i--) {\
 		drunk_memcpy((target), (*other)[i-1].right.start, (*other)[i-1].right.length); target += (*other)[i-1].right.length;\
 	}\
-	drunk_memcpy((target), "\n", 1); target += 1;\
+	memcpy((target), "\n", 1); target += 1;\
 };
 
 #define render__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
@@ -68,7 +68,7 @@ static const int render_en_main = 0;
 	for (i = depth; i > 0; i--) {\
 		drunk_memcpy((target), (*other)[i-1].right.start, (*other)[i-1].right.length); target += (*other)[i-1].right.length;\
 	}\
-	drunk_memcpy((target), "\n", 1); target += 1;\
+	memcpy((target), "\n", 1); target += 1;\
 };
 
 

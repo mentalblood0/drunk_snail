@@ -78,7 +78,7 @@ def compilePrint(expression, name=None, defined=None):
 		if e['type'] == 'raw':
 			if len(e['s']):
 				cpy_definition_list += [
-					f'\tdrunk_memcpy((target), {json.dumps(raw_strings[strings_copied])}, {len(e["s"])}); target += {len(e["s"])};'
+					f'\tmemcpy((target), {json.dumps(raw_strings[strings_copied])}, {len(e["s"])}); target += {len(e["s"])};'
 				]
 				lengths_copied.append(len(e['s']))
 			strings_copied += 1
@@ -111,10 +111,10 @@ def compilePrint(expression, name=None, defined=None):
 
 			cpy_definition_list += [
 				f'\tif ({condition_object}) {{',
-				f'\t\tdrunk_memcpy((target), "{value_if_true}", {len(value_if_true)}); target += {len(value_if_true)};',
+				f'\t\tmemcpy((target), "{value_if_true}", {len(value_if_true)}); target += {len(value_if_true)};',
 				f'\t}}',
 				f'\telse {{',
-				f'\t\tdrunk_memcpy((target), "{value_if_false}", {len(value_if_false)}); target += {len(value_if_false)};',
+				f'\t\tmemcpy((target), "{value_if_false}", {len(value_if_false)}); target += {len(value_if_false)};',
 				f'\t}}'
 			]
 			lengths_copied.append(max(len(value_if_true), len(value_if_false)))

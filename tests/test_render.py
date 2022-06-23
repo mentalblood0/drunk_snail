@@ -2,7 +2,7 @@ import pytest
 
 from drunk_snail_c import render, addTemplate
 
-from tests.common import render_lambda, param_values
+from .common import render_lambda, param_values
 
 
 @pytest.fixture

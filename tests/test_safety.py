@@ -26,14 +26,11 @@ def test_other_overflow(param_values):
 			f'{name}<!-- (ref)test_other_deep_inject_{param_values[i]} -->{name}'
 		)
 
-	print('start')
 	result = render(
 		f'test_other_deep_inject_{param_values[-1]}',
 		{}
 	)
-	print(f'"{result}"')
 	correct = f"{''.join(reversed(param_values))[:-1]}{''.join(param_values)}\n"
-	print(f'"{correct}"')
 	assert result == correct
 
 
@@ -52,15 +49,7 @@ def test_cyrillic_name():
 	assert render('тест_кириллик_нейм', {}) == 'lalala\n'
 
 
-def test_backslash():
-	assert render_lambda('\\') == '\\\n'
-
-
-def test_quote():
-	assert render_lambda('\'') == '\'\n'
-
-
-def test_brackets():
-	assert render_lambda('{<!-- (param)x -->}', {
-		'x': 'lalala'
-	}) == '{lalala}\n'
+def test_nonexistent_ref():
+	addTemplate('test_nonexistent_ref', '<!-- (ref)no -->')
+	with pytest.raises(KeyError):
+		render('test_nonexistent_ref', {})

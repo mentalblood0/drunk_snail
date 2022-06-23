@@ -27,52 +27,61 @@ render__empty {%
 
 %}
 
-render__arg {%
-<OTHER_LEFT><ARG><OTHER_RIGHT>
-%}
-
 render__param {%
-<*other[:depth].left+><render__arg><*other[:depth].right->
+<*other[:depth].left+><OTHER_LEFT><ARG><OTHER_RIGHT><*other[:depth].right->
 
 %}
 
+
+
+#define exit_render_() {\
+	if (render_result->result) {\
+		free(render_result->result);\
+		render_result->result = NULL;\
+	}\
+	return;\
+}
+
+
+#define drunk_malloc_one_render_(target, size) {\
+	target = malloc(size);\
+	if (!target) {\
+		exit_render_();\
+	}\
+}
+
+
+#define drunk_realloc_one_render_(target, size, temp) {\
+	if (size) {\
+		temp = realloc(target, size);\
+		if (!temp) {\
+			exit_render_()\
+		} else {\
+			target = temp;\
+		}\
+	}\
+}
 
 
 #define ACTION_END_LINE(state) {\
 \
-	if ((state).tokens.name.end && (state).tokens.expression.end) {\
+	if (lineIsParam(state)) {\
 \
-		if ((state).action == ACTION_PARAM) {\
+		if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
+			*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
+			drunk_realloc_one_render_(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
+		}\
+		drunk_memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
+		(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
 \
-			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
-				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
-				drunk_realloc(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
-			}\
-			memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
-			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
-\
-			param_values = PyDict_GetItemString(params, *name_buffer);\
-			if (param_values) {\
-				if ((state).flags.strict || PyList_Check(param_values)) {\
-					list_size = PyList_Size(param_values);\
-					for (j = 0; j < list_size; j++) {\
-						item = PyList_GetItem(param_values, j);\
-						if (!PyUnicode_Check(item)) {\
-							item = PyObject_Str(item);\
-						}\
-						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
-						render__param(\
-							*output_end,\
-							(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
-							value, value_size,\
-							(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
-						);\
-					}\
-				} else {\
-					if (!PyUnicode_Check(param_values)) {\
-						item = PyObject_Str(param_values);\
-					} else {\
-						item = param_values;\
+		param_values = PyDict_GetItemString(params, *name_buffer);\
+		if (param_values) {\
+			if ((state).flags.strict || PyList_Check(param_values)) {\
+				list_size = PyList_Size(param_values);\
+				for (j = 0; j < list_size; j++) {\
+					item = PyList_GetItem(param_values, j);\
+					if (!PyUnicode_Check(item)) {\
+						item = PyObject_Str(item);\
 					}\
 					value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 					render__param(\
@@ -82,55 +91,52 @@ render__param {%
 						(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
 					);\
 				}\
-			} else if (!(state).flags.optional) {\
+			} else {\
+				if (!PyUnicode_Check(param_values)) {\
+					item = PyObject_Str(param_values);\
+				} else {\
+					item = param_values;\
+				}\
+				value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 				render__param(\
 					*output_end,\
 					(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
-					"", 0,\
+					value, value_size,\
 					(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
 				);\
 			}\
-\
+		} else if (!(state).flags.optional) {\
+			render__param(\
+				*output_end,\
+				(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
+				"", 0,\
+				(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
+			);\
 		}\
-		else if ((state).action == ACTION_REF) {\
 \
-			if (depth >= *other_size) {\
-				*other_size = depth * 2;\
-				drunk_realloc(*other, sizeof(Other) * (*other_size), other_temp);\
-			}\
-			(*other)[depth].left.start = (state).tokens.line.start;\
-			(*other)[depth].left.length = (state).tokens.expression.start - (state).tokens.line.start;\
-			(*other)[depth].right.start = (state).tokens.expression.end;\
-			(*other)[depth].right.length = (state).tokens.line.end - (state).tokens.expression.end;\
+	} else if (lineIsRef(state)) {\
 \
-			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
-				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
-				drunk_realloc(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
-			}\
-			memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
-			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
+		if (depth >= *other_size) {\
+			*other_size = depth * 2;\
+			drunk_realloc_one_render_(*other, sizeof(Other) * (*other_size), other_temp);\
+		}\
+		(*other)[depth].left.start = (state).tokens.line.start;\
+		(*other)[depth].left.length = (state).tokens.expression.start - (state).tokens.line.start;\
+		(*other)[depth].right.start = (state).tokens.expression.end;\
+		(*other)[depth].right.length = (state).tokens.line.end - (state).tokens.expression.end;\
 \
-			ref_values = PyDict_GetItemString(params, *name_buffer);\
-			if (ref_values) {\
-				if ((state).flags.strict || PyList_Check(ref_values)) {\
-					list_size = PyList_Size(ref_values);\
-					for (j = 0; j < list_size; j++) {\
-						render_(\
-							render_result,\
-							(state).tokens.name.start,\
-							(state).tokens.name.end - (state).tokens.name.start,\
-							output_end,\
-							depth + 1,\
-							buffer_size,\
-							other,\
-							other_size,\
-							name_buffer,\
-							name_buffer_size,\
-							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
-							PyList_GetItem(ref_values, j)\
-						);\
-					}\
-				} else {\
+		if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
+			*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
+			drunk_realloc_one_render_(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
+		}\
+		drunk_memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
+		(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
+\
+		ref_values = PyDict_GetItemString(params, *name_buffer);\
+		if (ref_values) {\
+			if ((state).flags.strict || PyList_Check(ref_values)) {\
+				list_size = PyList_Size(ref_values);\
+				for (j = 0; j < list_size; j++) {\
 					render_(\
 						render_result,\
 						(state).tokens.name.start,\
@@ -143,10 +149,13 @@ render__param {%
 						name_buffer,\
 						name_buffer_size,\
 						subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
-						ref_values\
+						PyList_GetItem(ref_values, j)\
 					);\
+					if (!render_result->result) {\
+						return;\
+					}\
 				}\
-			} else if (!(state).flags.optional) {\
+			} else {\
 				render_(\
 					render_result,\
 					(state).tokens.name.start,\
@@ -159,17 +168,36 @@ render__param {%
 					name_buffer,\
 					name_buffer_size,\
 					subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
-					empty_dict\
+					ref_values\
 				);\
+				if (!render_result->result) {\
+					return;\
+				}\
 			}\
-\
+		} else if (!(state).flags.optional) {\
+			render_(\
+				render_result,\
+				(state).tokens.name.start,\
+				(state).tokens.name.end - (state).tokens.name.start,\
+				output_end,\
+				depth + 1,\
+				buffer_size,\
+				other,\
+				other_size,\
+				name_buffer,\
+				name_buffer_size,\
+				subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+				empty_dict\
+			);\
+			if (!render_result->result) {\
+				return;\
+			}\
 		}\
 \
-	}\
-\
-	if ((state).action == ACTION_NONE) {\
+	} else if (lineIsNone(state)) {\
 		render__empty(*output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
 	}\
+\
 }
 
 
@@ -194,15 +222,18 @@ void render_(
 
 	Template *template = dictionaryLookupUnterminated(templates, template_name, template_name_length);
 	if (template == NULL) {
-		drunk_malloc(render_result->message, sizeof(char) * (template_name_length + 1));
+		if (render_result->result) {
+			render_result->result = NULL;
+		}
+		drunk_malloc_one_render_(render_result->message, sizeof(char) * (template_name_length + 1));
 		memcpy_s(render_result->message, template_name_length, template_name, template_name_length);
 		render_result->message[template_name_length] = 0;
 		return;
 	}
 
-	if (!depth) {
+	if (!render_result->result) {
 		buffer_size = &template->buffer_size;
-		drunk_malloc(render_result->result, sizeof(char) * (*buffer_size));
+		drunk_malloc_one_render_(render_result->result, sizeof(char) * (*buffer_size));
 		*output_end = render_result->result;
 	}
 
@@ -217,17 +248,19 @@ void render_(
 	PyObject *item;
 
 	size_t i;
+	int alloc_error = 0;
 	RenderState *state = NULL;
 	size_t i_template = 0;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
+	size_t required_buffer_size;
 
 	char *char_temp;
 	Other *other_temp;
 
 	if (template->render_states.length == 0) {
 
-		drunk_malloc(state, sizeof(RenderState) * 1);
+		drunk_malloc_one_render_(state, sizeof(RenderState) * 1);
 		resetRenderState(*state);
 
 		%%{
@@ -236,11 +269,15 @@ void render_(
 			action action_end_line {
 
 				state->tokens.line.end = p;
-				listPush(template->render_states, state);
+				listPush(template->render_states, state, alloc_error);
+				if (alloc_error) {
+					free(state);
+					exit_render_();
+				}
 
 				ACTION_END_LINE(*state);
 
-				drunk_malloc(state, sizeof(RenderState) * 1);
+				drunk_malloc_one_render_(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
 
 			}
@@ -306,13 +343,19 @@ void render_(
 };
 
 
+#define exit_render {\
+	PyErr_SetString(PyExc_MemoryError, "Out of RAM");\
+	return NULL;\
+}
+
+
 PyObject *render (
 	PyObject *self,
 	PyObject *args
 ) {
 
-	char *name;
-	PyObject *params;
+	char *name = NULL;
+	PyObject *params = NULL;
 
 	if (!PyArg_ParseTuple(args, "sO!", &name, &PyDict_Type, &params))
 		return NULL;
@@ -322,10 +365,21 @@ PyObject *render (
 	render_result.result = NULL;
 
 	size_t other_size = 16;
-	Other *other; drunk_malloc(other, sizeof(Other) * other_size);
+	Other *other = NULL;
 
 	size_t name_buffer_size = 128;
-	char *name_buffer; drunk_malloc(name_buffer, sizeof(char) * name_buffer_size);
+	char *name_buffer = NULL;
+
+	int error = 0;
+	drunk_malloc_one(other, sizeof(Other) * other_size, error);
+	if (error) {
+		exit_render;
+	}
+	drunk_malloc_one(name_buffer, sizeof(char) * name_buffer_size, error);
+	if (error) {
+		free(other);
+		exit_render;
+	}
 
 	char *output_end = NULL;
 
@@ -347,9 +401,12 @@ PyObject *render (
 	free(other);
 	free(name_buffer);
 
-	if (render_result.message) {
-		free(render_result.result);
-		PyErr_SetString(PyExc_KeyError, render_result.message);
+	if (!render_result.result) {
+		if (render_result.message) {
+			PyErr_SetString(PyExc_KeyError, render_result.message);
+		} else {
+			PyErr_SetString(PyExc_MemoryError, "Out of RAM");
+		}
 		return NULL;
 	}
 

@@ -47,6 +47,10 @@ struct PyModuleDef drunk_snail_c_module = {
 PyMODINIT_FUNC PyInit_drunk_snail_c(void) {
 
 	templates = createTree();
+	if (!templates) {
+		PyErr_SetString(PyExc_MemoryError, "Out of RAM");
+		return NULL;
+	}
 	empty_dict = PyDict_New();
 
 	return PyModule_Create(&drunk_snail_c_module);

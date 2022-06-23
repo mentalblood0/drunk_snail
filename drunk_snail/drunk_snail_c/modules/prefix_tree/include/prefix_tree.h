@@ -14,7 +14,7 @@ typedef struct {
 
 Tree* createTree();
 
-void treeInsert(Tree* tree, char *key, void *value);
+int treeInsert(Tree* tree, char *key, void *value);
 void treeRemove(Tree* tree, char *key);
 
 void freeNodes(TreeNode *node);

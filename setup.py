@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
 	setup(
 		name='drunk_snail',
-		version='6.11.1',
+		version='6.12.0',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
@@ -35,6 +35,8 @@ if __name__ == '__main__':
 				extra_compile_args=['/O2']
 			)
 		],
-		install_requires=[],
+		install_requires=[
+			'pydantic'
+		],
 		data_files=paths('drunk_snail/drunk_snail_c', 'c') + paths('drunk_snail/drunk_snail_c', 'h')
 	)

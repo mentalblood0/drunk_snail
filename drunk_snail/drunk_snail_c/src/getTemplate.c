@@ -23,15 +23,23 @@ PyObject *getTemplate (
 	Template *template = dictionaryLookup(templates, name);
 	if (template == NULL) {
 		size_t message_size = 24 + strlen(name) + 1;
-		char *message; drunk_malloc(message, sizeof(char) * message_size);
+		char *message = malloc(sizeof(char) * message_size);
+		if (!message) {
+			PyErr_SetString(PyExc_MemoryError, "Out of RAM");
+			return NULL;
+		}
 		sprintf_s(message, 24 + strlen(name) + 1, "No template with name '%s'", name);
 		PyErr_SetString(PyExc_KeyError, message);
 		return NULL;
 	}
 	char *source_text = template->text;
-	size_t length = strlen(source_text) + 1;
+	size_t length = template->length + 1;
 
-	char *result; drunk_malloc(result, sizeof(char) * (length + 1));
+	char *result = malloc(sizeof(char) * length);
+	if (!result) {
+		PyErr_SetString(PyExc_MemoryError, "Out of RAM");
+		return NULL;
+	}
 	memcpy_s(result, length, source_text, length);
 
 	return PyUnicode_FromStringAndSize(result, length - 1);

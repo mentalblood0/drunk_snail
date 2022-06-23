@@ -78,16 +78,14 @@ def compilePrint(expression, name=None, defined=None):
 		if e['type'] == 'raw':
 			if len(e['s']):
 				cpy_definition_list += [
-					f'\tdrunk_memcpy((target), {json.dumps(raw_strings[strings_copied])}, {len(e["s"])});',
-					f'\ttarget += {len(e["s"])};'
+					f'\tdrunk_memcpy((target), {json.dumps(raw_strings[strings_copied])}, {len(e["s"])}); target += {len(e["s"])};'
 				]
 				lengths_copied.append(len(e['s']))
 			strings_copied += 1
 		
 		elif e['type'] == 'keyword':
 			cpy_definition_list += [
-				f'\tdrunk_memcpy((target), {e["s"]}, {e["s"]}_length);',
-				f'\ttarget += {e["s"]}_length;'
+				f'\tdrunk_memcpy((target), {e["s"]}, {e["s"]}_length); target += {e["s"]}_length;'
 			]
 			lengths_copied.append(f'{e["s"]}_length')
 		
@@ -101,8 +99,7 @@ def compilePrint(expression, name=None, defined=None):
 
 			cpy_definition_list += [
 				f'\tfor (i = 0; i < {number}; i++) {{',
-				f'\t\tdrunk_memcpy((target), {s}, {s}_length);',
-				f'\t\ttarget += {s}_length;',
+				f'\t\tdrunk_memcpy((target), {s}, {s}_length); target += {s}_length;',
 				f'\t}}'
 			]
 			lengths_copied.append(f'{s}_length')
@@ -114,12 +111,10 @@ def compilePrint(expression, name=None, defined=None):
 
 			cpy_definition_list += [
 				f'\tif ({condition_object}) {{',
-				f'\t\tdrunk_memcpy((target), "{value_if_true}", {len(value_if_true)});',
-				f'\ttarget += {len(value_if_true)};',
+				f'\t\tdrunk_memcpy((target), "{value_if_true}", {len(value_if_true)}); target += {len(value_if_true)};',
 				f'\t}}',
 				f'\telse {{',
-				f'\t\tdrunk_memcpy((target), "{value_if_false}", {len(value_if_false)});',
-				f'\ttarget += {len(value_if_false)};',
+				f'\t\tdrunk_memcpy((target), "{value_if_false}", {len(value_if_false)}); target += {len(value_if_false)};',
 				f'\t}}'
 			]
 			lengths_copied.append(max(len(value_if_true), len(value_if_false)))
@@ -182,15 +177,13 @@ def compilePrint(expression, name=None, defined=None):
 			if direction == '+':
 				cpy_definition_list += [
 					f'\tfor (i = 0; i < {length}; i++) {{',
-					f'\t\tdrunk_memcpy((target), {m}[i]{path_to_substring}.start, {m}[i]{path_to_substring}.length);',
-					f'\t\ttarget += {m}[i]{path_to_substring}.length;',
+					f'\t\tdrunk_memcpy((target), {m}[i]{path_to_substring}.start, {m}[i]{path_to_substring}.length); target += {m}[i]{path_to_substring}.length;',
 					f'\t}}'
 				]
 			else:
 				cpy_definition_list += [
 					f'\tfor (i = {length}; i > 0; i--) {{',
-					f'\t\tdrunk_memcpy((target), {m}[i-1]{path_to_substring}.start, {m}[i-1]{path_to_substring}.length);',
-					f'\t\ttarget += {m}[i-1]{path_to_substring}.length;',
+					f'\t\tdrunk_memcpy((target), {m}[i-1]{path_to_substring}.start, {m}[i-1]{path_to_substring}.length); target += {m}[i-1]{path_to_substring}.length;',
 					f'\t}}'
 				]
 
@@ -204,9 +197,13 @@ def compilePrint(expression, name=None, defined=None):
 
 	lengths_sum = '+'.join([str(n) for n in lengths_copied + [1]])
 	cpy_definition_list = [
-		f'\twhile (((target) - render_result->result) + ({lengths_sum}) + subarrays_length >= *buffer_size) {{',
-		f'\t\t(*buffer_size) *= 2;',
-		f'\t\tdrunk_realloc_with_shifted(render_result->result, sizeof(char) * (*buffer_size), render_result->result_temp, (target));',
+		f'\trequired_buffer_size = ((target) - render_result->result) + ({lengths_sum}) + subarrays_length;',
+		f'\tif (required_buffer_size >= *buffer_size) {{',
+		f'\t\t(*buffer_size) = 2 * required_buffer_size;',
+		f'\t\tdrunk_realloc_with_shifted(render_result->result, sizeof(char) * (*buffer_size), render_result->result_temp, target, alloc_error);',
+		f'\t\tif (alloc_error) {{',
+		f'\t\t\texit_render_();',
+		f'\t\t}}',
 		f'\t}}'
 	] + cpy_definition_list
 

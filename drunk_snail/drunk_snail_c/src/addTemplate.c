@@ -10,19 +10,36 @@
 
 
 
-void addTemplate_(char *name, char *text) {
+int addTemplate_(char *name, char *text) {
 
-	Template *template; drunk_malloc(template, sizeof(Template));
+	int error = 0;
+
+	Template *template;
+	drunk_malloc_one(template, sizeof(Template), error);
+	if (error) {
+		return error;
+	}
 
 	size_t text_length = strlen(text) + 1;
-	drunk_malloc(template->text, sizeof(char) * text_length);
+	drunk_malloc_one(template->text, sizeof(char) * text_length, error);
+	if (error) {
+		free(template);
+		return error;
+	}
 	memcpy_s(template->text, text_length, text, text_length);
 
 	template->length = text_length - 1;
 	template->buffer_size = template->length;
-	listCreate(template->render_states, 16);
+	listCreate(template->render_states, 16, error);
+	if (error) {
+		free(template->text);
+		free(template);
+		return error;
+	}
 
-	treeInsert(templates, name, template);
+	error = treeInsert(templates, name, template);
+
+	return error;
 
 }
 
@@ -35,9 +52,12 @@ PyObject *addTemplate (
 	char *name, *text;
 
 	if (!PyArg_ParseTuple(args, "ss", &name, &text))
-		return PyLong_FromLong(1);
+		return NULL;
 
-	addTemplate_(name, text);
+	if (addTemplate_(name, text)) {
+		PyErr_SetString(PyExc_MemoryError, "Out of RAM");
+		return NULL;
+	}
 
 	Py_RETURN_NONE;
 

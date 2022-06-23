@@ -2,17 +2,20 @@
 
 #include <stdlib.h>
 
+#include "../../memoma/include/memoma.h"
+
 
 
 typedef struct {
 	void **start;
+	void **temp;
 	size_t length;
 	size_t allocated;
 } List;
 
 
 #define listCreate(target, initial_length) {\
-	target.start = malloc(sizeof(void*) * initial_length);\
+	drunk_malloc(target.start, sizeof(void*) * initial_length);\
 	target.length = 0;\
 	target.allocated = initial_length;\
 }
@@ -21,7 +24,7 @@ typedef struct {
 #define listPush(target, element) {\
 	if (target.length == target.allocated) {\
 		target.allocated *= 2;\
-		target.start = realloc(target.start, sizeof(void*) * target.allocated);\
+		drunk_realloc(target.start, sizeof(void*) * target.allocated, target.temp);\
 	}\
 	target.start[target.length] = element;\
 	target.length += 1;\

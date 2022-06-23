@@ -134,5 +134,3 @@ def test_table():
 		'	</tr>\n'
 		'</table>\n'
 	)
-
-test_table()

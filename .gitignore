@@ -21,3 +21,10 @@ CMake*
 *.props
 *.vc*
 *.sln
+Debug
+*.dir
+PVS-Studio
+src
+x64
+.vs
+.vscode

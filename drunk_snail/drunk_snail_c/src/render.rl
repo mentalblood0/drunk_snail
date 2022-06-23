@@ -11,6 +11,7 @@
 #include "../include/templates.h"
 #include "../modules/prefix_tree/include/prefix_tree.h"
 #include "../include/RenderResult.h"
+#include "../modules/memoma/include/memoma.h"
 
 
 
@@ -45,7 +46,7 @@ render__param {%
 \
 			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
 				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
-				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
+				drunk_realloc(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
 			}\
 			memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
 			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
@@ -61,7 +62,7 @@ render__param {%
 						}\
 						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 						render__param(\
-							output_end,\
+							*output_end,\
 							(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 							value, value_size,\
 							(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
@@ -75,7 +76,7 @@ render__param {%
 					}\
 					value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 					render__param(\
-						output_end,\
+						*output_end,\
 						(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 						value, value_size,\
 						(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
@@ -83,7 +84,7 @@ render__param {%
 				}\
 			} else if (!(state).flags.optional) {\
 				render__param(\
-					output_end,\
+					*output_end,\
 					(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 					"", 0,\
 					(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
@@ -95,7 +96,7 @@ render__param {%
 \
 			if (depth >= *other_size) {\
 				*other_size = depth * 2;\
-				*other = realloc(*other, sizeof(Other) * (*other_size));\
+				drunk_realloc(*other, sizeof(Other) * (*other_size), other_temp);\
 			}\
 			(*other)[depth].left.start = (state).tokens.line.start;\
 			(*other)[depth].left.length = (state).tokens.expression.start - (state).tokens.line.start;\
@@ -104,7 +105,7 @@ render__param {%
 \
 			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
 				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
-				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
+				drunk_realloc(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
 			}\
 			memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
 			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
@@ -167,7 +168,7 @@ render__param {%
 	}\
 \
 	if ((state).action == ACTION_NONE) {\
-		render__empty(output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
+		render__empty(*output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
 	}\
 }
 
@@ -193,7 +194,7 @@ void render_(
 
 	Template *template = dictionaryLookupUnterminated(templates, template_name, template_name_length);
 	if (template == NULL) {
-		render_result->message = malloc(sizeof(char) * (template_name_length + 1));
+		drunk_malloc(render_result->message, sizeof(char) * (template_name_length + 1));
 		memcpy_s(render_result->message, template_name_length, template_name, template_name_length);
 		render_result->message[template_name_length] = 0;
 		return;
@@ -201,7 +202,7 @@ void render_(
 
 	if (!depth) {
 		buffer_size = &template->buffer_size;
-		render_result->result = malloc(sizeof(char) * (*buffer_size));
+		drunk_malloc(render_result->result, sizeof(char) * (*buffer_size));
 		*output_end = render_result->result;
 	}
 
@@ -209,7 +210,6 @@ void render_(
 	char *pe = template->text + template->length;
 	char *eof = pe;
 	size_t cs;
-	char *new_result;
 	char *value;
 	Py_ssize_t value_size;
 	PyObject *param_values;
@@ -222,9 +222,12 @@ void render_(
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
+	char *char_temp;
+	Other *other_temp;
+
 	if (template->render_states.length == 0) {
 
-		state = malloc(sizeof(RenderState) * 1);
+		drunk_malloc(state, sizeof(RenderState) * 1);
 		resetRenderState(*state);
 
 		%%{
@@ -237,7 +240,7 @@ void render_(
 
 				ACTION_END_LINE(*state);
 
-				state = malloc(sizeof(RenderState) * 1);
+				drunk_malloc(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
 
 			}
@@ -319,10 +322,10 @@ PyObject *render (
 	render_result.result = NULL;
 
 	size_t other_size = 16;
-	Other *other = malloc(sizeof(Other) * other_size);
+	Other *other; drunk_malloc(other, sizeof(Other) * other_size);
 
 	size_t name_buffer_size = 128;
-	char *name_buffer = malloc(sizeof(char) * name_buffer_size);
+	char *name_buffer; drunk_malloc(name_buffer, sizeof(char) * name_buffer_size);
 
 	char *output_end = NULL;
 

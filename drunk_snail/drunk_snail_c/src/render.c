@@ -13,11 +13,12 @@
 #include "../include/templates.h"
 #include "../modules/prefix_tree/include/prefix_tree.h"
 #include "../include/RenderResult.h"
+#include "../modules/memoma/include/memoma.h"
 
 
 
 
-/* #line 21 "compileComprehension.c" */
+/* #line 22 "compileComprehension.c" */
 static const int render_start = 0;
 static const int render_first_final = 0;
 static const int render_error = -1;
@@ -25,55 +26,59 @@ static const int render_error = -1;
 static const int render_en_main = 0;
 
 
-/* #line 20 "compileComprehension_preprocessed.rl" */
+/* #line 21 "compileComprehension_preprocessed.rl" */
 
 
 
 
 #define render__empty(target, LINE, LINE_length) {\
-	while ((*target - render_result->result) + (LINE_length+1+1) + subarrays_length >= *buffer_size) {\
+	while (((target) - render_result->result) + (LINE_length+1+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
-		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
-		*target = new_result + (*target - render_result->result);\
-		render_result->result = new_result;\
+		drunk_realloc_with_shifted(render_result->result, sizeof(char) * (*buffer_size), render_result->result_temp, (target));\
 	}\
 	for (i = 0; i < depth; i++) {\
-		memcpy(*target, (*other)[i].left.start, (*other)[i].left.length); *target += (*other)[i].left.length;\
+		drunk_memcpy((target), (*other)[i].left.start, (*other)[i].left.length);\
+		target += (*other)[i].left.length;\
 	}\
-	memcpy(*target, LINE, LINE_length); *target += LINE_length;\
+	drunk_memcpy((target), LINE, LINE_length);\
+	target += LINE_length;\
 	for (i = depth; i > 0; i--) {\
-		memcpy(*target, (*other)[i-1].right.start, (*other)[i-1].right.length); *target += (*other)[i-1].right.length;\
+		drunk_memcpy((target), (*other)[i-1].right.start, (*other)[i-1].right.length);\
+		target += (*other)[i-1].right.length;\
 	}\
-	memcpy(*target, "\n", 1); *target += 1;\
+	drunk_memcpy((target), "\n", 1);\
+	target += 1;\
 };
 
 #define render__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
-	while ((*target - render_result->result) + (OTHER_LEFT_length+ARG_length+OTHER_RIGHT_length+1) + subarrays_length >= *buffer_size) {\
+	while (((target) - render_result->result) + (OTHER_LEFT_length+ARG_length+OTHER_RIGHT_length+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
-		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
-		*target = new_result + (*target - render_result->result);\
-		render_result->result = new_result;\
+		drunk_realloc_with_shifted(render_result->result, sizeof(char) * (*buffer_size), render_result->result_temp, (target));\
 	}\
-	memcpy(*target, OTHER_LEFT, OTHER_LEFT_length); *target += OTHER_LEFT_length;\
-	memcpy(*target, ARG, ARG_length); *target += ARG_length;\
-	memcpy(*target, OTHER_RIGHT, OTHER_RIGHT_length); *target += OTHER_RIGHT_length;\
+	drunk_memcpy((target), OTHER_LEFT, OTHER_LEFT_length);\
+	target += OTHER_LEFT_length;\
+	drunk_memcpy((target), ARG, ARG_length);\
+	target += ARG_length;\
+	drunk_memcpy((target), OTHER_RIGHT, OTHER_RIGHT_length);\
+	target += OTHER_RIGHT_length;\
 };
 
 #define render__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
-	while ((*target - render_result->result) + (OTHER_LEFT_length+ARG_length+OTHER_RIGHT_length+1+1) + subarrays_length >= *buffer_size) {\
+	while (((target) - render_result->result) + (OTHER_LEFT_length+ARG_length+OTHER_RIGHT_length+1+1) + subarrays_length >= *buffer_size) {\
 		(*buffer_size) *= 2;\
-		new_result = (char*)realloc(render_result->result, sizeof(char) * (*buffer_size));\
-		*target = new_result + (*target - render_result->result);\
-		render_result->result = new_result;\
+		drunk_realloc_with_shifted(render_result->result, sizeof(char) * (*buffer_size), render_result->result_temp, (target));\
 	}\
 	for (i = 0; i < depth; i++) {\
-		memcpy(*target, (*other)[i].left.start, (*other)[i].left.length); *target += (*other)[i].left.length;\
+		drunk_memcpy((target), (*other)[i].left.start, (*other)[i].left.length);\
+		target += (*other)[i].left.length;\
 	}\
 	render__arg(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length);\
 	for (i = depth; i > 0; i--) {\
-		memcpy(*target, (*other)[i-1].right.start, (*other)[i-1].right.length); *target += (*other)[i-1].right.length;\
+		drunk_memcpy((target), (*other)[i-1].right.start, (*other)[i-1].right.length);\
+		target += (*other)[i-1].right.length;\
 	}\
-	memcpy(*target, "\n", 1); *target += 1;\
+	drunk_memcpy((target), "\n", 1);\
+	target += 1;\
 };
 
 
@@ -86,7 +91,7 @@ static const int render_en_main = 0;
 \
 			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
 				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
-				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
+				drunk_realloc(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
 			}\
 			memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
 			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
@@ -102,7 +107,7 @@ static const int render_en_main = 0;
 						}\
 						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 						render__param(\
-							output_end,\
+							*output_end,\
 							(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 							value, value_size,\
 							(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
@@ -116,7 +121,7 @@ static const int render_en_main = 0;
 					}\
 					value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 					render__param(\
-						output_end,\
+						*output_end,\
 						(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 						value, value_size,\
 						(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
@@ -124,7 +129,7 @@ static const int render_en_main = 0;
 				}\
 			} else if (!(state).flags.optional) {\
 				render__param(\
-					output_end,\
+					*output_end,\
 					(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
 					"", 0,\
 					(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
@@ -136,7 +141,7 @@ static const int render_en_main = 0;
 \
 			if (depth >= *other_size) {\
 				*other_size = depth * 2;\
-				*other = realloc(*other, sizeof(Other) * (*other_size));\
+				drunk_realloc(*other, sizeof(Other) * (*other_size), other_temp);\
 			}\
 			(*other)[depth].left.start = (state).tokens.line.start;\
 			(*other)[depth].left.length = (state).tokens.expression.start - (state).tokens.line.start;\
@@ -145,7 +150,7 @@ static const int render_en_main = 0;
 \
 			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
 				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
-				*name_buffer = realloc(*name_buffer, sizeof(char) * (*name_buffer_size));\
+				drunk_realloc(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
 			}\
 			memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
 			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
@@ -208,7 +213,7 @@ static const int render_en_main = 0;
 	}\
 \
 	if ((state).action == ACTION_NONE) {\
-		render__empty(output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
+		render__empty(*output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
 	}\
 }
 
@@ -234,7 +239,7 @@ void render_(
 
 	Template *template = dictionaryLookupUnterminated(templates, template_name, template_name_length);
 	if (template == NULL) {
-		render_result->message = malloc(sizeof(char) * (template_name_length + 1));
+		drunk_malloc(render_result->message, sizeof(char) * (template_name_length + 1));
 		memcpy_s(render_result->message, template_name_length, template_name, template_name_length);
 		render_result->message[template_name_length] = 0;
 		return;
@@ -242,7 +247,7 @@ void render_(
 
 	if (!depth) {
 		buffer_size = &template->buffer_size;
-		render_result->result = malloc(sizeof(char) * (*buffer_size));
+		drunk_malloc(render_result->result, sizeof(char) * (*buffer_size));
 		*output_end = render_result->result;
 	}
 
@@ -250,7 +255,6 @@ void render_(
 	char *pe = template->text + template->length;
 	char *eof = pe;
 	size_t cs;
-	char *new_result;
 	char *value;
 	Py_ssize_t value_size;
 	PyObject *param_values;
@@ -263,27 +267,30 @@ void render_(
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 
+	char *char_temp;
+	Other *other_temp;
+
 	if (template->render_states.length == 0) {
 
-		state = malloc(sizeof(RenderState) * 1);
+		drunk_malloc(state, sizeof(RenderState) * 1);
 		resetRenderState(*state);
 
 		
-/* #line 273 "compileComprehension.c" */
+/* #line 280 "compileComprehension.c" */
 	{
 	cs = render_start;
 	}
 
-/* #line 278 "compileComprehension.c" */
+/* #line 285 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 264 "compileComprehension_preprocessed.rl" */
+/* #line 271 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.line.start = p; }
-/* #line 265 "compileComprehension_preprocessed.rl" */
+/* #line 272 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -291,13 +298,13 @@ tr1:
 
 				ACTION_END_LINE(*state);
 
-				state = malloc(sizeof(RenderState) * 1);
+				drunk_malloc(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
 
 			}
 	goto st0;
 tr4:
-/* #line 265 "compileComprehension_preprocessed.rl" */
+/* #line 272 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -305,15 +312,15 @@ tr4:
 
 				ACTION_END_LINE(*state);
 
-				state = malloc(sizeof(RenderState) * 1);
+				drunk_malloc(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
 
 			}
 	goto st0;
 tr50:
-/* #line 289 "compileComprehension_preprocessed.rl" */
+/* #line 296 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.expression.end = p; }
-/* #line 265 "compileComprehension_preprocessed.rl" */
+/* #line 272 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -321,7 +328,7 @@ tr50:
 
 				ACTION_END_LINE(*state);
 
-				state = malloc(sizeof(RenderState) * 1);
+				drunk_malloc(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
 
 			}
@@ -330,60 +337,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 334 "compileComprehension.c" */
+/* #line 341 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 264 "compileComprehension_preprocessed.rl" */
+/* #line 271 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.line.start = p; }
 	goto st1;
 tr49:
-/* #line 289 "compileComprehension_preprocessed.rl" */
+/* #line 296 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.expression.end = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 352 "compileComprehension.c" */
+/* #line 359 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 264 "compileComprehension_preprocessed.rl" */
+/* #line 271 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.line.start = p; }
-/* #line 285 "compileComprehension_preprocessed.rl" */
+/* #line 292 "compileComprehension_preprocessed.rl" */
 	{
 				if (!(state->tokens.expression.start && state->tokens.name.end))
 					state->tokens.expression.start = p;
 			}
 	goto st2;
 tr5:
-/* #line 285 "compileComprehension_preprocessed.rl" */
+/* #line 292 "compileComprehension_preprocessed.rl" */
 	{
 				if (!(state->tokens.expression.start && state->tokens.name.end))
 					state->tokens.expression.start = p;
 			}
 	goto st2;
 tr51:
-/* #line 285 "compileComprehension_preprocessed.rl" */
+/* #line 292 "compileComprehension_preprocessed.rl" */
 	{
 				if (!(state->tokens.expression.start && state->tokens.name.end))
 					state->tokens.expression.start = p;
 			}
-/* #line 289 "compileComprehension_preprocessed.rl" */
+/* #line 296 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.expression.end = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 387 "compileComprehension.c" */
+/* #line 394 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -422,18 +429,18 @@ case 5:
 	}
 	goto st1;
 tr22:
-/* #line 279 "compileComprehension_preprocessed.rl" */
+/* #line 286 "compileComprehension_preprocessed.rl" */
 	{ state->flags.optional = true; }
 	goto st6;
 tr71:
-/* #line 280 "compileComprehension_preprocessed.rl" */
+/* #line 287 "compileComprehension_preprocessed.rl" */
 	{ state->flags.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 437 "compileComprehension.c" */
+/* #line 444 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -600,26 +607,26 @@ case 21:
 		goto tr29;
 	goto st1;
 tr40:
-/* #line 279 "compileComprehension_preprocessed.rl" */
+/* #line 286 "compileComprehension_preprocessed.rl" */
 	{ state->flags.optional = true; }
 	goto st22;
 tr28:
-/* #line 277 "compileComprehension_preprocessed.rl" */
+/* #line 284 "compileComprehension_preprocessed.rl" */
 	{ state->action = ACTION_PARAM; }
 	goto st22;
 tr58:
-/* #line 280 "compileComprehension_preprocessed.rl" */
+/* #line 287 "compileComprehension_preprocessed.rl" */
 	{ state->flags.strict = true; }
 	goto st22;
 tr63:
-/* #line 278 "compileComprehension_preprocessed.rl" */
+/* #line 285 "compileComprehension_preprocessed.rl" */
 	{ state->action = ACTION_REF; }
 	goto st22;
 st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-/* #line 623 "compileComprehension.c" */
+/* #line 630 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -724,34 +731,34 @@ case 31:
 		goto tr41;
 	goto st1;
 tr29:
-/* #line 277 "compileComprehension_preprocessed.rl" */
+/* #line 284 "compileComprehension_preprocessed.rl" */
 	{ state->action = ACTION_PARAM; }
-/* #line 282 "compileComprehension_preprocessed.rl" */
+/* #line 289 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.start = p; }
 	goto st32;
 tr41:
-/* #line 279 "compileComprehension_preprocessed.rl" */
+/* #line 286 "compileComprehension_preprocessed.rl" */
 	{ state->flags.optional = true; }
-/* #line 282 "compileComprehension_preprocessed.rl" */
+/* #line 289 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.start = p; }
 	goto st32;
 tr59:
-/* #line 280 "compileComprehension_preprocessed.rl" */
+/* #line 287 "compileComprehension_preprocessed.rl" */
 	{ state->flags.strict = true; }
-/* #line 282 "compileComprehension_preprocessed.rl" */
+/* #line 289 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.start = p; }
 	goto st32;
 tr64:
-/* #line 278 "compileComprehension_preprocessed.rl" */
+/* #line 285 "compileComprehension_preprocessed.rl" */
 	{ state->action = ACTION_REF; }
-/* #line 282 "compileComprehension_preprocessed.rl" */
+/* #line 289 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.start = p; }
 	goto st32;
 st32:
 	if ( ++p == pe )
 		goto _test_eof32;
 case 32:
-/* #line 755 "compileComprehension.c" */
+/* #line 762 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr42;
@@ -769,14 +776,14 @@ case 32:
 		goto st32;
 	goto st1;
 tr42:
-/* #line 283 "compileComprehension_preprocessed.rl" */
+/* #line 290 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.end = p; }
 	goto st33;
 st33:
 	if ( ++p == pe )
 		goto _test_eof33;
 case 33:
-/* #line 780 "compileComprehension.c" */
+/* #line 787 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st33;
@@ -785,14 +792,14 @@ case 33:
 	}
 	goto st1;
 tr43:
-/* #line 283 "compileComprehension_preprocessed.rl" */
+/* #line 290 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.end = p; }
 	goto st34;
 st34:
 	if ( ++p == pe )
 		goto _test_eof34;
 case 34:
-/* #line 796 "compileComprehension.c" */
+/* #line 803 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st35;
@@ -1124,7 +1131,7 @@ case 54:
 	case 52: 
 	case 53: 
 	case 54: 
-/* #line 265 "compileComprehension_preprocessed.rl" */
+/* #line 272 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -1132,15 +1139,15 @@ case 54:
 
 				ACTION_END_LINE(*state);
 
-				state = malloc(sizeof(RenderState) * 1);
+				drunk_malloc(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
 
 			}
 	break;
 	case 36: 
-/* #line 289 "compileComprehension_preprocessed.rl" */
+/* #line 296 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.expression.end = p; }
-/* #line 265 "compileComprehension_preprocessed.rl" */
+/* #line 272 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -1148,18 +1155,18 @@ case 54:
 
 				ACTION_END_LINE(*state);
 
-				state = malloc(sizeof(RenderState) * 1);
+				drunk_malloc(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
 
 			}
 	break;
-/* #line 1157 "compileComprehension.c" */
+/* #line 1164 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-/* #line 318 "compileComprehension_preprocessed.rl" */
+/* #line 325 "compileComprehension_preprocessed.rl" */
 
 
 		free(state);
@@ -1196,10 +1203,10 @@ PyObject *render (
 	render_result.result = NULL;
 
 	size_t other_size = 16;
-	Other *other = malloc(sizeof(Other) * other_size);
+	Other *other; drunk_malloc(other, sizeof(Other) * other_size);
 
 	size_t name_buffer_size = 128;
-	char *name_buffer = malloc(sizeof(char) * name_buffer_size);
+	char *name_buffer; drunk_malloc(name_buffer, sizeof(char) * name_buffer_size);
 
 	char *output_end = NULL;
 

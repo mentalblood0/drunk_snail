@@ -6,15 +6,16 @@
 #include "../include/Template.h"
 #include "../include/templates.h"
 #include "../modules/prefix_tree/include/prefix_tree.h"
+#include "../modules/memoma/include/memoma.h"
 
 
 
 void addTemplate_(char *name, char *text) {
 
-	Template *template = malloc(sizeof(Template));
+	Template *template; drunk_malloc(template, sizeof(Template));
 
 	size_t text_length = strlen(text) + 1;
-	template->text = malloc(sizeof(char) * text_length);
+	drunk_malloc(template->text, sizeof(char) * text_length);
 	memcpy_s(template->text, text_length, text, text_length);
 
 	template->length = text_length - 1;

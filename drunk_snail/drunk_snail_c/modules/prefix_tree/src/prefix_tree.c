@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../../memoma/include/memoma.h"
 #include "../include/prefix_tree.h"
 
 #define ALPHABET_SIZE 256
@@ -9,7 +10,7 @@
 
 
 Tree* createTree() {
-	Tree *tree = malloc(sizeof(Tree));
+	Tree *tree; drunk_malloc(tree, sizeof(Tree));
 	tree->root.value = NULL;
 	tree->root.children = calloc(ALPHABET_SIZE, sizeof(TreeNode*));
 	return tree;
@@ -27,7 +28,7 @@ void treeInsert(Tree* tree, char *key, void *value) {
 		node = node->children[(unsigned char)(*c)];
 
 		if (!node) {
-			node = malloc(sizeof(TreeNode));
+			drunk_malloc(node, sizeof(TreeNode));
 			node->value = NULL;
 			node->children = calloc(ALPHABET_SIZE, sizeof(TreeNode*));
 			parent->children[(unsigned char)(*c)] = node;
@@ -35,9 +36,7 @@ void treeInsert(Tree* tree, char *key, void *value) {
 
 	}
 
-	if (node->value) {
-		free(node->value);
-	}
+	free(node->value);
 	node->value = value;
 
 }
@@ -56,10 +55,8 @@ void treeRemove(Tree* tree, char *key) {
 
 	}
 
-	if (node->value) {
-		free(node->value);
-		node->value = NULL;
-	}
+	free(node->value);
+	node->value = NULL;
 
 }
 

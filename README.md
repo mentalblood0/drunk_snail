@@ -64,7 +64,7 @@ Rendering 10x1000 table (mean of 10000 experiments):
 | [TRender](https://github.com/cesbit/trender)                      | 10.81    | 92                |
 | [mako](https://github.com/sqlalchemy/mako)                        | 3.08     | 324               |
 | [Jinja](https://github.com/pallets/jinja)                         | 1.56     | 641               |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.29** | **3448**          |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.27** | **3703**          |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------: | --------: |
@@ -82,7 +82,7 @@ Rendering 100x10000 table (mean of 100 experiments)
 | [TRender](https://github.com/cesbit/trender)                      | 957      | 1                 |
 | [mako](https://github.com/sqlalchemy/mako)                        | 198      | 5                 |
 | [Jinja](https://github.com/pallets/jinja)                         | 203      | 4                 |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **27**   | **37**            |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **26**   | **38**            |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------: | --------: |

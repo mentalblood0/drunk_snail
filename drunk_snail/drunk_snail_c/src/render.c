@@ -104,7 +104,7 @@ static const int render_en_main = 0;
 
 #define renderLine(state) {\
 \
-	switch ((state).verified_action) {\
+	switch ((state).action) {\
 \
 		case ACTION_PARAM:\
 \

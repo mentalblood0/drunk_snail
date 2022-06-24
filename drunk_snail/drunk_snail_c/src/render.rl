@@ -65,7 +65,7 @@ render__param {%
 
 #define renderLine(state) {\
 \
-	switch ((state).verified_action) {\
+	switch ((state).action) {\
 \
 		case ACTION_PARAM:\
 \

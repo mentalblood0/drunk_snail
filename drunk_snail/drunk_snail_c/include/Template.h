@@ -35,7 +35,6 @@ typedef struct {
 	Flags flags;
 
 	enum ActionType action;
-	enum ActionType verified_action;
 
 } RenderState;
 
@@ -82,19 +81,8 @@ typedef struct {
 	(state).tokens.expression.start\
 )
 
-#define lineIsParam(state) ((state).action == ACTION_PARAM)
-#define lineIsRef(state) ((state).action == ACTION_REF)
-#define lineIsNone(state) ((state).action == ACTION_NONE)
-
 #define verifyAction(state) {\
-	if (baseTokensExist(state)) {\
-		if (lineIsParam(state)) {\
-			(state).verified_action = ACTION_PARAM;\
-		} else if (lineIsRef(state)) {\
-			(state).verified_action = ACTION_REF;\
-		}\
-	}\
-	if (lineIsNone(state)) {\
-		(state).verified_action = ACTION_NONE;\
+	if (!baseTokensExist(state)) {\
+		(state).action = ACTION_NONE;\
 	}\
 }

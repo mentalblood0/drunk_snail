@@ -245,28 +245,29 @@ void render_(
 		*output_end = render_result->result;
 	}
 
-	char *p = template->text;
-	char *pe = template->text + template->length;
-	char *eof = pe;
-	size_t cs;
 	char *value;
+	Py_ssize_t j;
+	Py_ssize_t list_size;
 	Py_ssize_t value_size;
 	PyObject *param_values;
 	PyObject *ref_values;
 	PyObject *item;
 
+	RenderState *state = NULL;
+
 	size_t i;
 	int alloc_error = 0;
-	RenderState *state = NULL;
-	size_t i_template = 0;
-	Py_ssize_t j;
-	Py_ssize_t list_size;
 	size_t required_buffer_size;
 
 	char *char_temp;
 	Other *other_temp;
 
 	if (template->render_states.length == 0) {
+
+		char *p = template->text;
+		char *pe = template->text + template->length;
+		char *eof = pe;
+		size_t cs;
 
 		drunk_malloc_one_render_(state, sizeof(RenderState) * 1);
 		resetRenderState(*state);
@@ -339,7 +340,8 @@ void render_(
 
 	} else {
 
-		for (i_template = 0; i_template < template->render_states.length; i_template++) {
+		size_t i_template = 0;
+		for (i_template; i_template < template->render_states.length; i_template++) {
 			state = template->render_states.start[i_template];
 			renderLine(*state);
 		}

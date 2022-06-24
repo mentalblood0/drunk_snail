@@ -64,7 +64,7 @@ Rendering 10x1000 table (mean of 10000 experiments):
 | [TRender](https://github.com/cesbit/trender)                      | 10.81    | 92                |
 | [mako](https://github.com/sqlalchemy/mako)                        | 3.08     | 324               |
 | [Jinja](https://github.com/pallets/jinja)                         | 1.56     | 641               |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.26** | **3846**          |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.25** | **4000**          |
 
 | Other                         | Time, ms | dicts / s |
 | ----------------------------- | -------: | --------: |

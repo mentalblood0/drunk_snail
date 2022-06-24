@@ -102,25 +102,41 @@ static const int render_en_main = 0;
 }
 
 
-#define ACTION_END_LINE(state) {\
+#define renderLine(state) {\
 \
-	if (lineIsParam(state)) {\
+	switch ((state).verified_action) {\
 \
-		if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
-			*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
-			drunk_realloc_one_render_(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
-		}\
-		drunk_memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
-		(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
+		case ACTION_PARAM:\
 \
-		param_values = PyDict_GetItemString(params, *name_buffer);\
-		if (param_values) {\
-			if ((state).flags.strict || PyList_Check(param_values)) {\
-				list_size = PyList_Size(param_values);\
-				for (j = 0; j < list_size; j++) {\
-					item = PyList_GetItem(param_values, j);\
-					if (!PyUnicode_Check(item)) {\
-						item = PyObject_Str(item);\
+			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
+				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
+				drunk_realloc_one_render_(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
+			}\
+			drunk_memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
+			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
+\
+			param_values = PyDict_GetItemString(params, *name_buffer);\
+			if (param_values) {\
+				if ((state).flags.strict || PyList_Check(param_values)) {\
+					list_size = PyList_Size(param_values);\
+					for (j = 0; j < list_size; j++) {\
+						item = PyList_GetItem(param_values, j);\
+						if (!PyUnicode_Check(item)) {\
+							item = PyObject_Str(item);\
+						}\
+						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
+						render__param(\
+							*output_end,\
+							(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
+							value, value_size,\
+							(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
+						);\
+					}\
+				} else {\
+					if (!PyUnicode_Check(param_values)) {\
+						item = PyObject_Str(param_values);\
+					} else {\
+						item = param_values;\
 					}\
 					value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 					render__param(\
@@ -130,52 +146,59 @@ static const int render_en_main = 0;
 						(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
 					);\
 				}\
-			} else {\
-				if (!PyUnicode_Check(param_values)) {\
-					item = PyObject_Str(param_values);\
-				} else {\
-					item = param_values;\
-				}\
-				value = PyUnicode_AsUTF8AndSize(item, &value_size);\
+			} else if (!(state).flags.optional) {\
 				render__param(\
 					*output_end,\
 					(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
-					value, value_size,\
+					"", 0,\
 					(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
 				);\
 			}\
-		} else if (!(state).flags.optional) {\
-			render__param(\
-				*output_end,\
-				(state).tokens.line.start, (state).tokens.expression.start - (state).tokens.line.start,\
-				"", 0,\
-				(state).tokens.expression.end, (state).tokens.line.end - (state).tokens.expression.end\
-			);\
-		}\
 \
-	} else if (lineIsRef(state)) {\
+			break;\
 \
-		if (depth >= *other_size) {\
-			*other_size = depth * 2;\
-			drunk_realloc_one_render_(*other, sizeof(Other) * (*other_size), other_temp);\
-		}\
-		(*other)[depth].left.start = (state).tokens.line.start;\
-		(*other)[depth].left.length = (state).tokens.expression.start - (state).tokens.line.start;\
-		(*other)[depth].right.start = (state).tokens.expression.end;\
-		(*other)[depth].right.length = (state).tokens.line.end - (state).tokens.expression.end;\
+		case ACTION_REF:\
 \
-		if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
-			*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
-			drunk_realloc_one_render_(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
-		}\
-		drunk_memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
-		(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
+			if (depth >= *other_size) {\
+				*other_size = depth * 2;\
+				drunk_realloc_one_render_(*other, sizeof(Other) * (*other_size), other_temp);\
+			}\
+			(*other)[depth].left.start = (state).tokens.line.start;\
+			(*other)[depth].left.length = (state).tokens.expression.start - (state).tokens.line.start;\
+			(*other)[depth].right.start = (state).tokens.expression.end;\
+			(*other)[depth].right.length = (state).tokens.line.end - (state).tokens.expression.end;\
 \
-		ref_values = PyDict_GetItemString(params, *name_buffer);\
-		if (ref_values) {\
-			if ((state).flags.strict || PyList_Check(ref_values)) {\
-				list_size = PyList_Size(ref_values);\
-				for (j = 0; j < list_size; j++) {\
+			if ((state).tokens.name.end - (state).tokens.name.start + 1 > *name_buffer_size) {\
+				*name_buffer_size = (state).tokens.name.end - (state).tokens.name.start + 1;\
+				drunk_realloc_one_render_(*name_buffer, sizeof(char) * (*name_buffer_size), char_temp);\
+			}\
+			drunk_memcpy(*name_buffer, (state).tokens.name.start, (state).tokens.name.end - (state).tokens.name.start);\
+			(*name_buffer)[(state).tokens.name.end - (state).tokens.name.start] = 0;\
+\
+			ref_values = PyDict_GetItemString(params, *name_buffer);\
+			if (ref_values) {\
+				if ((state).flags.strict || PyList_Check(ref_values)) {\
+					list_size = PyList_Size(ref_values);\
+					for (j = 0; j < list_size; j++) {\
+						render_(\
+							render_result,\
+							(state).tokens.name.start,\
+							(state).tokens.name.end - (state).tokens.name.start,\
+							output_end,\
+							depth + 1,\
+							buffer_size,\
+							other,\
+							other_size,\
+							name_buffer,\
+							name_buffer_size,\
+							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+							PyList_GetItem(ref_values, j)\
+						);\
+						if (!render_result->result) {\
+							return;\
+						}\
+					}\
+				} else {\
 					render_(\
 						render_result,\
 						(state).tokens.name.start,\
@@ -188,13 +211,13 @@ static const int render_en_main = 0;
 						name_buffer,\
 						name_buffer_size,\
 						subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
-						PyList_GetItem(ref_values, j)\
+						ref_values\
 					);\
 					if (!render_result->result) {\
 						return;\
 					}\
 				}\
-			} else {\
+			} else if (!(state).flags.optional) {\
 				render_(\
 					render_result,\
 					(state).tokens.name.start,\
@@ -207,34 +230,19 @@ static const int render_en_main = 0;
 					name_buffer,\
 					name_buffer_size,\
 					subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
-					ref_values\
+					empty_dict\
 				);\
 				if (!render_result->result) {\
 					return;\
 				}\
 			}\
-		} else if (!(state).flags.optional) {\
-			render_(\
-				render_result,\
-				(state).tokens.name.start,\
-				(state).tokens.name.end - (state).tokens.name.start,\
-				output_end,\
-				depth + 1,\
-				buffer_size,\
-				other,\
-				other_size,\
-				name_buffer,\
-				name_buffer_size,\
-				subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
-				empty_dict\
-			);\
-			if (!render_result->result) {\
-				return;\
-			}\
-		}\
 \
-	} else if (lineIsNone(state)) {\
-		render__empty(*output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
+			break;\
+\
+		case ACTION_NONE:\
+			render__empty(*output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
+			break;\
+\
 	}\
 \
 }
@@ -303,21 +311,21 @@ void render_(
 		resetRenderState(*state);
 
 		
-/* #line 307 "compileComprehension.c" */
+/* #line 315 "compileComprehension.c" */
 	{
 	cs = render_start;
 	}
 
-/* #line 312 "compileComprehension.c" */
+/* #line 320 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 298 "compileComprehension_preprocessed.rl" */
+/* #line 306 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.line.start = p; }
-/* #line 299 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -327,7 +335,9 @@ tr1:
 					exit_render_();
 				}
 
-				ACTION_END_LINE(*state);
+				verifyAction(*state);
+
+				renderLine(*state);
 
 				drunk_malloc_one_render_(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
@@ -335,7 +345,7 @@ tr1:
 			}
 	goto st0;
 tr4:
-/* #line 299 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -345,7 +355,9 @@ tr4:
 					exit_render_();
 				}
 
-				ACTION_END_LINE(*state);
+				verifyAction(*state);
+
+				renderLine(*state);
 
 				drunk_malloc_one_render_(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
@@ -353,9 +365,9 @@ tr4:
 			}
 	goto st0;
 tr50:
-/* #line 327 "compileComprehension_preprocessed.rl" */
+/* #line 337 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.expression.end = p; }
-/* #line 299 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -365,7 +377,9 @@ tr50:
 					exit_render_();
 				}
 
-				ACTION_END_LINE(*state);
+				verifyAction(*state);
+
+				renderLine(*state);
 
 				drunk_malloc_one_render_(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
@@ -376,60 +390,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 380 "compileComprehension.c" */
+/* #line 394 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 298 "compileComprehension_preprocessed.rl" */
+/* #line 306 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.line.start = p; }
 	goto st1;
 tr49:
-/* #line 327 "compileComprehension_preprocessed.rl" */
+/* #line 337 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.expression.end = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 398 "compileComprehension.c" */
+/* #line 412 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 298 "compileComprehension_preprocessed.rl" */
+/* #line 306 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.line.start = p; }
-/* #line 323 "compileComprehension_preprocessed.rl" */
+/* #line 333 "compileComprehension_preprocessed.rl" */
 	{
 				if (!(state->tokens.expression.start && state->tokens.name.end))
 					state->tokens.expression.start = p;
 			}
 	goto st2;
 tr5:
-/* #line 323 "compileComprehension_preprocessed.rl" */
+/* #line 333 "compileComprehension_preprocessed.rl" */
 	{
 				if (!(state->tokens.expression.start && state->tokens.name.end))
 					state->tokens.expression.start = p;
 			}
 	goto st2;
 tr51:
-/* #line 323 "compileComprehension_preprocessed.rl" */
+/* #line 333 "compileComprehension_preprocessed.rl" */
 	{
 				if (!(state->tokens.expression.start && state->tokens.name.end))
 					state->tokens.expression.start = p;
 			}
-/* #line 327 "compileComprehension_preprocessed.rl" */
+/* #line 337 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.expression.end = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 433 "compileComprehension.c" */
+/* #line 447 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -468,18 +482,18 @@ case 5:
 	}
 	goto st1;
 tr22:
-/* #line 317 "compileComprehension_preprocessed.rl" */
+/* #line 327 "compileComprehension_preprocessed.rl" */
 	{ state->flags.optional = true; }
 	goto st6;
 tr71:
-/* #line 318 "compileComprehension_preprocessed.rl" */
+/* #line 328 "compileComprehension_preprocessed.rl" */
 	{ state->flags.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 483 "compileComprehension.c" */
+/* #line 497 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -646,26 +660,26 @@ case 21:
 		goto tr29;
 	goto st1;
 tr40:
-/* #line 317 "compileComprehension_preprocessed.rl" */
+/* #line 327 "compileComprehension_preprocessed.rl" */
 	{ state->flags.optional = true; }
 	goto st22;
 tr28:
-/* #line 315 "compileComprehension_preprocessed.rl" */
+/* #line 325 "compileComprehension_preprocessed.rl" */
 	{ state->action = ACTION_PARAM; }
 	goto st22;
 tr58:
-/* #line 318 "compileComprehension_preprocessed.rl" */
+/* #line 328 "compileComprehension_preprocessed.rl" */
 	{ state->flags.strict = true; }
 	goto st22;
 tr63:
-/* #line 316 "compileComprehension_preprocessed.rl" */
+/* #line 326 "compileComprehension_preprocessed.rl" */
 	{ state->action = ACTION_REF; }
 	goto st22;
 st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-/* #line 669 "compileComprehension.c" */
+/* #line 683 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -770,34 +784,34 @@ case 31:
 		goto tr41;
 	goto st1;
 tr29:
-/* #line 315 "compileComprehension_preprocessed.rl" */
+/* #line 325 "compileComprehension_preprocessed.rl" */
 	{ state->action = ACTION_PARAM; }
-/* #line 320 "compileComprehension_preprocessed.rl" */
+/* #line 330 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.start = p; }
 	goto st32;
 tr41:
-/* #line 317 "compileComprehension_preprocessed.rl" */
+/* #line 327 "compileComprehension_preprocessed.rl" */
 	{ state->flags.optional = true; }
-/* #line 320 "compileComprehension_preprocessed.rl" */
+/* #line 330 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.start = p; }
 	goto st32;
 tr59:
-/* #line 318 "compileComprehension_preprocessed.rl" */
+/* #line 328 "compileComprehension_preprocessed.rl" */
 	{ state->flags.strict = true; }
-/* #line 320 "compileComprehension_preprocessed.rl" */
+/* #line 330 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.start = p; }
 	goto st32;
 tr64:
-/* #line 316 "compileComprehension_preprocessed.rl" */
+/* #line 326 "compileComprehension_preprocessed.rl" */
 	{ state->action = ACTION_REF; }
-/* #line 320 "compileComprehension_preprocessed.rl" */
+/* #line 330 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.start = p; }
 	goto st32;
 st32:
 	if ( ++p == pe )
 		goto _test_eof32;
 case 32:
-/* #line 801 "compileComprehension.c" */
+/* #line 815 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr42;
@@ -815,14 +829,14 @@ case 32:
 		goto st32;
 	goto st1;
 tr42:
-/* #line 321 "compileComprehension_preprocessed.rl" */
+/* #line 331 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.end = p; }
 	goto st33;
 st33:
 	if ( ++p == pe )
 		goto _test_eof33;
 case 33:
-/* #line 826 "compileComprehension.c" */
+/* #line 840 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st33;
@@ -831,14 +845,14 @@ case 33:
 	}
 	goto st1;
 tr43:
-/* #line 321 "compileComprehension_preprocessed.rl" */
+/* #line 331 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.name.end = p; }
 	goto st34;
 st34:
 	if ( ++p == pe )
 		goto _test_eof34;
 case 34:
-/* #line 842 "compileComprehension.c" */
+/* #line 856 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st35;
@@ -1170,7 +1184,7 @@ case 54:
 	case 52: 
 	case 53: 
 	case 54: 
-/* #line 299 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -1180,7 +1194,9 @@ case 54:
 					exit_render_();
 				}
 
-				ACTION_END_LINE(*state);
+				verifyAction(*state);
+
+				renderLine(*state);
 
 				drunk_malloc_one_render_(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
@@ -1188,9 +1204,9 @@ case 54:
 			}
 	break;
 	case 36: 
-/* #line 327 "compileComprehension_preprocessed.rl" */
+/* #line 337 "compileComprehension_preprocessed.rl" */
 	{ state->tokens.expression.end = p; }
-/* #line 299 "compileComprehension_preprocessed.rl" */
+/* #line 307 "compileComprehension_preprocessed.rl" */
 	{
 
 				state->tokens.line.end = p;
@@ -1200,20 +1216,22 @@ case 54:
 					exit_render_();
 				}
 
-				ACTION_END_LINE(*state);
+				verifyAction(*state);
+
+				renderLine(*state);
 
 				drunk_malloc_one_render_(state, sizeof(RenderState) * 1);
 				resetRenderState(*state)
 
 			}
 	break;
-/* #line 1211 "compileComprehension.c" */
+/* #line 1229 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-/* #line 356 "compileComprehension_preprocessed.rl" */
+/* #line 366 "compileComprehension_preprocessed.rl" */
 
 
 		free(state);
@@ -1222,7 +1240,7 @@ case 54:
 
 		for (i_template = 0; i_template < template->render_states.length; i_template++) {
 			state = template->render_states.start[i_template];
-			ACTION_END_LINE(*state);
+			renderLine(*state);
 		}
 
 	}

@@ -239,7 +239,7 @@ static const int render_en_main = 0;
 \
 			break;\
 \
-		case ACTION_NONE:\
+		default:\
 			render__empty(*output_end, (state).tokens.line.start, (state).tokens.line.end - (state).tokens.line.start);\
 			break;\
 \

@@ -1,5 +1,6 @@
 #include <Python.h>
 
+#include "../include/parse.h"
 #include "../include/render.h"
 #include "../include/templates.h"
 #include "../include/addTemplate.h"
@@ -8,7 +9,7 @@
 
 
 
-PyMethodDef methods[5] = {
+PyMethodDef methods[6] = {
 	{
 		"addTemplate",
 		addTemplate,
@@ -31,7 +32,13 @@ PyMethodDef methods[5] = {
 		"render",
 		render,
 		METH_VARARGS,
-		"render"
+		"Render parsed template"
+	},
+	{
+		"parse",
+		parse,
+		METH_VARARGS,
+		"Parse template"
 	},
 	{NULL, NULL, 0, NULL}
 };

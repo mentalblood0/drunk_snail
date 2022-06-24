@@ -19,8 +19,6 @@ void render_(
 	size_t *buffer_size,
 	Other **other,
 	size_t *other_size,
-	char **name_buffer,
-	size_t *name_buffer_size,
 	size_t subarrays_length,
 	PyObject *params
 );

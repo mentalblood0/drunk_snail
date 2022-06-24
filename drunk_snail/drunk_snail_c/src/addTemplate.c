@@ -2,11 +2,13 @@
 #include <Python.h>
 #include <sys/types.h>
 
-#include "../modules/List/include/List.h"
+#include "../include/parse.h"
 #include "../include/Template.h"
 #include "../include/templates.h"
-#include "../modules/prefix_tree/include/prefix_tree.h"
+
+#include "../modules/List/include/List.h"
 #include "../modules/memoma/include/memoma.h"
+#include "../modules/prefix_tree/include/prefix_tree.h"
 
 
 
@@ -30,7 +32,7 @@ int addTemplate_(char *name, char *text) {
 
 	template->length = text_length - 1;
 	template->buffer_size = template->length;
-	listCreate(template->render_states, 16, error);
+	listCreate(template->lines, 16, error);
 	if (error) {
 		free(template->text);
 		free(template);
@@ -59,6 +61,6 @@ PyObject *addTemplate (
 		return NULL;
 	}
 
-	Py_RETURN_NONE;
+	return parse_(name);
 
 }

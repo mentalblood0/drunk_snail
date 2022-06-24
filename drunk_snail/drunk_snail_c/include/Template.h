@@ -82,16 +82,8 @@ typedef struct {
 	(state).tokens.expression.start\
 )
 
-#define lineIsParam(state) (\
-	((state).action == ACTION_PARAM) && \
-	baseTokensExist(state)\
-)
-
-#define lineIsRef(state) (\
-	((state).action == ACTION_REF) && \
-	baseTokensExist(state)\
-)
-
+#define lineIsParam(state) ((state).action == ACTION_PARAM)
+#define lineIsRef(state) ((state).action == ACTION_REF)
 #define lineIsNone(state) ((state).action == ACTION_NONE)
 
 #define verifyAction(state) {\

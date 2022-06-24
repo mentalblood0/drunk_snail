@@ -1,5 +1,5 @@
 
-/* #line 1 "compileComprehension_preprocessed.rl" */
+#line 1 "input_preprocessed.rl"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +20,7 @@
 
 
 
-/* #line 24 "compileComprehension.c" */
+#line 24 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 static const int parse_start = 0;
 static const int parse_first_final = 0;
 static const int parse_error = -1;
@@ -28,7 +28,7 @@ static const int parse_error = -1;
 static const int parse_en_main = 0;
 
 
-/* #line 23 "compileComprehension_preprocessed.rl" */
+#line 23 "input_preprocessed.rl"
 
 
 
@@ -75,6 +75,17 @@ void parse__(
 		exit_parse_();
 	}
 
+	size_t i;
+	bool alloc_error = false;
+
+	if (!depth && template->lines.length) {
+		listClear(template->lines, i);
+		listCreate(template->lines, 16, alloc_error);
+		if (alloc_error) {
+			exit_parse_();
+		}
+	}
+
 	char *value;
 	Py_ssize_t j;
 	Py_ssize_t list_size;
@@ -85,9 +96,6 @@ void parse__(
 
 	Line *line = NULL;
 
-	size_t i;
-	bool alloc_error = false;
-
 	char *p = template->text;
 	char *pe = template->text + template->length;
 	char *eof = pe;
@@ -97,21 +105,21 @@ void parse__(
 	initLine(*line);
 
 	
-/* #line 103 "compileComprehension.c" */
+#line 109 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	{
 	cs = parse_start;
 	}
 
-/* #line 108 "compileComprehension.c" */
+#line 114 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 94 "compileComprehension_preprocessed.rl" */
+#line 100 "input_preprocessed.rl"
 	{ line->tokens.line.start = p; }
-/* #line 95 "compileComprehension_preprocessed.rl" */
+#line 101 "input_preprocessed.rl"
 	{
 
 			line->tokens.line.end = p;
@@ -122,11 +130,12 @@ tr1:
 			}
 
 			verifyAction(*line);
+			computeTokensLengths(*line);
 
 			if (line->action != ACTION_NONE) {
-				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.end - line->tokens.name.start + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.end - line->tokens.name.start);
-				line->tokens.name.copy[line->tokens.name.end - line->tokens.name.start] = 0;
+				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
+				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
+				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
 			drunk_malloc_one_parse_(line, sizeof(Line));
@@ -135,7 +144,7 @@ tr1:
 		}
 	goto st0;
 tr4:
-/* #line 95 "compileComprehension_preprocessed.rl" */
+#line 101 "input_preprocessed.rl"
 	{
 
 			line->tokens.line.end = p;
@@ -146,11 +155,12 @@ tr4:
 			}
 
 			verifyAction(*line);
+			computeTokensLengths(*line);
 
 			if (line->action != ACTION_NONE) {
-				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.end - line->tokens.name.start + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.end - line->tokens.name.start);
-				line->tokens.name.copy[line->tokens.name.end - line->tokens.name.start] = 0;
+				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
+				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
+				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
 			drunk_malloc_one_parse_(line, sizeof(Line));
@@ -159,9 +169,9 @@ tr4:
 		}
 	goto st0;
 tr50:
-/* #line 129 "compileComprehension_preprocessed.rl" */
+#line 136 "input_preprocessed.rl"
 	{ line->tokens.expression.end = p; }
-/* #line 95 "compileComprehension_preprocessed.rl" */
+#line 101 "input_preprocessed.rl"
 	{
 
 			line->tokens.line.end = p;
@@ -172,11 +182,12 @@ tr50:
 			}
 
 			verifyAction(*line);
+			computeTokensLengths(*line);
 
 			if (line->action != ACTION_NONE) {
-				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.end - line->tokens.name.start + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.end - line->tokens.name.start);
-				line->tokens.name.copy[line->tokens.name.end - line->tokens.name.start] = 0;
+				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
+				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
+				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
 			drunk_malloc_one_parse_(line, sizeof(Line));
@@ -188,60 +199,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 194 "compileComprehension.c" */
+#line 203 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 94 "compileComprehension_preprocessed.rl" */
+#line 100 "input_preprocessed.rl"
 	{ line->tokens.line.start = p; }
 	goto st1;
 tr49:
-/* #line 129 "compileComprehension_preprocessed.rl" */
+#line 136 "input_preprocessed.rl"
 	{ line->tokens.expression.end = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 212 "compileComprehension.c" */
+#line 221 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 94 "compileComprehension_preprocessed.rl" */
+#line 100 "input_preprocessed.rl"
 	{ line->tokens.line.start = p; }
-/* #line 125 "compileComprehension_preprocessed.rl" */
+#line 132 "input_preprocessed.rl"
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
 	goto st2;
 tr5:
-/* #line 125 "compileComprehension_preprocessed.rl" */
+#line 132 "input_preprocessed.rl"
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
 	goto st2;
 tr51:
-/* #line 125 "compileComprehension_preprocessed.rl" */
+#line 132 "input_preprocessed.rl"
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
-/* #line 129 "compileComprehension_preprocessed.rl" */
+#line 136 "input_preprocessed.rl"
 	{ line->tokens.expression.end = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 247 "compileComprehension.c" */
+#line 256 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -280,18 +291,18 @@ case 5:
 	}
 	goto st1;
 tr22:
-/* #line 119 "compileComprehension_preprocessed.rl" */
+#line 126 "input_preprocessed.rl"
 	{ line->flags.optional = true; }
 	goto st6;
 tr71:
-/* #line 120 "compileComprehension_preprocessed.rl" */
+#line 127 "input_preprocessed.rl"
 	{ line->flags.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 297 "compileComprehension.c" */
+#line 306 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -458,26 +469,26 @@ case 21:
 		goto tr29;
 	goto st1;
 tr40:
-/* #line 119 "compileComprehension_preprocessed.rl" */
+#line 126 "input_preprocessed.rl"
 	{ line->flags.optional = true; }
 	goto st22;
 tr28:
-/* #line 117 "compileComprehension_preprocessed.rl" */
+#line 124 "input_preprocessed.rl"
 	{ line->action = ACTION_PARAM; }
 	goto st22;
 tr58:
-/* #line 120 "compileComprehension_preprocessed.rl" */
+#line 127 "input_preprocessed.rl"
 	{ line->flags.strict = true; }
 	goto st22;
 tr63:
-/* #line 118 "compileComprehension_preprocessed.rl" */
+#line 125 "input_preprocessed.rl"
 	{ line->action = ACTION_REF; }
 	goto st22;
 st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-/* #line 483 "compileComprehension.c" */
+#line 492 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -582,34 +593,34 @@ case 31:
 		goto tr41;
 	goto st1;
 tr29:
-/* #line 117 "compileComprehension_preprocessed.rl" */
+#line 124 "input_preprocessed.rl"
 	{ line->action = ACTION_PARAM; }
-/* #line 122 "compileComprehension_preprocessed.rl" */
+#line 129 "input_preprocessed.rl"
 	{ line->tokens.name.start = p; }
 	goto st32;
 tr41:
-/* #line 119 "compileComprehension_preprocessed.rl" */
+#line 126 "input_preprocessed.rl"
 	{ line->flags.optional = true; }
-/* #line 122 "compileComprehension_preprocessed.rl" */
+#line 129 "input_preprocessed.rl"
 	{ line->tokens.name.start = p; }
 	goto st32;
 tr59:
-/* #line 120 "compileComprehension_preprocessed.rl" */
+#line 127 "input_preprocessed.rl"
 	{ line->flags.strict = true; }
-/* #line 122 "compileComprehension_preprocessed.rl" */
+#line 129 "input_preprocessed.rl"
 	{ line->tokens.name.start = p; }
 	goto st32;
 tr64:
-/* #line 118 "compileComprehension_preprocessed.rl" */
+#line 125 "input_preprocessed.rl"
 	{ line->action = ACTION_REF; }
-/* #line 122 "compileComprehension_preprocessed.rl" */
+#line 129 "input_preprocessed.rl"
 	{ line->tokens.name.start = p; }
 	goto st32;
 st32:
 	if ( ++p == pe )
 		goto _test_eof32;
 case 32:
-/* #line 615 "compileComprehension.c" */
+#line 624 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr42;
@@ -627,14 +638,14 @@ case 32:
 		goto st32;
 	goto st1;
 tr42:
-/* #line 123 "compileComprehension_preprocessed.rl" */
+#line 130 "input_preprocessed.rl"
 	{ line->tokens.name.end = p; }
 	goto st33;
 st33:
 	if ( ++p == pe )
 		goto _test_eof33;
 case 33:
-/* #line 640 "compileComprehension.c" */
+#line 649 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st33;
@@ -643,14 +654,14 @@ case 33:
 	}
 	goto st1;
 tr43:
-/* #line 123 "compileComprehension_preprocessed.rl" */
+#line 130 "input_preprocessed.rl"
 	{ line->tokens.name.end = p; }
 	goto st34;
 st34:
 	if ( ++p == pe )
 		goto _test_eof34;
 case 34:
-/* #line 656 "compileComprehension.c" */
+#line 665 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st35;
@@ -982,7 +993,7 @@ case 54:
 	case 52: 
 	case 53: 
 	case 54: 
-/* #line 95 "compileComprehension_preprocessed.rl" */
+#line 101 "input_preprocessed.rl"
 	{
 
 			line->tokens.line.end = p;
@@ -993,11 +1004,12 @@ case 54:
 			}
 
 			verifyAction(*line);
+			computeTokensLengths(*line);
 
 			if (line->action != ACTION_NONE) {
-				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.end - line->tokens.name.start + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.end - line->tokens.name.start);
-				line->tokens.name.copy[line->tokens.name.end - line->tokens.name.start] = 0;
+				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
+				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
+				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
 			drunk_malloc_one_parse_(line, sizeof(Line));
@@ -1006,9 +1018,9 @@ case 54:
 		}
 	break;
 	case 36: 
-/* #line 129 "compileComprehension_preprocessed.rl" */
+#line 136 "input_preprocessed.rl"
 	{ line->tokens.expression.end = p; }
-/* #line 95 "compileComprehension_preprocessed.rl" */
+#line 101 "input_preprocessed.rl"
 	{
 
 			line->tokens.line.end = p;
@@ -1019,11 +1031,12 @@ case 54:
 			}
 
 			verifyAction(*line);
+			computeTokensLengths(*line);
 
 			if (line->action != ACTION_NONE) {
-				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.end - line->tokens.name.start + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.end - line->tokens.name.start);
-				line->tokens.name.copy[line->tokens.name.end - line->tokens.name.start] = 0;
+				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
+				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
+				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
 			drunk_malloc_one_parse_(line, sizeof(Line));
@@ -1031,13 +1044,13 @@ case 54:
 
 		}
 	break;
-/* #line 1037 "compileComprehension.c" */
+#line 1048 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
 	}
 	}
 
 	}
 
-/* #line 158 "compileComprehension_preprocessed.rl" */
+#line 165 "input_preprocessed.rl"
 
 
 	free(line);

@@ -47,6 +47,20 @@
 }
 
 
+#define addOther(_line) {\
+\
+	if (depth >= *other_size) {\
+		*other_size = depth * 2;\
+		drunk_realloc_one_render_(*other, sizeof(Other) * (*other_size), other_temp);\
+	}\
+	(*other)[depth].left.start = (_line).tokens.line.start;\
+	(*other)[depth].left.length = (_line).tokens.expression.start - (_line).tokens.line.start;\
+	(*other)[depth].right.start = (_line).tokens.expression.end;\
+	(*other)[depth].right.length = (_line).tokens.line.end - (_line).tokens.expression.end;\
+\
+}
+
+
 #define renderLine(_line) {\
 \
 	switch ((_line).action) {\
@@ -97,24 +111,19 @@
 \
 		case ACTION_REF:\
 \
-			if (depth >= *other_size) {\
-				*other_size = depth * 2;\
-				drunk_realloc_one_render_(*other, sizeof(Other) * (*other_size), other_temp);\
-			}\
-			(*other)[depth].left.start = (_line).tokens.line.start;\
-			(*other)[depth].left.length = (_line).tokens.expression.start - (_line).tokens.line.start;\
-			(*other)[depth].right.start = (_line).tokens.expression.end;\
-			(*other)[depth].right.length = (_line).tokens.line.end - (_line).tokens.expression.end;\
-\
 			ref_values = PyDict_GetItemString(params, (_line).tokens.name.copy);\
+\
 			if (ref_values) {\
+\
+				addOther(_line);\
+\
 				if ((_line).flags.strict || PyList_Check(ref_values)) {\
 					list_size = PyList_Size(ref_values);\
 					for (j = 0; j < list_size; j++) {\
 						render_(\
 							render_result,\
 							(_line).tokens.name.start,\
-							(_line).tokens.name.end - (_line).tokens.name.start,\
+							(_line).tokens.name.length,\
 							output_end,\
 							depth + 1,\
 							buffer_size,\
@@ -131,7 +140,7 @@
 					render_(\
 						render_result,\
 						(_line).tokens.name.start,\
-						(_line).tokens.name.end - (_line).tokens.name.start,\
+						(_line).tokens.name.length,\
 						output_end,\
 						depth + 1,\
 						buffer_size,\
@@ -144,11 +153,15 @@
 						return;\
 					}\
 				}\
+\
 			} else if (!(_line).flags.optional) {\
+\
+				addOther(_line);\
+\
 				render_(\
 					render_result,\
 					(_line).tokens.name.start,\
-					(_line).tokens.name.end - (_line).tokens.name.start,\
+					(_line).tokens.name.length,\
 					output_end,\
 					depth + 1,\
 					buffer_size,\
@@ -160,6 +173,7 @@
 				if (!render_result->result) {\
 					return;\
 				}\
+\
 			}\
 \
 			break;\

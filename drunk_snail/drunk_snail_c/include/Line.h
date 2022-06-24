@@ -9,6 +9,7 @@ typedef struct {
 	char *start;
 	char *end;
 	char *copy;
+	size_t length;
 } Token;
 typedef struct {
 	Token line;
@@ -41,6 +42,7 @@ typedef struct {
 #define initToken(token) {\
 	(token).start = NULL;\
 	(token).end = NULL;\
+	(token).length = 0;\
 	(token).copy = NULL;\
 }
 
@@ -114,4 +116,14 @@ typedef struct {
 	if (!baseTokensExist(_line)) {\
 		(_line).action = ACTION_NONE;\
 	}\
+}
+
+#define computeTokenLength(token) {\
+	(token).length = (token).end - (token).start;\
+}
+
+#define computeTokensLengths(_line) {\
+	computeTokenLength((_line).tokens.line);\
+	computeTokenLength((_line).tokens.name);\
+	computeTokenLength((_line).tokens.expression);\
 }

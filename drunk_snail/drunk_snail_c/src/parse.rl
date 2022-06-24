@@ -66,10 +66,11 @@ void parse__(
 		exit_parse_();
 	}
 
+	size_t i;
 	bool alloc_error = false;
 
-	if (!depth && template->lines->length) {
-		listClear(template->lines);
+	if (!depth && template->lines.length) {
+		listClear(template->lines, i);
 		listCreate(template->lines, 16, alloc_error);
 		if (alloc_error) {
 			exit_parse_();
@@ -85,8 +86,6 @@ void parse__(
 	PyObject *item;
 
 	Line *line = NULL;
-
-	size_t i;
 
 	char *p = template->text;
 	char *pe = template->text + template->length;
@@ -109,11 +108,12 @@ void parse__(
 			}
 
 			verifyAction(*line);
+			computeTokensLengths(*line);
 
 			if (line->action != ACTION_NONE) {
-				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.end - line->tokens.name.start + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.end - line->tokens.name.start);
-				line->tokens.name.copy[line->tokens.name.end - line->tokens.name.start] = 0;
+				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
+				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
+				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
 			drunk_malloc_one_parse_(line, sizeof(Line));

@@ -10,7 +10,6 @@
 #include "../modules/prefix_tree/include/prefix_tree.h"
 
 #include "../include/Line.h"
-#include "../include/Other.h"
 #include "../include/Template.h"
 #include "../include/templates.h"
 #include "../include/ParseResult.h"
@@ -77,14 +76,6 @@ void parse__(
 		}
 	}
 
-	char *value;
-	Py_ssize_t j;
-	Py_ssize_t list_size;
-	Py_ssize_t value_size;
-	PyObject *param_values;
-	PyObject *ref_values;
-	PyObject *item;
-
 	Line *line = NULL;
 
 	char *p = template->text;
@@ -108,6 +99,7 @@ void parse__(
 			}
 
 			verifyAction(*line);
+			addOtherTokens(*line);
 			computeTokensLengths(*line);
 
 			if (line->action != ACTION_NONE) {

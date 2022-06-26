@@ -2,7 +2,7 @@ import pytest
 
 from drunk_snail_c import addTemplate, render
 
-from .common import render_lambda, param_values
+from tests.common import render_lambda, param_values
 
 
 
@@ -32,7 +32,6 @@ def test_other_overflow(param_values):
 	)
 	correct = f"{''.join(reversed(param_values))[:-1]}{''.join(param_values)}\n"
 	assert result == correct
-
 
 def test_name_overflow(value='param'):
 

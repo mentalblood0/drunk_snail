@@ -15,32 +15,48 @@ typedef struct {
 
 
 #define listCreate(target, initial_length, alloc_error) {\
-	drunk_malloc_one(target.start, sizeof(void*) * initial_length, alloc_error);\
+	drunk_malloc_one((target).start, sizeof(void*) * initial_length, alloc_error);\
 	if (!alloc_error) {\
-		target.length = 0;\
-		target.allocated = initial_length;\
+		(target).length = 0;\
+		(target).allocated = initial_length;\
 	}\
 }
 
 
 #define listPush(target, element, alloc_error) {\
-	if (target.length == target.allocated) {\
-		target.allocated += 1;\
-		target.allocated *= 2;\
-		drunk_realloc_one(target.start, sizeof(void*) * target.allocated, target.temp, alloc_error);\
+	if ((target).length == (target).allocated) {\
+		(target).allocated += 1;\
+		(target).allocated *= 2;\
+		drunk_realloc_one((target).start, sizeof(void*) * (target).allocated, (target).temp, alloc_error);\
 		if (!alloc_error) {\
-			target.start[target.length] = element;\
-			target.length += 1;\
+			(target).start[(target).length] = element;\
+			(target).length += 1;\
 		}\
 	} else {\
-		target.start[target.length] = element;\
-		target.length += 1;\
+		(target).start[(target).length] = element;\
+		(target).length += 1;\
+	}\
+}
+
+#define listSet(target, i, element, alloc_error) {\
+	if (i == (target).length) {\
+		listPush((target), element, alloc_error);\
+	}\
+	if (i > (target).length) {\
+		alloc_error = 1;\
+	}\
+	if (i < (target).length) {\
+		(target).start[i] = element;\
 	}\
 }
 
 #define listClear(target, i) {\
-	for (i = 0; i < target.length; i++) {\
-		free(target.start[i]);\
+	for (i = 0; i < (target).length; i++) {\
+		free((target).start[i]);\
 	}\
-	free(target.start);\
+	free((target).start);\
+}
+
+#define listShallowClear(target) {\
+	free((target).start);\
 }

@@ -103,8 +103,8 @@ def test_table():
 		'	<td><!-- (strict)(param)cell --></td>\n'
 		'</tr>\n'
 	)
-	
-	assert render_lambda(
+
+	result = render_lambda(
 		'<table>\n'
 		'	<!-- (strict)(ref)Row -->\n'
 		'</table>\n',
@@ -115,7 +115,10 @@ def test_table():
 				{"cell": ["1.3", "2.3", "3.3"]}
 			]
 		}
-	) == (
+	)
+	
+	print(result)
+	assert result == (
 		'<table>\n'
 		'	<tr>\n'
 		'		<td>1.1</td>\n'

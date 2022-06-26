@@ -12,9 +12,14 @@ typedef struct {
 	size_t length;
 } Token;
 typedef struct {
+	Token left;
+	Token right;
+} Other;
+typedef struct {
 	Token line;
 	Token expression;
 	Token name;
+	Other other;
 } Tokens;
 
 typedef bool Flag;
@@ -53,6 +58,8 @@ typedef struct {
 	initToken((_line).tokens.line);\
 	initToken((_line).tokens.expression);\
 	initToken((_line).tokens.name);\
+	initToken((_line).tokens.other.left);\
+	initToken((_line).tokens.other.right);\
 \
 	initFlag((_line).flags.optional);\
 	initFlag((_line).flags.strict);\
@@ -77,6 +84,8 @@ typedef struct {
 	resetToken((_line).tokens.line);\
 	resetToken((_line).tokens.expression);\
 	resetToken((_line).tokens.name);\
+	resetToken((_line).tokens.other.left);\
+	resetToken((_line).tokens.other.right);\
 \
 	resetFlag((_line).flags.optional);\
 	resetFlag((_line).flags.strict);\
@@ -96,15 +105,9 @@ typedef struct {
 	freeToken((_line).tokens.line);\
 	freeToken((_line).tokens.expression);\
 	freeToken((_line).tokens.name);\
+	freeToken((_line).tokens.other.left);\
+	freeToken((_line).tokens.other.right);\
 }
-
-#define tokenExists(token) ((token).start && (token).end)
-
-#define allTokensExist(_line) (\
-	tokenExists((_line).tokens.line) && \
-	tokenExists((_line).tokens.expression) && \
-	tokenExists((_line).tokens.name)\
-)
 
 #define baseTokensExist(_line) (\
 	(_line).tokens.name.end && \
@@ -116,6 +119,13 @@ typedef struct {
 	if (!baseTokensExist(_line)) {\
 		(_line).action = ACTION_NONE;\
 	}\
+}
+
+#define addOtherTokens(_line) {\
+	(_line).tokens.other.left.start = (_line).tokens.line.start;\
+	(_line).tokens.other.left.length = (_line).tokens.expression.start - (_line).tokens.line.start;\
+	(_line).tokens.other.right.start = (_line).tokens.expression.end;\
+	(_line).tokens.other.right.length = (_line).tokens.line.end - (_line).tokens.expression.end;\
 }
 
 #define computeTokenLength(token) {\

@@ -14,11 +14,11 @@
 		}\
 	}\
 	for (i = 0; i < depth; i++) {\
-		drunk_memcpy((target), ((Other*)((*other).start[i]))->left.start, ((Other*)((*other).start[i]))->left.length); target += ((Other*)((*other).start[i]))->left.length;\
+		drunk_memcpy((target), (*other)[i].left.start, (*other)[i].left.length); target += (*other)[i].left.length;\
 	}\
 	drunk_memcpy((target), LINE, LINE_length); target += LINE_length;\
 	for (i = depth; i > 0; i--) {\
-		drunk_memcpy((target), ((Other*)((*other).start[i-1]))->right.start, ((Other*)((*other).start[i-1]))->right.length); target += ((Other*)((*other).start[i-1]))->right.length;\
+		drunk_memcpy((target), (*other)[i-1].right.start, (*other)[i-1].right.length); target += (*other)[i-1].right.length;\
 	}\
 	memcpy((target), "\n", 1); target += 1;\
 };
@@ -33,13 +33,13 @@
 		}\
 	}\
 	for (i = 0; i < depth; i++) {\
-		drunk_memcpy((target), ((Other*)((*other).start[i]))->left.start, ((Other*)((*other).start[i]))->left.length); target += ((Other*)((*other).start[i]))->left.length;\
+		drunk_memcpy((target), (*other)[i].left.start, (*other)[i].left.length); target += (*other)[i].left.length;\
 	}\
 	drunk_memcpy((target), OTHER_LEFT, OTHER_LEFT_length); target += OTHER_LEFT_length;\
 	drunk_memcpy((target), ARG, ARG_length); target += ARG_length;\
 	drunk_memcpy((target), OTHER_RIGHT, OTHER_RIGHT_length); target += OTHER_RIGHT_length;\
 	for (i = depth; i > 0; i--) {\
-		drunk_memcpy((target), ((Other*)((*other).start[i-1]))->right.start, ((Other*)((*other).start[i-1]))->right.length); target += ((Other*)((*other).start[i-1]))->right.length;\
+		drunk_memcpy((target), (*other)[i-1].right.start, (*other)[i-1].right.length); target += (*other)[i-1].right.length;\
 	}\
 	memcpy((target), "\n", 1); target += 1;\
 };

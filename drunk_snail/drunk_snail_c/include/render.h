@@ -3,8 +3,7 @@
 
 #include <Python.h>
 
-#include "../modules/List/include/List.h"
-
+#include "Other.h"
 #include "RenderResult.h"
 
 
@@ -18,7 +17,8 @@ void render_(
 	char **output_end,
 	size_t depth,
 	size_t *buffer_size,
-	List *other,
+	Other **other,
+	size_t *other_size,
 	size_t subarrays_length,
 	PyObject *params
 );

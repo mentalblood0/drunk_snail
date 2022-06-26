@@ -5,11 +5,11 @@
 
 
 render__empty {%
-<(*other).start[:depth].left+><LINE><(*other).start[:depth].right->
+<*other[:depth].left+><LINE><*other[:depth].right->
 
 %}
 
 render__param {%
-<(*other).start[:depth].left+><OTHER_LEFT><ARG><OTHER_RIGHT><(*other).start[:depth].right->
+<*other[:depth].left+><OTHER_LEFT><ARG><OTHER_RIGHT><*other[:depth].right->
 
 %}

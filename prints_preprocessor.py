@@ -25,7 +25,7 @@ includes_types = {
 	'keyword': r'ARG|TEMPLATE_NAME|LINE|OTHER_LEFT|OTHER_RIGHT',
 	'repetition': r'\w+\*\w+',
 	'condition': r'\w+\?[^:]*:[^:]*',
-	'subarray': r'(((\w|\*|\(|\))+)(\.\w+)*)\[:(\w+)\]((\.\w+)*)(\+|\-)',
+	'subarray': r'(((\w|\*)+)(\.\w+)*)\[:(\w+)\]((\.\w+)*)(\+|\-)',
 	'condition_call': r'\*\((\w+)\?([^:]*):([^:]*)\)'
 }
 for k in includes_types:
@@ -170,6 +170,9 @@ def compilePrint(expression, name=None, defined=None):
 
 			m, length, path_to_substring = e['groups'][0], e['groups'][4], e['groups'][5]
 			direction = e['groups'][-1]
+
+			if '*' in m:
+				m = f'({m})'
 
 			if direction == '+':
 				cpy_definition_list += [

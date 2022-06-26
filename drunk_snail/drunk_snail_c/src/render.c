@@ -10,6 +10,7 @@
 #include "../modules/prefix_tree/include/prefix_tree.h"
 
 #include "../include/Line.h"
+#include "../include/Other.h"
 #include "../include/Template.h"
 #include "../include/templates.h"
 #include "../include/print_macros.h"
@@ -48,10 +49,14 @@
 
 #define addOther(_line) {\
 \
-	listSet(*other, depth, &((_line).tokens.other), alloc_error);\
-	if (alloc_error) {\
-		exit_render_();\
+	if (depth >= *other_size) {\
+		*other_size = depth * 2;\
+		drunk_realloc_one_render_(*other, sizeof(Other) * (*other_size), other_temp);\
 	}\
+	(*other)[depth].left.start = (_line).tokens.line.start;\
+	(*other)[depth].left.length = (_line).tokens.expression.start - (_line).tokens.line.start;\
+	(*other)[depth].right.start = (_line).tokens.expression.end;\
+	(*other)[depth].right.length = (_line).tokens.line.end - (_line).tokens.expression.end;\
 \
 }
 
@@ -74,9 +79,9 @@
 						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 						render__param(\
 							*output_end,\
-							(_line).tokens.line.start, (_line).tokens.other.left.length,\
+							(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\
 							value, value_size,\
-							(_line).tokens.expression.end, (_line).tokens.other.right.length\
+							(_line).tokens.expression.end, (_line).tokens.line.end - (_line).tokens.expression.end\
 						);\
 					}\
 				} else {\
@@ -88,17 +93,17 @@
 					value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 					render__param(\
 						*output_end,\
-						(_line).tokens.line.start, (_line).tokens.other.left.length,\
+						(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\
 						value, value_size,\
-						(_line).tokens.expression.end, (_line).tokens.other.right.length\
+						(_line).tokens.expression.end, (_line).tokens.line.end - (_line).tokens.expression.end\
 					);\
 				}\
 			} else if (!(_line).flags.optional) {\
 				render__param(\
 					*output_end,\
-					(_line).tokens.line.start, (_line).tokens.other.left.length,\
+					(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\
 					"", 0,\
-					(_line).tokens.expression.end, (_line).tokens.other.right.length\
+					(_line).tokens.expression.end, (_line).tokens.line.end - (_line).tokens.expression.end\
 				);\
 			}\
 \
@@ -123,7 +128,8 @@
 							depth + 1,\
 							buffer_size,\
 							other,\
-							subarrays_length + (_line).tokens.other.left.length + (_line).tokens.other.right.length,\
+							other_size,\
+							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
 							PyList_GetItem(ref_values, j)\
 						);\
 						if (!render_result->result) {\
@@ -139,7 +145,8 @@
 						depth + 1,\
 						buffer_size,\
 						other,\
-						subarrays_length + (_line).tokens.other.left.length + (_line).tokens.other.right.length,\
+						other_size,\
+						subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
 						ref_values\
 					);\
 					if (!render_result->result) {\
@@ -159,7 +166,8 @@
 					depth + 1,\
 					buffer_size,\
 					other,\
-					subarrays_length + (_line).tokens.other.left.length + (_line).tokens.other.right.length,\
+					other_size,\
+					subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
 					empty_dict\
 				);\
 				if (!render_result->result) {\
@@ -189,7 +197,8 @@ void render_(
 	char **output_end,
 	size_t depth,
 	size_t *buffer_size,
-	List *other,
+	Other **other,
+	size_t *other_size,
 	size_t subarrays_length,
 	PyObject *params
 )
@@ -262,9 +271,11 @@ PyObject *render (
 	render_result.message = NULL;
 	render_result.result = NULL;
 
-	List other;
+	size_t other_size = 16;
+	Other *other = NULL;
+
 	int error = 0;
-	listCreate(other, 16, error);
+	drunk_malloc_one(other, sizeof(Other) * other_size, error);
 	if (error) {
 		exit_render;
 	}
@@ -279,12 +290,12 @@ PyObject *render (
 		0,
 		NULL,
 		&other,
+		&other_size,
 		0,
 		params
 	);
 
-	size_t i;
-	listShallowClear(other);
+	free(other);
 
 	if (!render_result.result) {
 		if (render_result.message) {

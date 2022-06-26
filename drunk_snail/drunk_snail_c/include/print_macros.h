@@ -20,7 +20,7 @@
 	for (i = depth; i > 0; i--) {\
 		drunk_memcpy((target), (*other)[i-1].right.start, (*other)[i-1].right.length); target += (*other)[i-1].right.length;\
 	}\
-	memcpy((target), "\n", 1); target += 1;\
+	*target = '\n'; ++target;\
 };
 
 #define render__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
@@ -41,5 +41,5 @@
 	for (i = depth; i > 0; i--) {\
 		drunk_memcpy((target), (*other)[i-1].right.start, (*other)[i-1].right.length); target += (*other)[i-1].right.length;\
 	}\
-	memcpy((target), "\n", 1); target += 1;\
+	*target = '\n'; ++target;\
 };

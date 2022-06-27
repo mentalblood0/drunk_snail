@@ -77,14 +77,6 @@ void parse__(
 		}
 	}
 
-	char *value;
-	Py_ssize_t j;
-	Py_ssize_t list_size;
-	Py_ssize_t value_size;
-	PyObject *param_values;
-	PyObject *ref_values;
-	PyObject *item;
-
 	Line *line = NULL;
 
 	char *p = template->text;

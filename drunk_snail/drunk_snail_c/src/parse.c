@@ -1,5 +1,5 @@
 
-#line 1 "input_preprocessed.rl"
+/* #line 1 "compileComprehension_preprocessed.rl" */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +20,7 @@
 
 
 
-#line 24 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 24 "compileComprehension.c" */
 static const int parse_start = 0;
 static const int parse_first_final = 0;
 static const int parse_error = -1;
@@ -28,7 +28,7 @@ static const int parse_error = -1;
 static const int parse_en_main = 0;
 
 
-#line 23 "input_preprocessed.rl"
+/* #line 23 "compileComprehension_preprocessed.rl" */
 
 
 
@@ -86,14 +86,6 @@ void parse__(
 		}
 	}
 
-	char *value;
-	Py_ssize_t j;
-	Py_ssize_t list_size;
-	Py_ssize_t value_size;
-	PyObject *param_values;
-	PyObject *ref_values;
-	PyObject *item;
-
 	Line *line = NULL;
 
 	char *p = template->text;
@@ -105,21 +97,21 @@ void parse__(
 	initLine(*line);
 
 	
-#line 109 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 101 "compileComprehension.c" */
 	{
 	cs = parse_start;
 	}
 
-#line 114 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 106 "compileComprehension.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-#line 100 "input_preprocessed.rl"
+/* #line 92 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.line.start = p; }
-#line 101 "input_preprocessed.rl"
+/* #line 93 "compileComprehension_preprocessed.rl" */
 	{
 
 			line->tokens.line.end = p;
@@ -144,7 +136,7 @@ tr1:
 		}
 	goto st0;
 tr4:
-#line 101 "input_preprocessed.rl"
+/* #line 93 "compileComprehension_preprocessed.rl" */
 	{
 
 			line->tokens.line.end = p;
@@ -169,9 +161,9 @@ tr4:
 		}
 	goto st0;
 tr50:
-#line 136 "input_preprocessed.rl"
+/* #line 128 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
-#line 101 "input_preprocessed.rl"
+/* #line 93 "compileComprehension_preprocessed.rl" */
 	{
 
 			line->tokens.line.end = p;
@@ -199,60 +191,60 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-#line 203 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 195 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-#line 100 "input_preprocessed.rl"
+/* #line 92 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.line.start = p; }
 	goto st1;
 tr49:
-#line 136 "input_preprocessed.rl"
+/* #line 128 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-#line 221 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 213 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-#line 100 "input_preprocessed.rl"
+/* #line 92 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.line.start = p; }
-#line 132 "input_preprocessed.rl"
+/* #line 124 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
 	goto st2;
 tr5:
-#line 132 "input_preprocessed.rl"
+/* #line 124 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
 	goto st2;
 tr51:
-#line 132 "input_preprocessed.rl"
+/* #line 124 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
-#line 136 "input_preprocessed.rl"
+/* #line 128 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-#line 256 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 248 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -291,18 +283,18 @@ case 5:
 	}
 	goto st1;
 tr22:
-#line 126 "input_preprocessed.rl"
+/* #line 118 "compileComprehension_preprocessed.rl" */
 	{ line->flags.optional = true; }
 	goto st6;
 tr71:
-#line 127 "input_preprocessed.rl"
+/* #line 119 "compileComprehension_preprocessed.rl" */
 	{ line->flags.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-#line 306 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 298 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -469,26 +461,26 @@ case 21:
 		goto tr29;
 	goto st1;
 tr40:
-#line 126 "input_preprocessed.rl"
+/* #line 118 "compileComprehension_preprocessed.rl" */
 	{ line->flags.optional = true; }
 	goto st22;
 tr28:
-#line 124 "input_preprocessed.rl"
+/* #line 116 "compileComprehension_preprocessed.rl" */
 	{ line->action = ACTION_PARAM; }
 	goto st22;
 tr58:
-#line 127 "input_preprocessed.rl"
+/* #line 119 "compileComprehension_preprocessed.rl" */
 	{ line->flags.strict = true; }
 	goto st22;
 tr63:
-#line 125 "input_preprocessed.rl"
+/* #line 117 "compileComprehension_preprocessed.rl" */
 	{ line->action = ACTION_REF; }
 	goto st22;
 st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-#line 492 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 484 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -593,34 +585,34 @@ case 31:
 		goto tr41;
 	goto st1;
 tr29:
-#line 124 "input_preprocessed.rl"
+/* #line 116 "compileComprehension_preprocessed.rl" */
 	{ line->action = ACTION_PARAM; }
-#line 129 "input_preprocessed.rl"
+/* #line 121 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.start = p; }
 	goto st32;
 tr41:
-#line 126 "input_preprocessed.rl"
+/* #line 118 "compileComprehension_preprocessed.rl" */
 	{ line->flags.optional = true; }
-#line 129 "input_preprocessed.rl"
+/* #line 121 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.start = p; }
 	goto st32;
 tr59:
-#line 127 "input_preprocessed.rl"
+/* #line 119 "compileComprehension_preprocessed.rl" */
 	{ line->flags.strict = true; }
-#line 129 "input_preprocessed.rl"
+/* #line 121 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.start = p; }
 	goto st32;
 tr64:
-#line 125 "input_preprocessed.rl"
+/* #line 117 "compileComprehension_preprocessed.rl" */
 	{ line->action = ACTION_REF; }
-#line 129 "input_preprocessed.rl"
+/* #line 121 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.start = p; }
 	goto st32;
 st32:
 	if ( ++p == pe )
 		goto _test_eof32;
 case 32:
-#line 624 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 616 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr42;
@@ -638,14 +630,14 @@ case 32:
 		goto st32;
 	goto st1;
 tr42:
-#line 130 "input_preprocessed.rl"
+/* #line 122 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.end = p; }
 	goto st33;
 st33:
 	if ( ++p == pe )
 		goto _test_eof33;
 case 33:
-#line 649 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 641 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st33;
@@ -654,14 +646,14 @@ case 33:
 	}
 	goto st1;
 tr43:
-#line 130 "input_preprocessed.rl"
+/* #line 122 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.end = p; }
 	goto st34;
 st34:
 	if ( ++p == pe )
 		goto _test_eof34;
 case 34:
-#line 665 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 657 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st35;
@@ -993,7 +985,7 @@ case 54:
 	case 52: 
 	case 53: 
 	case 54: 
-#line 101 "input_preprocessed.rl"
+/* #line 93 "compileComprehension_preprocessed.rl" */
 	{
 
 			line->tokens.line.end = p;
@@ -1018,9 +1010,9 @@ case 54:
 		}
 	break;
 	case 36: 
-#line 136 "input_preprocessed.rl"
+/* #line 128 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
-#line 101 "input_preprocessed.rl"
+/* #line 93 "compileComprehension_preprocessed.rl" */
 	{
 
 			line->tokens.line.end = p;
@@ -1044,13 +1036,13 @@ case 54:
 
 		}
 	break;
-#line 1048 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_c/src/parse.c"
+/* #line 1040 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-#line 165 "input_preprocessed.rl"
+/* #line 157 "compileComprehension_preprocessed.rl" */
 
 
 	free(line);

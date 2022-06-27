@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import dataclasses
+
 import drunk_snail_c
 
 
 
+@dataclasses.dataclass
 class Template:
 
 	name: str

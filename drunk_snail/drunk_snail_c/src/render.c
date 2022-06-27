@@ -61,6 +61,43 @@
 }
 
 
+#define renderParamList(_line) {\
+	list_size = PyList_GET_SIZE(param_values);\
+	for (j = 0; j < list_size; j++) {\
+		item = PyList_GET_ITEM(param_values, j);\
+		value = PyUnicode_AsUTF8AndSize(item, &value_size);\
+		render__param(\
+			*output_end,\
+			(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\
+			value, value_size,\
+			(_line).tokens.expression.end, (_line).tokens.line.end - (_line).tokens.expression.end\
+		);\
+	}\
+}
+
+
+#define renderRefList(_line) {\
+	list_size = PyList_GET_SIZE(ref_values);\
+	for (j = 0; j < list_size; j++) {\
+		render_(\
+			render_result,\
+			(_line).tokens.name.start,\
+			(_line).tokens.name.length,\
+			output_end,\
+			depth + 1,\
+			buffer_size,\
+			other,\
+			other_size,\
+			subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+			PyList_GET_ITEM(ref_values, j)\
+		);\
+		if (!render_result->result) {\
+			return;\
+		}\
+	}\
+}
+
+
 #define renderLine(_line) {\
 \
 	switch ((_line).action) {\
@@ -69,18 +106,10 @@
 \
 			param_values = PyDict_GetItemString(params, (_line).tokens.name.copy);\
 			if (param_values) {\
-				if ((_line).flags.strict || PyList_Check(param_values)) {\
-					list_size = PyList_GET_SIZE(param_values);\
-					for (j = 0; j < list_size; j++) {\
-						item = PyList_GET_ITEM(param_values, j);\
-						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
-						render__param(\
-							*output_end,\
-							(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\
-							value, value_size,\
-							(_line).tokens.expression.end, (_line).tokens.line.end - (_line).tokens.expression.end\
-						);\
-					}\
+				if ((_line).flags.strict) {\
+					renderParamList(_line);\
+				} else if (PyList_Check(param_values)) {\
+					renderParamList(_line);\
 				} else {\
 					value = PyUnicode_AsUTF8AndSize(param_values, &value_size);\
 					render__param(\
@@ -109,25 +138,10 @@
 \
 				addOther(_line);\
 \
-				if ((_line).flags.strict || PyList_Check(ref_values)) {\
-					list_size = PyList_GET_SIZE(ref_values);\
-					for (j = 0; j < list_size; j++) {\
-						render_(\
-							render_result,\
-							(_line).tokens.name.start,\
-							(_line).tokens.name.length,\
-							output_end,\
-							depth + 1,\
-							buffer_size,\
-							other,\
-							other_size,\
-							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
-							PyList_GET_ITEM(ref_values, j)\
-						);\
-						if (!render_result->result) {\
-							return;\
-						}\
-					}\
+				if ((_line).flags.strict) {\
+					renderRefList(_line);\
+				} else if (PyList_Check(ref_values)) {\
+					renderRefList(_line);\
 				} else {\
 					render_(\
 						render_result,\

@@ -132,11 +132,11 @@
 \
 		case ACTION_REF:\
 \
+			addOther(_line);\
+\
 			ref_values = PyDict_GetItemString(params, (_line).tokens.name.copy);\
 \
 			if (ref_values) {\
-\
-				addOther(_line);\
 \
 				if ((_line).flags.strict) {\
 					renderRefList(_line);\
@@ -161,8 +161,6 @@
 				}\
 \
 			} else if (!(_line).flags.optional) {\
-\
-				addOther(_line);\
 \
 				render_(\
 					render_result,\

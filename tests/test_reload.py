@@ -17,8 +17,8 @@ def test_basic():
 
 	t.register('<!-- (param)x -->\n<!-- (param)y -->')
 	assert t({
-		'x': 1,
-		'y': 2
+		'x': '1',
+		'y': '2'
 	}) == '1\n2\n'
 
 

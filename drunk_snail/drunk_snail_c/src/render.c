@@ -73,9 +73,6 @@
 					list_size = PyList_Size(param_values);\
 					for (j = 0; j < list_size; j++) {\
 						item = PyList_GetItem(param_values, j);\
-						if (!PyUnicode_Check(item)) {\
-							item = PyObject_Str(item);\
-						}\
 						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 						render__param(\
 							*output_end,\
@@ -85,12 +82,7 @@
 						);\
 					}\
 				} else {\
-					if (!PyUnicode_Check(param_values)) {\
-						item = PyObject_Str(param_values);\
-					} else {\
-						item = param_values;\
-					}\
-					value = PyUnicode_AsUTF8AndSize(item, &value_size);\
+					value = PyUnicode_AsUTF8AndSize(param_values, &value_size);\
 					render__param(\
 						*output_end,\
 						(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\

@@ -70,9 +70,9 @@
 			param_values = PyDict_GetItemString(params, (_line).tokens.name.copy);\
 			if (param_values) {\
 				if ((_line).flags.strict || PyList_Check(param_values)) {\
-					list_size = PyList_Size(param_values);\
+					list_size = PyList_GET_SIZE(param_values);\
 					for (j = 0; j < list_size; j++) {\
-						item = PyList_GetItem(param_values, j);\
+						item = PyList_GET_ITEM(param_values, j);\
 						value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 						render__param(\
 							*output_end,\
@@ -110,7 +110,7 @@
 				addOther(_line);\
 \
 				if ((_line).flags.strict || PyList_Check(ref_values)) {\
-					list_size = PyList_Size(ref_values);\
+					list_size = PyList_GET_SIZE(ref_values);\
 					for (j = 0; j < list_size; j++) {\
 						render_(\
 							render_result,\
@@ -122,7 +122,7 @@
 							other,\
 							other_size,\
 							subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
-							PyList_GetItem(ref_values, j)\
+							PyList_GET_ITEM(ref_values, j)\
 						);\
 						if (!render_result->result) {\
 							return;\

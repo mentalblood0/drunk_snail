@@ -18,7 +18,7 @@ class table(Benchmark):
 			self.args = {
 				'rows': [
 					[
-						f'{x}.{y}'
+						str(x)
 						for x in range(0, width)
 					]
 					for y in range(0, height)

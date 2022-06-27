@@ -15,7 +15,7 @@ class table(Benchmark):
 			self.args = {
 				'rows':[
 					[
-						f"{x}.{y}"
+						str(x)
 						for x in range(width)
 					]
 					for y in range(height)

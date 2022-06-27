@@ -26,7 +26,7 @@ class table(Benchmark):
 					{
 						"cell": [
 							{
-								'value': f"{x}.{y}"
+								'value': str(x)
 							}
 							for x in range(width)
 						]

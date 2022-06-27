@@ -30,8 +30,8 @@ Arguments:
 ```json
 {
     "Row": [
-        {"cell": ["1.1", "2.1"]},
-        {"cell": ["1.2", "2.2"]}
+        {"cell": ["1", "2"]},
+        {"cell": ["3", "4"]}
     ]
 }
 ```
@@ -39,12 +39,12 @@ Result:
 ```html
 <table>
     <tr>
-        <td>1.1</td>
-        <td>2.1</td>
+        <td>1</td>
+        <td>2</td>
     </tr>
     <tr>
-        <td>1.2</td>
-        <td>2.2</td>
+        <td>3</td>
+        <td>4</td>
     </tr>
 </table>
 
@@ -54,41 +54,41 @@ Result:
 
 ## Performance
 
-Rendering 10x1000 table (mean of 10000 experiments):
+Rendering 100x100 table (mean of 10000 experiments):
 
 | Engine                                                            | Time, ms | templates / s     |
 | ----------------------------------------------------------------- | -------: | ----------------: |
-| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 39.54    | 25                |
-| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 30.93    | 32                |
-| [airspeed](https://github.com/purcell/airspeed)                   | 28.08    | 35                |
-| [TRender](https://github.com/cesbit/trender)                      | 10.81    | 92                |
-| [mako](https://github.com/sqlalchemy/mako)                        | 3.08     | 324               |
-| [Jinja](https://github.com/pallets/jinja)                         | 1.56     | 641               |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.21** | **4761**          |
+| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 34.01    | 29                |
+| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 29.54    | 33                |
+| [airspeed](https://github.com/purcell/airspeed)                   | 25.86    | 38                |
+| [TRender](https://github.com/cesbit/trender)                      | 9.37     | 106               |
+| [mako](https://github.com/sqlalchemy/mako)                        | 1.74     | 574               |
+| [Jinja](https://github.com/pallets/jinja)                         | 1.41     | 709               |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.14** | **7142**          |
 
-| Other                         | Time, ms | dicts / s |
-| ----------------------------- | -------: | --------: |
-| Args dict to str              | 0.88     | 1136      |
-| Args dict to json             | 0.80     | 1249      |
-| Args dict to json with indent | 5.13     | 194       |
+| Other                                                           | Time, ms | dicts / s |
+| --------------------------------------------------------------- | -------: | --------: |
+| Args dict to str                                                | 0.50     | 2000      |
+| Args dict to json                                               | 0.43     | 2325      |
+| Args dict to json using [orjson](https://github.com/ijl/orjson) | 0.11     | 9090      |
 
-Rendering 100x10000 table (mean of 100 experiments)
+Rendering 1000x1000 table (mean of 100 experiments)
 
 | Engine                                                            | Time, ms | templates / s     |
 | ----------------------------------------------------------------- | -------: | ----------------: |
-| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 3380     | 0.30 ~ 0          |
-| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 13945    | 0.07 ~ 0          |
-| [airspeed](https://github.com/purcell/airspeed)                   | 2574     | 0.39 ~ 0          |
-| [TRender](https://github.com/cesbit/trender)                      | 957      | 1                 |
-| [mako](https://github.com/sqlalchemy/mako)                        | 198      | 5                 |
-| [Jinja](https://github.com/pallets/jinja)                         | 203      | 4                 |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **24**   | **41**            |
+| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 3443     | 0.30 ~ 0          |
+| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 4950     | 0.20 ~ 0          |
+| [airspeed](https://github.com/purcell/airspeed)                   | 2635     | 0.38 ~ 0          |
+| [TRender](https://github.com/cesbit/trender)                      | 929      | 1                 |
+| [mako](https://github.com/sqlalchemy/mako)                        | 193      | 5                 |
+| [Jinja](https://github.com/pallets/jinja)                         | 213      | 4                 |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **21**   | **47**            |
 
-| Other                         | Time, ms | dicts / s |
-| ----------------------------- | -------: | --------: |
-| Args dict to str              | 75       | 13        |
-| Args dict to json             | 66       | 16        |
-| Args dict to json with indent | 297      | 3         |
+| Other                                                           | Time, ms | dicts / s |
+| --------------------------------------------------------------- | -------: | --------: |
+| Args dict to str                                                | 52       | 19      |
+| Args dict to json                                               | 54       | 18      |
+| Args dict to json using [orjson](https://github.com/ijl/orjson) | 15       | 66      |
 
 Benchmarks done using [sharpener](https://github.com/MentalBlood/sharpener) (see `Benchmarking` section below)
 
@@ -125,7 +125,7 @@ args = {
     "Row": [
         {
             "cell": [
-                f"{x}.{y}"
+                x
                 for x in range(width)
             ]
         }

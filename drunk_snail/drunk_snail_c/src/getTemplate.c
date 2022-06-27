@@ -5,7 +5,6 @@
 
 #include "../include/Template.h"
 #include "../include/templates.h"
-#include "../modules/memoma/include/memoma.h"
 
 
 
@@ -32,16 +31,7 @@ PyObject *getTemplate (
 		PyErr_SetString(PyExc_KeyError, message);
 		return NULL;
 	}
-	char *source_text = template->text;
-	size_t length = template->length + 1;
 
-	char *result = malloc(sizeof(char) * length);
-	if (!result) {
-		PyErr_SetString(PyExc_MemoryError, "Out of RAM");
-		return NULL;
-	}
-	memcpy_s(result, length, source_text, length);
-
-	return PyUnicode_FromStringAndSize(result, length - 1);
+	return PyUnicode_FromStringAndSize(template->text, template->length);
 
 }

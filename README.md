@@ -108,24 +108,24 @@ pip install git+https://github.com/MentalBlood/drunk_snail
 from drunk_snail import Template
 
 
-Template('Row',
+Template('Row').register(
     '<tr>\n'
     '	<td><!-- (strict)(param)cell --></td>\n'
     '</tr>\n'
 )
-table = Template('Table',
+table = Template('Table').register(
     '<table>\n'
     '	<!-- (strict)(ref)Row -->\n'
     '</table>\n'
 )
 
-width = 10
-height = 1000
+width = 100
+height = 100
 args = {
     "Row": [
         {
             "cell": [
-                x
+                str(x)
                 for x in range(width)
             ]
         }
@@ -134,7 +134,6 @@ args = {
 }
 
 result = table(args)
-print(result)
 ```
 
 
@@ -183,15 +182,20 @@ template = (line delimeter)* (line - zlen)?;
 ```python
 Template(
     self,
-    name: str,
-    _text: str = None
+    name: str
 )
 
 Template.name: str
-Template.text -> str
+Template.text: str
 
+Template.register(self, text: str) -> None
+Template.unregister(self) -> None
+
+Template.__str__(self) -> str
 Template.__len__(self) -> int
-Template.__eq__(self, other: Any) -> bool
+Template.__hash__(self) -> int
+Template.__repr__(self) -> str
+Template.__eq__(self, other: Template) -> bool
 Template.__call__(self, parameters: dict = None) -> str
 ```
 

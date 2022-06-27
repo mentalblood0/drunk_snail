@@ -58,19 +58,19 @@ Rendering 100x100 table (mean of 10000 experiments):
 
 | Engine                                                            | Time, ms | templates / s     |
 | ----------------------------------------------------------------- | -------: | ----------------: |
-| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 34.01    | 29                |
-| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 29.54    | 33                |
-| [airspeed](https://github.com/purcell/airspeed)                   | 25.86    | 38                |
-| [TRender](https://github.com/cesbit/trender)                      | 9.37     | 106               |
-| [mako](https://github.com/sqlalchemy/mako)                        | 1.74     | 574               |
-| [Jinja](https://github.com/pallets/jinja)                         | 1.41     | 709               |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.14** | **7142**          |
+| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 34.013    | 29                |
+| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 29.548    | 33                |
+| [airspeed](https://github.com/purcell/airspeed)                   | 25.861    | 38                |
+| [TRender](https://github.com/cesbit/trender)                      | 9.374     | 106               |
+| [mako](https://github.com/sqlalchemy/mako)                        | 1.740     | 574               |
+| [Jinja](https://github.com/pallets/jinja)                         | 1.412     | 708               |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.124** | **8064**          |
 
 | Other                                                           | Time, ms | dicts / s |
 | --------------------------------------------------------------- | -------: | --------: |
-| Args dict to str                                                | 0.50     | 2000      |
-| Args dict to json                                               | 0.43     | 2325      |
-| Args dict to json using [orjson](https://github.com/ijl/orjson) | 0.11     | 9090      |
+| Args dict to str                                                | 0.508     | 1968      |
+| Args dict to json                                               | 0.434     | 2304      |
+| Args dict to json using [orjson](https://github.com/ijl/orjson) | 0.112     | 8928      |
 
 Rendering 1000x1000 table (mean of 100 experiments)
 
@@ -82,7 +82,7 @@ Rendering 1000x1000 table (mean of 100 experiments)
 | [TRender](https://github.com/cesbit/trender)                      | 929      | 1                 |
 | [mako](https://github.com/sqlalchemy/mako)                        | 193      | 5                 |
 | [Jinja](https://github.com/pallets/jinja)                         | 213      | 4                 |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **21**   | **47**            |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **20**   | **50**            |
 
 | Other                                                           | Time, ms | dicts / s |
 | --------------------------------------------------------------- | -------: | --------: |
@@ -156,7 +156,7 @@ optional = '(optional)' %action_optional;
 strict = '(strict)' %action_strict;
 flag = optional | strict;
 
-prefix = flag* type flag*;
+prefix = flag* type;
 name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
 
 expression = (open ' '* prefix name ' '* close) >action_start_expression %action_end_expression;

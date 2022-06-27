@@ -141,7 +141,7 @@ void parse__(
 		strict = '(strict)' %action_strict;
 		flag = optional | strict;
 
-		prefix = flag* type flag*;
+		prefix = flag* type;
 		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
 
 		expression = (open ' '* prefix name ' '* close) >action_start_expression %action_end_expression;

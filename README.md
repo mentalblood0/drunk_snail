@@ -147,20 +147,20 @@ close = '-->';
 delimeter = '\n';
 other = (any - delimeter)+;
 
-param = '(param)' %action_param;
-ref = '(ref)' %action_ref;
+param = '(param)';
+ref = '(ref)';
 type = param | ref;
 
-optional = '(optional)' %action_optional;
-strict = '(strict)' %action_strict;
+optional = '(optional)';
+strict = '(strict)';
 flag = optional | strict;
 
 prefix = flag* type;
-name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
+name = ([a-zA-Z_][a-zA-Z_0-9]*);
 
-expression = (open ' '* prefix name ' '* close) >action_start_expression %action_end_expression;
+expression = (open ' '* prefix name ' '* close);
 
-line = (other? expression? other?) >action_start_line %action_end_line;
+line = (other? expression? other?);
 
 template = (line delimeter)* (line - zlen)?;
 ```

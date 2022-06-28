@@ -1,7 +1,7 @@
 import uuid
 import pytest
 
-from drunk_snail_c import addTemplate, render
+from drunk_snail_c import addTemplate, removeTemplate, render
 
 
 
@@ -10,11 +10,12 @@ def param_values():
 	return [str(i) for i in range(100)]
 
 
-def render_lambda(text, params={}, used_names={}):
+def render_lambda(text, params={}):
 
-	while (name := uuid.uuid4().hex) in used_names:
+	try:
+		removeTemplate('lambda')
+	except NameError:
 		pass
-	used_names[name] = True
+	addTemplate('lambda', text)
 
-	addTemplate(name, text)
-	return render(name, params)
+	return render('lambda', params)

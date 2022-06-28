@@ -1,4 +1,5 @@
 import pytest
+import itertools
 
 from drunk_snail_c import render, addTemplate
 
@@ -51,7 +52,7 @@ def composeParamLine(
 	'value,other_left,gap_left,gap_right,other_right',
 	[
 		(v, o_l, g_l, g_r, o_r)
-		for v in TestLists.Valid.values
+		for v in TestLists.Valid.values + sum((list(t) for t in itertools.combinations(TestLists.Valid.values, 4)), [])
 		for o_l in TestLists.Valid.other + [Syntax.open]
 		for g_l in TestLists.Valid.gap
 		for g_r in TestLists.Valid.gap
@@ -65,7 +66,15 @@ def test_param_valid(value, other_left, gap_left, gap_right, other_right):
 		gap_right=gap_right,
 		other_right=other_right
 	)
-	assert render_lambda(param_line, {'p': value}) == f'{other_left}{value}{other_right}\n'
+	assert render_lambda(param_line, {'p': value}) == (
+		f'{other_left}{value}{other_right}\n'
+		if type(value) == str
+		else
+		''.join([
+			f'{other_left}{v}{other_right}\n'
+			for v in value
+		])
+	)
 
 
 @pytest.mark.parametrize(

@@ -33,11 +33,6 @@ def test_basic(param_name, param_value, params_one):
 	assert render_lambda(f'{param_value}') == f'{param_value}\n'
 
 
-@pytest.mark.parametrize()
-def test_param_correct(param_line, other_left, gap_left, value, other_right, gap_right):
-	assert render_lambda(param_line, {'p': value}) == f'{value}\n'
-
-
 def test_empty_template():
 	assert render_lambda('') == ''
 

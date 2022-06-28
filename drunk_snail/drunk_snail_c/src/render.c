@@ -61,8 +61,7 @@
 #define renderParamList(_line) {\
 	list_size = PyList_GET_SIZE(param_values);\
 	for (j = 0; j < list_size; j++) {\
-		item = PyList_GET_ITEM(param_values, j);\
-		value = PyUnicode_AsUTF8AndSize(item, &value_size);\
+		value = PyUnicode_AsUTF8AndSize(PyList_GET_ITEM(param_values, j), &value_size);\
 		render__param(\
 			*output_end,\
 			(_line).other.left.start, (_line).other.left.length,\
@@ -85,8 +84,8 @@
 			buffer_size,\
 			other,\
 			other_size,\
-			other_left_length + (*other)[depth]->left.length,\
-			other_right_length + (*other)[depth]->right.length,\
+			other_left_length + (_line).other.left.length,\
+			other_right_length + (_line).other.right.length,\
 			PyList_GET_ITEM(ref_values, j)\
 		);\
 		if (!render_result->result) {\
@@ -150,8 +149,8 @@
 						buffer_size,\
 						other,\
 						other_size,\
-						other_left_length + (*other)[depth]->left.length,\
-						other_right_length + (*other)[depth]->right.length,\
+						other_left_length + (_line).other.left.length,\
+						other_right_length + (_line).other.right.length,\
 						ref_values\
 					);\
 					if (!render_result->result) {\
@@ -170,8 +169,8 @@
 					buffer_size,\
 					other,\
 					other_size,\
-					other_left_length + (*other)[depth]->left.length,\
-					other_right_length + (*other)[depth]->right.length,\
+					other_left_length + (_line).other.left.length,\
+					other_right_length + (_line).other.right.length,\
 					empty_dict\
 				);\
 				if (!render_result->result) {\
@@ -183,7 +182,7 @@
 			break;\
 \
 		default:\
-			render__empty(*output_end, (_line).tokens.line.start, (_line).tokens.line.end - (_line).tokens.line.start);\
+			render__empty(*output_end, (_line).tokens.line.start, (_line).tokens.line.length);\
 			break;\
 \
 	}\

@@ -10,12 +10,13 @@ def param_values():
 	return [str(i) for i in range(100)]
 
 
-def render_lambda(text, params={}):
+def render_lambda(text, params={}, refs={}):
 
-	try:
-		removeTemplate('lambda')
-	except NameError:
-		pass
-	addTemplate('lambda', text)
+	for name, text in (refs | {'l': text}).items():
+		try:
+			removeTemplate(name)
+		except NameError:
+			pass
+		addTemplate(name, text)
 
-	return render('lambda', params)
+	return render('l', params)

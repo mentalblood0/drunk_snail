@@ -50,14 +50,13 @@ def composeParamLine(
 
 @pytest.mark.parametrize(
 	'value,other_left,gap_left,gap_right,other_right',
-	[
-		(v, o_l, g_l, g_r, o_r)
-		for v in TestLists.Valid.values + sum((list(t) for t in itertools.combinations(TestLists.Valid.values, 4)), [])
-		for o_l in TestLists.Valid.other + [Syntax.open]
-		for g_l in TestLists.Valid.gap
-		for g_r in TestLists.Valid.gap
-		for o_r in TestLists.Valid.other + [Syntax.close]
-	]
+	itertools.product(
+		TestLists.Valid.values + sum((list(t) for t in itertools.combinations(TestLists.Valid.values, 4)), []),
+		TestLists.Valid.other + [Syntax.open],
+		TestLists.Valid.gap,
+		TestLists.Valid.gap,
+		TestLists.Valid.other + [Syntax.close]
+	)
 )
 def test_param_valid(value, other_left, gap_left, gap_right, other_right):
 	param_line = composeParamLine(
@@ -79,17 +78,16 @@ def test_param_valid(value, other_left, gap_left, gap_right, other_right):
 
 @pytest.mark.parametrize(
 	'value,open_tag,other_left,gap_left,name,gap_right,other_right,close_tag',
-	[
-		(v, o_t, o_l, g_l, n, g_r, o_r, c_t)
-		for v in TestLists.Valid.values[:1]
-		for o_t in TestLists.Invalid.open_tag
-		for o_l in TestLists.Valid.other[:1]
-		for g_l in TestLists.Invalid.gap
-		for n in TestLists.Invalid.name
-		for g_r in TestLists.Invalid.gap
-		for o_r in TestLists.Valid.other[:1]
-		for c_t in TestLists.Invalid.close_tag
-	]
+	itertools.product(
+		TestLists.Valid.values[:1],
+		TestLists.Invalid.open_tag,
+		TestLists.Valid.other[:1],
+		TestLists.Invalid.gap,
+		TestLists.Invalid.name,
+		TestLists.Invalid.gap,
+		TestLists.Valid.other[:1],
+		TestLists.Invalid.close_tag
+	)
 )
 def test_param_invalid(value, open_tag, other_left, gap_left, name, gap_right, other_right, close_tag):
 	param_line = composeParamLine(

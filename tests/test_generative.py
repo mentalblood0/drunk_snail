@@ -26,12 +26,12 @@ class TestLists:
 	
 	class Invalid:
 
-		other = ['', ' ', 'la']
-		gap = ['l', 'la'],
-		values = ['']
+		gap = ['l', 'la']
 
 		open_tag = [Syntax.close] + [Syntax.open[:k] for k in range(len(Syntax.open)-1)]
 		close_tag = [Syntax.open] + [Syntax.close[:k] for k in range(len(Syntax.close)-1)]
+
+		name = ['1', '-', '1l']
 
 
 def composeParamLine(
@@ -69,25 +69,27 @@ def test_param_valid(value, other_left, gap_left, gap_right, other_right):
 
 
 @pytest.mark.parametrize(
-	'value,open_tag,other_left,gap_left,gap_right,other_right,close_tag',
+	'value,open_tag,other_left,gap_left,name,gap_right,other_right,close_tag',
 	[
-		(v, o_t, o_l, g_l, g_r, o_r, c_t)
-		for v in TestLists.Invalid.values
+		(v, o_t, o_l, g_l, n, g_r, o_r, c_t)
+		for v in TestLists.Valid.values[:1]
 		for o_t in TestLists.Invalid.open_tag
-		for o_l in TestLists.Invalid.other + [Syntax.open]
+		for o_l in TestLists.Valid.other[:1]
 		for g_l in TestLists.Invalid.gap
+		for n in TestLists.Invalid.name
 		for g_r in TestLists.Invalid.gap
-		for o_r in TestLists.Invalid.other + [Syntax.close]
+		for o_r in TestLists.Valid.other[:1]
 		for c_t in TestLists.Invalid.close_tag
 	]
 )
-def test_param_invalid(value, open_tag, other_left, gap_left, gap_right, other_right, close_tag):
+def test_param_invalid(value, open_tag, other_left, gap_left, name, gap_right, other_right, close_tag):
 	param_line = composeParamLine(
 		open_tag=open_tag,
 		other_left=other_left,
 		gap_left=gap_left,
+		name=name,
 		gap_right=gap_right,
 		other_right=other_right,
 		close_tag=close_tag
 	)
-	assert render_lambda(param_line, {'p': value}) == f'{param_line}\n'
+	assert render_lambda(param_line, {name: value}) == f'{param_line}\n'

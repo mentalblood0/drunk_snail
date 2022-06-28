@@ -285,26 +285,17 @@ case 5:
 		case 60: goto tr5;
 	}
 	goto st1;
-tr22:
-/* #line 119 "compileComprehension_preprocessed.rl" */
-	{ line->flags.optional = true; }
-	goto st6;
-tr49:
-/* #line 120 "compileComprehension_preprocessed.rl" */
-	{ line->flags.strict = true; }
-	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 301 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 		case 111: goto st7;
-		case 112: goto st16;
-		case 114: goto st27;
-		case 115: goto st31;
+		case 112: goto st17;
+		case 114: goto st28;
+		case 115: goto st32;
 	}
 	goto st1;
 st7:
@@ -397,14 +388,24 @@ case 15:
 		case 60: goto tr5;
 	}
 	goto st1;
+tr22:
+/* #line 119 "compileComprehension_preprocessed.rl" */
+	{ line->flags.optional = true; }
+	goto st16;
+tr49:
+/* #line 120 "compileComprehension_preprocessed.rl" */
+	{ line->flags.strict = true; }
+	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
+/* #line 404 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 97: goto st17;
+		case 112: goto st17;
+		case 114: goto st28;
 	}
 	goto st1;
 st17:
@@ -414,7 +415,7 @@ case 17:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 114: goto st18;
+		case 97: goto st18;
 	}
 	goto st1;
 st18:
@@ -424,7 +425,7 @@ case 18:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 97: goto st19;
+		case 114: goto st19;
 	}
 	goto st1;
 st19:
@@ -434,7 +435,7 @@ case 19:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 109: goto st20;
+		case 97: goto st20;
 	}
 	goto st1;
 st20:
@@ -443,14 +444,24 @@ st20:
 case 20:
 	switch( (*p) ) {
 		case 10: goto tr4;
-		case 41: goto st21;
 		case 60: goto tr5;
+		case 109: goto st21;
 	}
 	goto st1;
 st21:
 	if ( ++p == pe )
 		goto _test_eof21;
 case 21:
+	switch( (*p) ) {
+		case 10: goto tr4;
+		case 41: goto st22;
+		case 60: goto tr5;
+	}
+	goto st1;
+st22:
+	if ( ++p == pe )
+		goto _test_eof22;
+case 22:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -467,51 +478,35 @@ tr28:
 	{ line->action = ACTION_PARAM; }
 /* #line 122 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.start = p; }
-	goto st22;
+	goto st23;
 tr42:
 /* #line 118 "compileComprehension_preprocessed.rl" */
 	{ line->action = ACTION_REF; }
 /* #line 122 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.start = p; }
-	goto st22;
-st22:
-	if ( ++p == pe )
-		goto _test_eof22;
-case 22:
-/* #line 482 "compileComprehension.c" */
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 32: goto tr29;
-		case 45: goto tr30;
-		case 60: goto tr5;
-		case 95: goto st22;
-	}
-	if ( (*p) < 65 ) {
-		if ( 48 <= (*p) && (*p) <= 57 )
-			goto st22;
-	} else if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto st22;
-	} else
-		goto st22;
-	goto st1;
-tr29:
-/* #line 123 "compileComprehension_preprocessed.rl" */
-	{ line->tokens.name.end = p; }
 	goto st23;
 st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 507 "compileComprehension.c" */
+/* #line 493 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
-		case 32: goto st23;
-		case 45: goto st24;
+		case 32: goto tr29;
+		case 45: goto tr30;
 		case 60: goto tr5;
+		case 95: goto st23;
 	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st23;
+	} else if ( (*p) > 90 ) {
+		if ( 97 <= (*p) && (*p) <= 122 )
+			goto st23;
+	} else
+		goto st23;
 	goto st1;
-tr30:
+tr29:
 /* #line 123 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.end = p; }
 	goto st24;
@@ -519,21 +514,27 @@ st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 523 "compileComprehension.c" */
+/* #line 518 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
+		case 32: goto st24;
 		case 45: goto st25;
 		case 60: goto tr5;
 	}
 	goto st1;
+tr30:
+/* #line 123 "compileComprehension_preprocessed.rl" */
+	{ line->tokens.name.end = p; }
+	goto st25;
 st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
+/* #line 534 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
+		case 45: goto st26;
 		case 60: goto tr5;
-		case 62: goto st26;
 	}
 	goto st1;
 st26:
@@ -541,20 +542,20 @@ st26:
 		goto _test_eof26;
 case 26:
 	switch( (*p) ) {
-		case 10: goto tr37;
-		case 60: goto tr38;
+		case 10: goto tr4;
+		case 60: goto tr5;
+		case 62: goto st27;
 	}
-	goto tr36;
+	goto st1;
 st27:
 	if ( ++p == pe )
 		goto _test_eof27;
 case 27:
 	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 101: goto st28;
+		case 10: goto tr37;
+		case 60: goto tr38;
 	}
-	goto st1;
+	goto tr36;
 st28:
 	if ( ++p == pe )
 		goto _test_eof28;
@@ -562,7 +563,7 @@ case 28:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 102: goto st29;
+		case 101: goto st29;
 	}
 	goto st1;
 st29:
@@ -571,14 +572,24 @@ st29:
 case 29:
 	switch( (*p) ) {
 		case 10: goto tr4;
-		case 41: goto st30;
 		case 60: goto tr5;
+		case 102: goto st30;
 	}
 	goto st1;
 st30:
 	if ( ++p == pe )
 		goto _test_eof30;
 case 30:
+	switch( (*p) ) {
+		case 10: goto tr4;
+		case 41: goto st31;
+		case 60: goto tr5;
+	}
+	goto st1;
+st31:
+	if ( ++p == pe )
+		goto _test_eof31;
+case 31:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -590,16 +601,6 @@ case 30:
 	} else if ( (*p) >= 65 )
 		goto tr42;
 	goto st1;
-st31:
-	if ( ++p == pe )
-		goto _test_eof31;
-case 31:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 116: goto st32;
-	}
-	goto st1;
 st32:
 	if ( ++p == pe )
 		goto _test_eof32;
@@ -607,7 +608,7 @@ case 32:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 114: goto st33;
+		case 116: goto st33;
 	}
 	goto st1;
 st33:
@@ -617,7 +618,7 @@ case 33:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 105: goto st34;
+		case 114: goto st34;
 	}
 	goto st1;
 st34:
@@ -627,7 +628,7 @@ case 34:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 99: goto st35;
+		case 105: goto st35;
 	}
 	goto st1;
 st35:
@@ -637,7 +638,7 @@ case 35:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 116: goto st36;
+		case 99: goto st36;
 	}
 	goto st1;
 st36:
@@ -646,14 +647,24 @@ st36:
 case 36:
 	switch( (*p) ) {
 		case 10: goto tr4;
-		case 41: goto st37;
 		case 60: goto tr5;
+		case 116: goto st37;
 	}
 	goto st1;
 st37:
 	if ( ++p == pe )
 		goto _test_eof37;
 case 37:
+	switch( (*p) ) {
+		case 10: goto tr4;
+		case 41: goto st38;
+		case 60: goto tr5;
+	}
+	goto st1;
+st38:
+	if ( ++p == pe )
+		goto _test_eof38;
+case 38:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 40: goto tr49;
@@ -699,6 +710,7 @@ case 37:
 	_test_eof35: cs = 35; goto _test_eof; 
 	_test_eof36: cs = 36; goto _test_eof; 
 	_test_eof37: cs = 37; goto _test_eof; 
+	_test_eof38: cs = 38; goto _test_eof; 
 
 	_test_eof: {}
 	if ( p == eof )
@@ -729,7 +741,7 @@ case 37:
 	case 23: 
 	case 24: 
 	case 25: 
-	case 27: 
+	case 26: 
 	case 28: 
 	case 29: 
 	case 30: 
@@ -740,6 +752,7 @@ case 37:
 	case 35: 
 	case 36: 
 	case 37: 
+	case 38: 
 /* #line 93 "compileComprehension_preprocessed.rl" */
 	{
 
@@ -765,7 +778,7 @@ case 37:
 
 		}
 	break;
-	case 26: 
+	case 27: 
 /* #line 129 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
 /* #line 93 "compileComprehension_preprocessed.rl" */
@@ -793,7 +806,7 @@ case 37:
 
 		}
 	break;
-/* #line 797 "compileComprehension.c" */
+/* #line 810 "compileComprehension.c" */
 	}
 	}
 

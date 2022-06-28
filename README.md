@@ -155,7 +155,7 @@ optional = '(optional)';
 strict = '(strict)';
 flag = optional | strict;
 
-prefix = flag* type;
+prefix = flag? type;
 name = ([a-zA-Z_][a-zA-Z_0-9]*);
 
 expression = (open ' '* prefix name ' '* close);

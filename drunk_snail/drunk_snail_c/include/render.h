@@ -17,8 +17,10 @@ void render_(
 	char **output_end,
 	size_t depth,
 	size_t *buffer_size,
-	Other **other,
+	Other ***other,
 	size_t *other_size,
+	size_t other_left_length,
+	size_t other_right_length,
 	size_t subarrays_length,
 	PyObject *params
 );

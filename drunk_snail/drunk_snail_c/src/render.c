@@ -51,12 +51,9 @@
 \
 	if (depth >= *other_size) {\
 		*other_size = depth * 2;\
-		drunk_realloc_one_render_(*other, sizeof(Other) * (*other_size), other_temp);\
+		drunk_realloc_one_render_(*other, sizeof(Other*) * (*other_size), other_temp);\
 	}\
-	(*other)[depth].left.start = (_line).tokens.line.start;\
-	(*other)[depth].left.length = (_line).tokens.expression.start - (_line).tokens.line.start;\
-	(*other)[depth].right.start = (_line).tokens.expression.end;\
-	(*other)[depth].right.length = (_line).tokens.line.end - (_line).tokens.expression.end;\
+	(*other)[depth] = &((_line).other);\
 \
 }
 
@@ -68,9 +65,9 @@
 		value = PyUnicode_AsUTF8AndSize(item, &value_size);\
 		render__param(\
 			*output_end,\
-			(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\
+			(_line).other.left.start, (_line).other.left.length,\
 			value, value_size,\
-			(_line).tokens.expression.end, (_line).tokens.line.end - (_line).tokens.expression.end\
+			(_line).other.right.start, (_line).other.right.length\
 		);\
 	}\
 }
@@ -88,7 +85,8 @@
 			buffer_size,\
 			other,\
 			other_size,\
-			subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+			other_left_length + (*other)[depth]->left.length,\
+			other_right_length + (*other)[depth]->right.length,\
 			PyList_GET_ITEM(ref_values, j)\
 		);\
 		if (!render_result->result) {\
@@ -114,17 +112,17 @@
 					value = PyUnicode_AsUTF8AndSize(param_values, &value_size);\
 					render__param(\
 						*output_end,\
-						(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\
+						(_line).other.left.start, (_line).other.left.length,\
 						value, value_size,\
-						(_line).tokens.expression.end, (_line).tokens.line.end - (_line).tokens.expression.end\
+						(_line).other.right.start, (_line).other.right.length\
 					);\
 				}\
 			} else if (!(_line).flags.optional) {\
 				render__param(\
 					*output_end,\
-					(_line).tokens.line.start, (_line).tokens.expression.start - (_line).tokens.line.start,\
+					(_line).other.left.start, (_line).other.left.length,\
 					"", 0,\
-					(_line).tokens.expression.end, (_line).tokens.line.end - (_line).tokens.expression.end\
+					(_line).other.right.start, (_line).other.right.length\
 				);\
 			}\
 \
@@ -152,7 +150,8 @@
 						buffer_size,\
 						other,\
 						other_size,\
-						subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+						other_left_length + (*other)[depth]->left.length,\
+						other_right_length + (*other)[depth]->right.length,\
 						ref_values\
 					);\
 					if (!render_result->result) {\
@@ -171,7 +170,8 @@
 					buffer_size,\
 					other,\
 					other_size,\
-					subarrays_length + (*other)[depth].left.length + (*other)[depth].right.length,\
+					other_left_length + (*other)[depth]->left.length,\
+					other_right_length + (*other)[depth]->right.length,\
 					empty_dict\
 				);\
 				if (!render_result->result) {\
@@ -201,9 +201,10 @@ void render_(
 	char **output_end,
 	size_t depth,
 	size_t *buffer_size,
-	Other **other,
+	Other ***other,
 	size_t *other_size,
-	size_t subarrays_length,
+	size_t other_left_length,
+	size_t other_right_length,
 	PyObject *params
 )
 {
@@ -239,7 +240,7 @@ void render_(
 	int alloc_error = 0;
 	size_t required_buffer_size;
 
-	Other *other_temp;
+	Other **other_temp;
 
 	size_t i_line;
 	for (i_line = 0; i_line < template->lines.length; i_line++) {
@@ -276,10 +277,10 @@ PyObject *render (
 	render_result.result = NULL;
 
 	size_t other_size = 16;
-	Other *other = NULL;
+	Other **other = NULL;
 
 	int error = 0;
-	drunk_malloc_one(other, sizeof(Other) * other_size, error);
+	drunk_malloc_one(other, sizeof(Other*) * other_size, error);
 	if (error) {
 		exit_render;
 	}
@@ -295,6 +296,7 @@ PyObject *render (
 		NULL,
 		&other,
 		&other_size,
+		0,
 		0,
 		params
 	);

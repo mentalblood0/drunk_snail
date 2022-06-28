@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+#include "../include/Other.h"
+
 
 
 typedef struct {
@@ -35,6 +37,7 @@ typedef struct {
 	Flags flags;
 
 	Action action;
+	Other other;
 
 } Line;
 
@@ -48,6 +51,13 @@ typedef struct {
 
 #define initFlag(flag) flag = false;
 
+#define initOther(other) {\
+	(other).left.start = NULL;\
+	(other).left.length = 0;\
+	(other).right.start = NULL;\
+	(other).right.length = 0;\
+}
+
 #define initLine(_line) {\
 \
 	initToken((_line).tokens.line);\
@@ -56,6 +66,8 @@ typedef struct {
 \
 	initFlag((_line).flags.optional);\
 	initFlag((_line).flags.strict);\
+\
+	initOther((_line).other);\
 \
 	(_line).action = ACTION_NONE;\
 \
@@ -116,6 +128,13 @@ typedef struct {
 	if (!baseTokensExist(_line)) {\
 		(_line).action = ACTION_NONE;\
 	}\
+}
+
+#define computeOther(_line) {\
+	(_line).other.left.start = (_line).tokens.line.start;\
+	(_line).other.left.length = (_line).tokens.expression.start - (_line).tokens.line.start;\
+	(_line).other.right.start = (_line).tokens.expression.end;\
+	(_line).other.right.length = (_line).tokens.line.end - (_line).tokens.expression.end;\
 }
 
 #define computeTokenLength(token) {\

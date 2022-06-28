@@ -101,6 +101,7 @@ void parse__(
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
+			computeOther(*line);
 
 			if (line->action != ACTION_NONE) {
 				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));

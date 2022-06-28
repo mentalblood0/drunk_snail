@@ -48,5 +48,6 @@
 		} else {\
 			memcpy(target, source, length);\
 		}\
+		target += length;\
 	}\
 }

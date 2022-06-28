@@ -123,6 +123,7 @@ tr1:
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
+			computeOther(*line);
 
 			if (line->action != ACTION_NONE) {
 				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
@@ -148,6 +149,7 @@ tr4:
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
+			computeOther(*line);
 
 			if (line->action != ACTION_NONE) {
 				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
@@ -161,7 +163,7 @@ tr4:
 		}
 	goto st0;
 tr37:
-/* #line 128 "compileComprehension_preprocessed.rl" */
+/* #line 129 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
 /* #line 93 "compileComprehension_preprocessed.rl" */
 	{
@@ -175,6 +177,7 @@ tr37:
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
+			computeOther(*line);
 
 			if (line->action != ACTION_NONE) {
 				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
@@ -191,7 +194,7 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 195 "compileComprehension.c" */
+/* #line 198 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
@@ -202,14 +205,14 @@ tr0:
 	{ line->tokens.line.start = p; }
 	goto st1;
 tr36:
-/* #line 128 "compileComprehension_preprocessed.rl" */
+/* #line 129 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 213 "compileComprehension.c" */
+/* #line 216 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -218,33 +221,33 @@ case 1:
 tr2:
 /* #line 92 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.line.start = p; }
-/* #line 124 "compileComprehension_preprocessed.rl" */
+/* #line 125 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
 	goto st2;
 tr5:
-/* #line 124 "compileComprehension_preprocessed.rl" */
+/* #line 125 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
 	goto st2;
 tr38:
-/* #line 124 "compileComprehension_preprocessed.rl" */
+/* #line 125 "compileComprehension_preprocessed.rl" */
 	{
 			if (!(line->tokens.expression.start && line->tokens.name.end))
 				line->tokens.expression.start = p;
 		}
-/* #line 128 "compileComprehension_preprocessed.rl" */
+/* #line 129 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 248 "compileComprehension.c" */
+/* #line 251 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -283,18 +286,18 @@ case 5:
 	}
 	goto st1;
 tr22:
-/* #line 118 "compileComprehension_preprocessed.rl" */
+/* #line 119 "compileComprehension_preprocessed.rl" */
 	{ line->flags.optional = true; }
 	goto st6;
 tr49:
-/* #line 119 "compileComprehension_preprocessed.rl" */
+/* #line 120 "compileComprehension_preprocessed.rl" */
 	{ line->flags.strict = true; }
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-/* #line 298 "compileComprehension.c" */
+/* #line 301 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -460,22 +463,22 @@ case 21:
 		goto tr28;
 	goto st1;
 tr28:
-/* #line 116 "compileComprehension_preprocessed.rl" */
+/* #line 117 "compileComprehension_preprocessed.rl" */
 	{ line->action = ACTION_PARAM; }
-/* #line 121 "compileComprehension_preprocessed.rl" */
+/* #line 122 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.start = p; }
 	goto st22;
 tr42:
-/* #line 117 "compileComprehension_preprocessed.rl" */
+/* #line 118 "compileComprehension_preprocessed.rl" */
 	{ line->action = ACTION_REF; }
-/* #line 121 "compileComprehension_preprocessed.rl" */
+/* #line 122 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.start = p; }
 	goto st22;
 st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-/* #line 479 "compileComprehension.c" */
+/* #line 482 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr29;
@@ -493,14 +496,14 @@ case 22:
 		goto st22;
 	goto st1;
 tr29:
-/* #line 122 "compileComprehension_preprocessed.rl" */
+/* #line 123 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.end = p; }
 	goto st23;
 st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 504 "compileComprehension.c" */
+/* #line 507 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st23;
@@ -509,14 +512,14 @@ case 23:
 	}
 	goto st1;
 tr30:
-/* #line 122 "compileComprehension_preprocessed.rl" */
+/* #line 123 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.name.end = p; }
 	goto st24;
 st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 520 "compileComprehension.c" */
+/* #line 523 "compileComprehension.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st25;
@@ -749,6 +752,7 @@ case 37:
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
+			computeOther(*line);
 
 			if (line->action != ACTION_NONE) {
 				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
@@ -762,7 +766,7 @@ case 37:
 		}
 	break;
 	case 26: 
-/* #line 128 "compileComprehension_preprocessed.rl" */
+/* #line 129 "compileComprehension_preprocessed.rl" */
 	{ line->tokens.expression.end = p; }
 /* #line 93 "compileComprehension_preprocessed.rl" */
 	{
@@ -776,6 +780,7 @@ case 37:
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
+			computeOther(*line);
 
 			if (line->action != ACTION_NONE) {
 				drunk_malloc_one_parse_(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
@@ -788,13 +793,13 @@ case 37:
 
 		}
 	break;
-/* #line 792 "compileComprehension.c" */
+/* #line 797 "compileComprehension.c" */
 	}
 	}
 
 	}
 
-/* #line 157 "compileComprehension_preprocessed.rl" */
+/* #line 158 "compileComprehension_preprocessed.rl" */
 
 
 	free(line);

@@ -56,39 +56,39 @@ Result:
 
 Rendering 100x100 table (mean of 10000 experiments):
 
-| Engine                                                            | Time, ms | templates / s     |
-| ----------------------------------------------------------------- | -------: | ----------------: |
-| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 34.013    | 29                |
-| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 29.548    | 33                |
-| [airspeed](https://github.com/purcell/airspeed)                   | 25.861    | 38                |
-| [TRender](https://github.com/cesbit/trender)                      | 9.374     | 106               |
-| [mako](https://github.com/sqlalchemy/mako)                        | 1.740     | 574               |
-| [Jinja](https://github.com/pallets/jinja)                         | 1.412     | 708               |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.124** | **8064**          |
+| Engine                                                            | Time, ms  | templates / s | output, MB / s |
+| ----------------------------------------------------------------- | --------: | ------------: | -------------: |
+| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 34.013    | 29            | 4              |
+| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 29.548    | 33            | 5              |
+| [airspeed](https://github.com/purcell/airspeed)                   | 25.861    | 38            | 5              |
+| [TRender](https://github.com/cesbit/trender)                      | 9.374     | 106           | 14             |
+| [mako](https://github.com/sqlalchemy/mako)                        | 1.740     | 574           | 77             |
+| [Jinja](https://github.com/pallets/jinja)                         | 1.412     | 708           | 95             |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **0.124** | **8064**      | **1079**           |
 
-| Other                                                           | Time, ms | dicts / s |
-| --------------------------------------------------------------- | -------: | --------: |
-| Args dict to str                                                | 0.508     | 1968      |
-| Args dict to json                                               | 0.434     | 2304      |
-| Args dict to json using [orjson](https://github.com/ijl/orjson) | 0.112     | 8928      |
+| Other                                                           | Time, ms  | dicts / s | output, MB / s |
+| --------------------------------------------------------------- | --------: | --------: | -------------: |
+| Args dict to str                                                | 0.508     | 1968      | 94             |
+| Args dict to json                                               | 0.434     | 2304      | 110            |
+| Args dict to json using [orjson](https://github.com/ijl/orjson) | 0.112     | 8928      | 427            |
 
 Rendering 1000x1000 table (mean of 100 experiments)
 
-| Engine                                                            | Time, ms | templates / s     |
-| ----------------------------------------------------------------- | -------: | ----------------: |
-| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 3443     | 0.30 ~ 0          |
-| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 4950     | 0.20 ~ 0          |
-| [airspeed](https://github.com/purcell/airspeed)                   | 2635     | 0.38 ~ 0          |
-| [TRender](https://github.com/cesbit/trender)                      | 929      | 1                 |
-| [mako](https://github.com/sqlalchemy/mako)                        | 193      | 5                 |
-| [Jinja](https://github.com/pallets/jinja)                         | 213      | 4                 |
-| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **20**   | **50**            |
+| Engine                                                            | Time, ms | templates / s | output, MB / s |
+| ----------------------------------------------------------------- | -------: | ------------: | -------------: |
+| [django](https://docs.djangoproject.com/en/4.0/topics/templates/) | 3443     | 0.30 ~ 0      | 4              |
+| [chevron (mustache)](https://github.com/noahmorrison/chevron)     | 4950     | 0.20 ~ 0      | 3              |
+| [airspeed](https://github.com/purcell/airspeed)                   | 2635     | 0.38 ~ 0      | 5              |
+| [TRender](https://github.com/cesbit/trender)                      | 929      | 1             | 15             |
+| [mako](https://github.com/sqlalchemy/mako)                        | 193      | 5             | 74             |
+| [Jinja](https://github.com/pallets/jinja)                         | 213      | 4             | 67             |
+| **[drunk snail](https://github.com/MentalBlood/drunk_snail)**     | **20**   | **50**        | **711**            |
 
-| Other                                                           | Time, ms | dicts / s |
-| --------------------------------------------------------------- | -------: | --------: |
-| Args dict to str                                                | 52       | 19      |
-| Args dict to json                                               | 54       | 18      |
-| Args dict to json using [orjson](https://github.com/ijl/orjson) | 15       | 66      |
+| Other                                                           | Time, ms | dicts / s | output, MB / s |
+| --------------------------------------------------------------- | -------: | --------: | -------------: |
+| Args dict to str                                                | 52       | 19        | 108            |
+| Args dict to json                                               | 54       | 18        | 104            |
+| Args dict to json using [orjson](https://github.com/ijl/orjson) | 15       | 66        | 375            |
 
 Benchmarks done using [sharpener](https://github.com/MentalBlood/sharpener) (see `Benchmarking` section below)
 

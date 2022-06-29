@@ -127,6 +127,7 @@ void parse__(
 				line->tokens.expression.start = p;
 		}
 		action action_end_expression { line->tokens.expression.end = p; }
+		action action_end_expressions { line->has_expressions = true; }
 
 		open = '<!--';
 		close = '-->';
@@ -142,12 +143,14 @@ void parse__(
 		strict = '(strict)' %action_strict;
 		flag = optional | strict;
 
-		prefix = flag? type;
 		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
 
-		expression = (open ' '* prefix name ' '* close) >action_start_expression %action_end_expression;
+		param_expression = (open ' '* flag? param name ' '* close) >action_start_expression %action_end_expression;
+		ref_expression = (open ' '* flag? ref name ' '* close) >action_start_expression %action_end_expression;
 
-		line = (other? expression? other?) >action_start_line %action_end_line;
+		expressions = ((param_expression other?)+ | (ref_expression other?)) %action_end_expressions;
+
+		line = (other? expressions?) >action_start_line %action_end_line;
 
 		template = (line delimeter)* (line - zlen)?;
 		main := template;

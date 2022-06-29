@@ -39,6 +39,8 @@ typedef struct {
 	Action action;
 	Other other;
 
+	bool has_expressions;
+
 } Line;
 
 
@@ -71,6 +73,8 @@ typedef struct {
 \
 	(_line).action = ACTION_NONE;\
 \
+	(_line).has_expressions = false;\
+\
 }
 
 #define resetToken(token) {\
@@ -94,6 +98,8 @@ typedef struct {
 	resetFlag((_line).flags.strict);\
 \
 	(_line).action = ACTION_NONE;\
+\
+	(_line).has_expressions = false;\
 \
 }
 
@@ -125,7 +131,7 @@ typedef struct {
 )
 
 #define verifyAction(_line) {\
-	if (!baseTokensExist(_line)) {\
+	if (!((_line).has_expressions && baseTokensExist(_line))) {\
 		(_line).action = ACTION_NONE;\
 	}\
 }

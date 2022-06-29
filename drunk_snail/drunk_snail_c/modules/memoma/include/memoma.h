@@ -15,12 +15,12 @@
 	if (size) {\
 		temp = realloc(target, size);\
 		if (!temp) {\
-			alloc_error = 1;\
+			alloc_error = true;\
 			free(target);\
 			target = NULL;\
 		} else {\
 			target = temp;\
-			alloc_error = 0;\
+			alloc_error = false;\
 		}\
 	}\
 }
@@ -30,7 +30,7 @@
 	if (size) {\
 		temp = realloc(target, size);\
 		if (!temp) {\
-			alloc_error = 1;\
+			alloc_error = true;\
 			free(target);\
 			target = NULL;\
 		} else {\

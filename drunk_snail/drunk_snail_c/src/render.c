@@ -59,9 +59,9 @@
 
 
 #define renderParamList(_line) {\
-	list_size = PyList_GET_SIZE(param_values);\
+	list_size = PyList_GET_SIZE(values);\
 	for (j = 0; j < list_size; j++) {\
-		value = PyUnicode_AsUTF8AndSize(PyList_GET_ITEM(param_values, j), &value_size);\
+		value = PyUnicode_AsUTF8AndSize(PyList_GET_ITEM(values, j), &value_size);\
 		render__param(\
 			*output_end,\
 			(_line).other.left.start, (_line).other.left.length,\
@@ -73,7 +73,7 @@
 
 
 #define renderRefList(_line) {\
-	list_size = PyList_GET_SIZE(ref_values);\
+	list_size = PyList_GET_SIZE(values);\
 	for (j = 0; j < list_size; j++) {\
 		render_(\
 			render_result,\
@@ -86,7 +86,7 @@
 			other_size,\
 			other_left_length + (_line).other.left.length,\
 			other_right_length + (_line).other.right.length,\
-			PyList_GET_ITEM(ref_values, j)\
+			PyList_GET_ITEM(values, j)\
 		);\
 		if (!render_result->result) {\
 			return;\
@@ -101,14 +101,14 @@
 \
 		case ACTION_PARAM:\
 \
-			param_values = PyDict_GetItemString(params, (_line).tokens.name.copy);\
-			if (param_values) {\
+			values = PyDict_GetItemString(params, (_line).tokens.name.copy);\
+			if (values) {\
 				if ((_line).flags.strict) {\
 					renderParamList(_line);\
-				} else if (PyList_Check(param_values)) {\
+				} else if (PyList_Check(values)) {\
 					renderParamList(_line);\
 				} else {\
-					value = PyUnicode_AsUTF8AndSize(param_values, &value_size);\
+					value = PyUnicode_AsUTF8AndSize(values, &value_size);\
 					render__param(\
 						*output_end,\
 						(_line).other.left.start, (_line).other.left.length,\
@@ -131,13 +131,13 @@
 \
 			addOther(_line);\
 \
-			ref_values = PyDict_GetItemString(params, (_line).tokens.name.copy);\
+			values = PyDict_GetItemString(params, (_line).tokens.name.copy);\
 \
-			if (ref_values) {\
+			if (values) {\
 \
 				if ((_line).flags.strict) {\
 					renderRefList(_line);\
-				} else if (PyList_Check(ref_values)) {\
+				} else if (PyList_Check(values)) {\
 					renderRefList(_line);\
 				} else {\
 					render_(\
@@ -151,7 +151,7 @@
 						other_size,\
 						other_left_length + (_line).other.left.length,\
 						other_right_length + (_line).other.right.length,\
-						ref_values\
+						values\
 					);\
 					if (!render_result->result) {\
 						return;\
@@ -229,35 +229,23 @@ void render_(
 	Py_ssize_t j;
 	Py_ssize_t list_size;
 	Py_ssize_t value_size;
-	PyObject *param_values;
-	PyObject *ref_values;
-	PyObject *item;
+	PyObject *values;
 
 	Line *line = NULL;
 
+	bool alloc_error = false;
 	size_t i;
-	int alloc_error = 0;
 	size_t required_buffer_size;
 
 	Other **other_temp;
 
-	size_t i_line;
-	for (i_line = 0; i_line < template->lines.length; i_line++) {
+	size_t i_line = 0;
+	for (; i_line < template->lines.length; i_line++) {
 		line = template->lines.start[i_line];
 		renderLine(*line);
 	}
 
-	if (!depth) {
-		**output_end = 0;
-	}
-
 };
-
-
-#define exit_render {\
-	PyErr_SetString(PyExc_MemoryError, "Out of RAM");\
-	return NULL;\
-}
 
 
 PyObject *render (
@@ -278,10 +266,11 @@ PyObject *render (
 	size_t other_size = 16;
 	Other **other = NULL;
 
-	int error = 0;
+	bool error = false;
 	drunk_malloc_one(other, sizeof(Other*) * other_size, error);
 	if (error) {
-		exit_render;
+		PyErr_SetString(PyExc_MemoryError, "Out of RAM");
+		return NULL;
 	}
 
 	char *output_end = NULL;

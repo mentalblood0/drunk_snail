@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <Python.h>
+#include <stdbool.h>
 #include <sys/types.h>
 
 #include "../include/parse.h"
@@ -12,9 +13,9 @@
 
 
 
-int addTemplate_(char *name, char *text) {
+bool addTemplate_(char *name, char *text) {
 
-	int error = 0;
+	bool error = false;
 
 	Template *template;
 	drunk_malloc_one(template, sizeof(Template), error);

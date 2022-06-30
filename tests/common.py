@@ -1,7 +1,7 @@
 import uuid
 import pytest
 
-from drunk_snail_c import addTemplate, removeTemplate, render
+from drunk_snail_python import addTemplate, removeTemplate, render
 
 
 

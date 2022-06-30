@@ -30,11 +30,11 @@ if __name__ == '__main__':
 		packages=find_packages(),
 		ext_modules=[
 			Extension(
-				name='drunk_snail_c',
-				sources=paths('drunk_snail/drunk_snail_c', 'c'),
+				name='drunk_snail_python',
+				sources=paths('drunk_snail/drunk_snail_python', 'c'),
 				extra_compile_args=['/O2']
 			)
 		],
 		install_requires=[],
-		data_files=paths('drunk_snail/drunk_snail_c', 'c') + paths('drunk_snail/drunk_snail_c', 'h')
+		data_files=paths('drunk_snail/drunk_snail_python', 'c') + paths('drunk_snail/drunk_snail_python', 'h')
 	)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 
-import drunk_snail_c
+import drunk_snail_python
 
 
 
@@ -12,14 +12,14 @@ class Template:
 	name: str
 
 	def register(self, text: str) -> None:
-		drunk_snail_c.addTemplate(self.name, text)
+		drunk_snail_python.addTemplate(self.name, text)
 
 	def unregister(self) -> None:
-		drunk_snail_c.removeTemplate(self.name)
+		drunk_snail_python.removeTemplate(self.name)
 
 	@property
 	def text(self) -> str:
-		return drunk_snail_c.getTemplate(self.name)
+		return drunk_snail_python.getTemplate(self.name)
 
 	def __str__(self) -> str:
 		return self.text
@@ -37,4 +37,4 @@ class Template:
 		return f"(name='{self.name}', hash={hash(self)})"
 
 	def __call__(self, parameters: dict = None) -> str:
-		return drunk_snail_c.render(self.name, parameters or {})
+		return drunk_snail_python.render(self.name, parameters or {})

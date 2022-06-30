@@ -1,6 +1,6 @@
 import pytest
 
-from drunk_snail_c import addTemplate, render
+from drunk_snail_python import addTemplate, render
 
 from .common import render_lambda, param_values
 

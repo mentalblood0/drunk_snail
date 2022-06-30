@@ -1,4 +1,3 @@
-import os
 import glob
 from setuptools import setup, Extension, find_packages
 
@@ -9,15 +8,16 @@ def paths(root: str, extension: str):
 
 
 if __name__ == '__main__':
-
-	long_description = ''
-	if os.path.exists('README.md'):
+	
+	try:
 		with open('README.md') as f:
 			long_description = f.read()
+	except FileNotFoundError:
+		long_description = ''
 
 	setup(
 		name='drunk_snail',
-		version='6.17.3',
+		version='6.18.0',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
@@ -25,7 +25,7 @@ if __name__ == '__main__':
 		author_email='neceporenkostepan@gmail.com',
 		maintainer='mentalblood',
 		maintainer_email='neceporenkostepan@gmail.com',
-		keywords=['template', 'engine', 'fast'],
+		keywords=['template-engine', 'ragel'],
 		url='https://github.com/MentalBlood/drunk_snail',
 		packages=find_packages(),
 		ext_modules=[
@@ -35,6 +35,5 @@ if __name__ == '__main__':
 				extra_compile_args=['/O2']
 			)
 		],
-		install_requires=[],
 		data_files=paths('drunk_snail/drunk_snail_python', 'c') + paths('drunk_snail/drunk_snail_python', 'h')
 	)

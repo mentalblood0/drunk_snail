@@ -2,7 +2,6 @@
 
 #include "../modules/drunk_snail_c/include/templates.h"
 
-#include "../src/parse_python.h"
 #include "../src/render_python.h"
 #include "../src/addTemplate_python.h"
 #include "../src/getTemplate_python.h"
@@ -34,12 +33,6 @@ PyMethodDef methods[6] = {
 		render_python,
 		METH_VARARGS,
 		"Render parsed template"
-	},
-	{
-		"parse",
-		parse_python,
-		METH_VARARGS,
-		"Parse template"
 	},
 	{NULL, NULL, 0, NULL}
 };

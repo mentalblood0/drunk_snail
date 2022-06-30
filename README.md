@@ -226,3 +226,11 @@ python -m sharpener run -p 0
 ```
 
 Config is [here](benchmarks/benchmark_default.json)
+
+
+
+## Binding to other languages
+
+1. You will need [this folder](drunk_snail/drunk_snail_python/modules/drunk_snail_c)
+2. Edit [parameters-related macros](drunk_snail/drunk_snail_python/modules/drunk_snail_c/include/params_macros.h)
+3. Add bindings for [adding](drunk_snail/drunk_snail_python/modules/drunk_snail_c/include/addTemplate.h), [getting](drunk_snail/drunk_snail_python/modules/drunk_snail_c/include/getTemplate.h), [removing](drunk_snail/drunk_snail_python/modules/drunk_snail_c/include/removeTemplate.h) and [rendering](drunk_snail/drunk_snail_python/modules/drunk_snail_c/include/render.h) to your language

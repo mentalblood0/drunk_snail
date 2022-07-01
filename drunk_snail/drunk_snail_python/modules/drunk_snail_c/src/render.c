@@ -14,7 +14,7 @@
 
 
 
-DRUNK_PARAMS_TYPE empty_dict;
+DRUNK_TYPE empty_dict;
 
 
 void render(
@@ -27,7 +27,7 @@ void render(
 	OtherPointerList *other,
 	size_t other_left_length,
 	size_t other_right_length,
-	DRUNK_PARAMS_TYPE params
+	DRUNK_TYPE params
 )
 {
 
@@ -65,7 +65,7 @@ void render(
 	DRUNK_LIST_LENGTH_TYPE j;
 	DRUNK_LIST_LENGTH_TYPE list_size;
 	DRUNK_STRING_LENGTH_TYPE value_size;
-	DRUNK_LIST_TYPE values;
+	DRUNK_TYPE values;
 
 	size_t i;
 	size_t required_buffer_size;

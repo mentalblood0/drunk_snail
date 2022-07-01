@@ -9,7 +9,7 @@
 
 
 
-DRUNK_PARAMS_TYPE empty_dict;
+DRUNK_TYPE empty_dict;
 
 
 typedef struct RenderResult {
@@ -195,5 +195,5 @@ void render(
 	OtherPointerList *other,
 	size_t other_left_length,
 	size_t other_right_length,
-	DRUNK_PARAMS_TYPE params
+	DRUNK_TYPE params
 );

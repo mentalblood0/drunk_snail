@@ -70,6 +70,8 @@ void render(
 	size_t i;
 	size_t required_buffer_size;
 
+	Other *other_start = other->start;
+
 	size_t i_line = 0;
 	Line line;
 	for (; i_line < template->lines.length; i_line++) {

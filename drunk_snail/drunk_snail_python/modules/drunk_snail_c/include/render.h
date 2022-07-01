@@ -55,6 +55,7 @@ typedef struct RenderResult {
 	if (alloc_error) {\
 		exit_render_();\
 	}\
+	other_start = other->start;\
 \
 }
 

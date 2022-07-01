@@ -45,7 +45,6 @@ parse_result addTemplate(char *name, char *text) {
 
 	result.code = treeInsert(templates, name, template);
 	if (result.code) {
-		size_t i;
 		listClear(template->lines);
 		free(template->text);
 		free(template);

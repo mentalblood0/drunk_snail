@@ -71,22 +71,24 @@ void _parse(
 	bool alloc_error = false;
 
 	if (!depth && template->lines.length) {
-		listClear(template->lines, i);
-		listCreate(template->lines, 16, alloc_error);
+		listClear(template->lines);
+		listCreate(template->lines, Line, 16, alloc_error);
 		if (alloc_error) {
 			exit__parse();
 		}
 	}
 
-	Line *line = NULL;
+	Line *line;
+	listGetNew(template->lines, Line, line, alloc_error);
+	if (alloc_error) {
+		exit__parse();
+	}
+	initLine(*line);
 
 	char *p = template->text;
 	char *pe = template->text + template->length;
 	char *eof = pe;
 	size_t cs;
-
-	drunk_malloc_one__parse(line, sizeof(Line));
-	initLine(*line);
 
 	%%{
 
@@ -94,11 +96,6 @@ void _parse(
 		action action_end_line {
 
 			line->tokens.line.end = p;
-			listPush(template->lines, line, alloc_error);
-			if (alloc_error) {
-				free(line);
-				exit__parse();
-			}
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
@@ -110,8 +107,11 @@ void _parse(
 				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
-			drunk_malloc_one__parse(line, sizeof(Line));
-			initLine(*line)
+			listGetNew(template->lines, Line, line, alloc_error);
+			if (alloc_error) {
+				exit__parse();
+			}
+			initLine(*line);
 
 		}
 
@@ -161,7 +161,7 @@ void _parse(
 
 	}%%
 
-	free(line);
+	template->lines.length -= 1;
 
 };
 

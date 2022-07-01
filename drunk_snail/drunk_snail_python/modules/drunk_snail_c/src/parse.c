@@ -80,47 +80,44 @@ void _parse(
 	bool alloc_error = false;
 
 	if (!depth && template->lines.length) {
-		listClear(template->lines, i);
-		listCreate(template->lines, 16, alloc_error);
+		listClear(template->lines);
+		listCreate(template->lines, Line, 16, alloc_error);
 		if (alloc_error) {
 			exit__parse();
 		}
 	}
 
-	Line *line = NULL;
+	Line *line;
+	listGetNew(template->lines, Line, line, alloc_error);
+	if (alloc_error) {
+		exit__parse();
+	}
+	initLine(*line);
 
 	char *p = template->text;
 	char *pe = template->text + template->length;
 	char *eof = pe;
 	size_t cs;
 
-	drunk_malloc_one__parse(line, sizeof(Line));
-	initLine(*line);
-
 	
-/* #line 102 "parse.c" */
+/* #line 104 "parse.c" */
 	{
 	cs = parse_python_start;
 	}
 
-/* #line 107 "parse.c" */
+/* #line 109 "parse.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 93 "parse.rl" */
+/* #line 95 "parse.rl" */
 	{ line->tokens.line.start = p; }
-/* #line 94 "parse.rl" */
+/* #line 96 "parse.rl" */
 	{
 
 			line->tokens.line.end = p;
-			listPush(template->lines, line, alloc_error);
-			if (alloc_error) {
-				free(line);
-				exit__parse();
-			}
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
@@ -132,21 +129,19 @@ tr1:
 				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
-			drunk_malloc_one__parse(line, sizeof(Line));
-			initLine(*line)
+			listGetNew(template->lines, Line, line, alloc_error);
+			if (alloc_error) {
+				exit__parse();
+			}
+			initLine(*line);
 
 		}
 	goto st0;
 tr4:
-/* #line 94 "parse.rl" */
+/* #line 96 "parse.rl" */
 	{
 
 			line->tokens.line.end = p;
-			listPush(template->lines, line, alloc_error);
-			if (alloc_error) {
-				free(line);
-				exit__parse();
-			}
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
@@ -158,8 +153,11 @@ tr4:
 				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
-			drunk_malloc_one__parse(line, sizeof(Line));
-			initLine(*line)
+			listGetNew(template->lines, Line, line, alloc_error);
+			if (alloc_error) {
+				exit__parse();
+			}
+			initLine(*line);
 
 		}
 	goto st0;
@@ -168,15 +166,10 @@ tr37:
 	{ line->tokens.expression.end = p; }
 /* #line 131 "parse.rl" */
 	{ line->has_expressions = true; }
-/* #line 94 "parse.rl" */
+/* #line 96 "parse.rl" */
 	{
 
 			line->tokens.line.end = p;
-			listPush(template->lines, line, alloc_error);
-			if (alloc_error) {
-				free(line);
-				exit__parse();
-			}
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
@@ -188,23 +181,21 @@ tr37:
 				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
-			drunk_malloc_one__parse(line, sizeof(Line));
-			initLine(*line)
+			listGetNew(template->lines, Line, line, alloc_error);
+			if (alloc_error) {
+				exit__parse();
+			}
+			initLine(*line);
 
 		}
 	goto st0;
 tr40:
 /* #line 131 "parse.rl" */
 	{ line->has_expressions = true; }
-/* #line 94 "parse.rl" */
+/* #line 96 "parse.rl" */
 	{
 
 			line->tokens.line.end = p;
-			listPush(template->lines, line, alloc_error);
-			if (alloc_error) {
-				free(line);
-				exit__parse();
-			}
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
@@ -216,8 +207,11 @@ tr40:
 				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
-			drunk_malloc_one__parse(line, sizeof(Line));
-			initLine(*line)
+			listGetNew(template->lines, Line, line, alloc_error);
+			if (alloc_error) {
+				exit__parse();
+			}
+			initLine(*line);
 
 		}
 	goto st0;
@@ -225,28 +219,28 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 229 "parse.c" */
+/* #line 223 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 93 "parse.rl" */
+/* #line 95 "parse.rl" */
 	{ line->tokens.line.start = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 243 "parse.c" */
+/* #line 237 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 93 "parse.rl" */
+/* #line 95 "parse.rl" */
 	{ line->tokens.line.start = p; }
 /* #line 126 "parse.rl" */
 	{
@@ -265,7 +259,7 @@ st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 269 "parse.c" */
+/* #line 263 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -418,7 +412,7 @@ st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 422 "parse.c" */
+/* #line 416 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -501,7 +495,7 @@ st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 505 "parse.c" */
+/* #line 499 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr29;
@@ -526,7 +520,7 @@ st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 530 "parse.c" */
+/* #line 524 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st24;
@@ -542,7 +536,7 @@ st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 546 "parse.c" */
+/* #line 540 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st26;
@@ -576,7 +570,7 @@ st28:
 	if ( ++p == pe )
 		goto _test_eof28;
 case 28:
-/* #line 580 "parse.c" */
+/* #line 574 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 60: goto tr41;
@@ -611,7 +605,7 @@ st29:
 	if ( ++p == pe )
 		goto _test_eof29;
 case 29:
-/* #line 615 "parse.c" */
+/* #line 609 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 33: goto st30;
@@ -764,7 +758,7 @@ st43:
 	if ( ++p == pe )
 		goto _test_eof43;
 case 43:
-/* #line 768 "parse.c" */
+/* #line 762 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 60: goto tr41;
@@ -847,7 +841,7 @@ st50:
 	if ( ++p == pe )
 		goto _test_eof50;
 case 50:
-/* #line 851 "parse.c" */
+/* #line 845 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto tr65;
@@ -872,7 +866,7 @@ st51:
 	if ( ++p == pe )
 		goto _test_eof51;
 case 51:
-/* #line 876 "parse.c" */
+/* #line 870 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto st51;
@@ -888,7 +882,7 @@ st52:
 	if ( ++p == pe )
 		goto _test_eof52;
 case 52:
-/* #line 892 "parse.c" */
+/* #line 886 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 45: goto st53;
@@ -960,7 +954,7 @@ st58:
 	if ( ++p == pe )
 		goto _test_eof58;
 case 58:
-/* #line 964 "parse.c" */
+/* #line 958 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto tr75;
@@ -985,7 +979,7 @@ st59:
 	if ( ++p == pe )
 		goto _test_eof59;
 case 59:
-/* #line 989 "parse.c" */
+/* #line 983 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto st59;
@@ -1001,7 +995,7 @@ st60:
 	if ( ++p == pe )
 		goto _test_eof60;
 case 60:
-/* #line 1005 "parse.c" */
+/* #line 999 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 45: goto st61;
@@ -1152,7 +1146,7 @@ st74:
 	if ( ++p == pe )
 		goto _test_eof74;
 case 74:
-/* #line 1156 "parse.c" */
+/* #line 1150 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr94;
@@ -1177,7 +1171,7 @@ st75:
 	if ( ++p == pe )
 		goto _test_eof75;
 case 75:
-/* #line 1181 "parse.c" */
+/* #line 1175 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st75;
@@ -1193,7 +1187,7 @@ st76:
 	if ( ++p == pe )
 		goto _test_eof76;
 case 76:
-/* #line 1197 "parse.c" */
+/* #line 1191 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st77;
@@ -1412,15 +1406,10 @@ case 84:
 	case 82: 
 	case 83: 
 	case 84: 
-/* #line 94 "parse.rl" */
+/* #line 96 "parse.rl" */
 	{
 
 			line->tokens.line.end = p;
-			listPush(template->lines, line, alloc_error);
-			if (alloc_error) {
-				free(line);
-				exit__parse();
-			}
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
@@ -1432,8 +1421,11 @@ case 84:
 				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
-			drunk_malloc_one__parse(line, sizeof(Line));
-			initLine(*line)
+			listGetNew(template->lines, Line, line, alloc_error);
+			if (alloc_error) {
+				exit__parse();
+			}
+			initLine(*line);
 
 		}
 	break;
@@ -1480,15 +1472,10 @@ case 84:
 	case 69: 
 /* #line 131 "parse.rl" */
 	{ line->has_expressions = true; }
-/* #line 94 "parse.rl" */
+/* #line 96 "parse.rl" */
 	{
 
 			line->tokens.line.end = p;
-			listPush(template->lines, line, alloc_error);
-			if (alloc_error) {
-				free(line);
-				exit__parse();
-			}
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
@@ -1500,8 +1487,11 @@ case 84:
 				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
-			drunk_malloc_one__parse(line, sizeof(Line));
-			initLine(*line)
+			listGetNew(template->lines, Line, line, alloc_error);
+			if (alloc_error) {
+				exit__parse();
+			}
+			initLine(*line);
 
 		}
 	break;
@@ -1511,15 +1501,10 @@ case 84:
 	{ line->tokens.expression.end = p; }
 /* #line 131 "parse.rl" */
 	{ line->has_expressions = true; }
-/* #line 94 "parse.rl" */
+/* #line 96 "parse.rl" */
 	{
 
 			line->tokens.line.end = p;
-			listPush(template->lines, line, alloc_error);
-			if (alloc_error) {
-				free(line);
-				exit__parse();
-			}
 
 			verifyAction(*line);
 			computeTokensLengths(*line);
@@ -1531,12 +1516,15 @@ case 84:
 				line->tokens.name.copy[line->tokens.name.length] = 0;
 			}
 
-			drunk_malloc_one__parse(line, sizeof(Line));
-			initLine(*line)
+			listGetNew(template->lines, Line, line, alloc_error);
+			if (alloc_error) {
+				exit__parse();
+			}
+			initLine(*line);
 
 		}
 	break;
-/* #line 1540 "parse.c" */
+/* #line 1528 "parse.c" */
 	}
 	}
 
@@ -1545,7 +1533,7 @@ case 84:
 /* #line 162 "parse.rl" */
 
 
-	free(line);
+	template->lines.length -= 1;
 
 };
 

@@ -19,9 +19,9 @@ void removeTemplate(char *name) {
 	free(template->text);
 	size_t i;
 	for (i = 0; i < template->lines.length; i++) {
-		freeLine(*((Line*)(template->lines.start[i])));
+		freeLine(template->lines.start[i]);
 	}
-	listClear(template->lines, i);
+	listClear(template->lines);
 
 	treeRemove(templates, name);
 

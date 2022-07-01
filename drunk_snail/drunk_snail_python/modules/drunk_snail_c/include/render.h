@@ -24,6 +24,10 @@ typedef struct RenderResult {
 		free(render_result->result);\
 		render_result->result = NULL;\
 	}\
+	if (other) {\
+		listClear(*other);\
+		free(other);\
+	}\
 	return;\
 }
 
@@ -47,11 +51,10 @@ typedef struct RenderResult {
 
 #define addOther(_line) {\
 \
-	if (depth >= *other_size) {\
-		*other_size = depth * 2;\
-		drunk_realloc_one_render_(*other, sizeof(Other*) * (*other_size), other_temp);\
+	listSet(*other, Other*, depth, &((_line).other), alloc_error);\
+	if (alloc_error) {\
+		exit_render_();\
 	}\
-	(*other)[depth] = &((_line).other);\
 \
 }
 
@@ -79,7 +82,6 @@ typedef struct RenderResult {
 			depth + 1,\
 			buffer_size,\
 			other,\
-			other_size,\
 			other_left_length + (_line).other.left.length,\
 			other_right_length + (_line).other.right.length,\
 			DRUNK_LIST_GET_ITEM(values, j)\
@@ -143,7 +145,6 @@ typedef struct RenderResult {
 						depth + 1,\
 						buffer_size,\
 						other,\
-						other_size,\
 						other_left_length + (_line).other.left.length,\
 						other_right_length + (_line).other.right.length,\
 						values\
@@ -163,7 +164,6 @@ typedef struct RenderResult {
 					depth + 1,\
 					buffer_size,\
 					other,\
-					other_size,\
 					other_left_length + (_line).other.left.length,\
 					other_right_length + (_line).other.right.length,\
 					empty_dict\
@@ -192,8 +192,7 @@ void render(
 	char **output_end,
 	size_t depth,
 	size_t *buffer_size,
-	Other ***other,
-	size_t *other_size,
+	OtherPointerList *other,
 	size_t other_left_length,
 	size_t other_right_length,
 	DRUNK_PARAMS_TYPE params

@@ -3,6 +3,8 @@
 
 #include <sys/types.h>
 
+#include "../modules/List/include/List.h"
+
 
 
 typedef struct {
@@ -14,3 +16,5 @@ typedef struct {
 	Substring left;
 	Substring right;
 } Other;
+
+listDefine(Other*, OtherPointerList);

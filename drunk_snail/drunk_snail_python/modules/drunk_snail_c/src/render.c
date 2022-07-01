@@ -24,8 +24,7 @@ void render(
 	char **output_end,
 	size_t depth,
 	size_t *buffer_size,
-	Other ***other,
-	size_t *other_size,
+	OtherPointerList *other,
 	size_t other_left_length,
 	size_t other_right_length,
 	DRUNK_PARAMS_TYPE params
@@ -43,10 +42,23 @@ void render(
 		return;
 	}
 
-	if (!render_result->result) {
+	bool alloc_error = false;
+
+	if (!depth) {
+
 		buffer_size = &template->buffer_size;
 		drunk_malloc_one_render_(render_result->result, sizeof(char) * (*buffer_size));
 		*output_end = render_result->result;
+
+		other = malloc(sizeof(OtherPointerList));
+		if (!other) {
+			exit_render_();
+		}
+		listCreate(*other, Other*, 16, alloc_error);
+		if (alloc_error) {
+			exit_render_();
+		}
+
 	}
 
 	char *value;
@@ -55,18 +67,14 @@ void render(
 	DRUNK_STRING_LENGTH_TYPE value_size;
 	DRUNK_LIST_TYPE values;
 
-	Line *line = NULL;
-
-	bool alloc_error = false;
 	size_t i;
 	size_t required_buffer_size;
 
-	Other **other_temp;
-
 	size_t i_line = 0;
+	Line line;
 	for (; i_line < template->lines.length; i_line++) {
-		line = template->lines.start[i_line];
-		renderLine(*line);
+		line = *(template->lines.start + i_line);
+		renderLine(line);
 	}
 
 };

@@ -19,16 +19,6 @@ PyObject *render_python (PyObject *self, PyObject *args) {
 	render_result.message = NULL;
 	render_result.result = NULL;
 
-	size_t other_size = 16;
-	Other **other = NULL;
-
-	bool error = false;
-	drunk_malloc_one(other, sizeof(Other*) * other_size, error);
-	if (error) {
-		PyErr_SetString(PyExc_MemoryError, "Out of RAM");
-		return NULL;
-	}
-
 	char *output_end = NULL;
 
 	render(
@@ -38,14 +28,11 @@ PyObject *render_python (PyObject *self, PyObject *args) {
 		&output_end,
 		0,
 		NULL,
-		&other,
-		&other_size,
+		NULL,
 		0,
 		0,
 		params
 	);
-
-	free(other);
 
 	if (!render_result.result) {
 		if (render_result.message) {

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+#include "../include/Line.h"
 #include "../include/parse.h"
 #include "../include/Template.h"
 #include "../include/templates.h"
@@ -35,7 +36,7 @@ parse_result addTemplate(char *name, char *text) {
 
 	template->length = text_length - 1;
 	template->buffer_size = template->length;
-	listCreate(template->lines, 16, result.code);
+	listCreate(template->lines, Line, 16, result.code);
 	if (result.code) {
 		free(template->text);
 		free(template);
@@ -45,7 +46,7 @@ parse_result addTemplate(char *name, char *text) {
 	result.code = treeInsert(templates, name, template);
 	if (result.code) {
 		size_t i;
-		listClear(template->lines, i);
+		listClear(template->lines);
 		free(template->text);
 		free(template);
 		return result;

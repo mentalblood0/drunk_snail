@@ -3,9 +3,12 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+#include "../include/Line.h"
 #include "../modules/List/include/List.h"
 
 
+
+listDefine(Line, LineList);
 
 typedef struct {
 
@@ -13,6 +16,6 @@ typedef struct {
 	size_t length;
 	size_t buffer_size;
 
-	List lines;
+	LineList lines;
 
 } Template;

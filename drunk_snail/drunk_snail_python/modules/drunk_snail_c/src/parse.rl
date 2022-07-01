@@ -67,7 +67,6 @@ void _parse(
 		exit__parse();
 	}
 
-	size_t i;
 	bool alloc_error = false;
 
 	if (!depth && template->lines.length) {

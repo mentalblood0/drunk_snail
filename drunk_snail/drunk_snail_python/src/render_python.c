@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #include "../modules/drunk_snail_c/include/render.h"

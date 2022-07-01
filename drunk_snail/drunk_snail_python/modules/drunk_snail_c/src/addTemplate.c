@@ -14,7 +14,7 @@
 
 
 
-parse_result addTemplate(char *name, char *text) {
+parse_result addTemplate(char *name, char *text, size_t text_length) {
 
 	parse_result result;
 	result.code = 0;
@@ -26,16 +26,15 @@ parse_result addTemplate(char *name, char *text) {
 		return result;
 	}
 
-	size_t text_length = strlen(text) + 1;
-	drunk_malloc_one(template->text, sizeof(char) * text_length, result.code);
+	drunk_malloc_one(template->text, sizeof(char) * (text_length + 1), result.code);
 	if (result.code) {
 		free(template);
 		return result;
 	}
-	memcpy_s(template->text, text_length, text, text_length);
+	memcpy(template->text, text, text_length + 1);
 
-	template->length = text_length - 1;
-	template->buffer_size = template->length;
+	template->length = text_length;
+	template->buffer_size = text_length;
 	listCreate(template->lines, Line, 16, result.code);
 	if (result.code) {
 		free(template->text);

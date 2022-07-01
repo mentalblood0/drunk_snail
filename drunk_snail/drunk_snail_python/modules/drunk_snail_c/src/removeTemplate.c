@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #include "../modules/List/include/List.h"

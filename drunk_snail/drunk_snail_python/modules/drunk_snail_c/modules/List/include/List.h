@@ -29,7 +29,7 @@
 
 #define listExtend(target, TYPE, alloc_error) {\
 	if ((target).length == (target).allocated) {\
-		(target).allocated *= 2;\
+		(target).allocated *= 4;\
 		drunk_realloc_one((target).start, sizeof(TYPE) * (target).allocated, (target).temp, alloc_error);\
 		if (!alloc_error) {\
 			(target).length += 1;\

@@ -7,4 +7,4 @@
 
 
 
-parse_result addTemplate(char *name, char *text);
+parse_result addTemplate(char *name, char *text, size_t text_length);

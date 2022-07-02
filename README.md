@@ -156,11 +156,11 @@ strict = '(strict)';
 flag = optional | strict;
 
 prefix = flag? type;
-name = ([a-zA-Z_][a-zA-Z_0-9]*);
+name = [a-zA-Z_][a-zA-Z_0-9]*;
 
-expression = (open ' '* prefix name ' '* close);
+expression = open ' '* prefix name ' '* close;
 
-line = (other? expression? other?);
+line = other? expression? other?;
 
 template = (line delimeter)* (line - zlen)?;
 ```
@@ -180,10 +180,7 @@ template = (line delimeter)* (line - zlen)?;
 ## Interface
 
 ```python
-Template(
-    self,
-    name: str
-)
+Template(name: str)
 
 Template.name: str
 Template.text: str
@@ -191,11 +188,6 @@ Template.text: str
 Template.register(self, text: str) -> None
 Template.unregister(self) -> None
 
-Template.__str__(self) -> str
-Template.__len__(self) -> int
-Template.__hash__(self) -> int
-Template.__repr__(self) -> str
-Template.__eq__(self, other: Template) -> bool
 Template.__call__(self, parameters: dict = None) -> str
 ```
 

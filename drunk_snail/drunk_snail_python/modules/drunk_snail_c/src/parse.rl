@@ -115,8 +115,8 @@ void _parse(
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].length += 1 + line->length;
-					resetLine(line);
+					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}

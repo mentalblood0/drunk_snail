@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
 	setup(
 		name='drunk_snail',
-		version='6.18.2',
+		version='6.18.3',
 		description='Simple template engine. Faster than you think',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
@@ -27,6 +27,8 @@ if __name__ == '__main__':
 		maintainer_email='neceporenkostepan@gmail.com',
 		keywords=['template-engine', 'ragel'],
 		url='https://github.com/MentalBlood/drunk_snail',
+		python_requires='>=3.5',
+
 		packages=find_packages(),
 		ext_modules=[
 			Extension(

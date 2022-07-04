@@ -35,7 +35,7 @@ parse_result addTemplate(char *name, char *text, size_t text_length) {
 
 	template->length = text_length;
 	template->buffer_size = text_length;
-	listCreate(template->lines, Line, 16, result.code);
+	listCreate(template->lines, Line, text_length / 16 + 1, result.code);
 	if (result.code) {
 		free(template->text);
 		free(template);

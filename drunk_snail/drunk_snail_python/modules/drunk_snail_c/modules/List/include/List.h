@@ -15,7 +15,7 @@
 
 
 #define listCreate(target, TYPE, initial_length, alloc_error) {\
-	drunk_malloc_one((target).start, sizeof(TYPE) * initial_length, alloc_error);\
+	drunk_malloc_one((target).start, sizeof(TYPE) * (initial_length), alloc_error);\
 	if (!alloc_error) {\
 		(target).length = 0;\
 		(target).allocated = initial_length;\

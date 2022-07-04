@@ -52,6 +52,15 @@
 }
 
 
+#define allocNewLine(target, list, alloc_error) {\
+	listGetNew(list, Line, target, alloc_error);\
+	if (alloc_error) {\
+		exit__parse();\
+	}\
+	initLine(*target);\
+}
+
+
 void _parse(
 	char *template_name,
 	size_t template_name_length,
@@ -101,17 +110,25 @@ void _parse(
 			computeTokensLengths(*line);
 			computeOther(*line);
 
-			if (line->action != ACTION_NONE) {
+			if (line->action == ACTION_NONE) {
+				if (
+					(template->lines.length >= 2) &&
+					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
+				) {
+					template->lines.start[template->lines.length - 2].length += 1 + line->length;
+					resetLine(line);
+				} else {
+					allocNewLine(line, template->lines, alloc_error);
+				}
+			} else {
+
 				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
 				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
 				line->tokens.name.copy[line->tokens.name.length] = 0;
-			}
 
-			listGetNew(template->lines, Line, line, alloc_error);
-			if (alloc_error) {
-				exit__parse();
+				allocNewLine(line, template->lines, alloc_error);
+
 			}
-			initLine(*line);
 
 		}
 

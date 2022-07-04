@@ -33,6 +33,16 @@ typedef enum {
 } Action;
 
 typedef struct {
+	Token expression;
+	Token name;
+} ExpressionTokens;
+
+typedef struct {
+	ExpressionTokens tokens;
+	Flags flags;
+} Expression;
+
+typedef struct {
 
 	Tokens tokens;
 	Flags flags;

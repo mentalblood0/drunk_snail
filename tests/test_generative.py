@@ -61,16 +61,11 @@ def composeRefLine(*args, name='R', **kwargs):
 	return composeLine(type=Syntax.ref, name=name, *args, **kwargs)
 
 
-@pytest.mark.parametrize(
-	'value,other_left,gap_left,gap_right,other_right',
-	itertools.product(
-		TestLists.Valid.value + sum((list(t) for t in itertools.combinations(TestLists.Valid.value, 4)), []),
-		TestLists.Valid.other + [Syntax.open],
-		TestLists.Valid.gap,
-		TestLists.Valid.gap,
-		TestLists.Valid.other + [Syntax.close]
-	)
-)
+@pytest.mark.parametrize('value', TestLists.Valid.value + sum((list(t) for t in itertools.combinations(TestLists.Valid.value, 4)), []))
+@pytest.mark.parametrize('other_left', TestLists.Valid.other + [Syntax.open])
+@pytest.mark.parametrize('gap_left', TestLists.Valid.gap)
+@pytest.mark.parametrize('gap_right', TestLists.Valid.gap)
+@pytest.mark.parametrize('other_right', TestLists.Valid.other + [Syntax.close])
 def test_param_valid(value, other_left, gap_left, gap_right, other_right):
 	param_line = composeParamLine(
 		other_left=other_left,
@@ -89,19 +84,14 @@ def test_param_valid(value, other_left, gap_left, gap_right, other_right):
 	)
 
 
-@pytest.mark.parametrize(
-	'value,open_tag,other_left,gap_left,name,gap_right,other_right,close_tag',
-	itertools.product(
-		TestLists.Valid.value[:1],
-		TestLists.Invalid.open_tag,
-		TestLists.Valid.other[:1],
-		TestLists.Invalid.gap,
-		TestLists.Invalid.name,
-		TestLists.Invalid.gap,
-		TestLists.Valid.other[:1],
-		TestLists.Invalid.close_tag
-	)
-)
+@pytest.mark.parametrize('value', TestLists.Valid.value[:1])
+@pytest.mark.parametrize('open_tag', TestLists.Invalid.open_tag)
+@pytest.mark.parametrize('other_left', TestLists.Valid.other[:1])
+@pytest.mark.parametrize('gap_left', TestLists.Invalid.gap)
+@pytest.mark.parametrize('name', TestLists.Invalid.name)
+@pytest.mark.parametrize('gap_right', TestLists.Invalid.gap)
+@pytest.mark.parametrize('other_right', TestLists.Valid.other[:1])
+@pytest.mark.parametrize('close_tag', TestLists.Invalid.close_tag)
 def test_param_invalid(value, open_tag, other_left, gap_left, name, gap_right, other_right, close_tag):
 	param_line = composeParamLine(
 		open_tag=open_tag,
@@ -120,12 +110,11 @@ def test_param_invalid(value, open_tag, other_left, gap_left, name, gap_right, o
 	itertools.islice(
 		itertools.combinations(
 			itertools.product(
-				TestLists.Valid.value,
-				TestLists.Valid.other + [Syntax.open],
-				TestLists.Valid.gap,
-				TestLists.Valid.gap,
-				TestLists.Valid.other + [Syntax.close],
-				TestLists.Valid.one_line_params_number
+				TestLists.Valid.value, # name
+				TestLists.Valid.other + [Syntax.open], # other_left
+				TestLists.Valid.gap, # gap_left
+				TestLists.Valid.gap, # gap_right
+				TestLists.Valid.other + [Syntax.close], # other_right
 			),
 			3
 		),
@@ -143,8 +132,6 @@ def test_multiple_param_valid(lines_args):
 		)
 		for i, a in enumerate(lines_args)
 	]
-	# print(params_sublines)
-	# exit()
 	values = {
 		f'p{i}': a[0]
 		for i, a in enumerate(lines_args)
@@ -152,17 +139,12 @@ def test_multiple_param_valid(lines_args):
 	assert render_lambda(''.join(params_sublines), values) == ''.join((f'{a[1]}{a[0]}{a[4]}' for a in lines_args)) + '\n'
 
 
-@pytest.mark.parametrize(
-	'ref,value,other_left,gap_left,gap_right,other_right',
-	itertools.product(
-		TestLists.Valid.ref,
-		TestLists.Valid.value + sum((list(t) for t in itertools.combinations(TestLists.Valid.value, 4)), []),
-		TestLists.Valid.other + [Syntax.open],
-		TestLists.Valid.gap,
-		TestLists.Valid.gap,
-		TestLists.Valid.other + [Syntax.close]
-	)
-)
+@pytest.mark.parametrize('ref', TestLists.Valid.ref)
+@pytest.mark.parametrize('value', TestLists.Valid.value + sum((list(t) for t in itertools.combinations(TestLists.Valid.value, 4)), []))
+@pytest.mark.parametrize('other_left', TestLists.Valid.other + [Syntax.open])
+@pytest.mark.parametrize('gap_left', TestLists.Valid.gap)
+@pytest.mark.parametrize('gap_right', TestLists.Valid.gap)
+@pytest.mark.parametrize('other_right', TestLists.Valid.other + [Syntax.close])
 def test_ref_valid(ref, value, other_left, gap_left, gap_right, other_right):
 	ref_line = composeRefLine(
 		other_left=other_left,

@@ -2,7 +2,7 @@ import pytest
 
 from drunk_snail_python import render, addTemplate
 
-from .common import render_lambda, param_values
+from tests.common import render_lambda, param_values
 
 
 
@@ -104,7 +104,7 @@ def test_table():
 		'	<td><!-- (strict)(param)cell --></td>\n'
 		'</tr>\n'
 	)
-	
+
 	assert render_lambda(
 		'<table>\n'
 		'	<!-- (strict)(ref)Row -->\n'
@@ -138,11 +138,11 @@ def test_table():
 
 
 def test_multiple_params():
-
-	render_lambda(
-		'before<!-- (param)a -->between<!-- (param)b -->after',
+	assert render_lambda(
+		'before<!-- (param)a -->between1<!-- (param)b -->between2<!-- (param)c -->after',
 		 {
-			'a': '1',
-			'b': '2'
+			'a': '<a>',
+			'b': '<b>',
+			'c': '<c>'
 		 }
-	)
+	) == 'before<a>between1<b>between2<c>after\n'

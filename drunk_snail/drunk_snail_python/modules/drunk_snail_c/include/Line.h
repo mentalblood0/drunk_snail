@@ -27,6 +27,7 @@ typedef struct {
 
 typedef enum {
 	ACTION_PARAM,
+	ACTION_PARAM_MULTI,
 	ACTION_REF,
 	ACTION_NONE
 } Action;

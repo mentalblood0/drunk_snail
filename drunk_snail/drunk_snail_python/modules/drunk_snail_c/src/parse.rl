@@ -153,6 +153,7 @@ void _parse(
 			}
 
 			if (line->action == ACTION_PARAM) {
+
 				if (!line->param_expressions) {
 					line->param_expressions = malloc(sizeof(ExpressionList));
 					if (!line->param_expressions) {
@@ -162,12 +163,26 @@ void _parse(
 					if (alloc_error) {
 						exit__parse();
 					}
+					listExtend(*(line->param_expressions), Expression, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+					line->param_expressions->start[0] = *current_expression;
+				} else {
+					if (line->param_expressions->length) {
+						line->action = ACTION_PARAM_MULTI;
+					}
 				}
 				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
 				if (alloc_error || !current_expression) {
 					exit__parse();
 				}
 				initExpression(*current_expression);
+
+			} else if (line->param_expressions) {
+				if (line->param_expressions->length) {
+					line->action = ACTION_NONE;
+				}
 			}
 
 		}
@@ -205,6 +220,11 @@ void _parse(
 	}%%
 
 	template->lines.length -= 1;
+	if (template->lines.length) {
+		if (template->lines.start[template->lines.length-1].param_expressions) {
+			template->lines.start[template->lines.length-1].param_expressions->length -= 1;
+		}
+	}
 
 };
 

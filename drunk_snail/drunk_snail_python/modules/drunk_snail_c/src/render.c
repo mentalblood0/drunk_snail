@@ -67,7 +67,7 @@ void render(
 	DRUNK_STRING_LENGTH_TYPE value_size;
 	DRUNK_TYPE values;
 
-	size_t i;
+	size_t i, k;
 	size_t required_buffer_size;
 
 	size_t i_line = 0;

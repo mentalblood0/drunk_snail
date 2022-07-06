@@ -193,6 +193,7 @@ tr37:
 			}
 
 			if (line->action == ACTION_PARAM) {
+
 				if (!line->param_expressions) {
 					line->param_expressions = malloc(sizeof(ExpressionList));
 					if (!line->param_expressions) {
@@ -202,16 +203,30 @@ tr37:
 					if (alloc_error) {
 						exit__parse();
 					}
+					listExtend(*(line->param_expressions), Expression, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+					line->param_expressions->start[0] = *current_expression;
+				} else {
+					if (line->param_expressions->length) {
+						line->action = ACTION_PARAM_MULTI;
+					}
 				}
 				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
 				if (alloc_error || !current_expression) {
 					exit__parse();
 				}
 				initExpression(*current_expression);
+
+			} else if (line->param_expressions) {
+				if (line->param_expressions->length) {
+					line->action = ACTION_NONE;
+				}
 			}
 
 		}
-/* #line 174 "parse.rl" */
+/* #line 189 "parse.rl" */
 	{ line->has_expressions = true; }
 /* #line 103 "parse.rl" */
 	{
@@ -241,7 +256,7 @@ tr37:
 		}
 	goto st0;
 tr40:
-/* #line 174 "parse.rl" */
+/* #line 189 "parse.rl" */
 	{ line->has_expressions = true; }
 /* #line 103 "parse.rl" */
 	{
@@ -274,7 +289,7 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 278 "parse.c" */
+/* #line 293 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
@@ -288,7 +303,7 @@ st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 292 "parse.c" */
+/* #line 307 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -314,7 +329,7 @@ st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 318 "parse.c" */
+/* #line 333 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -467,7 +482,7 @@ st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 471 "parse.c" */
+/* #line 486 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -550,7 +565,7 @@ st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 554 "parse.c" */
+/* #line 569 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr29;
@@ -575,7 +590,7 @@ st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 579 "parse.c" */
+/* #line 594 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st24;
@@ -591,7 +606,7 @@ st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 595 "parse.c" */
+/* #line 610 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st26;
@@ -634,6 +649,7 @@ tr36:
 			}
 
 			if (line->action == ACTION_PARAM) {
+
 				if (!line->param_expressions) {
 					line->param_expressions = malloc(sizeof(ExpressionList));
 					if (!line->param_expressions) {
@@ -643,12 +659,26 @@ tr36:
 					if (alloc_error) {
 						exit__parse();
 					}
+					listExtend(*(line->param_expressions), Expression, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+					line->param_expressions->start[0] = *current_expression;
+				} else {
+					if (line->param_expressions->length) {
+						line->action = ACTION_PARAM_MULTI;
+					}
 				}
 				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
 				if (alloc_error || !current_expression) {
 					exit__parse();
 				}
 				initExpression(*current_expression);
+
+			} else if (line->param_expressions) {
+				if (line->param_expressions->length) {
+					line->action = ACTION_NONE;
+				}
 			}
 
 		}
@@ -657,7 +687,7 @@ st28:
 	if ( ++p == pe )
 		goto _test_eof28;
 case 28:
-/* #line 661 "parse.c" */
+/* #line 691 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 60: goto tr41;
@@ -687,6 +717,7 @@ tr38:
 			}
 
 			if (line->action == ACTION_PARAM) {
+
 				if (!line->param_expressions) {
 					line->param_expressions = malloc(sizeof(ExpressionList));
 					if (!line->param_expressions) {
@@ -696,12 +727,26 @@ tr38:
 					if (alloc_error) {
 						exit__parse();
 					}
+					listExtend(*(line->param_expressions), Expression, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+					line->param_expressions->start[0] = *current_expression;
+				} else {
+					if (line->param_expressions->length) {
+						line->action = ACTION_PARAM_MULTI;
+					}
 				}
 				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
 				if (alloc_error || !current_expression) {
 					exit__parse();
 				}
 				initExpression(*current_expression);
+
+			} else if (line->param_expressions) {
+				if (line->param_expressions->length) {
+					line->action = ACTION_NONE;
+				}
 			}
 
 		}
@@ -733,6 +778,7 @@ tr82:
 			}
 
 			if (line->action == ACTION_PARAM) {
+
 				if (!line->param_expressions) {
 					line->param_expressions = malloc(sizeof(ExpressionList));
 					if (!line->param_expressions) {
@@ -742,12 +788,26 @@ tr82:
 					if (alloc_error) {
 						exit__parse();
 					}
+					listExtend(*(line->param_expressions), Expression, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+					line->param_expressions->start[0] = *current_expression;
+				} else {
+					if (line->param_expressions->length) {
+						line->action = ACTION_PARAM_MULTI;
+					}
 				}
 				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
 				if (alloc_error || !current_expression) {
 					exit__parse();
 				}
 				initExpression(*current_expression);
+
+			} else if (line->param_expressions) {
+				if (line->param_expressions->length) {
+					line->action = ACTION_NONE;
+				}
 			}
 
 		}
@@ -756,7 +816,7 @@ st29:
 	if ( ++p == pe )
 		goto _test_eof29;
 case 29:
-/* #line 760 "parse.c" */
+/* #line 820 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 33: goto st30;
@@ -909,7 +969,7 @@ st43:
 	if ( ++p == pe )
 		goto _test_eof43;
 case 43:
-/* #line 913 "parse.c" */
+/* #line 973 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 60: goto tr41;
@@ -992,7 +1052,7 @@ st50:
 	if ( ++p == pe )
 		goto _test_eof50;
 case 50:
-/* #line 996 "parse.c" */
+/* #line 1056 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto tr65;
@@ -1017,7 +1077,7 @@ st51:
 	if ( ++p == pe )
 		goto _test_eof51;
 case 51:
-/* #line 1021 "parse.c" */
+/* #line 1081 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto st51;
@@ -1033,7 +1093,7 @@ st52:
 	if ( ++p == pe )
 		goto _test_eof52;
 case 52:
-/* #line 1037 "parse.c" */
+/* #line 1097 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 45: goto st53;
@@ -1105,7 +1165,7 @@ st58:
 	if ( ++p == pe )
 		goto _test_eof58;
 case 58:
-/* #line 1109 "parse.c" */
+/* #line 1169 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto tr75;
@@ -1130,7 +1190,7 @@ st59:
 	if ( ++p == pe )
 		goto _test_eof59;
 case 59:
-/* #line 1134 "parse.c" */
+/* #line 1194 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto st59;
@@ -1146,7 +1206,7 @@ st60:
 	if ( ++p == pe )
 		goto _test_eof60;
 case 60:
-/* #line 1150 "parse.c" */
+/* #line 1210 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 45: goto st61;
@@ -1297,7 +1357,7 @@ st74:
 	if ( ++p == pe )
 		goto _test_eof74;
 case 74:
-/* #line 1301 "parse.c" */
+/* #line 1361 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr94;
@@ -1322,7 +1382,7 @@ st75:
 	if ( ++p == pe )
 		goto _test_eof75;
 case 75:
-/* #line 1326 "parse.c" */
+/* #line 1386 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st75;
@@ -1338,7 +1398,7 @@ st76:
 	if ( ++p == pe )
 		goto _test_eof76;
 case 76:
-/* #line 1342 "parse.c" */
+/* #line 1402 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st77;
@@ -1625,7 +1685,7 @@ case 84:
 	case 67: 
 	case 68: 
 	case 69: 
-/* #line 174 "parse.rl" */
+/* #line 189 "parse.rl" */
 	{ line->has_expressions = true; }
 /* #line 103 "parse.rl" */
 	{
@@ -1672,6 +1732,7 @@ case 84:
 			}
 
 			if (line->action == ACTION_PARAM) {
+
 				if (!line->param_expressions) {
 					line->param_expressions = malloc(sizeof(ExpressionList));
 					if (!line->param_expressions) {
@@ -1681,16 +1742,30 @@ case 84:
 					if (alloc_error) {
 						exit__parse();
 					}
+					listExtend(*(line->param_expressions), Expression, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+					line->param_expressions->start[0] = *current_expression;
+				} else {
+					if (line->param_expressions->length) {
+						line->action = ACTION_PARAM_MULTI;
+					}
 				}
 				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
 				if (alloc_error || !current_expression) {
 					exit__parse();
 				}
 				initExpression(*current_expression);
+
+			} else if (line->param_expressions) {
+				if (line->param_expressions->length) {
+					line->action = ACTION_NONE;
+				}
 			}
 
 		}
-/* #line 174 "parse.rl" */
+/* #line 189 "parse.rl" */
 	{ line->has_expressions = true; }
 /* #line 103 "parse.rl" */
 	{
@@ -1719,16 +1794,21 @@ case 84:
 
 		}
 	break;
-/* #line 1723 "parse.c" */
+/* #line 1798 "parse.c" */
 	}
 	}
 
 	}
 
-/* #line 205 "parse.rl" */
+/* #line 220 "parse.rl" */
 
 
 	template->lines.length -= 1;
+	if (template->lines.length) {
+		if (template->lines.start[template->lines.length-1].param_expressions) {
+			template->lines.start[template->lines.length-1].param_expressions->length -= 1;
+		}
+	}
 
 };
 

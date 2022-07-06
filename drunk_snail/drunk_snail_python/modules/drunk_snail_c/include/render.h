@@ -92,6 +92,8 @@ typedef struct RenderResult {
 	}\
 }
 
+#define last_multiparam_line_expression(_line) (_line).param_expressions->start[(_line).param_expressions->length-1]
+
 #define renderLine(_line) {\
 \
 	switch ((_line).action) {\
@@ -172,6 +174,45 @@ typedef struct RenderResult {
 					return;\
 				}\
 \
+			}\
+\
+			break;\
+\
+		case ACTION_PARAM_MULTI:\
+\
+			values = DRUNK_PARAMS_GET_ITEM(params, (_line).param_expressions->start[0].tokens.name.copy);\
+			if (values) {\
+				value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
+				render__param_multi_first(\
+					*output_end,\
+					(_line).other.left.start, (_line).other.left.length,\
+					value, value_size,\
+					(_line).param_expressions->start[0].tokens.expression.end, (_line).param_expressions->start[1].tokens.expression.start - (_line).param_expressions->start[0].tokens.expression.end\
+				);\
+			}\
+\
+			for (k = 1; k < (_line).param_expressions->length-1; k++) {\
+\
+				values = DRUNK_PARAMS_GET_ITEM(params, (_line).param_expressions->start[k].tokens.name.copy);\
+				if (values) {\
+					value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
+					render__param_multi_between(\
+						*output_end,\
+						value, value_size,\
+						(_line).param_expressions->start[k].tokens.expression.end, (_line).param_expressions->start[k+1].tokens.expression.start - (_line).param_expressions->start[k].tokens.expression.end\
+					);\
+				}\
+\
+			}\
+\
+			values = DRUNK_PARAMS_GET_ITEM(params, last_multiparam_line_expression(_line).tokens.name.copy);\
+			if (values) {\
+				value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
+				render__param_multi_last(\
+					*output_end,\
+					value, value_size,\
+					last_multiparam_line_expression(_line).tokens.expression.end, (_line).line.end - last_multiparam_line_expression(_line).tokens.expression.end\
+				);\
 			}\
 \
 			break;\

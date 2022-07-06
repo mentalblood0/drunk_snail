@@ -25,7 +25,7 @@ typedef struct RenderResult {
 		render_result->result = NULL;\
 	}\
 	if (other) {\
-		listClear(*other);\
+		listFree(*other);\
 		free(other);\
 	}\
 	return;\
@@ -76,8 +76,8 @@ typedef struct RenderResult {
 	for (j = 0; j < list_size; j++) {\
 		render(\
 			render_result,\
-			(_line).tokens.name.start,\
-			(_line).tokens.name.length,\
+			(_line).single_expression.tokens.name.start,\
+			(_line).single_expression.tokens.name.length,\
 			output_end,\
 			depth + 1,\
 			buffer_size,\
@@ -98,9 +98,9 @@ typedef struct RenderResult {
 \
 		case ACTION_PARAM:\
 \
-			values = DRUNK_PARAMS_GET_ITEM(params, (_line).tokens.name.copy);\
+			values = DRUNK_PARAMS_GET_ITEM(params, (_line).single_expression.tokens.name.copy);\
 			if (values) {\
-				if ((_line).flags.strict) {\
+				if ((_line).single_expression.flags.strict) {\
 					renderParamList(_line);\
 				} else if (DRUNK_IS_LIST(values)) {\
 					renderParamList(_line);\
@@ -113,7 +113,7 @@ typedef struct RenderResult {
 						(_line).other.right.start, (_line).other.right.length\
 					);\
 				}\
-			} else if (!(_line).flags.optional) {\
+			} else if (!(_line).single_expression.flags.optional) {\
 				render__param(\
 					*output_end,\
 					(_line).other.left.start, (_line).other.left.length,\
@@ -128,19 +128,19 @@ typedef struct RenderResult {
 \
 			addOther(_line);\
 \
-			values = DRUNK_PARAMS_GET_ITEM(params, (_line).tokens.name.copy);\
+			values = DRUNK_PARAMS_GET_ITEM(params, (_line).single_expression.tokens.name.copy);\
 \
 			if (values) {\
 \
-				if ((_line).flags.strict) {\
+				if ((_line).single_expression.flags.strict) {\
 					renderRefList(_line);\
 				} else if (DRUNK_IS_LIST(values)) {\
 					renderRefList(_line);\
 				} else {\
 					render(\
 						render_result,\
-						(_line).tokens.name.start,\
-						(_line).tokens.name.length,\
+						(_line).single_expression.tokens.name.start,\
+						(_line).single_expression.tokens.name.length,\
 						output_end,\
 						depth + 1,\
 						buffer_size,\
@@ -154,12 +154,12 @@ typedef struct RenderResult {
 					}\
 				}\
 \
-			} else if (!(_line).flags.optional) {\
+			} else if (!(_line).single_expression.flags.optional) {\
 \
 				render(\
 					render_result,\
-					(_line).tokens.name.start,\
-					(_line).tokens.name.length,\
+					(_line).single_expression.tokens.name.start,\
+					(_line).single_expression.tokens.name.length,\
 					output_end,\
 					depth + 1,\
 					buffer_size,\
@@ -177,7 +177,7 @@ typedef struct RenderResult {
 			break;\
 \
 		default:\
-			render__empty(*output_end, (_line).tokens.line.start, (_line).tokens.line.length);\
+			render__empty(*output_end, (_line).line.start, (_line).line.length);\
 			break;\
 \
 	}\

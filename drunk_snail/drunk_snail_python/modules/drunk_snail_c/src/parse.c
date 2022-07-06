@@ -89,7 +89,7 @@ void _parse(
 	bool alloc_error = false;
 
 	if (!depth && template->lines.length) {
-		listClear(template->lines);
+		listFree(template->lines);
 		listCreate(template->lines, Line, 16, alloc_error);
 		if (alloc_error) {
 			exit__parse();
@@ -97,11 +97,9 @@ void _parse(
 	}
 
 	Line *line;
-	listGetNew(template->lines, Line, line, alloc_error);
-	if (alloc_error) {
-		exit__parse();
-	}
-	initLine(*line);
+	allocNewLine(line, template->lines, alloc_error);
+
+	Expression *current_expression = &line->single_expression;
 
 	char *p = template->text;
 	char *pe = template->text + template->length;
@@ -109,27 +107,27 @@ void _parse(
 	size_t cs;
 
 	
-/* #line 113 "parse.c" */
+/* #line 111 "parse.c" */
 	{
 	cs = parse_python_start;
 	}
 
-/* #line 118 "parse.c" */
+/* #line 116 "parse.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 104 "parse.rl" */
-	{ line->tokens.line.start = p; }
-/* #line 105 "parse.rl" */
+/* #line 102 "parse.rl" */
+	{ line->line.start = p; }
+/* #line 103 "parse.rl" */
 	{
 
-			line->tokens.line.end = p;
+			line->line.end = p;
 
 			verifyAction(*line);
-			computeTokensLengths(*line);
+			computeLineTokensLengths(*line);
 			computeOther(*line);
 
 			if (line->action == ACTION_NONE) {
@@ -137,31 +135,27 @@ tr1:
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
 					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}
 			} else {
-
-				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
-				line->tokens.name.copy[line->tokens.name.length] = 0;
-
 				allocNewLine(line, template->lines, alloc_error);
-
 			}
+
+			current_expression = &line->single_expression;
 
 		}
 	goto st0;
 tr4:
-/* #line 105 "parse.rl" */
+/* #line 103 "parse.rl" */
 	{
 
-			line->tokens.line.end = p;
+			line->line.end = p;
 
 			verifyAction(*line);
-			computeTokensLengths(*line);
+			computeLineTokensLengths(*line);
 			computeOther(*line);
 
 			if (line->action == ACTION_NONE) {
@@ -169,35 +163,63 @@ tr4:
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
 					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}
 			} else {
-
-				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
-				line->tokens.name.copy[line->tokens.name.length] = 0;
-
 				allocNewLine(line, template->lines, alloc_error);
-
 			}
+
+			current_expression = &line->single_expression;
 
 		}
 	goto st0;
 tr37:
-/* #line 147 "parse.rl" */
-	{ line->tokens.expression.end = p; }
-/* #line 148 "parse.rl" */
-	{ line->has_expressions = true; }
-/* #line 105 "parse.rl" */
+/* #line 141 "parse.rl" */
 	{
 
-			line->tokens.line.end = p;
+			current_expression->tokens.expression.end = p;
+
+			if (current_expression->tokens.name.start) {
+
+				computeExpressionTokensLengths(*current_expression);
+
+				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
+				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
+				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
+
+			}
+
+			if (line->action == ACTION_PARAM) {
+				if (!line->param_expressions) {
+					line->param_expressions = malloc(sizeof(ExpressionList));
+					if (!line->param_expressions) {
+						exit__parse();
+					}
+					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+				}
+				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
+				if (alloc_error || !current_expression) {
+					exit__parse();
+				}
+				initExpression(*current_expression);
+			}
+
+		}
+/* #line 174 "parse.rl" */
+	{ line->has_expressions = true; }
+/* #line 103 "parse.rl" */
+	{
+
+			line->line.end = p;
 
 			verifyAction(*line);
-			computeTokensLengths(*line);
+			computeLineTokensLengths(*line);
 			computeOther(*line);
 
 			if (line->action == ACTION_NONE) {
@@ -205,33 +227,29 @@ tr37:
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
 					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}
 			} else {
-
-				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
-				line->tokens.name.copy[line->tokens.name.length] = 0;
-
 				allocNewLine(line, template->lines, alloc_error);
-
 			}
+
+			current_expression = &line->single_expression;
 
 		}
 	goto st0;
 tr40:
-/* #line 148 "parse.rl" */
+/* #line 174 "parse.rl" */
 	{ line->has_expressions = true; }
-/* #line 105 "parse.rl" */
+/* #line 103 "parse.rl" */
 	{
 
-			line->tokens.line.end = p;
+			line->line.end = p;
 
 			verifyAction(*line);
-			computeTokensLengths(*line);
+			computeLineTokensLengths(*line);
 			computeOther(*line);
 
 			if (line->action == ACTION_NONE) {
@@ -239,20 +257,16 @@ tr40:
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
 					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}
 			} else {
-
-				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
-				line->tokens.name.copy[line->tokens.name.length] = 0;
-
 				allocNewLine(line, template->lines, alloc_error);
-
 			}
+
+			current_expression = &line->single_expression;
 
 		}
 	goto st0;
@@ -260,47 +274,47 @@ st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 264 "parse.c" */
+/* #line 278 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 104 "parse.rl" */
-	{ line->tokens.line.start = p; }
+/* #line 102 "parse.rl" */
+	{ line->line.start = p; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 278 "parse.c" */
+/* #line 292 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 104 "parse.rl" */
-	{ line->tokens.line.start = p; }
-/* #line 143 "parse.rl" */
+/* #line 102 "parse.rl" */
+	{ line->line.start = p; }
+/* #line 137 "parse.rl" */
 	{
-			if (!(line->tokens.expression.start && line->tokens.name.end))
-				line->tokens.expression.start = p;
+			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
+				current_expression->tokens.expression.start = p;
 		}
 	goto st2;
 tr5:
-/* #line 143 "parse.rl" */
+/* #line 137 "parse.rl" */
 	{
-			if (!(line->tokens.expression.start && line->tokens.name.end))
-				line->tokens.expression.start = p;
+			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
+				current_expression->tokens.expression.start = p;
 		}
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 304 "parse.c" */
+/* #line 318 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -442,18 +456,18 @@ case 15:
 	}
 	goto st1;
 tr22:
-/* #line 137 "parse.rl" */
-	{ line->flags.optional = true; }
+/* #line 131 "parse.rl" */
+	{ current_expression->flags.optional = true; }
 	goto st16;
 tr106:
-/* #line 138 "parse.rl" */
-	{ line->flags.strict = true; }
+/* #line 132 "parse.rl" */
+	{ current_expression->flags.strict = true; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 457 "parse.c" */
+/* #line 471 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -527,16 +541,16 @@ case 22:
 		goto tr28;
 	goto st1;
 tr28:
-/* #line 135 "parse.rl" */
+/* #line 129 "parse.rl" */
 	{ line->action = ACTION_PARAM; }
-/* #line 140 "parse.rl" */
-	{ line->tokens.name.start = p; }
+/* #line 134 "parse.rl" */
+	{ current_expression->tokens.name.start = p; }
 	goto st23;
 st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 540 "parse.c" */
+/* #line 554 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr29;
@@ -554,14 +568,14 @@ case 23:
 		goto st23;
 	goto st1;
 tr29:
-/* #line 141 "parse.rl" */
-	{ line->tokens.name.end = p; }
+/* #line 135 "parse.rl" */
+	{ current_expression->tokens.name.end = p; }
 	goto st24;
 st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 565 "parse.c" */
+/* #line 579 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st24;
@@ -570,14 +584,14 @@ case 24:
 	}
 	goto st1;
 tr30:
-/* #line 141 "parse.rl" */
-	{ line->tokens.name.end = p; }
+/* #line 135 "parse.rl" */
+	{ current_expression->tokens.name.end = p; }
 	goto st25;
 st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 581 "parse.c" */
+/* #line 595 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st26;
@@ -604,49 +618,145 @@ case 27:
 	}
 	goto tr36;
 tr36:
-/* #line 147 "parse.rl" */
-	{ line->tokens.expression.end = p; }
+/* #line 141 "parse.rl" */
+	{
+
+			current_expression->tokens.expression.end = p;
+
+			if (current_expression->tokens.name.start) {
+
+				computeExpressionTokensLengths(*current_expression);
+
+				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
+				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
+				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
+
+			}
+
+			if (line->action == ACTION_PARAM) {
+				if (!line->param_expressions) {
+					line->param_expressions = malloc(sizeof(ExpressionList));
+					if (!line->param_expressions) {
+						exit__parse();
+					}
+					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+				}
+				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
+				if (alloc_error || !current_expression) {
+					exit__parse();
+				}
+				initExpression(*current_expression);
+			}
+
+		}
 	goto st28;
 st28:
 	if ( ++p == pe )
 		goto _test_eof28;
 case 28:
-/* #line 615 "parse.c" */
+/* #line 661 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 60: goto tr41;
 	}
 	goto st28;
 tr41:
-/* #line 143 "parse.rl" */
+/* #line 137 "parse.rl" */
 	{
-			if (!(line->tokens.expression.start && line->tokens.name.end))
-				line->tokens.expression.start = p;
+			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
+				current_expression->tokens.expression.start = p;
 		}
 	goto st29;
 tr38:
-/* #line 147 "parse.rl" */
-	{ line->tokens.expression.end = p; }
-/* #line 143 "parse.rl" */
+/* #line 141 "parse.rl" */
 	{
-			if (!(line->tokens.expression.start && line->tokens.name.end))
-				line->tokens.expression.start = p;
+
+			current_expression->tokens.expression.end = p;
+
+			if (current_expression->tokens.name.start) {
+
+				computeExpressionTokensLengths(*current_expression);
+
+				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
+				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
+				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
+
+			}
+
+			if (line->action == ACTION_PARAM) {
+				if (!line->param_expressions) {
+					line->param_expressions = malloc(sizeof(ExpressionList));
+					if (!line->param_expressions) {
+						exit__parse();
+					}
+					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+				}
+				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
+				if (alloc_error || !current_expression) {
+					exit__parse();
+				}
+				initExpression(*current_expression);
+			}
+
+		}
+/* #line 137 "parse.rl" */
+	{
+			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
+				current_expression->tokens.expression.start = p;
 		}
 	goto st29;
 tr82:
-/* #line 143 "parse.rl" */
+/* #line 137 "parse.rl" */
 	{
-			if (!(line->tokens.expression.start && line->tokens.name.end))
-				line->tokens.expression.start = p;
+			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
+				current_expression->tokens.expression.start = p;
 		}
-/* #line 147 "parse.rl" */
-	{ line->tokens.expression.end = p; }
+/* #line 141 "parse.rl" */
+	{
+
+			current_expression->tokens.expression.end = p;
+
+			if (current_expression->tokens.name.start) {
+
+				computeExpressionTokensLengths(*current_expression);
+
+				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
+				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
+				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
+
+			}
+
+			if (line->action == ACTION_PARAM) {
+				if (!line->param_expressions) {
+					line->param_expressions = malloc(sizeof(ExpressionList));
+					if (!line->param_expressions) {
+						exit__parse();
+					}
+					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+				}
+				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
+				if (alloc_error || !current_expression) {
+					exit__parse();
+				}
+				initExpression(*current_expression);
+			}
+
+		}
 	goto st29;
 st29:
 	if ( ++p == pe )
 		goto _test_eof29;
 case 29:
-/* #line 650 "parse.c" */
+/* #line 760 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 33: goto st30;
@@ -788,18 +898,18 @@ case 42:
 	}
 	goto st28;
 tr58:
-/* #line 137 "parse.rl" */
-	{ line->flags.optional = true; }
+/* #line 131 "parse.rl" */
+	{ current_expression->flags.optional = true; }
 	goto st43;
 tr89:
-/* #line 138 "parse.rl" */
-	{ line->flags.strict = true; }
+/* #line 132 "parse.rl" */
+	{ current_expression->flags.strict = true; }
 	goto st43;
 st43:
 	if ( ++p == pe )
 		goto _test_eof43;
 case 43:
-/* #line 803 "parse.c" */
+/* #line 913 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 60: goto tr41;
@@ -873,16 +983,16 @@ case 49:
 		goto tr64;
 	goto st28;
 tr64:
-/* #line 135 "parse.rl" */
+/* #line 129 "parse.rl" */
 	{ line->action = ACTION_PARAM; }
-/* #line 140 "parse.rl" */
-	{ line->tokens.name.start = p; }
+/* #line 134 "parse.rl" */
+	{ current_expression->tokens.name.start = p; }
 	goto st50;
 st50:
 	if ( ++p == pe )
 		goto _test_eof50;
 case 50:
-/* #line 886 "parse.c" */
+/* #line 996 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto tr65;
@@ -900,14 +1010,14 @@ case 50:
 		goto st50;
 	goto st28;
 tr65:
-/* #line 141 "parse.rl" */
-	{ line->tokens.name.end = p; }
+/* #line 135 "parse.rl" */
+	{ current_expression->tokens.name.end = p; }
 	goto st51;
 st51:
 	if ( ++p == pe )
 		goto _test_eof51;
 case 51:
-/* #line 911 "parse.c" */
+/* #line 1021 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto st51;
@@ -916,14 +1026,14 @@ case 51:
 	}
 	goto st28;
 tr66:
-/* #line 141 "parse.rl" */
-	{ line->tokens.name.end = p; }
+/* #line 135 "parse.rl" */
+	{ current_expression->tokens.name.end = p; }
 	goto st52;
 st52:
 	if ( ++p == pe )
 		goto _test_eof52;
 case 52:
-/* #line 927 "parse.c" */
+/* #line 1037 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 45: goto st53;
@@ -986,16 +1096,16 @@ case 57:
 		goto tr74;
 	goto st28;
 tr74:
-/* #line 136 "parse.rl" */
+/* #line 130 "parse.rl" */
 	{ line->action = ACTION_REF; }
-/* #line 140 "parse.rl" */
-	{ line->tokens.name.start = p; }
+/* #line 134 "parse.rl" */
+	{ current_expression->tokens.name.start = p; }
 	goto st58;
 st58:
 	if ( ++p == pe )
 		goto _test_eof58;
 case 58:
-/* #line 999 "parse.c" */
+/* #line 1109 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto tr75;
@@ -1013,14 +1123,14 @@ case 58:
 		goto st58;
 	goto st28;
 tr75:
-/* #line 141 "parse.rl" */
-	{ line->tokens.name.end = p; }
+/* #line 135 "parse.rl" */
+	{ current_expression->tokens.name.end = p; }
 	goto st59;
 st59:
 	if ( ++p == pe )
 		goto _test_eof59;
 case 59:
-/* #line 1024 "parse.c" */
+/* #line 1134 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto st59;
@@ -1029,14 +1139,14 @@ case 59:
 	}
 	goto st28;
 tr76:
-/* #line 141 "parse.rl" */
-	{ line->tokens.name.end = p; }
+/* #line 135 "parse.rl" */
+	{ current_expression->tokens.name.end = p; }
 	goto st60;
 st60:
 	if ( ++p == pe )
 		goto _test_eof60;
 case 60:
-/* #line 1040 "parse.c" */
+/* #line 1150 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 45: goto st61;
@@ -1178,16 +1288,16 @@ case 73:
 		goto tr93;
 	goto st1;
 tr93:
-/* #line 136 "parse.rl" */
+/* #line 130 "parse.rl" */
 	{ line->action = ACTION_REF; }
-/* #line 140 "parse.rl" */
-	{ line->tokens.name.start = p; }
+/* #line 134 "parse.rl" */
+	{ current_expression->tokens.name.start = p; }
 	goto st74;
 st74:
 	if ( ++p == pe )
 		goto _test_eof74;
 case 74:
-/* #line 1191 "parse.c" */
+/* #line 1301 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr94;
@@ -1205,14 +1315,14 @@ case 74:
 		goto st74;
 	goto st1;
 tr94:
-/* #line 141 "parse.rl" */
-	{ line->tokens.name.end = p; }
+/* #line 135 "parse.rl" */
+	{ current_expression->tokens.name.end = p; }
 	goto st75;
 st75:
 	if ( ++p == pe )
 		goto _test_eof75;
 case 75:
-/* #line 1216 "parse.c" */
+/* #line 1326 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st75;
@@ -1221,14 +1331,14 @@ case 75:
 	}
 	goto st1;
 tr95:
-/* #line 141 "parse.rl" */
-	{ line->tokens.name.end = p; }
+/* #line 135 "parse.rl" */
+	{ current_expression->tokens.name.end = p; }
 	goto st76;
 st76:
 	if ( ++p == pe )
 		goto _test_eof76;
 case 76:
-/* #line 1232 "parse.c" */
+/* #line 1342 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st77;
@@ -1447,13 +1557,13 @@ case 84:
 	case 82: 
 	case 83: 
 	case 84: 
-/* #line 105 "parse.rl" */
+/* #line 103 "parse.rl" */
 	{
 
-			line->tokens.line.end = p;
+			line->line.end = p;
 
 			verifyAction(*line);
-			computeTokensLengths(*line);
+			computeLineTokensLengths(*line);
 			computeOther(*line);
 
 			if (line->action == ACTION_NONE) {
@@ -1461,20 +1571,16 @@ case 84:
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
 					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}
 			} else {
-
-				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
-				line->tokens.name.copy[line->tokens.name.length] = 0;
-
 				allocNewLine(line, template->lines, alloc_error);
-
 			}
+
+			current_expression = &line->single_expression;
 
 		}
 	break;
@@ -1519,15 +1625,15 @@ case 84:
 	case 67: 
 	case 68: 
 	case 69: 
-/* #line 148 "parse.rl" */
+/* #line 174 "parse.rl" */
 	{ line->has_expressions = true; }
-/* #line 105 "parse.rl" */
+/* #line 103 "parse.rl" */
 	{
 
-			line->tokens.line.end = p;
+			line->line.end = p;
 
 			verifyAction(*line);
-			computeTokensLengths(*line);
+			computeLineTokensLengths(*line);
 			computeOther(*line);
 
 			if (line->action == ACTION_NONE) {
@@ -1535,36 +1641,64 @@ case 84:
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
 					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}
 			} else {
-
-				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
-				line->tokens.name.copy[line->tokens.name.length] = 0;
-
 				allocNewLine(line, template->lines, alloc_error);
-
 			}
+
+			current_expression = &line->single_expression;
 
 		}
 	break;
 	case 27: 
 	case 62: 
-/* #line 147 "parse.rl" */
-	{ line->tokens.expression.end = p; }
-/* #line 148 "parse.rl" */
-	{ line->has_expressions = true; }
-/* #line 105 "parse.rl" */
+/* #line 141 "parse.rl" */
 	{
 
-			line->tokens.line.end = p;
+			current_expression->tokens.expression.end = p;
+
+			if (current_expression->tokens.name.start) {
+
+				computeExpressionTokensLengths(*current_expression);
+
+				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
+				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
+				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
+
+			}
+
+			if (line->action == ACTION_PARAM) {
+				if (!line->param_expressions) {
+					line->param_expressions = malloc(sizeof(ExpressionList));
+					if (!line->param_expressions) {
+						exit__parse();
+					}
+					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+				}
+				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
+				if (alloc_error || !current_expression) {
+					exit__parse();
+				}
+				initExpression(*current_expression);
+			}
+
+		}
+/* #line 174 "parse.rl" */
+	{ line->has_expressions = true; }
+/* #line 103 "parse.rl" */
+	{
+
+			line->line.end = p;
 
 			verifyAction(*line);
-			computeTokensLengths(*line);
+			computeLineTokensLengths(*line);
 			computeOther(*line);
 
 			if (line->action == ACTION_NONE) {
@@ -1572,30 +1706,26 @@ case 84:
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
 					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}
 			} else {
-
-				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
-				line->tokens.name.copy[line->tokens.name.length] = 0;
-
 				allocNewLine(line, template->lines, alloc_error);
-
 			}
+
+			current_expression = &line->single_expression;
 
 		}
 	break;
-/* #line 1593 "parse.c" */
+/* #line 1723 "parse.c" */
 	}
 	}
 
 	}
 
-/* #line 179 "parse.rl" */
+/* #line 205 "parse.rl" */
 
 
 	template->lines.length -= 1;

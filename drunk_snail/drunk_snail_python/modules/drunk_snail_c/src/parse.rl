@@ -80,7 +80,7 @@ void _parse(
 	bool alloc_error = false;
 
 	if (!depth && template->lines.length) {
-		listClear(template->lines);
+		listFree(template->lines);
 		listCreate(template->lines, Line, 16, alloc_error);
 		if (alloc_error) {
 			exit__parse();
@@ -88,11 +88,9 @@ void _parse(
 	}
 
 	Line *line;
-	listGetNew(template->lines, Line, line, alloc_error);
-	if (alloc_error) {
-		exit__parse();
-	}
-	initLine(*line);
+	allocNewLine(line, template->lines, alloc_error);
+
+	Expression *current_expression = &line->single_expression;
 
 	char *p = template->text;
 	char *pe = template->text + template->length;
@@ -101,13 +99,13 @@ void _parse(
 
 	%%{
 
-		action action_start_line { line->tokens.line.start = p; }
+		action action_start_line { line->line.start = p; }
 		action action_end_line {
 
-			line->tokens.line.end = p;
+			line->line.end = p;
 
 			verifyAction(*line);
-			computeTokensLengths(*line);
+			computeLineTokensLengths(*line);
 			computeOther(*line);
 
 			if (line->action == ACTION_NONE) {
@@ -115,36 +113,64 @@ void _parse(
 					(template->lines.length >= 2) &&
 					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
 				) {
-					template->lines.start[template->lines.length - 2].tokens.line.length += 1 + line->tokens.line.length;
+					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
 					resetLine(*line);
 				} else {
 					allocNewLine(line, template->lines, alloc_error);
 				}
 			} else {
-
-				drunk_malloc_one__parse(line->tokens.name.copy, sizeof(char) * (line->tokens.name.length + 1));
-				memcpy(line->tokens.name.copy, line->tokens.name.start, line->tokens.name.length);
-				line->tokens.name.copy[line->tokens.name.length] = 0;
-
 				allocNewLine(line, template->lines, alloc_error);
-
 			}
+
+			current_expression = &line->single_expression;
 
 		}
 
 		action action_param { line->action = ACTION_PARAM; }
 		action action_ref { line->action = ACTION_REF; }
-		action action_optional { line->flags.optional = true; }
-		action action_strict { line->flags.strict = true; }
+		action action_optional { current_expression->flags.optional = true; }
+		action action_strict { current_expression->flags.strict = true; }
 
-		action action_start_name { line->tokens.name.start = p; }
-		action action_end_name { line->tokens.name.end = p; }
+		action action_start_name { current_expression->tokens.name.start = p; }
+		action action_end_name { current_expression->tokens.name.end = p; }
 
 		action action_start_expression {
-			if (!(line->tokens.expression.start && line->tokens.name.end))
-				line->tokens.expression.start = p;
+			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
+				current_expression->tokens.expression.start = p;
 		}
-		action action_end_expression { line->tokens.expression.end = p; }
+		action action_end_expression {
+
+			current_expression->tokens.expression.end = p;
+
+			if (current_expression->tokens.name.start) {
+
+				computeExpressionTokensLengths(*current_expression);
+
+				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
+				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
+				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
+
+			}
+
+			if (line->action == ACTION_PARAM) {
+				if (!line->param_expressions) {
+					line->param_expressions = malloc(sizeof(ExpressionList));
+					if (!line->param_expressions) {
+						exit__parse();
+					}
+					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
+					if (alloc_error) {
+						exit__parse();
+					}
+				}
+				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
+				if (alloc_error || !current_expression) {
+					exit__parse();
+				}
+				initExpression(*current_expression);
+			}
+
+		}
 		action action_end_expressions { line->has_expressions = true; }
 
 		open = '<!--';

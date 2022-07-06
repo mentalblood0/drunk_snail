@@ -135,3 +135,14 @@ def test_table():
 		'	</tr>\n'
 		'</table>\n'
 	)
+
+
+def test_multiple_params():
+
+	render_lambda(
+		'before<!-- (param)a -->between<!-- (param)b -->after',
+		 {
+			'a': '1',
+			'b': '2'
+		 }
+	)

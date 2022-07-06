@@ -22,7 +22,7 @@ void removeTemplate(char *name) {
 	for (i = 0; i < template->lines.length; i++) {
 		freeLine(template->lines.start[i]);
 	}
-	listClear(template->lines);
+	listFree(template->lines);
 
 	treeRemove(templates, name);
 

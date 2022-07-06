@@ -24,7 +24,11 @@
 
 #define listGetNew(target, TYPE, result_target, alloc_error) {\
 	listExtend(target, TYPE, alloc_error);\
-	result_target = (target).start + (target).length - 1;\
+	if (alloc_error) {\
+		result_target = NULL;\
+	} else {\
+		result_target = (target).start + (target).length - 1;\
+	}\
 }
 
 #define listExtend(target, TYPE, alloc_error) {\
@@ -62,5 +66,12 @@
 }
 
 #define listClear(target) {\
-	free((target).start);\
+	(target).length = 0;\
+}
+
+#define listFree(target) {\
+	if ((target).start) {\
+		free((target).start);\
+		(target).start = NULL;\
+	}\
 }

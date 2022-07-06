@@ -77,4 +77,9 @@ void render(
 		renderLine(line);
 	}
 
+	if (!depth) {
+		listFree(*other);
+		free(other);
+	}
+
 };

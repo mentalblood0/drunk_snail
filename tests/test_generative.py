@@ -107,18 +107,14 @@ def test_param_invalid(value, open_tag, other_left, gap_left, name, gap_right, o
 
 @pytest.mark.parametrize(
 	'lines_args',
-	itertools.islice(
-		itertools.combinations(
-			itertools.product(
-				TestLists.Valid.value, # name
-				TestLists.Valid.other + [Syntax.open], # other_left
-				TestLists.Valid.gap, # gap_left
-				TestLists.Valid.gap, # gap_right
-				TestLists.Valid.other + [Syntax.close], # other_right
-			),
-			3
-		),
-		0, 10000, 3
+	itertools.pairwise(
+		itertools.product(
+			TestLists.Valid.value, # name
+			TestLists.Valid.other + [Syntax.open], # other_left
+			TestLists.Valid.gap, # gap_left
+			TestLists.Valid.gap, # gap_right
+			TestLists.Valid.other + [Syntax.close], # other_right
+		)
 	)
 )
 def test_multiple_param_valid(lines_args):

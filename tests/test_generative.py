@@ -116,32 +116,40 @@ def test_param_invalid(value, open_tag, other_left, gap_left, name, gap_right, o
 
 
 @pytest.mark.parametrize(
-	'value,other_left,gap_left,gap_right,other_right,n',
-	itertools.product(
-		TestLists.Valid.value + sum((list(t) for t in itertools.combinations(TestLists.Valid.value, 4)), []),
-		TestLists.Valid.other + [Syntax.open],
-		TestLists.Valid.gap,
-		TestLists.Valid.gap,
-		TestLists.Valid.other + [Syntax.close],
-		TestLists.Valid.one_line_params_number
+	'lines_args',
+	itertools.islice(
+		itertools.combinations(
+			itertools.product(
+				TestLists.Valid.value,
+				TestLists.Valid.other + [Syntax.open],
+				TestLists.Valid.gap,
+				TestLists.Valid.gap,
+				TestLists.Valid.other + [Syntax.close],
+				TestLists.Valid.one_line_params_number
+			),
+			3
+		),
+		0, 10000, 3
 	)
 )
-def test_multiple_param_valid(value, other_left, gap_left, gap_right, other_right, n):
-	params_line = composeParamLine(
-		other_left=other_left,
-		gap_left=gap_left,
-		gap_right=gap_right,
-		other_right=other_right
-	) * n
-	assert render_lambda(params_line, {'p': value}) == (
-		(f'{other_left}{value}{other_right}' * n + '\n')
-		if type(value) == str
-		else
-		''.join([
-			(f'{other_left}{v}{other_right}' * n + '\n')
-			for v in value
-		])
-	)
+def test_multiple_param_valid(lines_args):
+	params_sublines = [
+		composeParamLine(
+			name=f'p{i}',
+			other_left=a[1],
+			gap_left=a[2],
+			gap_right=a[3],
+			other_right=a[4]
+		)
+		for i, a in enumerate(lines_args)
+	]
+	# print(params_sublines)
+	# exit()
+	values = {
+		f'p{i}': a[0]
+		for i, a in enumerate(lines_args)
+	}
+	assert render_lambda(''.join(params_sublines), values) == ''.join((f'{a[1]}{a[0]}{a[4]}' for a in lines_args)) + '\n'
 
 
 @pytest.mark.parametrize(

@@ -180,40 +180,46 @@ typedef struct RenderResult {
 \
 		case ACTION_PARAM_MULTI:\
 \
-			values = DRUNK_PARAMS_GET_ITEM(params, (_line).param_expressions->start[0].tokens.name.copy);\
-			if (values) {\
-				value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
-				render__param_multi_first(\
-					*output_end,\
-					(_line).other.left.start, (_line).other.left.length,\
-					value, value_size,\
-					(_line).param_expressions->start[0].tokens.expression.end, (_line).param_expressions->start[1].tokens.expression.start - (_line).param_expressions->start[0].tokens.expression.end\
-				);\
-			}\
-\
-			for (k = 1; k < (_line).param_expressions->length-1; k++) {\
-\
-				values = DRUNK_PARAMS_GET_ITEM(params, (_line).param_expressions->start[k].tokens.name.copy);\
+			required_buffer_size = ((*output_end) - render_result->result) + (_line).line.length + other_left_length + other_right_length + 1;\
+			for (expression = (_line).param_expressions->start; (expression - (_line).param_expressions->start) < (_line).param_expressions->length; expression++) {\
+				values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
 				if (values) {\
-					value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
-					render__param_multi_between(\
-						*output_end,\
-						value, value_size,\
-						(_line).param_expressions->start[k].tokens.expression.end, (_line).param_expressions->start[k+1].tokens.expression.start - (_line).param_expressions->start[k].tokens.expression.end\
-					);\
+					expression->value = DRUNK_AS_STRING_AND_LENGTH(values, &expression->value_size);\
+					required_buffer_size += expression->value_size;\
+				} else {\
+					expression->value_size = 0;\
 				}\
-\
+			}\
+			if (required_buffer_size >= *buffer_size) {\
+				(*buffer_size) = 2 * required_buffer_size;\
+				drunk_realloc_with_shifted(render_result->result, sizeof(char) * (*buffer_size), render_result->result_temp, *output_end, alloc_error);\
+				if (alloc_error) {\
+					exit_render_();\
+				}\
 			}\
 \
-			values = DRUNK_PARAMS_GET_ITEM(params, last_multiparam_line_expression(_line).tokens.name.copy);\
-			if (values) {\
-				value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
-				render__param_multi_last(\
+			expression = (_line).param_expressions->start;\
+			render__param_multi_first(\
+				*output_end,\
+				(_line).other.left.start, (_line).other.left.length,\
+				expression->value, expression->value_size,\
+				expression->tokens.expression.end, (expression+1)->tokens.expression.start - expression->tokens.expression.end\
+			);\
+\
+			expression++;\
+			for (; (expression - (_line).param_expressions->start) < (_line).param_expressions->length-1; expression++) {\
+				render__param_multi_between(\
 					*output_end,\
-					value, value_size,\
-					last_multiparam_line_expression(_line).tokens.expression.end, (_line).line.end - last_multiparam_line_expression(_line).tokens.expression.end\
+					expression->value, expression->value_size,\
+					expression->tokens.expression.end, (expression+1)->tokens.expression.start - expression->tokens.expression.end\
 				);\
 			}\
+\
+			render__param_multi_last(\
+				*output_end,\
+				expression->value, expression->value_size,\
+				expression->tokens.expression.end, (_line).line.end - expression->tokens.expression.end\
+			);\
 \
 			break;\
 \

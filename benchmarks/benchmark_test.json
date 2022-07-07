@@ -1,7 +1,7 @@
 {
-	"render::table": {
+	"render::table_multiparam": {
 		"__n__": 10000,
-		"width": 100,
+		"width": 25,
 		"height": 100
 	}
 }

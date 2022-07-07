@@ -36,6 +36,44 @@ class table(Benchmark):
 		self.table(self.args)
 
 
+class table_multiparam(Benchmark):
+
+	def prepare(self, width, height):
+
+		if not hasattr(self, 'args'):
+
+			with open('templates/cells.xml') as f:
+				Template('cells').register(f.read())
+
+			with open('templates/RowMultiparam.xml') as f:
+				Template('RowMultiparam').register(f.read())
+
+			self.table = Template('TableMultiparam')
+			with open('templates/TableMultiparam.xml') as f:
+				self.table_text = f.read()
+			self.table.register(self.table_text)
+
+			self.args = {
+				"RowMultiparam": [
+					{
+						"cells": [
+							{
+								'a': str(4*x),
+								'b': str(4*x + 1),
+								'c': str(4*x + 2),
+								'd': str(4*x + 3)
+							}
+							for x in range(width)
+						]
+					}
+					for y in range(height)
+				]
+			}
+
+	def run(self, **kwargs):
+		self.table(self.args)
+
+
 class args_to_str(Benchmark):
 
 	def prepare(self, width, height):

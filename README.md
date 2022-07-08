@@ -140,6 +140,12 @@ result = table(args)
 
 ## Syntax
 
+Line may have:
+
+* 0 parameter expressions and 0 reference expressions
+* Any number of parameter expressions and 0 reference expressions
+* 0 parameter expressions and 1 reference expression
+
 ```
 open = '<!--';
 close = '-->';
@@ -155,14 +161,17 @@ optional = '(optional)';
 strict = '(strict)';
 flag = optional | strict;
 
-prefix = flag? type;
 name = [a-zA-Z_][a-zA-Z_0-9]*;
 
-expression = open ' '* prefix name ' '* close;
+param_expression = open ' '* flag? param name ' '* close;
+ref_expression = open ' '* flag? ref name ' '* close;
 
-line = other? expression? other?;
+expressions = (param_expression other?)+ | (ref_expression other?);
+
+line = other? expressions?;
 
 template = (line delimeter)* (line - zlen)?;
+main := template;
 ```
 
 

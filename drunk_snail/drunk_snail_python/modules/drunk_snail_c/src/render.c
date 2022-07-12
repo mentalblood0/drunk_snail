@@ -14,9 +14,6 @@
 
 
 
-DRUNK_TYPE empty_dict;
-
-
 void render(
 	RenderResult *render_result,
 	char *template_name,

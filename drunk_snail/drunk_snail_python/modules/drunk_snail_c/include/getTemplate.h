@@ -1,6 +1,9 @@
 #pragma once
 
 
+#include <sys/types.h>
+
+
 
 typedef struct {
 	char *text;

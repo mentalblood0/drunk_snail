@@ -1,15 +1,16 @@
+#pragma once
+
+
 #include <stdlib.h>
 #include <sys/types.h>
 
+#include "params_macros.h"
 #include "../modules/memoma/include/memoma.h"
 
 #include "Other.h"
 #include "print_macros.h"
 #include "params_macros.h"
 
-
-
-DRUNK_TYPE empty_dict;
 
 
 typedef struct RenderResult {

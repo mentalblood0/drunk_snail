@@ -34,7 +34,7 @@ void render(
 			render_result->result = NULL;
 		}
 		drunk_malloc_one_render_(render_result->message, sizeof(char) * (template_name_length + 1));
-		memcpy_s(render_result->message, template_name_length, template_name, template_name_length);
+		memcpy(render_result->message, template_name, template_name_length);
 		render_result->message[template_name_length] = 0;
 		return;
 	}

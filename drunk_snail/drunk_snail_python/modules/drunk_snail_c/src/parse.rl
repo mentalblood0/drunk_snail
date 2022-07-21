@@ -72,7 +72,7 @@ void _parse(
 	Template *template = dictionaryLookupUnterminated(templates, template_name, template_name_length);
 	if (template == NULL) {
 		drunk_malloc_one__parse(result->message, sizeof(char) * (template_name_length + 1));
-		memcpy_s(result->message, template_name_length, template_name, template_name_length);
+		memcpy(result->message, template_name, template_name_length);
 		result->message[template_name_length] = 0;
 		exit__parse();
 	}

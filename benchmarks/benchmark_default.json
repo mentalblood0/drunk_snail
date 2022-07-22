@@ -1,52 +1,66 @@
 {
-	"render::args_to_str": {
-		"__n__": 10,
-		"width": 1000,
-		"height": 1000
+	"render": {
+		"args_to_str": {
+			"__n__": 10,
+			"width": 1000,
+			"height": 1000
+		},
+		"args_to_json": {
+			"__n__": 10,
+			"width": 1000,
+			"height": 1000
+		},
+		"args_to_json_using_orjson": {
+			"__n__": 100,
+			"width": 1000,
+			"height": 1000
+		},
+		"table": {
+			"__n__": 100,
+			"width": 1000,
+			"height": 1000
+		}
 	},
-	"render::args_to_json": {
-		"__n__": 10,
-		"width": 1000,
-		"height": 1000
+	"django_render": {
+		"table": {
+			"__n__": 1,
+			"width": 1000,
+			"height": 1000
+		}
 	},
-	"render::args_to_json_using_orjson": {
-		"__n__": 100,
-		"width": 1000,
-		"height": 1000
+	"chevron_render": {
+		"table": {
+			"__n__": 1,
+			"width": 1000,
+			"height": 1000
+		}
 	},
-	"django_render::table": {
-		"__n__": 1,
-		"width": 1000,
-		"height": 1000
+	"airspeed_render": {
+		"table": {
+			"__n__": 1,
+			"width": 1000,
+			"height": 1000
+		}
 	},
-	"chevron_render::table": {
-		"__n__": 1,
-		"width": 1000,
-		"height": 1000
+	"trender_render": {
+		"table": {
+			"__n__": 1,
+			"width": 1000,
+			"height": 1000
+		}
 	},
-	"airspeed_render::table": {
-		"__n__": 1,
-		"width": 1000,
-		"height": 1000
+	"mako_render": {
+		"table": {
+			"__n__": 10,
+			"width": 1000,
+			"height": 1000
+		}
 	},
-	"trender_render::table": {
-		"__n__": 1,
-		"width": 1000,
-		"height": 1000
-	},
-	"mako_render::table": {
-		"__n__": 10,
-		"width": 1000,
-		"height": 1000
-	},
-	"jinja2_render::table": {
-		"__n__": 10,
-		"width": 1000,
-		"height": 1000
-	},
-	"render::table": {
-		"__n__": 100,
-		"width": 1000,
-		"height": 1000
+	"jinja2_render": {
+		"table": {
+			"__n__": 10,
+			"width": 1000,
+			"height": 1000
+		}
 	}
 }

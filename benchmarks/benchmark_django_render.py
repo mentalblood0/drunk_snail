@@ -1,7 +1,7 @@
 import django
 import django.conf
 import django.template
-from sharpener import Benchmark
+from sharpener_lite import Benchmark
 
 
 

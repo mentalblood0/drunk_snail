@@ -1,5 +1,5 @@
 from trender import TRender
-from sharpener import Benchmark
+from sharpener_lite import Benchmark
 
 
 

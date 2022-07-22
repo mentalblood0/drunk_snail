@@ -1,6 +1,6 @@
 import json
 import orjson
-from sharpener import Benchmark
+from sharpener_lite import Benchmark
 
 from drunk_snail import Template
 

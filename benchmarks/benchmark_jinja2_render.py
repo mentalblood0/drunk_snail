@@ -1,5 +1,5 @@
 from jinja2 import Environment
-from sharpener import Benchmark
+from sharpener_lite import Benchmark
 
 
 

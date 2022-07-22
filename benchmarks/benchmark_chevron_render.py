@@ -1,5 +1,5 @@
 import chevron
-from sharpener import Benchmark
+from sharpener_lite import Benchmark
 
 
 

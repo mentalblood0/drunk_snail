@@ -34,7 +34,7 @@ if __name__ == '__main__':
 			Extension(
 				name='drunk_snail_python',
 				sources=paths('drunk_snail/drunk_snail_python', 'c'),
-				extra_compile_args=[]
+				extra_compile_args=['-O3']
 			)
 		],
 		data_files=paths('drunk_snail/drunk_snail_python', 'c') + paths('drunk_snail/drunk_snail_python', 'h')

@@ -16,6 +16,7 @@ if __name__ == '__main__':
 		long_description = ''
 
 	setup(
+
 		name='drunk_snail',
 		version='7.0.1',
 		description='Simple template engine. Faster than you think',
@@ -36,6 +37,6 @@ if __name__ == '__main__':
 				sources=paths('drunk_snail/drunk_snail_python', 'c'),
 				extra_compile_args=['-O3']
 			)
-		],
-		data_files=paths('drunk_snail/drunk_snail_python', 'c') + paths('drunk_snail/drunk_snail_python', 'h')
+		]
+
 	)

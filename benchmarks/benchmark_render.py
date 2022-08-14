@@ -3,6 +3,7 @@ import orjson
 from sharpener_lite import Benchmark
 
 from drunk_snail import Template
+from drunk_snail_python import render_hardcoded
 
 
 
@@ -34,6 +35,28 @@ class table(Benchmark):
 
 	def run(self, **kwargs):
 		self.table(self.args)
+
+
+class table_hardcoded(Benchmark):
+
+	def prepare(self, width, height):
+
+		if not hasattr(self, 'args'):
+
+			self.args = {
+				"Row": [
+					{
+						"cell": [
+							str(x)
+							for x in range(width)
+						]
+					}
+					for y in range(height)
+				]
+			}
+
+	def run(self, **kwargs):
+		render_hardcoded(self.args)
 
 
 class table_multiparam(Benchmark):

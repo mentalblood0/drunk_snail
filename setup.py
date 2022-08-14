@@ -8,7 +8,12 @@ def paths(root: str, extension: str):
 
 
 if __name__ == '__main__':
-	
+
+	print("SOURCES")
+	for p in paths('drunk_snail/drunk_snail_python', 'c'):
+		print(p)
+	print("-----------------------")
+
 	try:
 		with open('README.md') as f:
 			long_description = f.read()

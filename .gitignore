@@ -2,7 +2,6 @@ __pycache__
 dist
 *egg-info*
 test.py*
-test.py
 compile_with_comments.c
 notes.txt
 CMake*

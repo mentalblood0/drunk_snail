@@ -1,29 +1,36 @@
+import functools
 from sharpener_lite import Benchmark
 
 from mako.template import Template
+from benchmarks.common import WithOutputMetrics
 
 
 
-class table(Benchmark):
+class table(Benchmark, WithOutputMetrics):
 
-	def prepare(self, width, height):
+	def prepare(self):
+		self.table
+		self.args
 
-		if not hasattr(self, 'table'):
+	@functools.cached_property
+	def table(self):
 
-			with open('templates/mako_template.xml', 'r', encoding='utf8') as f:
-				text = f.read()
+		with open('templates/mako_template.xml', 'r', encoding='utf8') as f:
+			text = f.read()
 
-			self.table = Template(text)
+		return Template(text)
 
-			self.args = {
-				'rows': [
-					[
-						str(x)
-						for x in range(0, width)
-					]
-					for y in range(0, height)
+	@functools.cached_property
+	def args(self):
+		return {
+			'rows': [
+				[
+					str(x)
+					for x in range(0, self.config.kwargs['width'])
 				]
-			}
+				for y in range(0, self.config.kwargs['height'])
+			]
+		}
 	
-	def run(self, **kwargs):
-		self.table.render(**self.args)
+	def run(self):
+		return self.table.render(**self.args)

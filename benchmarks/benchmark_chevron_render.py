@@ -1,39 +1,46 @@
 import chevron
+import functools
 from sharpener_lite import Benchmark
 
+from benchmarks.common import WithOutputMetrics
 
 
-class table(Benchmark):
 
-	def prepare(self, width, height):
+class table(Benchmark, WithOutputMetrics):
 
-		if not hasattr(self, 'table'):
+	def prepare(self):
+		self.table
+		self.args
 
-			self.table = (
-				'<table>\n'
-				'{{#Row}}\n'
-				'	<tr>\n'
-				'{{#cell}}\n'
-				'		<td>{{value}}</td>\n'
-				'{{/cell}}\n'
-				'	</tr>\n'
-				'{{/Row}}\n'
-				'</table>'
-			)
+	@functools.cached_property
+	def table(self):
+		return (
+			'<table>\n'
+			'{{#Row}}\n'
+			'	<tr>\n'
+			'{{#cell}}\n'
+			'		<td>{{value}}</td>\n'
+			'{{/cell}}\n'
+			'	</tr>\n'
+			'{{/Row}}\n'
+			'</table>'
+		)
 
-			self.args = {
-				"Row": [
-					{
-						"cell": [
-							{
-								'value': str(x)
-							}
-							for x in range(width)
-						]
-					}
-					for y in range(height)
-				]
-			}
+	@functools.cached_property
+	def args(self):
+		return {
+			"Row": [
+				{
+					"cell": [
+						{
+							'value': str(x)
+						}
+						for x in range(self.config.kwargs['width'])
+					]
+				}
+				for y in range(self.config.kwargs['height'])
+			]
+		}
 	
-	def run(self, **kwargs):
-		chevron.render(self.table, self.args)
+	def run(self):
+		return chevron.render(self.table, self.args)

@@ -1,41 +1,50 @@
 import django
+import functools
 import django.conf
 import django.template
 from sharpener_lite import Benchmark
 
+from benchmarks.common import WithOutputMetrics
 
 
-class table(Benchmark):
 
-	def prepare(self, width, height):
+class table(Benchmark, WithOutputMetrics):
 
-		if not hasattr(self, 'table'):
+	def prepare(self):
+		self.table
+		self.table_context
 
-			django.conf.settings.configure(TEMPLATES=[{
-				'BACKEND': 'django.template.backends.django.DjangoTemplates'
-			}])
-			django.setup()
+	@functools.cached_property
+	def table(self):
 
-			self.table = django.template.Template(
-				'<table>\n'
-				'{% for row in table %}'
-				'	<tr>'
-				'{% for value in row %}\n'
-				'		<td>{{ value }}</td>'
-				'{% endfor %}\n'
-				'	</tr>\n'
-				'{% endfor %}'
-				'</table>'
-			)
-			self.table_context = django.template.Context({
-				'table': [
-					[
-						str(x)
-						for x in range(width)
-					]
-					for y in range(height)
+		django.conf.settings.configure(TEMPLATES=[{
+			'BACKEND': 'django.template.backends.django.DjangoTemplates'
+		}])
+		django.setup()
+
+		return django.template.Template(
+			'<table>\n'
+			'{% for row in table %}'
+			'	<tr>'
+			'{% for value in row %}\n'
+			'		<td>{{ value }}</td>'
+			'{% endfor %}\n'
+			'	</tr>\n'
+			'{% endfor %}'
+			'</table>'
+		)
+
+	@functools.cached_property
+	def table_context(self):
+		return django.template.Context({
+			'table': [
+				[
+					str(x)
+					for x in range(self.config.kwargs['width'])
 				]
-			})
+				for y in range(self.config.kwargs['height'])
+			]
+		})
 	
-	def run(self, **kwargs):
-		self.table.render(self.table_context)
+	def run(self):
+		return self.table.render(self.table_context)

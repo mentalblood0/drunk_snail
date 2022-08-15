@@ -1,29 +1,12 @@
 import json
 import orjson
 import functools
-from sharpener_lite import Benchmark, units
+from sharpener_lite import Benchmark
 
 from drunk_snail import Template
+from benchmarks.common import WithOutputMetrics
 from drunk_snail_python import render_hardcoded
 
-
-
-class OutputIsRun:
-
-	@property
-	def output(self):
-		return self.run()
-
-
-class WithOutputMetrics(OutputIsRun):
-
-	@property
-	def metric_output_size(self):
-		return len(self.output) * units.byte
-
-	@property
-	def metric_output_speed(self):
-		return (self.metric_output_size / self.metric_mean_time).to(units.megabyte / units.second)
 
 
 class WithTableArgs:
@@ -60,18 +43,18 @@ class table(Benchmark, WithOutputMetrics, WithTableArgs):
 			result.register(f.read())
 		return result
 
-	def prepare(self, **kwargs):
+	def prepare(self):
 		self.row
 		self.table
 		self.args
 
-	def run(self, **kwargs):
+	def run(self):
 		return self.table(self.args)
 
 
 class table_hardcoded(Benchmark, WithOutputMetrics, WithTableArgs):
 
-	def prepare(self, **kwargs):
+	def prepare(self):
 		self.args
 
 	@functools.cached_property
@@ -88,13 +71,13 @@ class table_hardcoded(Benchmark, WithOutputMetrics, WithTableArgs):
 			]
 		}
 
-	def run(self, **kwargs):
+	def run(self):
 		return render_hardcoded(self.args)
 
 
 class table_multiparam(Benchmark, WithOutputMetrics):
 
-	def prepare(self, **kwargs):
+	def prepare(self):
 		self.cells
 		self.row_multiparam
 		self.table_multiparam
@@ -137,29 +120,25 @@ class table_multiparam(Benchmark, WithOutputMetrics):
 			]
 		}
 
-	def run(self, **kwargs):
+	def run(self):
 		return self.table_multiparam(self.args)
 
 
 class args_to_str(Benchmark, WithOutputMetrics, WithTableArgs):
-	
-	def run(self, **kwargs):
+	def run(self):
 		return str(self.args)
 
 
 class args_to_json(Benchmark, WithOutputMetrics, WithTableArgs):
-	
-	def run(self, **kwargs):
+	def run(self):
 		return json.dumps(self.args)
 
 
 class args_to_json_using_orjson(Benchmark, WithOutputMetrics, WithTableArgs):
-	
-	def run(self, **kwargs):
+	def run(self):
 		return orjson.dumps(self.args)
 
 
 class args_to_json_with_indent(Benchmark, WithOutputMetrics, WithTableArgs):
-	
-	def run(self, indent, **kwargs):
-		return json.dumps(self.args, indent=indent)
+	def run(self):
+		return json.dumps(self.args, indent=self.config.kwargs['indent'])

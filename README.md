@@ -90,7 +90,7 @@ Rendering 1000x1000 table (mean of 100 experiments)
 | Args dict to json                                               | 54       | 18        | 104            |
 | Args dict to json using [orjson](https://github.com/ijl/orjson) | 15       | 66        | 375            |
 
-Benchmarks done using [sharpener](https://github.com/MentalBlood/sharpener) (see `Benchmarking` section below)
+Benchmarks done using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite) (see `Benchmarking` section below)
 
 
 
@@ -217,13 +217,13 @@ pytest
 
 ## Benchmarking
 
-Using [sharpener](https://github.com/MentalBlood/sharpener):
+Using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite):
 
 ```bash
 pip install --upgrade drunk_snail
 git clone https://github.com/MentalBlood/drunk_snail drunk_snail
 cd drunk_snail
-python -m sharpener run -p 0
+python -m sharpener_lite run
 ```
 
 Config is [here](benchmarks/benchmark_default.json)

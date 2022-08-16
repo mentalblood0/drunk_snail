@@ -14,7 +14,17 @@ class table(Benchmark, WithOutputMetrics):
 
 	@functools.cached_property
 	def table(self):
-		return Environment().from_string('<table>{% for row in rows %}<tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>{% endfor %}</table>')
+		return Environment().from_string(
+			'<table>\n'
+			'{% for row in rows %}'
+				'\t<tr>\n'
+			'{% for cell in row %}'
+					'\t\t<td>{{ cell }}</td>\n'
+			'{% endfor %}'
+				'\t</tr>\n'
+			'{% endfor %}'
+			'</table>'
+		)
 
 	@functools.cached_property
 	def args(self):

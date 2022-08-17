@@ -2,11 +2,14 @@ import functools
 from sharpener_lite import Benchmark
 
 from mako.template import Template
-from benchmarks.common import WithOutputMetrics
+from benchmarks.common import WithOutputMetrics, WithName
 
 
 
-class table(Benchmark, WithOutputMetrics):
+class table(Benchmark, WithOutputMetrics, WithName):
+
+	name = 'mako'
+	link = 'https://github.com/sqlalchemy/mako'
 
 	def prepare(self):
 		self.table

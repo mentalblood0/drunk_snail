@@ -5,11 +5,14 @@ from sharpener_lite import Benchmark
 
 from drunk_snail import Template
 from drunk_snail_python import render_hardcoded
-from benchmarks.common import WithOutputMetrics, WithTableArgs
+from benchmarks.common import WithOutputMetrics, WithTableArgs, WithName
 
 
 
-class table_hardcoded(Benchmark, WithOutputMetrics, WithTableArgs):
+class table_hardcoded(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
+
+	name = 'hardcoded'
+	link = None
 
 	def prepare(self):
 		self.args
@@ -32,7 +35,10 @@ class table_hardcoded(Benchmark, WithOutputMetrics, WithTableArgs):
 		return render_hardcoded(self.args)
 
 
-class table_multiparam(Benchmark, WithOutputMetrics):
+class table_multiparam(Benchmark, WithOutputMetrics, WithName):
+
+	name = 'multiparam'
+	link = None
 
 	def prepare(self):
 		self.cells
@@ -81,21 +87,29 @@ class table_multiparam(Benchmark, WithOutputMetrics):
 		return self.table_multiparam(self.args)
 
 
-class args_to_str(Benchmark, WithOutputMetrics, WithTableArgs):
+class args_to_str(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
+	name = 'Arguments to string'
+	link = None
 	def run(self):
 		return str(self.args)
 
 
-class args_to_json(Benchmark, WithOutputMetrics, WithTableArgs):
+class args_to_json(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
+	name = 'Arguments to JSON'
+	link = None
 	def run(self):
 		return json.dumps(self.args)
 
 
-class args_to_json_using_orjson(Benchmark, WithOutputMetrics, WithTableArgs):
+class args_to_json_using_orjson(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
+	name = 'Arguments to JSON using orjson'
+	link = 'https://github.com/ijl/orjson'
 	def run(self):
 		return orjson.dumps(self.args)
 
 
 class args_to_json_with_indent(Benchmark, WithOutputMetrics, WithTableArgs):
+	name = 'Arguments to json with indent'
+	link = None
 	def run(self):
 		return json.dumps(self.args, indent=self.config.kwargs['indent'])

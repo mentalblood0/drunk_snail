@@ -36,3 +36,13 @@ class WithTableArgs:
 				for y in range(self.config.kwargs['height'])
 			]
 		}
+
+
+class WithName:
+
+	@property
+	def metric_name_markdown(self):
+		if self.link is None:
+			return self.name
+		else:
+			return f'[{self.name}]({self.link})'

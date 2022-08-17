@@ -29,20 +29,20 @@ Table:
 Arguments:
 ```json
 {
-    "Row": [
-        {
-            "cell": [
-                "1",
-                "2"
-            ]
-        },
-        {
-            "cell": [
-                "3",
-                "4"
-            ]
-        }
-    ]
+	"Row": [
+		{
+			"cell": [
+				"1",
+				"2"
+			]
+		},
+		{
+			"cell": [
+				"3",
+				"4"
+			]
+		}
+	]
 }
 ```
 Result:
@@ -64,23 +64,23 @@ Result:
 
 ## Performance
 
-Rendering 100x100 table (mean of 1-100 experiments)
+Rendering 100x100 table (mean of 100-10000 experiments)
 
 | Engine | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| airspeed_render | 28.025 |   | 5.0068 |
-| chevron_render | 28.58 |   | 4.91 |
-| django_render | 31.59 |   | 4.44 |
-| drunk_snail_render | 0.153 |   | 916.51 |
-| jinja2_render | 1.45 |   | 96.93 |
-| mako_render | 1.43 |   | 98.195 |
-| trender_render | 9.41 |   | 14.91 |
+| [django](https://github.com/django/django) | 25.6 | 39 | 5.48 |
+| [chevron](https://github.com/noahmorrison/chevron) | 23.309 | 42 | 6.0198 |
+| [airspeed](https://github.com/purcell/airspeed) | 20.56 | 48 | 6.83 |
+| [TRender](https://github.com/cesbit/trender) | 7.36 | 135 | 19.059 |
+| [mako](https://github.com/sqlalchemy/mako) | 1.186 | 843 | 118.36 |
+| [jinja](https://github.com/pallets/jinja) | 1.176 | 850 | 119.314 |
+| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.123 | 8130 | 1141.37 |
 
-| Other | Time, ms  | templates / s | output, MB / s |
+| Other | Time, ms  | dicts / s | output, MB / s |
 | -- | --: | --: | --: |
-| other | 0.44 |   | 136.61 |
-| other | 0.119 |   | 422.54 |
-| other | 0.5 |   | 119.51 |
+| Arguments to JSON | 0.47 | 2127 | 128.093 |
+| Arguments to string | 0.39 | 2564 | 153.58 |
+| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.065 | 15384 | 771.4 |
 
 
 
@@ -111,20 +111,20 @@ table = Template('Table').register(
 )
 
 args = {
-    "Row": [
-        {
-            "cell": [
-                "1",
-                "2"
-            ]
-        },
-        {
-            "cell": [
-                "3",
-                "4"
-            ]
-        }
-    ]
+	"Row": [
+		{
+			"cell": [
+				"1",
+				"2"
+			]
+		},
+		{
+			"cell": [
+				"3",
+				"4"
+			]
+		}
+	]
 }
 
 result = table(args)

@@ -4,11 +4,14 @@ import django.conf
 import django.template
 from sharpener_lite import Benchmark
 
-from benchmarks.common import WithOutputMetrics
+from benchmarks.common import WithOutputMetrics, WithName
 
 
 
-class table(Benchmark, WithOutputMetrics):
+class table(Benchmark, WithOutputMetrics, WithName):
+
+	name = 'django'
+	link = 'https://github.com/django/django'
 
 	def prepare(self):
 		self.table

@@ -69,7 +69,7 @@ result = Template('README')({
 	],
 	'row_template': Template('Row').text,
 	'table_template': Template('Table').text,
-	'table_arguments': json.dumps(table_arguments, indent=4),
+	'table_arguments': json.dumps(table_arguments, indent='\t'),
 	'table_result': Template('Table')(table_arguments),
 	'syntax': syntax,
 	'Example': [{
@@ -96,27 +96,31 @@ result = Template('README')({
 		'experiments_number': f'{min(experiments_numbers)}-{max(experiments_numbers)}',
 		'RenderingResults': [{
 			'type': 'Engine',
-			'RenderingResult': [
+			'output_type': 'template',
+			'RenderingResult': sorted([
 				{
-					'name': module_name,
-					'time': module['table']['mean_time'].split(' ')[0],
-					'templates_by_second': ' ',
+					'name': module['table']['name_markdown'],
+					'time': mean_time,
+					'templates_by_second': str(int(1000 // float(mean_time))),
 					'mb_by_second': module['table']['speed'].split(' ')[0]
 				}
 				for module_name, module in benchmarks_result.items()
 				if module_name != 'other'
-			]
+				for mean_time in [module['table']['mean_time'].split(' ')[0]]
+			], key=lambda d: float(d['mb_by_second']))
 		}, {
 			'type': 'Other',
-			'RenderingResult': [
+			'output_type': 'dict',
+			'RenderingResult': sorted([
 				{
-					'name': 'other',
-					'time': benchmark['mean_time'].split(' ')[0],
-					'templates_by_second': ' ',
+					'name': benchmark['name_markdown'],
+					'time': mean_time,
+					'templates_by_second': str(int(1000 // float(mean_time))),
 					'mb_by_second': benchmark['speed'].split(' ')[0]
 				}
-				for benchmark_name, benchmark in benchmarks_result['other'].items()
-			]
+				for benchmark in benchmarks_result['other'].values()
+				for mean_time in [benchmark['mean_time'].split(' ')[0]]
+			], key=lambda d: float(d['mb_by_second']))
 		}]
 	}
 })

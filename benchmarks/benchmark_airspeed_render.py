@@ -2,11 +2,14 @@ import airspeed
 import functools
 from sharpener_lite import Benchmark
 
-from benchmarks.common import WithOutputMetrics
+from benchmarks.common import WithOutputMetrics, WithName
 
 
 
-class table(Benchmark, WithOutputMetrics):
+class table(Benchmark, WithOutputMetrics, WithName):
+
+	name = 'airspeed'
+	link = 'https://github.com/purcell/airspeed'
 
 	def prepare(self):
 		self.table

@@ -1,4 +1,4 @@
-| <!-- (param)type --> | Time, ms  | templates / s | output, MB / s |
+| <!-- (param)type --> | Time, ms  | <!-- (param)output_type -->s / s | output, MB / s |
 | -- | --: | --: | --: |
 <!-- (ref)RenderingResult -->
 

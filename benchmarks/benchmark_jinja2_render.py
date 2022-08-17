@@ -2,11 +2,14 @@ import functools
 from jinja2 import Environment
 from sharpener_lite import Benchmark
 
-from benchmarks.common import WithOutputMetrics
+from benchmarks.common import WithOutputMetrics, WithName
 
 
 
-class table(Benchmark, WithOutputMetrics):
+class table(Benchmark, WithOutputMetrics, WithName):
+
+	name = 'jinja'
+	link = 'https://github.com/pallets/jinja'
 
 	def prepare(self):
 		self.table

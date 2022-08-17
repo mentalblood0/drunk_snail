@@ -2,11 +2,14 @@ import functools
 from sharpener_lite import Benchmark
 
 from drunk_snail import Template
-from benchmarks.common import WithOutputMetrics, WithTableArgs
+from benchmarks.common import WithOutputMetrics, WithTableArgs, WithName
 
 
 
-class table(Benchmark, WithOutputMetrics, WithTableArgs):
+class table(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
+
+	name = 'drunk_snail'
+	link = 'https://github.com/MentalBlood/drunk_snail'
 
 	@functools.cached_property
 	def row(self):

@@ -55,7 +55,7 @@ with open(os.path.join(
 	syntax = '\n'.join([
 		re.sub(' (?:>|%)action(?:_(?:\S)*)', '', striped_line)
 		for line in re.match('(?:.|\n)*(}(.|\n)*}%%)(?:.|\n)*', f.read()).groups()[0].split('\n')
-		for striped_line in [line.strip('    ;')]
+		for striped_line in [line.strip('\t;')]
 		if (len(striped_line) > 0) and (striped_line not in  ['}', '}%%'])
 	][:-2])
 

@@ -68,19 +68,19 @@ Rendering 100x100 table (mean of 100-10000 experiments)
 
 | Engine | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| [django](https://github.com/django/django) | 25.99 | 38 | 5.4 |
-| [chevron](https://github.com/noahmorrison/chevron) | 22.88 | 43 | 6.133 |
-| [airspeed](https://github.com/purcell/airspeed) | 22.86 | 43 | 6.138 |
-| [TRender](https://github.com/cesbit/trender) | 7.37 | 135 | 19.039 |
-| [mako](https://github.com/sqlalchemy/mako) | 1.153 | 867 | 121.66 |
-| [jinja](https://github.com/pallets/jinja) | 1.222 | 818 | 164.39 |
-| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.149 | 6711 | 1346.95 |
+| [django](https://github.com/django/django) | 26.0273 | 38 | 5.39 |
+| [chevron](https://github.com/noahmorrison/chevron) | 22.82 | 43 | 6.149 |
+| [airspeed](https://github.com/purcell/airspeed) | 20.86 | 47 | 6.73 |
+| [TRender](https://github.com/cesbit/trender) | 7.62 | 131 | 18.42 |
+| [mako](https://github.com/sqlalchemy/mako) | 1.164 | 859 | 120.58 |
+| [jinja](https://github.com/pallets/jinja) | 1.241 | 805 | 161.93 |
+| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.15 | 6666 | 1337.57 |
 
 | Other | Time, ms  | dicts / s | output, MB / s |
 | -- | --: | --: | --: |
-| Arguments to JSON | 0.47 | 2127 | 128.59 |
-| Arguments to string | 0.37 | 2702 | 162.73 |
-| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.066 | 15151 | 763.34 |
+| Arguments to JSON | 0.47 | 2127 | 128.6 |
+| Arguments to string | 0.38 | 2631 | 160.5 |
+| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.065 | 15384 | 771.127 |
 
 
 
@@ -152,24 +152,23 @@ Line may have:
 * 0 parameter expressions and 1 reference expression
 
 ```
-		open = '<!--'
-		close = '-->'
-		delimeter = '\n'
-		other = (any - delimeter)+
-		param = '(param)'
-		ref = '(ref)'
-		type = param | ref
-		optional = '(optional)'
-		strict = '(strict)'
-		flag = optional | strict
-		name = ([a-zA-Z_][a-zA-Z_0-9]*)
-		param_expression = (open ' '* flag? param name ' '* close)
-		ref_expression = (open ' '* flag? ref name ' '* close)
-		expressions = ((param_expression other?)+ | (ref_expression other?))
-		line = (other? expressions?)
-		template = (line delimeter)* (line - zlen)?
-		main := template
-		write init
+open = '<!--'
+close = '-->'
+delimeter = '\n'
+other = (any - delimeter)+
+param = '(param)'
+ref = '(ref)'
+type = param | ref
+optional = '(optional)'
+strict = '(strict)'
+flag = optional | strict
+name = ([a-zA-Z_][a-zA-Z_0-9]*)
+param_expression = (open ' '* flag? param name ' '* close)
+ref_expression = (open ' '* flag? ref name ' '* close)
+expressions = ((param_expression other?)+ | (ref_expression other?))
+line = (other? expressions?)
+template = (line delimeter)* (line - zlen)?
+main := template
 ```
 
 

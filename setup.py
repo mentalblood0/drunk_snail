@@ -37,6 +37,8 @@ if __name__ == '__main__':
 				sources=paths('drunk_snail/drunk_snail_python', 'c'),
 				extra_compile_args=['-O3']
 			)
-		]
+		],
+
+		data_files=paths('drunk_snail/drunk_snail_python', 'h')
 
 	)

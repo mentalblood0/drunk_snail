@@ -19,10 +19,12 @@
 
 #include "../include/parse.h"
 
+#include "ragel_actions.h"
 
 
 
-/* #line 26 "parse.c" */
+
+/* #line 28 "parse.c" */
 static const int parse_python_start = 0;
 static const int parse_python_first_final = 0;
 static const int parse_python_error = -1;
@@ -30,7 +32,7 @@ static const int parse_python_error = -1;
 static const int parse_python_en_main = 0;
 
 
-/* #line 25 "parse.rl" */
+/* #line 27 "parse.rl" */
 
 
 
@@ -107,229 +109,80 @@ void _parse(
 	size_t cs;
 
 	
-/* #line 111 "parse.c" */
+/* #line 113 "parse.c" */
 	{
 	cs = parse_python_start;
 	}
 
-/* #line 116 "parse.c" */
+/* #line 118 "parse.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 102 "parse.rl" */
-	{ line->line.start = p; }
-/* #line 103 "parse.rl" */
-	{
-
-			line->line.end = p;
-
-			verifyAction(*line);
-			computeLineTokensLengths(*line);
-			computeOther(*line);
-
-			if (line->action == ACTION_NONE) {
-				if (
-					(template->lines.length >= 2) &&
-					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
-				) {
-					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
-					resetLine(*line);
-				} else {
-					allocNewLine(line, template->lines, alloc_error);
-				}
-			} else {
-				allocNewLine(line, template->lines, alloc_error);
-			}
-
-			current_expression = &line->single_expression;
-
-		}
+/* #line 104 "parse.rl" */
+	{ ragel_action_start_line; }
+/* #line 105 "parse.rl" */
+	{ ragel_action_end_line; }
 	goto st0;
 tr4:
-/* #line 103 "parse.rl" */
-	{
-
-			line->line.end = p;
-
-			verifyAction(*line);
-			computeLineTokensLengths(*line);
-			computeOther(*line);
-
-			if (line->action == ACTION_NONE) {
-				if (
-					(template->lines.length >= 2) &&
-					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
-				) {
-					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
-					resetLine(*line);
-				} else {
-					allocNewLine(line, template->lines, alloc_error);
-				}
-			} else {
-				allocNewLine(line, template->lines, alloc_error);
-			}
-
-			current_expression = &line->single_expression;
-
-		}
+/* #line 105 "parse.rl" */
+	{ ragel_action_end_line; }
 	goto st0;
 tr37:
-/* #line 141 "parse.rl" */
-	{
-
-			current_expression->tokens.expression.end = p;
-
-			if (current_expression->tokens.name.start) {
-
-				computeExpressionTokensLengths(*current_expression);
-
-				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
-				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
-				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
-
-			}
-
-			if (line->action == ACTION_PARAM) {
-
-				if (!line->param_expressions) {
-					line->param_expressions = malloc(sizeof(ExpressionList));
-					if (!line->param_expressions) {
-						exit__parse();
-					}
-					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					listExtend(*(line->param_expressions), Expression, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					line->param_expressions->start[0] = *current_expression;
-				} else {
-					if (line->param_expressions->length) {
-						line->action = ACTION_PARAM_MULTI;
-					}
-				}
-				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
-				if (alloc_error || !current_expression) {
-					exit__parse();
-				}
-				initExpression(*current_expression);
-
-			} else if (line->param_expressions) {
-				if (line->param_expressions->length) {
-					line->action = ACTION_NONE;
-				}
-			}
-
-		}
-/* #line 189 "parse.rl" */
-	{ line->has_expressions = true; }
-/* #line 103 "parse.rl" */
-	{
-
-			line->line.end = p;
-
-			verifyAction(*line);
-			computeLineTokensLengths(*line);
-			computeOther(*line);
-
-			if (line->action == ACTION_NONE) {
-				if (
-					(template->lines.length >= 2) &&
-					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
-				) {
-					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
-					resetLine(*line);
-				} else {
-					allocNewLine(line, template->lines, alloc_error);
-				}
-			} else {
-				allocNewLine(line, template->lines, alloc_error);
-			}
-
-			current_expression = &line->single_expression;
-
-		}
+/* #line 116 "parse.rl" */
+	{ ragel_action_end_expression; }
+/* #line 117 "parse.rl" */
+	{ ragel_action_end_expressions; }
+/* #line 105 "parse.rl" */
+	{ ragel_action_end_line; }
 	goto st0;
 tr40:
-/* #line 189 "parse.rl" */
-	{ line->has_expressions = true; }
-/* #line 103 "parse.rl" */
-	{
-
-			line->line.end = p;
-
-			verifyAction(*line);
-			computeLineTokensLengths(*line);
-			computeOther(*line);
-
-			if (line->action == ACTION_NONE) {
-				if (
-					(template->lines.length >= 2) &&
-					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
-				) {
-					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
-					resetLine(*line);
-				} else {
-					allocNewLine(line, template->lines, alloc_error);
-				}
-			} else {
-				allocNewLine(line, template->lines, alloc_error);
-			}
-
-			current_expression = &line->single_expression;
-
-		}
+/* #line 117 "parse.rl" */
+	{ ragel_action_end_expressions; }
+/* #line 105 "parse.rl" */
+	{ ragel_action_end_line; }
 	goto st0;
 st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 293 "parse.c" */
+/* #line 152 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 102 "parse.rl" */
-	{ line->line.start = p; }
+/* #line 104 "parse.rl" */
+	{ ragel_action_start_line; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 307 "parse.c" */
+/* #line 166 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 102 "parse.rl" */
-	{ line->line.start = p; }
-/* #line 137 "parse.rl" */
-	{
-			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
-				current_expression->tokens.expression.start = p;
-		}
+/* #line 104 "parse.rl" */
+	{ ragel_action_start_line; }
+/* #line 115 "parse.rl" */
+	{ ragel_action_start_expression; }
 	goto st2;
 tr5:
-/* #line 137 "parse.rl" */
-	{
-			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
-				current_expression->tokens.expression.start = p;
-		}
+/* #line 115 "parse.rl" */
+	{ ragel_action_start_expression; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 333 "parse.c" */
+/* #line 186 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -471,18 +324,18 @@ case 15:
 	}
 	goto st1;
 tr22:
-/* #line 131 "parse.rl" */
-	{ current_expression->flags.optional = true; }
+/* #line 109 "parse.rl" */
+	{ ragel_action_optional; }
 	goto st16;
 tr106:
-/* #line 132 "parse.rl" */
-	{ current_expression->flags.strict = true; }
+/* #line 110 "parse.rl" */
+	{ ragel_action_strict; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 486 "parse.c" */
+/* #line 339 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
@@ -556,16 +409,16 @@ case 22:
 		goto tr28;
 	goto st1;
 tr28:
-/* #line 129 "parse.rl" */
-	{ line->action = ACTION_PARAM; }
-/* #line 134 "parse.rl" */
-	{ current_expression->tokens.name.start = p; }
+/* #line 107 "parse.rl" */
+	{ ragel_action_param; }
+/* #line 112 "parse.rl" */
+	{ ragel_action_start_name; }
 	goto st23;
 st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 569 "parse.c" */
+/* #line 422 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr29;
@@ -583,14 +436,14 @@ case 23:
 		goto st23;
 	goto st1;
 tr29:
-/* #line 135 "parse.rl" */
-	{ current_expression->tokens.name.end = p; }
+/* #line 113 "parse.rl" */
+	{ ragel_action_end_name; }
 	goto st24;
 st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 594 "parse.c" */
+/* #line 447 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st24;
@@ -599,14 +452,14 @@ case 24:
 	}
 	goto st1;
 tr30:
-/* #line 135 "parse.rl" */
-	{ current_expression->tokens.name.end = p; }
+/* #line 113 "parse.rl" */
+	{ ragel_action_end_name; }
 	goto st25;
 st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 610 "parse.c" */
+/* #line 463 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st26;
@@ -633,190 +486,40 @@ case 27:
 	}
 	goto tr36;
 tr36:
-/* #line 141 "parse.rl" */
-	{
-
-			current_expression->tokens.expression.end = p;
-
-			if (current_expression->tokens.name.start) {
-
-				computeExpressionTokensLengths(*current_expression);
-
-				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
-				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
-				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
-
-			}
-
-			if (line->action == ACTION_PARAM) {
-
-				if (!line->param_expressions) {
-					line->param_expressions = malloc(sizeof(ExpressionList));
-					if (!line->param_expressions) {
-						exit__parse();
-					}
-					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					listExtend(*(line->param_expressions), Expression, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					line->param_expressions->start[0] = *current_expression;
-				} else {
-					if (line->param_expressions->length) {
-						line->action = ACTION_PARAM_MULTI;
-					}
-				}
-				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
-				if (alloc_error || !current_expression) {
-					exit__parse();
-				}
-				initExpression(*current_expression);
-
-			} else if (line->param_expressions) {
-				if (line->param_expressions->length) {
-					line->action = ACTION_NONE;
-				}
-			}
-
-		}
+/* #line 116 "parse.rl" */
+	{ ragel_action_end_expression; }
 	goto st28;
 st28:
 	if ( ++p == pe )
 		goto _test_eof28;
 case 28:
-/* #line 691 "parse.c" */
+/* #line 497 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 60: goto tr41;
 	}
 	goto st28;
 tr41:
-/* #line 137 "parse.rl" */
-	{
-			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
-				current_expression->tokens.expression.start = p;
-		}
+/* #line 115 "parse.rl" */
+	{ ragel_action_start_expression; }
 	goto st29;
 tr38:
-/* #line 141 "parse.rl" */
-	{
-
-			current_expression->tokens.expression.end = p;
-
-			if (current_expression->tokens.name.start) {
-
-				computeExpressionTokensLengths(*current_expression);
-
-				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
-				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
-				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
-
-			}
-
-			if (line->action == ACTION_PARAM) {
-
-				if (!line->param_expressions) {
-					line->param_expressions = malloc(sizeof(ExpressionList));
-					if (!line->param_expressions) {
-						exit__parse();
-					}
-					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					listExtend(*(line->param_expressions), Expression, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					line->param_expressions->start[0] = *current_expression;
-				} else {
-					if (line->param_expressions->length) {
-						line->action = ACTION_PARAM_MULTI;
-					}
-				}
-				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
-				if (alloc_error || !current_expression) {
-					exit__parse();
-				}
-				initExpression(*current_expression);
-
-			} else if (line->param_expressions) {
-				if (line->param_expressions->length) {
-					line->action = ACTION_NONE;
-				}
-			}
-
-		}
-/* #line 137 "parse.rl" */
-	{
-			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
-				current_expression->tokens.expression.start = p;
-		}
+/* #line 116 "parse.rl" */
+	{ ragel_action_end_expression; }
+/* #line 115 "parse.rl" */
+	{ ragel_action_start_expression; }
 	goto st29;
 tr82:
-/* #line 137 "parse.rl" */
-	{
-			if (!(current_expression->tokens.expression.start && current_expression->tokens.name.end))
-				current_expression->tokens.expression.start = p;
-		}
-/* #line 141 "parse.rl" */
-	{
-
-			current_expression->tokens.expression.end = p;
-
-			if (current_expression->tokens.name.start) {
-
-				computeExpressionTokensLengths(*current_expression);
-
-				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
-				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
-				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
-
-			}
-
-			if (line->action == ACTION_PARAM) {
-
-				if (!line->param_expressions) {
-					line->param_expressions = malloc(sizeof(ExpressionList));
-					if (!line->param_expressions) {
-						exit__parse();
-					}
-					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					listExtend(*(line->param_expressions), Expression, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					line->param_expressions->start[0] = *current_expression;
-				} else {
-					if (line->param_expressions->length) {
-						line->action = ACTION_PARAM_MULTI;
-					}
-				}
-				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
-				if (alloc_error || !current_expression) {
-					exit__parse();
-				}
-				initExpression(*current_expression);
-
-			} else if (line->param_expressions) {
-				if (line->param_expressions->length) {
-					line->action = ACTION_NONE;
-				}
-			}
-
-		}
+/* #line 115 "parse.rl" */
+	{ ragel_action_start_expression; }
+/* #line 116 "parse.rl" */
+	{ ragel_action_end_expression; }
 	goto st29;
 st29:
 	if ( ++p == pe )
 		goto _test_eof29;
 case 29:
-/* #line 820 "parse.c" */
+/* #line 523 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 33: goto st30;
@@ -958,18 +661,18 @@ case 42:
 	}
 	goto st28;
 tr58:
-/* #line 131 "parse.rl" */
-	{ current_expression->flags.optional = true; }
+/* #line 109 "parse.rl" */
+	{ ragel_action_optional; }
 	goto st43;
 tr89:
-/* #line 132 "parse.rl" */
-	{ current_expression->flags.strict = true; }
+/* #line 110 "parse.rl" */
+	{ ragel_action_strict; }
 	goto st43;
 st43:
 	if ( ++p == pe )
 		goto _test_eof43;
 case 43:
-/* #line 973 "parse.c" */
+/* #line 676 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 60: goto tr41;
@@ -1043,16 +746,16 @@ case 49:
 		goto tr64;
 	goto st28;
 tr64:
-/* #line 129 "parse.rl" */
-	{ line->action = ACTION_PARAM; }
-/* #line 134 "parse.rl" */
-	{ current_expression->tokens.name.start = p; }
+/* #line 107 "parse.rl" */
+	{ ragel_action_param; }
+/* #line 112 "parse.rl" */
+	{ ragel_action_start_name; }
 	goto st50;
 st50:
 	if ( ++p == pe )
 		goto _test_eof50;
 case 50:
-/* #line 1056 "parse.c" */
+/* #line 759 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto tr65;
@@ -1070,14 +773,14 @@ case 50:
 		goto st50;
 	goto st28;
 tr65:
-/* #line 135 "parse.rl" */
-	{ current_expression->tokens.name.end = p; }
+/* #line 113 "parse.rl" */
+	{ ragel_action_end_name; }
 	goto st51;
 st51:
 	if ( ++p == pe )
 		goto _test_eof51;
 case 51:
-/* #line 1081 "parse.c" */
+/* #line 784 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto st51;
@@ -1086,14 +789,14 @@ case 51:
 	}
 	goto st28;
 tr66:
-/* #line 135 "parse.rl" */
-	{ current_expression->tokens.name.end = p; }
+/* #line 113 "parse.rl" */
+	{ ragel_action_end_name; }
 	goto st52;
 st52:
 	if ( ++p == pe )
 		goto _test_eof52;
 case 52:
-/* #line 1097 "parse.c" */
+/* #line 800 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 45: goto st53;
@@ -1156,16 +859,16 @@ case 57:
 		goto tr74;
 	goto st28;
 tr74:
-/* #line 130 "parse.rl" */
-	{ line->action = ACTION_REF; }
-/* #line 134 "parse.rl" */
-	{ current_expression->tokens.name.start = p; }
+/* #line 108 "parse.rl" */
+	{ ragel_action_ref; }
+/* #line 112 "parse.rl" */
+	{ ragel_action_start_name; }
 	goto st58;
 st58:
 	if ( ++p == pe )
 		goto _test_eof58;
 case 58:
-/* #line 1169 "parse.c" */
+/* #line 872 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto tr75;
@@ -1183,14 +886,14 @@ case 58:
 		goto st58;
 	goto st28;
 tr75:
-/* #line 135 "parse.rl" */
-	{ current_expression->tokens.name.end = p; }
+/* #line 113 "parse.rl" */
+	{ ragel_action_end_name; }
 	goto st59;
 st59:
 	if ( ++p == pe )
 		goto _test_eof59;
 case 59:
-/* #line 1194 "parse.c" */
+/* #line 897 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 32: goto st59;
@@ -1199,14 +902,14 @@ case 59:
 	}
 	goto st28;
 tr76:
-/* #line 135 "parse.rl" */
-	{ current_expression->tokens.name.end = p; }
+/* #line 113 "parse.rl" */
+	{ ragel_action_end_name; }
 	goto st60;
 st60:
 	if ( ++p == pe )
 		goto _test_eof60;
 case 60:
-/* #line 1210 "parse.c" */
+/* #line 913 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr40;
 		case 45: goto st61;
@@ -1348,16 +1051,16 @@ case 73:
 		goto tr93;
 	goto st1;
 tr93:
-/* #line 130 "parse.rl" */
-	{ line->action = ACTION_REF; }
-/* #line 134 "parse.rl" */
-	{ current_expression->tokens.name.start = p; }
+/* #line 108 "parse.rl" */
+	{ ragel_action_ref; }
+/* #line 112 "parse.rl" */
+	{ ragel_action_start_name; }
 	goto st74;
 st74:
 	if ( ++p == pe )
 		goto _test_eof74;
 case 74:
-/* #line 1361 "parse.c" */
+/* #line 1064 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto tr94;
@@ -1375,14 +1078,14 @@ case 74:
 		goto st74;
 	goto st1;
 tr94:
-/* #line 135 "parse.rl" */
-	{ current_expression->tokens.name.end = p; }
+/* #line 113 "parse.rl" */
+	{ ragel_action_end_name; }
 	goto st75;
 st75:
 	if ( ++p == pe )
 		goto _test_eof75;
 case 75:
-/* #line 1386 "parse.c" */
+/* #line 1089 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st75;
@@ -1391,14 +1094,14 @@ case 75:
 	}
 	goto st1;
 tr95:
-/* #line 135 "parse.rl" */
-	{ current_expression->tokens.name.end = p; }
+/* #line 113 "parse.rl" */
+	{ ragel_action_end_name; }
 	goto st76;
 st76:
 	if ( ++p == pe )
 		goto _test_eof76;
 case 76:
-/* #line 1402 "parse.c" */
+/* #line 1105 "parse.c" */
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st77;
@@ -1617,32 +1320,8 @@ case 84:
 	case 82: 
 	case 83: 
 	case 84: 
-/* #line 103 "parse.rl" */
-	{
-
-			line->line.end = p;
-
-			verifyAction(*line);
-			computeLineTokensLengths(*line);
-			computeOther(*line);
-
-			if (line->action == ACTION_NONE) {
-				if (
-					(template->lines.length >= 2) &&
-					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
-				) {
-					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
-					resetLine(*line);
-				} else {
-					allocNewLine(line, template->lines, alloc_error);
-				}
-			} else {
-				allocNewLine(line, template->lines, alloc_error);
-			}
-
-			current_expression = &line->single_expression;
-
-		}
+/* #line 105 "parse.rl" */
+	{ ragel_action_end_line; }
 	break;
 	case 28: 
 	case 29: 
@@ -1685,130 +1364,35 @@ case 84:
 	case 67: 
 	case 68: 
 	case 69: 
-/* #line 189 "parse.rl" */
-	{ line->has_expressions = true; }
-/* #line 103 "parse.rl" */
-	{
-
-			line->line.end = p;
-
-			verifyAction(*line);
-			computeLineTokensLengths(*line);
-			computeOther(*line);
-
-			if (line->action == ACTION_NONE) {
-				if (
-					(template->lines.length >= 2) &&
-					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
-				) {
-					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
-					resetLine(*line);
-				} else {
-					allocNewLine(line, template->lines, alloc_error);
-				}
-			} else {
-				allocNewLine(line, template->lines, alloc_error);
-			}
-
-			current_expression = &line->single_expression;
-
-		}
+/* #line 117 "parse.rl" */
+	{ ragel_action_end_expressions; }
+/* #line 105 "parse.rl" */
+	{ ragel_action_end_line; }
 	break;
 	case 27: 
 	case 62: 
-/* #line 141 "parse.rl" */
-	{
-
-			current_expression->tokens.expression.end = p;
-
-			if (current_expression->tokens.name.start) {
-
-				computeExpressionTokensLengths(*current_expression);
-
-				drunk_malloc_one__parse(current_expression->tokens.name.copy, sizeof(char) * (current_expression->tokens.name.length + 1));
-				memcpy(current_expression->tokens.name.copy, current_expression->tokens.name.start, current_expression->tokens.name.length);
-				current_expression->tokens.name.copy[current_expression->tokens.name.length] = 0;
-
-			}
-
-			if (line->action == ACTION_PARAM) {
-
-				if (!line->param_expressions) {
-					line->param_expressions = malloc(sizeof(ExpressionList));
-					if (!line->param_expressions) {
-						exit__parse();
-					}
-					listCreate(*(line->param_expressions), Expression, 4, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					listExtend(*(line->param_expressions), Expression, alloc_error);
-					if (alloc_error) {
-						exit__parse();
-					}
-					line->param_expressions->start[0] = *current_expression;
-				} else {
-					if (line->param_expressions->length) {
-						line->action = ACTION_PARAM_MULTI;
-					}
-				}
-				listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);
-				if (alloc_error || !current_expression) {
-					exit__parse();
-				}
-				initExpression(*current_expression);
-
-			} else if (line->param_expressions) {
-				if (line->param_expressions->length) {
-					line->action = ACTION_NONE;
-				}
-			}
-
-		}
-/* #line 189 "parse.rl" */
-	{ line->has_expressions = true; }
-/* #line 103 "parse.rl" */
-	{
-
-			line->line.end = p;
-
-			verifyAction(*line);
-			computeLineTokensLengths(*line);
-			computeOther(*line);
-
-			if (line->action == ACTION_NONE) {
-				if (
-					(template->lines.length >= 2) &&
-					(template->lines.start[template->lines.length - 2].action == ACTION_NONE)
-				) {
-					template->lines.start[template->lines.length - 2].line.length += 1 + line->line.length;
-					resetLine(*line);
-				} else {
-					allocNewLine(line, template->lines, alloc_error);
-				}
-			} else {
-				allocNewLine(line, template->lines, alloc_error);
-			}
-
-			current_expression = &line->single_expression;
-
-		}
+/* #line 116 "parse.rl" */
+	{ ragel_action_end_expression; }
+/* #line 117 "parse.rl" */
+	{ ragel_action_end_expressions; }
+/* #line 105 "parse.rl" */
+	{ ragel_action_end_line; }
 	break;
-/* #line 1798 "parse.c" */
+/* #line 1382 "parse.c" */
 	}
 	}
 
 	}
 
-/* #line 220 "parse.rl" */
+/* #line 148 "parse.rl" */
 
 
 	template->lines.length -= 1;
-	if (template->lines.length) {
-		if (template->lines.start[template->lines.length-1].param_expressions) {
-			template->lines.start[template->lines.length-1].param_expressions->length -= 1;
-		}
-	}
+	// if (template->lines.length) {
+	// 	if (template->lines.start[template->lines.length-1].param_expressions) {
+	// 		template->lines.start[template->lines.length-1].param_expressions->length -= 1;
+	// 	}
+	// }
 
 };
 

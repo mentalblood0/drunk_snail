@@ -150,13 +150,9 @@ def test_multiple_params():
 
 def test_multiple_params_followed_by_empty_line():
 	assert render_lambda(
-		'<!-- (param)a --><!-- (param)b -->\n\n',
+		'Rendering <!-- (param)size -->x<!-- (param)size --> table (mean of <!-- (param)experiments_number --> experiments)\n\n',
 		{
-			'a': 'a',
-			'b': 'bb'
+			'size': '10',
+			'experiments_number': '1000'
 		}
-	)
-	print('ok')
-
-
-test_multiple_params_followed_by_empty_line()
+	) == 'Rendering 10x10 table (mean of 1000 experiments)\n\n'

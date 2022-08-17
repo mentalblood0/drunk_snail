@@ -49,7 +49,19 @@ def test_cyrillic_name():
 	assert render('тест_кириллик_нейм', {}) == 'lalala\n'
 
 
+def test_nonexistent_param():
+	assert render_lambda('lalala<!-- (param)p -->lololo', {}) == 'lalalalololo\n'
+
+
 def test_nonexistent_ref():
 	addTemplate('test_nonexistent_ref', '<!-- (ref)no -->')
 	with pytest.raises(KeyError):
 		render('test_nonexistent_ref', {})
+
+
+def test_nonexistent_ref_deep():
+
+	addTemplate('test_nonexistent_ref_1', '<!-- (ref)test_nonexistent_ref_2 -->')
+	addTemplate('test_nonexistent_ref_2', '<!-- (ref)no -->')
+	with pytest.raises(KeyError):
+		render('test_nonexistent_ref_1', {})

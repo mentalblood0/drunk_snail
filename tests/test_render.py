@@ -71,12 +71,12 @@ def test_consicutive_lines(number=2):
 	
 	render_lambda(
 		''.join(
-			f'\t<!-- (ref)test_consicutive_lines_{i} -->\n'
+			f'    <!-- (ref)test_consicutive_lines_{i} -->\n'
 			for i in range(number)
 		),
 		{}
 	) == ''.join(
-		f'\t{i}\n'
+		f'    {i}\n'
 		for i in range(number)
 	)
 

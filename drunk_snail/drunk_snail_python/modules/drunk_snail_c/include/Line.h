@@ -205,19 +205,19 @@ typedef struct {
 \
 	printf(_prefix "expression \"" _name "\":\n");\
 \
-	printToken((_expression).tokens.expression, "expression", "\t\t");\
-	printToken((_expression).tokens.name, "name", "\t\t");\
+	printToken((_expression).tokens.expression, "expression", "        ");\
+	printToken((_expression).tokens.name, "name", "        ");\
 \
-	printFlag((_expression).flags.optional, "optional", "\t\t");\
-	printFlag((_expression).flags.strict, "strict", "\t\t");\
+	printFlag((_expression).flags.optional, "optional", "        ");\
+	printFlag((_expression).flags.strict, "strict", "        ");\
 \
 }
 
 #define printLine(_line) {\
 	printf("line %p\n", &(_line));\
-	printAction((_line).action, "\t");\
-	printToken((_line).line, "line", "\t");\
-	printOther((_line).other.left, "left", "\t");\
-	printExpression((_line).single_expression, "single_expression", "\t");\
-	printOther((_line).other.right, "right", "\t");\
+	printAction((_line).action, "    ");\
+	printToken((_line).line, "line", "    ");\
+	printOther((_line).other.left, "left", "    ");\
+	printExpression((_line).single_expression, "single_expression", "    ");\
+	printOther((_line).other.right, "right", "    ");\
 }

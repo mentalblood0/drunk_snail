@@ -55,7 +55,7 @@ with open(os.path.join(
 	syntax = '\n'.join([
 		re.sub(' (?:>|%)action(?:_(?:\S)*)', '', striped_line)
 		for line in re.match('(?:.|\n)*(}(.|\n)*}%%)(?:.|\n)*', f.read()).groups()[0].split('\n')
-		for striped_line in [line.strip('\t;')]
+		for striped_line in [line.strip('    ;')]
 		if (len(striped_line) > 0) and (striped_line not in  ['}', '}%%'])
 	][:-2])
 
@@ -69,7 +69,7 @@ result = Template('README')({
 	],
 	'row_template': Template('Row').text,
 	'table_template': Template('Table').text,
-	'table_arguments': json.dumps(table_arguments, indent='\t'),
+	'table_arguments': json.dumps(table_arguments, indent='    '),
 	'table_result': Template('Table')(table_arguments),
 	'syntax': syntax,
 	'Example': [{

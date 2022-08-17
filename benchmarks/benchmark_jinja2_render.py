@@ -20,11 +20,11 @@ class table(Benchmark, WithOutputMetrics, WithName):
 		return Environment().from_string(
 			'<table>\n'
 			'{% for row in rows %}'
-				'\t<tr>\n'
+				'    <tr>\n'
 			'{% for cell in row %}'
-					'\t\t<td>{{ cell }}</td>\n'
+					'        <td>{{ cell }}</td>\n'
 			'{% endfor %}'
-				'\t</tr>\n'
+				'    </tr>\n'
 			'{% endfor %}'
 			'</table>'
 		)

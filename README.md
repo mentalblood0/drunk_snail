@@ -17,45 +17,45 @@
 Row:
 ```html
 <tr>
-	<td><!-- (strict)(param)cell --></td>
+    <td><!-- (strict)(param)cell --></td>
 </tr>
 ```
 Table:
 ```html
 <table>
-	<!-- (strict)(ref)Row -->
+    <!-- (strict)(ref)Row -->
 </table>
 ```
 Arguments:
 ```json
 {
-	"Row": [
-		{
-			"cell": [
-				"1",
-				"2"
-			]
-		},
-		{
-			"cell": [
-				"3",
-				"4"
-			]
-		}
-	]
+    "Row": [
+        {
+            "cell": [
+                "1",
+                "2"
+            ]
+        },
+        {
+            "cell": [
+                "3",
+                "4"
+            ]
+        }
+    ]
 }
 ```
 Result:
 ```html
 <table>
-	<tr>
-		<td>1</td>
-		<td>2</td>
-	</tr>
-	<tr>
-		<td>3</td>
-		<td>4</td>
-	</tr>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>4</td>
+    </tr>
 </table>
 
 ```
@@ -68,19 +68,19 @@ Rendering 100x100 table (mean of 100-10000 experiments)
 
 | Engine | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| [django](https://github.com/django/django) | 25.6 | 39 | 5.48 |
-| [chevron](https://github.com/noahmorrison/chevron) | 23.309 | 42 | 6.0198 |
-| [airspeed](https://github.com/purcell/airspeed) | 20.56 | 48 | 6.83 |
-| [TRender](https://github.com/cesbit/trender) | 7.36 | 135 | 19.059 |
-| [mako](https://github.com/sqlalchemy/mako) | 1.186 | 843 | 118.36 |
-| [jinja](https://github.com/pallets/jinja) | 1.176 | 850 | 119.314 |
-| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.123 | 8130 | 1141.37 |
+| [django](https://github.com/django/django) | 25.99 | 38 | 5.4 |
+| [chevron](https://github.com/noahmorrison/chevron) | 22.88 | 43 | 6.133 |
+| [airspeed](https://github.com/purcell/airspeed) | 22.86 | 43 | 6.138 |
+| [TRender](https://github.com/cesbit/trender) | 7.37 | 135 | 19.039 |
+| [mako](https://github.com/sqlalchemy/mako) | 1.153 | 867 | 121.66 |
+| [jinja](https://github.com/pallets/jinja) | 1.222 | 818 | 164.39 |
+| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.149 | 6711 | 1346.95 |
 
 | Other | Time, ms  | dicts / s | output, MB / s |
 | -- | --: | --: | --: |
-| Arguments to JSON | 0.47 | 2127 | 128.093 |
-| Arguments to string | 0.39 | 2564 | 153.58 |
-| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.065 | 15384 | 771.4 |
+| Arguments to JSON | 0.47 | 2127 | 128.59 |
+| Arguments to string | 0.37 | 2702 | 162.73 |
+| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.066 | 15151 | 763.34 |
 
 
 
@@ -101,42 +101,42 @@ from drunk_snail import Template
 
 Template('Row').register(
 '''<tr>
-	<td><!-- (strict)(param)cell --></td>
+    <td><!-- (strict)(param)cell --></td>
 </tr>'''
 )
 table = Template('Table').register(
 '''<table>
-	<!-- (strict)(ref)Row -->
+    <!-- (strict)(ref)Row -->
 </table>'''
 )
 
 args = {
-	"Row": [
-		{
-			"cell": [
-				"1",
-				"2"
-			]
-		},
-		{
-			"cell": [
-				"3",
-				"4"
-			]
-		}
-	]
+    "Row": [
+        {
+            "cell": [
+                "1",
+                "2"
+            ]
+        },
+        {
+            "cell": [
+                "3",
+                "4"
+            ]
+        }
+    ]
 }
 
 result = table(args)
 assert result == '''<table>
-	<tr>
-		<td>1</td>
-		<td>2</td>
-	</tr>
-	<tr>
-		<td>3</td>
-		<td>4</td>
-	</tr>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>4</td>
+    </tr>
 </table>
 '''
 ```
@@ -152,23 +152,24 @@ Line may have:
 * 0 parameter expressions and 1 reference expression
 
 ```
-open = '<!--'
-close = '-->'
-delimeter = '\n'
-other = (any - delimeter)+
-param = '(param)'
-ref = '(ref)'
-type = param | ref
-optional = '(optional)'
-strict = '(strict)'
-flag = optional | strict
-name = ([a-zA-Z_][a-zA-Z_0-9]*)
-param_expression = (open ' '* flag? param name ' '* close)
-ref_expression = (open ' '* flag? ref name ' '* close)
-expressions = ((param_expression other?)+ | (ref_expression other?))
-line = (other? expressions?)
-template = (line delimeter)* (line - zlen)?
-main := template
+		open = '<!--'
+		close = '-->'
+		delimeter = '\n'
+		other = (any - delimeter)+
+		param = '(param)'
+		ref = '(ref)'
+		type = param | ref
+		optional = '(optional)'
+		strict = '(strict)'
+		flag = optional | strict
+		name = ([a-zA-Z_][a-zA-Z_0-9]*)
+		param_expression = (open ' '* flag? param name ' '* close)
+		ref_expression = (open ' '* flag? ref name ' '* close)
+		expressions = ((param_expression other?)+ | (ref_expression other?))
+		line = (other? expressions?)
+		template = (line delimeter)* (line - zlen)?
+		main := template
+		write init
 ```
 
 

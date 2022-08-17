@@ -68,19 +68,19 @@ Rendering 100x100 table (mean of 1-100 experiments)
 
 | Engine | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| airspeed_render | 28.025 |   | 5.0068 |
-| chevron_render | 28.58 |   | 4.91 |
-| django_render | 31.59 |   | 4.44 |
-| drunk_snail_render | 0.153 |   | 916.51 |
-| jinja2_render | 1.45 |   | 96.93 |
-| mako_render | 1.43 |   | 98.195 |
-| trender_render | 9.41 |   | 14.91 |
+| airspeed_render | 26.41 |   | 5.314 |
+| chevron_render | 29.6 |   | 4.74 |
+| django_render | 32.174 |   | 4.36 |
+| drunk_snail_render | 0.146 |   | 960.42 |
+| jinja2_render | 1.46 |   | 96.39 |
+| mako_render | 1.43 |   | 98.075 |
+| trender_render | 9.46 |   | 14.84 |
 
 | Other | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| other | 0.44 |   | 136.61 |
-| other | 0.119 |   | 422.54 |
-| other | 0.5 |   | 119.51 |
+| other | 0.44 |   | 135.83 |
+| other | 0.121 |   | 415.098 |
+| other | 0.51 |   | 118.35 |
 
 
 

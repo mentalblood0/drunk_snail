@@ -146,3 +146,17 @@ def test_multiple_params():
 			'c': '<c>'
 		 }
 	) == 'before<a>between1<b>between2<c>after\n'
+
+
+def test_multiple_params_followed_by_empty_line():
+	assert render_lambda(
+		'<!-- (param)a --><!-- (param)b -->\n\n',
+		{
+			'a': 'a',
+			'b': 'bb'
+		}
+	)
+	print('ok')
+
+
+test_multiple_params_followed_by_empty_line()

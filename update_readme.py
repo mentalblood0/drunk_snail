@@ -13,7 +13,8 @@ for name in [
 	'RenderingResult.md',
 	'Row.xml',
 	'Table.xml',
-	'Example.md'
+	'Example.md',
+	'UsageExample.py'
 ]:
 	with open(os.path.join('templates', name)) as f:
 		Template(os.path.splitext(name)[0]).register(f.read())
@@ -25,6 +26,15 @@ table_arguments = {
 		{"cell": ["3", "4"]}
 	]
 }
+usage_example_arguments = {
+	'row_template': Template('Row').text,
+	'table_template': Template('Table').text,
+	'table_arguments': json.dumps(table_arguments, indent='    '),
+	'table_result': Template('Table')(table_arguments)
+}
+exec(Template('UsageExample')(
+	usage_example_arguments
+))
 
 with open(os.path.join('benchmarks', 'benchmark_default.json')) as f:
 	benchmarks_config = json.load(f)
@@ -81,6 +91,7 @@ result = Template('README')({
 	'table_template': Template('Table').text,
 	'table_arguments': json.dumps(table_arguments, indent='    '),
 	'table_result': Template('Table')(table_arguments),
+	'UsageExample': usage_example_arguments,
 	'syntax': syntax,
 	'Example': [{
 		'code': '<!-- (ref)AnotherTemplateName -->',

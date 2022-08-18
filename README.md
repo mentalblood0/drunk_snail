@@ -68,20 +68,22 @@ Rendering 100x100 table (mean of 100-10000 experiments)
 
 | Engine | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| [django](https://github.com/django/django) | 31.78 | 31 | 6.32 |
-| [chevron](https://github.com/noahmorrison/chevron) | 29.92 | 33 | 6.71 |
-| [airspeed](https://github.com/purcell/airspeed) | 26.185 | 38 | 7.67 |
-| [TRender](https://github.com/cesbit/trender) | 9.241 | 108 | 21.74 |
-| [jinja](https://github.com/pallets/jinja) | 1.43 | 699 | 140.35 |
-| [mako](https://github.com/sqlalchemy/mako) | 1.4 | 714 | 143.271 |
-| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.143 | 6993 | 1403.86 |
+| [django](https://github.com/django/django) | 32.116 | 31 | 6.256 |
+| [chevron](https://github.com/noahmorrison/chevron) | 29.247 | 34 | 6.87 |
+| [airspeed](https://github.com/purcell/airspeed) | 26.68 | 37 | 7.53 |
+| [TRender](https://github.com/cesbit/trender) | 9.32 | 107 | 21.55 |
+| [jinja](https://github.com/pallets/jinja) | 1.43 | 699 | 140.62 |
+| [mako](https://github.com/sqlalchemy/mako) | 1.4 | 714 | 143.46 |
+| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.142 | 7042 | 1418.79 |
 
 | Other | Time, ms  | dicts / s | output, MB / s |
 | -- | --: | --: | --: |
-| Arguments to string | 0.49 | 2040 | 121.95 |
-| Arguments to JSON | 0.43 | 2325 | 141.38 |
-| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.109 | 9174 | 461.79 |
+| Arguments to string | 0.5 | 2000 | 121.57 |
+| Arguments to JSON | 0.43 | 2325 | 140.88 |
+| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.108 | 9259 | 462.76 |
 
+
+Benchmarks done using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite) (see [`Benchmarking`](#benchmarking) section below)
 
 
 
@@ -104,7 +106,8 @@ Template('Row').register(
     <td><!-- (strict)(param)cell --></td>
 </tr>'''
 )
-table = Template('Table').register(
+table = Template('Table')
+table.register(
 '''<table>
     <!-- (strict)(ref)Row -->
 </table>'''
@@ -147,9 +150,10 @@ assert result == '''<table>
 
 Line may have:
 
-* 0 parameter expressions and 0 reference expressions
-* Any number of parameter expressions and 0 reference expressions
-* 0 parameter expressions and 1 reference expression
+| parameters | references |
+| ---------- | ---------- |
+| *          | 0          |
+| 0          | 1          |
 
 ```
 open = '<!--'

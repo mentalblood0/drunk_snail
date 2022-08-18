@@ -35,6 +35,8 @@ Result:
 
 <!-- (ref)TableRenderingResults -->
 
+Benchmarks done using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite) (see [`Benchmarking`](#benchmarking) section below)
+
 
 
 ## Installation
@@ -48,20 +50,7 @@ pip install git+<!-- (param)git_link -->
 ## Usage
 
 ```python
-from drunk_snail import Template
-
-
-Template('Row').register(
-'''<!-- (param)row_template -->'''
-)
-table = Template('Table').register(
-'''<!-- (param)table_template -->'''
-)
-
-args = <!-- (param)table_arguments -->
-
-result = table(args)
-assert result == '''<!-- (param)table_result -->'''
+<!-- (ref)UsageExample -->
 ```
 
 
@@ -70,9 +59,10 @@ assert result == '''<!-- (param)table_result -->'''
 
 Line may have:
 
-* 0 parameter expressions and 0 reference expressions
-* Any number of parameter expressions and 0 reference expressions
-* 0 parameter expressions and 1 reference expression
+| parameters | references |
+| ---------- | ---------- |
+| *          | 0          |
+| 0          | 1          |
 
 ```
 <!-- (param)syntax -->

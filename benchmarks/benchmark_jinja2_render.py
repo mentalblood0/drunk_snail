@@ -26,7 +26,7 @@ class table(Benchmark, WithOutputMetrics, WithName):
 			'{% endfor %}'
 				'    </tr>\n'
 			'{% endfor %}'
-			'</table>'
+			'</table>\n\n'
 		)
 
 	@functools.cached_property

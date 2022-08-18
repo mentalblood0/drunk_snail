@@ -20,13 +20,13 @@ class table(Benchmark, WithOutputMetrics, WithName):
 		return (
 			'<table>\n'
 			'{{#Row}}\n'
-			'	<tr>\n'
+			'    <tr>\n'
 			'{{#cell}}\n'
-			'		<td>{{value}}</td>\n'
+			'        <td>{{value}}</td>\n'
 			'{{/cell}}\n'
-			'	</tr>\n'
+			'    </tr>\n'
 			'{{/Row}}\n'
-			'</table>'
+			'</table>\n'
 		)
 
 	@functools.cached_property

@@ -30,10 +30,12 @@ with open(os.path.join('benchmarks', 'benchmark_default.json')) as f:
 	benchmarks_config = json.load(f)
 
 table_size = benchmarks_config.values().__iter__().__next__().values().__iter__().__next__()['width']
-for module in benchmarks_config.values():
-	for benchmark in module.values():
-		assert benchmark['width'] == benchmark['height']
-		assert benchmark['width'] == table_size
+assert all((
+	benchmark['width'] == benchmark['height'] and
+	benchmark['width'] == table_size
+	for module in benchmarks_config.values()
+	for benchmark in module.values()
+))
 
 experiments_numbers = [
 	benchmark['__n__']
@@ -42,6 +44,14 @@ experiments_numbers = [
 ]
 
 benchmarks_result = Session('.', 'benchmark_', benchmarks_config)(None).as_dict
+
+output_size = benchmarks_result.values().__iter__().__next__().values().__iter__().__next__()['size']
+assert all((
+	benchmark['size'] == output_size
+	for module in benchmarks_result.values()
+	for benchmark_name, benchmark in module.items()
+	if benchmark_name == 'table'
+))
 
 
 with open(os.path.join(

@@ -28,13 +28,13 @@ class table(Benchmark, WithOutputMetrics, WithName):
 		return django.template.Template(
 			'<table>\n'
 			'{% for row in table %}'
-			'	<tr>'
+			'    <tr>'
 			'{% for value in row %}\n'
-			'		<td>{{ value }}</td>'
+			'        <td>{{ value }}</td>'
 			'{% endfor %}\n'
-			'	</tr>\n'
+			'    </tr>\n'
 			'{% endfor %}'
-			'</table>'
+			'</table>\n'
 		)
 
 	@functools.cached_property

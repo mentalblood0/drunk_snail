@@ -20,13 +20,13 @@ class table(Benchmark, WithOutputMetrics, WithName):
 		return airspeed.Template(
 			'<table>\n'
 			'#foreach ($row in $table)'
-			'	<tr>\n'
+			'    <tr>\n'
 			'#foreach ($value in $row)'
-			'		<td>$value</td>\n'
+			'        <td>$value</td>\n'
 			'#end'
-			'	</tr>\n'
+			'    </tr>\n'
 			'#end'
-			'</table>'
+			'</table>\n'
 		)
 
 	@functools.cached_property

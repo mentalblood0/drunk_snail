@@ -32,13 +32,13 @@ class table(Benchmark, WithOutputMetrics, WithName):
 		return TRender(
 			'<table>\n'
 			'#for @row in @table:\n'
-			'	<tr>\n'
+			'    <tr>\n'
 			'#for @value in @row:\n'
-			'		<td>@value</td>\n'
+			'        <td>@value</td>\n'
 			'#end\n'
-			'	</tr>\n'
+			'    </tr>\n'
 			'#end\n'
-			'</table>'
+			'</table>\n\n'
 		)
 
 	def run(self):

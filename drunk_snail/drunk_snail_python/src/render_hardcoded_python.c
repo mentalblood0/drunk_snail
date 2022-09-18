@@ -28,7 +28,7 @@ PyObject *render_hardcoded_python (PyObject *self, PyObject *args) {
 
 		PyObject* r = PyList_GET_ITEM(rows, i);
 
-		memcpy(output_end, "    <tr>\n", 6); output_end += 6;
+		memcpy(output_end, "    <tr>\n", 9); output_end += 9;
 
 		PyObject* cells = PyDict_GetItemString(r, "cell");
 		Py_ssize_t cells_count = PyList_GET_SIZE(cells);
@@ -37,16 +37,16 @@ PyObject *render_hardcoded_python (PyObject *self, PyObject *args) {
 
 			PyObject* c = PyList_GET_ITEM(cells, i);
 
-			memcpy(output_end, "        <td>", 6); output_end += 6;
+			memcpy(output_end, "        <td>", 12); output_end += 12;
 
 			content = PyUnicode_AsUTF8AndSize(c, &content_size);
-			memcpy(output_end, content, content_size);
+			memcpy(output_end, content, content_size); output_end += content_size;
 
 			memcpy(output_end, "</td>\n", 6); output_end += 6;
 
 		}
 
-		memcpy(output_end, "    </tr>\n", 7); output_end += 7;
+		memcpy(output_end, "    </tr>\n", 10); output_end += 10;
 
 	}
 

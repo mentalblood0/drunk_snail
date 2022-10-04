@@ -43,11 +43,15 @@
 
 #define drunk_memcpy(target, source, length) {\
 	if (length) {\
-		if (length == 1) {\
-			*(target) = *(source);\
-		} else {\
-			memcpy(target, source, length);\
+		switch (length) {\
+			case 1:\
+				*(target) = *(source);\
+				++target;\
+				break;\
+			default:\
+				memcpy(target, source, length);\
+				target += length;\
+				break;\
 		}\
-		target += length;\
 	}\
 }

@@ -53,7 +53,7 @@ experiments_numbers = [
 	for benchmark in module.values()
 ]
 
-benchmarks_result = Session('.', 'benchmark_', benchmarks_config)(None).as_dict
+benchmarks_result = Session('.', 'benchmark_', benchmarks_config)(None, True).as_dict
 
 output_size = benchmarks_result.values().__iter__().__next__().values().__iter__().__next__()['size']
 assert all((

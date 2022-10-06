@@ -48,6 +48,18 @@
 				*(target) = *(source);\
 				++target;\
 				break;\
+			case 2:\
+				*(target) = *(source);\
+				*(target+1) = *(source+1);\
+				target += 2;\
+				break;\
+			case 4:\
+				*(target) = *(source);\
+				*(target+1) = *(source+1);\
+				*(target+2) = *(source+2);\
+				*(target+3) = *(source+3);\
+				target += 4;\
+				break;\
 			default:\
 				memcpy(target, source, length);\
 				target += length;\

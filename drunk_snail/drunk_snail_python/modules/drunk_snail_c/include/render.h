@@ -63,6 +63,10 @@ typedef struct RenderResult {
 	list_size = DRUNK_LIST_GET_LENGTH(values);\
 	for (j = 0; j < list_size; j++) {\
 		value = DRUNK_AS_STRING_AND_LENGTH(DRUNK_LIST_GET_ITEM(values, j), &value_size);\
+		if (!value) {\
+			render_result->message = "Non-string value";\
+			exit_render_();\
+		}\
 		render__param(\
 			*output_end,\
 			(_line).other.left.start, (_line).other.left.length,\
@@ -109,6 +113,10 @@ typedef struct RenderResult {
 					renderParamList(_line);\
 				} else {\
 					value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
+					if (!value) {\
+						render_result->message = "Non-string value";\
+						exit_render_();\
+					}\
 					render__param(\
 						*output_end,\
 						(_line).other.left.start, (_line).other.left.length,\
@@ -186,6 +194,10 @@ typedef struct RenderResult {
 				values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
 				if (values) {\
 					expression->value = DRUNK_AS_STRING_AND_LENGTH(values, &expression->value_size);\
+					if (!expression->value) {\
+						render_result->message = "Non-string value";\
+						exit_render_();\
+					}\
 					required_buffer_size += expression->value_size;\
 				} else {\
 					expression->value_size = 0;\

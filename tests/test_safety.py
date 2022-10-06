@@ -65,3 +65,13 @@ def test_nonexistent_ref_deep():
 	addTemplate('test_nonexistent_ref_2', '<!-- (ref)no -->')
 	with pytest.raises(KeyError):
 		render('test_nonexistent_ref_1', {})
+
+
+def test_nonstring():
+	for template, params in (
+		('<!-- (param)x -->', {'x': 1}),
+		('<!-- (param)x -->', {'x': [1]}),
+		('<!-- (param)x --><!-- (param)y -->', {'x': '1', 'y': 1})
+	):
+		with pytest.raises(Exception):
+			render_lambda(template, params)

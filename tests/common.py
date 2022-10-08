@@ -7,7 +7,7 @@ from drunk_snail_python import addTemplate, removeTemplate, render
 
 @pytest.fixture
 def param_values():
-	return [str(i) for i in range(100)]
+	return [str(i) for i in range(1024)]
 
 
 def render_lambda(text, params={}, refs={}):

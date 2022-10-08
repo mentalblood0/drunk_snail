@@ -3,42 +3,45 @@ from setuptools import setup, Extension, find_packages
 
 
 
-def paths(root: str, extension: str):
-	return glob.glob(f'{root}/*.{extension}') + glob.glob(f'{root}/**/*.{extension}', recursive=True)
-
-
 if __name__ == '__main__':
-
-	try:
-		with open('README.md') as f:
-			long_description = f.read()
-	except FileNotFoundError:
-		long_description = ''
 
 	setup(
 
 		name='drunk_snail',
 		version='7.0.4',
-		description='Simple template engine. Faster than you think',
-		long_description=long_description,
+		python_requires='>=3.5',
+		keywords=['template-engine', 'ragel'],
+		url='https://github.com/MentalBlood/drunk_snail',
+
+		description='Template engine. Faster than you think',
+		long_description=open('README.md').read(),
 		long_description_content_type='text/markdown',
+
+		classifiers=[
+			'Development Status :: 5 - Production/Stable',
+			'Intended Audience :: Developers',
+			'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+			'Topic :: Text Processing :: Markup :: XML',
+			'Topic :: Text Processing :: Markup :: HTML',
+			'Typing :: Typed',
+			'Operating System :: OS Independent',
+			'Programming Language :: C',
+			'Programming Language :: Python :: 3.5',
+			'License :: OSI Approved :: BSD License'
+		],
+
 		author='mentalblood',
 		author_email='neceporenkostepan@gmail.com',
 		maintainer='mentalblood',
 		maintainer_email='neceporenkostepan@gmail.com',
-		keywords=['template-engine', 'ragel'],
-		url='https://github.com/MentalBlood/drunk_snail',
-		python_requires='>=3.5',
 
-		packages=find_packages(),
+		packages=find_packages(exclude=['tests']),
 		ext_modules=[
 			Extension(
 				name='drunk_snail_python',
-				sources=paths('drunk_snail/drunk_snail_python', 'c'),
+				sources=glob.glob(f'drunk_snail/drunk_snail_python/**/*.c', recursive=True),
 				extra_compile_args=['-O3']
 			)
-		],
-
-		data_files=paths('drunk_snail/drunk_snail_python', 'h')
+		]
 
 	)

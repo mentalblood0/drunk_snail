@@ -77,9 +77,9 @@ def test_stack_overflow(param_values):
 
 def test_memory_leak():
 
-	text = ' ' * 1024 * 1024 * 1024 # 1GB
+	text = ' ' * 1024 * 1024 # 1MB
 
-	for i in range(32):
+	for i in range(1024 * 32):
 		addTemplate('big', text)
 		removeTemplate('big')
 

@@ -1,4 +1,3 @@
-import uuid
 import pytest
 
 from drunk_snail_python import addTemplate, removeTemplate, render
@@ -13,10 +12,7 @@ def param_values():
 def render_lambda(text, params={}, refs={}):
 
 	for name, text in (refs | {'l': text}).items():
-		try:
-			removeTemplate(name)
-		except NameError:
-			pass
+		removeTemplate(name)
 		addTemplate(name, text)
 
 	return render('l', params)

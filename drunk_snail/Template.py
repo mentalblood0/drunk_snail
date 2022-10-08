@@ -12,6 +12,7 @@ class Template:
 		return drunk_snail_python.getTemplate(self.name)
 
 	def register(self, text: str) -> None:
+		drunk_snail_python.removeTemplate(self.name)
 		drunk_snail_python.addTemplate(self.name, text)
 
 	def unregister(self) -> None:

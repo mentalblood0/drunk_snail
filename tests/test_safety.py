@@ -1,6 +1,6 @@
 import pytest
 
-from drunk_snail_python import addTemplate, render
+from drunk_snail_python import addTemplate, removeTemplate, render
 
 from .common import render_lambda, param_values
 
@@ -73,6 +73,15 @@ def test_stack_overflow(param_values):
 		)
 
 	assert render(f'o{param_values[-1]}', {}) == ''
+
+
+def test_memory_leak():
+
+	text = ' ' * 1024 * 1024 * 1024 # 1GB
+
+	for i in range(32):
+		addTemplate('big', text)
+		removeTemplate('big')
 
 
 def test_cyrillic_source():

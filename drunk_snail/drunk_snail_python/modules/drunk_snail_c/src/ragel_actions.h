@@ -34,7 +34,6 @@
 #define ragel_action_param line->action = ACTION_PARAM;
 #define ragel_action_ref line->action = ACTION_REF;
 #define ragel_action_optional current_expression->flags.optional = true;
-#define ragel_action_strict current_expression->flags.strict = true;
 #define ragel_action_start_name current_expression->tokens.name.start = p;
 #define ragel_action_end_name current_expression->tokens.name.end = p;
 

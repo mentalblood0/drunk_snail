@@ -105,12 +105,6 @@ result = Template('README')({
 	},{
 		'code': '<!-- (optional)(param)some_param_name -->',
 		'description': 'skips line if no param provided'
-	},{
-		'code': '<!-- (strict)(ref)AnotherTemplateName -->',
-		'description': 'corresponding object must be list[dict]'
-	},{
-		'code': '<!-- (strict)(param)some_param_name -->',
-		'description': 'corresponding object must be list[string]'
 	}],
 	'TableRenderingResults': {
 		'size': str(table_size),

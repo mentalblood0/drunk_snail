@@ -101,13 +101,13 @@ def test_table():
 
 	addTemplate('Row',
 		'<tr>\n'
-		'	<td><!-- (strict)(param)cell --></td>\n'
+		'	<td><!-- (param)cell --></td>\n'
 		'</tr>\n'
 	)
 
 	assert render_lambda(
 		'<table>\n'
-		'	<!-- (strict)(ref)Row -->\n'
+		'	<!-- (ref)Row -->\n'
 		'</table>\n',
 		{
 			"Row": [

@@ -107,7 +107,6 @@ void _parse(
 		action action_param { ragel_action_param; }
 		action action_ref { ragel_action_ref; }
 		action action_optional { ragel_action_optional; }
-		action action_strict { ragel_action_strict; }
 
 		action action_start_name { ragel_action_start_name; }
 		action action_end_name { ragel_action_end_name; }
@@ -127,8 +126,7 @@ void _parse(
 		type = param | ref;
 
 		optional = '(optional)' %action_optional;
-		strict = '(strict)' %action_strict;
-		flag = optional | strict;
+		flag = optional;
 
 		name = ([a-zA-Z_][a-zA-Z_0-9]*) >action_start_name %action_end_name;
 

@@ -10,7 +10,6 @@ class Syntax:
 	open = '<!--'
 	close = '-->'
 	optional = '(optional)'
-	strict = '(strict)'
 	param = '(param)'
 	ref = '(ref)'
 

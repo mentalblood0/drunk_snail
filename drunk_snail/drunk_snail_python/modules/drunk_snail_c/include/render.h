@@ -107,9 +107,7 @@ typedef struct RenderResult {
 \
 			values = DRUNK_PARAMS_GET_ITEM(params, (_line).single_expression.tokens.name.copy);\
 			if (values) {\
-				if ((_line).single_expression.flags.strict) {\
-					renderParamList(_line);\
-				} else if (DRUNK_IS_LIST(values)) {\
+				if (DRUNK_IS_LIST(values)) {\
 					renderParamList(_line);\
 				} else {\
 					value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
@@ -143,9 +141,7 @@ typedef struct RenderResult {
 \
 			if (values) {\
 \
-				if ((_line).single_expression.flags.strict) {\
-					renderRefList(_line);\
-				} else if (DRUNK_IS_LIST(values)) {\
+				if (DRUNK_IS_LIST(values)) {\
 					renderRefList(_line);\
 				} else {\
 					render(\

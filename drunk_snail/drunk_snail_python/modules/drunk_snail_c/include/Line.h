@@ -23,7 +23,6 @@ typedef struct {
 typedef bool Flag;
 typedef struct {
 	Flag optional;
-	Flag strict;
 } Flags;
 
 typedef enum {
@@ -79,7 +78,6 @@ typedef struct {
 	initToken((_expression).tokens.name);\
 \
 	initFlag((_expression).flags.optional);\
-	initFlag((_expression).flags.strict);\
 \
 }
 
@@ -114,7 +112,6 @@ typedef struct {
 	resetToken((_expression).tokens.name);\
 \
 	resetFlag((_expression).flags.optional);\
-	resetFlag((_expression).flags.strict);\
 \
 }
 
@@ -209,7 +206,6 @@ typedef struct {
 	printToken((_expression).tokens.name, "name", "        ");\
 \
 	printFlag((_expression).flags.optional, "optional", "        ");\
-	printFlag((_expression).flags.strict, "strict", "        ");\
 \
 }
 

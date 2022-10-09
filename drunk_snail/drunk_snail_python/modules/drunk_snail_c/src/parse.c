@@ -1,5 +1,5 @@
 
-/* #line 1 "parse.rl" */
+#line 1 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,7 +24,7 @@
 
 
 
-/* #line 28 "parse.c" */
+#line 28 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 static const int parse_python_start = 0;
 static const int parse_python_first_final = 0;
 static const int parse_python_error = -1;
@@ -32,7 +32,7 @@ static const int parse_python_error = -1;
 static const int parse_python_en_main = 0;
 
 
-/* #line 27 "parse.rl" */
+#line 27 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 
 
 
@@ -109,80 +109,80 @@ void _parse(
 	size_t cs;
 
 	
-/* #line 113 "parse.c" */
+#line 113 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	{
 	cs = parse_python_start;
 	}
 
-/* #line 118 "parse.c" */
+#line 118 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr1:
-/* #line 104 "parse.rl" */
+#line 104 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_line; }
-/* #line 105 "parse.rl" */
+#line 105 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_line; }
 	goto st0;
 tr4:
-/* #line 105 "parse.rl" */
+#line 105 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_line; }
 	goto st0;
-tr37:
-/* #line 116 "parse.rl" */
+tr36:
+#line 115 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expression; }
-/* #line 117 "parse.rl" */
+#line 116 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expressions; }
-/* #line 105 "parse.rl" */
+#line 105 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_line; }
 	goto st0;
-tr40:
-/* #line 117 "parse.rl" */
+tr39:
+#line 116 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expressions; }
-/* #line 105 "parse.rl" */
+#line 105 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_line; }
 	goto st0;
 st0:
 	if ( ++p == pe )
 		goto _test_eof0;
 case 0:
-/* #line 152 "parse.c" */
+#line 152 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 60: goto tr2;
 	}
 	goto tr0;
 tr0:
-/* #line 104 "parse.rl" */
+#line 104 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_line; }
 	goto st1;
 st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 166 "parse.c" */
+#line 166 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 	}
 	goto st1;
 tr2:
-/* #line 104 "parse.rl" */
+#line 104 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_line; }
-/* #line 115 "parse.rl" */
+#line 114 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_expression; }
 	goto st2;
 tr5:
-/* #line 115 "parse.rl" */
+#line 114 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_expression; }
 	goto st2;
 st2:
 	if ( ++p == pe )
 		goto _test_eof2;
 case 2:
-/* #line 186 "parse.c" */
+#line 186 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 33: goto st3;
@@ -229,8 +229,7 @@ case 6:
 		case 60: goto tr5;
 		case 111: goto st7;
 		case 112: goto st17;
-		case 114: goto st70;
-		case 115: goto st78;
+		case 114: goto st63;
 	}
 	goto st1;
 st7:
@@ -319,28 +318,24 @@ st15:
 case 15:
 	switch( (*p) ) {
 		case 10: goto tr4;
-		case 40: goto tr22;
+		case 40: goto tr21;
 		case 60: goto tr5;
 	}
 	goto st1;
-tr22:
-/* #line 109 "parse.rl" */
+tr21:
+#line 109 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_optional; }
-	goto st16;
-tr106:
-/* #line 110 "parse.rl" */
-	{ ragel_action_strict; }
 	goto st16;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
-/* #line 339 "parse.c" */
+#line 334 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
 		case 112: goto st17;
-		case 114: goto st70;
+		case 114: goto st63;
 	}
 	goto st1;
 st17:
@@ -400,29 +395,29 @@ case 22:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 95: goto tr28;
+		case 95: goto tr27;
 	}
 	if ( (*p) > 90 ) {
 		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr28;
+			goto tr27;
 	} else if ( (*p) >= 65 )
-		goto tr28;
+		goto tr27;
 	goto st1;
-tr28:
-/* #line 107 "parse.rl" */
+tr27:
+#line 107 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_param; }
-/* #line 112 "parse.rl" */
+#line 111 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_name; }
 	goto st23;
 st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 422 "parse.c" */
+#line 417 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
-		case 32: goto tr29;
-		case 45: goto tr30;
+		case 32: goto tr28;
+		case 45: goto tr29;
 		case 60: goto tr5;
 		case 95: goto st23;
 	}
@@ -435,15 +430,15 @@ case 23:
 	} else
 		goto st23;
 	goto st1;
-tr29:
-/* #line 113 "parse.rl" */
+tr28:
+#line 112 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_name; }
 	goto st24;
 st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 447 "parse.c" */
+#line 442 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 32: goto st24;
@@ -451,15 +446,15 @@ case 24:
 		case 60: goto tr5;
 	}
 	goto st1;
-tr30:
-/* #line 113 "parse.rl" */
+tr29:
+#line 112 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_name; }
 	goto st25;
 st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 463 "parse.c" */
+#line 458 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 45: goto st26;
@@ -481,49 +476,49 @@ st27:
 		goto _test_eof27;
 case 27:
 	switch( (*p) ) {
-		case 10: goto tr37;
-		case 60: goto tr38;
+		case 10: goto tr36;
+		case 60: goto tr37;
 	}
-	goto tr36;
-tr36:
-/* #line 116 "parse.rl" */
+	goto tr35;
+tr35:
+#line 115 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expression; }
 	goto st28;
 st28:
 	if ( ++p == pe )
 		goto _test_eof28;
 case 28:
-/* #line 497 "parse.c" */
+#line 492 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 	}
 	goto st28;
-tr41:
-/* #line 115 "parse.rl" */
+tr40:
+#line 114 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_expression; }
 	goto st29;
-tr38:
-/* #line 116 "parse.rl" */
+tr37:
+#line 115 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expression; }
-/* #line 115 "parse.rl" */
+#line 114 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_expression; }
 	goto st29;
-tr82:
-/* #line 115 "parse.rl" */
+tr80:
+#line 114 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_expression; }
-/* #line 116 "parse.rl" */
+#line 115 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expression; }
 	goto st29;
 st29:
 	if ( ++p == pe )
 		goto _test_eof29;
 case 29:
-/* #line 523 "parse.c" */
+#line 518 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 33: goto st30;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st30:
@@ -531,9 +526,9 @@ st30:
 		goto _test_eof30;
 case 30:
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 45: goto st31;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st31:
@@ -541,9 +536,9 @@ st31:
 		goto _test_eof31;
 case 31:
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 45: goto st32;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st32:
@@ -551,10 +546,10 @@ st32:
 		goto _test_eof32;
 case 32:
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 32: goto st32;
 		case 40: goto st33;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st33:
@@ -562,12 +557,11 @@ st33:
 		goto _test_eof33;
 case 33:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 111: goto st34;
 		case 112: goto st44;
 		case 114: goto st54;
-		case 115: goto st63;
 	}
 	goto st28;
 st34:
@@ -575,8 +569,8 @@ st34:
 		goto _test_eof34;
 case 34:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 112: goto st35;
 	}
 	goto st28;
@@ -585,8 +579,8 @@ st35:
 		goto _test_eof35;
 case 35:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 116: goto st36;
 	}
 	goto st28;
@@ -595,8 +589,8 @@ st36:
 		goto _test_eof36;
 case 36:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 105: goto st37;
 	}
 	goto st28;
@@ -605,8 +599,8 @@ st37:
 		goto _test_eof37;
 case 37:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 111: goto st38;
 	}
 	goto st28;
@@ -615,8 +609,8 @@ st38:
 		goto _test_eof38;
 case 38:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 110: goto st39;
 	}
 	goto st28;
@@ -625,8 +619,8 @@ st39:
 		goto _test_eof39;
 case 39:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 97: goto st40;
 	}
 	goto st28;
@@ -635,8 +629,8 @@ st40:
 		goto _test_eof40;
 case 40:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 108: goto st41;
 	}
 	goto st28;
@@ -645,9 +639,9 @@ st41:
 		goto _test_eof41;
 case 41:
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 41: goto st42;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st42:
@@ -655,27 +649,23 @@ st42:
 		goto _test_eof42;
 case 42:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 40: goto tr58;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 40: goto tr56;
+		case 60: goto tr40;
 	}
 	goto st28;
-tr58:
-/* #line 109 "parse.rl" */
+tr56:
+#line 109 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_optional; }
-	goto st43;
-tr89:
-/* #line 110 "parse.rl" */
-	{ ragel_action_strict; }
 	goto st43;
 st43:
 	if ( ++p == pe )
 		goto _test_eof43;
 case 43:
-/* #line 676 "parse.c" */
+#line 666 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 112: goto st44;
 		case 114: goto st54;
 	}
@@ -685,8 +675,8 @@ st44:
 		goto _test_eof44;
 case 44:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 97: goto st45;
 	}
 	goto st28;
@@ -695,8 +685,8 @@ st45:
 		goto _test_eof45;
 case 45:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 114: goto st46;
 	}
 	goto st28;
@@ -705,8 +695,8 @@ st46:
 		goto _test_eof46;
 case 46:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 97: goto st47;
 	}
 	goto st28;
@@ -715,8 +705,8 @@ st47:
 		goto _test_eof47;
 case 47:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 109: goto st48;
 	}
 	goto st28;
@@ -725,9 +715,9 @@ st48:
 		goto _test_eof48;
 case 48:
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 41: goto st49;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st49:
@@ -735,32 +725,32 @@ st49:
 		goto _test_eof49;
 case 49:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
-		case 95: goto tr64;
+		case 10: goto tr39;
+		case 60: goto tr40;
+		case 95: goto tr62;
 	}
 	if ( (*p) > 90 ) {
 		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr64;
+			goto tr62;
 	} else if ( (*p) >= 65 )
-		goto tr64;
+		goto tr62;
 	goto st28;
-tr64:
-/* #line 107 "parse.rl" */
+tr62:
+#line 107 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_param; }
-/* #line 112 "parse.rl" */
+#line 111 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_name; }
 	goto st50;
 st50:
 	if ( ++p == pe )
 		goto _test_eof50;
 case 50:
-/* #line 759 "parse.c" */
+#line 749 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 32: goto tr65;
-		case 45: goto tr66;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 32: goto tr63;
+		case 45: goto tr64;
+		case 60: goto tr40;
 		case 95: goto st50;
 	}
 	if ( (*p) < 65 ) {
@@ -772,35 +762,35 @@ case 50:
 	} else
 		goto st50;
 	goto st28;
-tr65:
-/* #line 113 "parse.rl" */
+tr63:
+#line 112 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_name; }
 	goto st51;
 st51:
 	if ( ++p == pe )
 		goto _test_eof51;
 case 51:
-/* #line 784 "parse.c" */
+#line 774 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 32: goto st51;
 		case 45: goto st52;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
-tr66:
-/* #line 113 "parse.rl" */
+tr64:
+#line 112 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_name; }
 	goto st52;
 st52:
 	if ( ++p == pe )
 		goto _test_eof52;
 case 52:
-/* #line 800 "parse.c" */
+#line 790 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 45: goto st53;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st53:
@@ -808,8 +798,8 @@ st53:
 		goto _test_eof53;
 case 53:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 62: goto st27;
 	}
 	goto st28;
@@ -818,8 +808,8 @@ st54:
 		goto _test_eof54;
 case 54:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 101: goto st55;
 	}
 	goto st28;
@@ -828,8 +818,8 @@ st55:
 		goto _test_eof55;
 case 55:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 102: goto st56;
 	}
 	goto st28;
@@ -838,9 +828,9 @@ st56:
 		goto _test_eof56;
 case 56:
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 41: goto st57;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st57:
@@ -848,32 +838,32 @@ st57:
 		goto _test_eof57;
 case 57:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
-		case 95: goto tr74;
+		case 10: goto tr39;
+		case 60: goto tr40;
+		case 95: goto tr72;
 	}
 	if ( (*p) > 90 ) {
 		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr74;
+			goto tr72;
 	} else if ( (*p) >= 65 )
-		goto tr74;
+		goto tr72;
 	goto st28;
-tr74:
-/* #line 108 "parse.rl" */
+tr72:
+#line 108 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_ref; }
-/* #line 112 "parse.rl" */
+#line 111 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_start_name; }
 	goto st58;
 st58:
 	if ( ++p == pe )
 		goto _test_eof58;
 case 58:
-/* #line 872 "parse.c" */
+#line 862 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 32: goto tr75;
-		case 45: goto tr76;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 32: goto tr73;
+		case 45: goto tr74;
+		case 60: goto tr40;
 		case 95: goto st58;
 	}
 	if ( (*p) < 65 ) {
@@ -885,35 +875,35 @@ case 58:
 	} else
 		goto st58;
 	goto st28;
-tr75:
-/* #line 113 "parse.rl" */
+tr73:
+#line 112 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_name; }
 	goto st59;
 st59:
 	if ( ++p == pe )
 		goto _test_eof59;
 case 59:
-/* #line 897 "parse.c" */
+#line 887 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 32: goto st59;
 		case 45: goto st60;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
-tr76:
-/* #line 113 "parse.rl" */
+tr74:
+#line 112 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_name; }
 	goto st60;
 st60:
 	if ( ++p == pe )
 		goto _test_eof60;
 case 60:
-/* #line 913 "parse.c" */
+#line 903 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
+		case 10: goto tr39;
 		case 45: goto st61;
-		case 60: goto tr41;
+		case 60: goto tr40;
 	}
 	goto st28;
 st61:
@@ -921,8 +911,8 @@ st61:
 		goto _test_eof61;
 case 61:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
+		case 10: goto tr39;
+		case 60: goto tr40;
 		case 62: goto st62;
 	}
 	goto st28;
@@ -931,80 +921,113 @@ st62:
 		goto _test_eof62;
 case 62:
 	switch( (*p) ) {
-		case 10: goto tr37;
-		case 60: goto tr82;
+		case 10: goto tr36;
+		case 60: goto tr80;
 	}
-	goto tr36;
+	goto tr35;
 st63:
 	if ( ++p == pe )
 		goto _test_eof63;
 case 63:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
-		case 116: goto st64;
+		case 10: goto tr4;
+		case 60: goto tr5;
+		case 101: goto st64;
 	}
-	goto st28;
+	goto st1;
 st64:
 	if ( ++p == pe )
 		goto _test_eof64;
 case 64:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
-		case 114: goto st65;
+		case 10: goto tr4;
+		case 60: goto tr5;
+		case 102: goto st65;
 	}
-	goto st28;
+	goto st1;
 st65:
 	if ( ++p == pe )
 		goto _test_eof65;
 case 65:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
-		case 105: goto st66;
+		case 10: goto tr4;
+		case 41: goto st66;
+		case 60: goto tr5;
 	}
-	goto st28;
+	goto st1;
 st66:
 	if ( ++p == pe )
 		goto _test_eof66;
 case 66:
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
-		case 99: goto st67;
+		case 10: goto tr4;
+		case 60: goto tr5;
+		case 95: goto tr84;
 	}
-	goto st28;
+	if ( (*p) > 90 ) {
+		if ( 97 <= (*p) && (*p) <= 122 )
+			goto tr84;
+	} else if ( (*p) >= 65 )
+		goto tr84;
+	goto st1;
+tr84:
+#line 108 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
+	{ ragel_action_ref; }
+#line 111 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
+	{ ragel_action_start_name; }
+	goto st67;
 st67:
 	if ( ++p == pe )
 		goto _test_eof67;
 case 67:
+#line 984 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 60: goto tr41;
-		case 116: goto st68;
+		case 10: goto tr4;
+		case 32: goto tr85;
+		case 45: goto tr86;
+		case 60: goto tr5;
+		case 95: goto st67;
 	}
-	goto st28;
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st67;
+	} else if ( (*p) > 90 ) {
+		if ( 97 <= (*p) && (*p) <= 122 )
+			goto st67;
+	} else
+		goto st67;
+	goto st1;
+tr85:
+#line 112 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
+	{ ragel_action_end_name; }
+	goto st68;
 st68:
 	if ( ++p == pe )
 		goto _test_eof68;
 case 68:
+#line 1009 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 41: goto st69;
-		case 60: goto tr41;
+		case 10: goto tr4;
+		case 32: goto st68;
+		case 45: goto st69;
+		case 60: goto tr5;
 	}
-	goto st28;
+	goto st1;
+tr86:
+#line 112 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
+	{ ragel_action_end_name; }
+	goto st69;
 st69:
 	if ( ++p == pe )
 		goto _test_eof69;
 case 69:
+#line 1025 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	switch( (*p) ) {
-		case 10: goto tr40;
-		case 40: goto tr89;
-		case 60: goto tr41;
+		case 10: goto tr4;
+		case 45: goto st70;
+		case 60: goto tr5;
 	}
-	goto st28;
+	goto st1;
 st70:
 	if ( ++p == pe )
 		goto _test_eof70;
@@ -1012,180 +1035,7 @@ case 70:
 	switch( (*p) ) {
 		case 10: goto tr4;
 		case 60: goto tr5;
-		case 101: goto st71;
-	}
-	goto st1;
-st71:
-	if ( ++p == pe )
-		goto _test_eof71;
-case 71:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 102: goto st72;
-	}
-	goto st1;
-st72:
-	if ( ++p == pe )
-		goto _test_eof72;
-case 72:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 41: goto st73;
-		case 60: goto tr5;
-	}
-	goto st1;
-st73:
-	if ( ++p == pe )
-		goto _test_eof73;
-case 73:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 95: goto tr93;
-	}
-	if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr93;
-	} else if ( (*p) >= 65 )
-		goto tr93;
-	goto st1;
-tr93:
-/* #line 108 "parse.rl" */
-	{ ragel_action_ref; }
-/* #line 112 "parse.rl" */
-	{ ragel_action_start_name; }
-	goto st74;
-st74:
-	if ( ++p == pe )
-		goto _test_eof74;
-case 74:
-/* #line 1064 "parse.c" */
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 32: goto tr94;
-		case 45: goto tr95;
-		case 60: goto tr5;
-		case 95: goto st74;
-	}
-	if ( (*p) < 65 ) {
-		if ( 48 <= (*p) && (*p) <= 57 )
-			goto st74;
-	} else if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto st74;
-	} else
-		goto st74;
-	goto st1;
-tr94:
-/* #line 113 "parse.rl" */
-	{ ragel_action_end_name; }
-	goto st75;
-st75:
-	if ( ++p == pe )
-		goto _test_eof75;
-case 75:
-/* #line 1089 "parse.c" */
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 32: goto st75;
-		case 45: goto st76;
-		case 60: goto tr5;
-	}
-	goto st1;
-tr95:
-/* #line 113 "parse.rl" */
-	{ ragel_action_end_name; }
-	goto st76;
-st76:
-	if ( ++p == pe )
-		goto _test_eof76;
-case 76:
-/* #line 1105 "parse.c" */
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 45: goto st77;
-		case 60: goto tr5;
-	}
-	goto st1;
-st77:
-	if ( ++p == pe )
-		goto _test_eof77;
-case 77:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
 		case 62: goto st62;
-	}
-	goto st1;
-st78:
-	if ( ++p == pe )
-		goto _test_eof78;
-case 78:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 116: goto st79;
-	}
-	goto st1;
-st79:
-	if ( ++p == pe )
-		goto _test_eof79;
-case 79:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 114: goto st80;
-	}
-	goto st1;
-st80:
-	if ( ++p == pe )
-		goto _test_eof80;
-case 80:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 105: goto st81;
-	}
-	goto st1;
-st81:
-	if ( ++p == pe )
-		goto _test_eof81;
-case 81:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 99: goto st82;
-	}
-	goto st1;
-st82:
-	if ( ++p == pe )
-		goto _test_eof82;
-case 82:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 60: goto tr5;
-		case 116: goto st83;
-	}
-	goto st1;
-st83:
-	if ( ++p == pe )
-		goto _test_eof83;
-case 83:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 41: goto st84;
-		case 60: goto tr5;
-	}
-	goto st1;
-st84:
-	if ( ++p == pe )
-		goto _test_eof84;
-case 84:
-	switch( (*p) ) {
-		case 10: goto tr4;
-		case 40: goto tr106;
-		case 60: goto tr5;
 	}
 	goto st1;
 	}
@@ -1260,20 +1110,6 @@ case 84:
 	_test_eof68: cs = 68; goto _test_eof; 
 	_test_eof69: cs = 69; goto _test_eof; 
 	_test_eof70: cs = 70; goto _test_eof; 
-	_test_eof71: cs = 71; goto _test_eof; 
-	_test_eof72: cs = 72; goto _test_eof; 
-	_test_eof73: cs = 73; goto _test_eof; 
-	_test_eof74: cs = 74; goto _test_eof; 
-	_test_eof75: cs = 75; goto _test_eof; 
-	_test_eof76: cs = 76; goto _test_eof; 
-	_test_eof77: cs = 77; goto _test_eof; 
-	_test_eof78: cs = 78; goto _test_eof; 
-	_test_eof79: cs = 79; goto _test_eof; 
-	_test_eof80: cs = 80; goto _test_eof; 
-	_test_eof81: cs = 81; goto _test_eof; 
-	_test_eof82: cs = 82; goto _test_eof; 
-	_test_eof83: cs = 83; goto _test_eof; 
-	_test_eof84: cs = 84; goto _test_eof; 
 
 	_test_eof: {}
 	if ( p == eof )
@@ -1305,22 +1141,15 @@ case 84:
 	case 24: 
 	case 25: 
 	case 26: 
+	case 63: 
+	case 64: 
+	case 65: 
+	case 66: 
+	case 67: 
+	case 68: 
+	case 69: 
 	case 70: 
-	case 71: 
-	case 72: 
-	case 73: 
-	case 74: 
-	case 75: 
-	case 76: 
-	case 77: 
-	case 78: 
-	case 79: 
-	case 80: 
-	case 81: 
-	case 82: 
-	case 83: 
-	case 84: 
-/* #line 105 "parse.rl" */
+#line 105 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_line; }
 	break;
 	case 28: 
@@ -1357,34 +1186,27 @@ case 84:
 	case 59: 
 	case 60: 
 	case 61: 
-	case 63: 
-	case 64: 
-	case 65: 
-	case 66: 
-	case 67: 
-	case 68: 
-	case 69: 
-/* #line 117 "parse.rl" */
+#line 116 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expressions; }
-/* #line 105 "parse.rl" */
+#line 105 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_line; }
 	break;
 	case 27: 
 	case 62: 
-/* #line 116 "parse.rl" */
+#line 115 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expression; }
-/* #line 117 "parse.rl" */
+#line 116 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_expressions; }
-/* #line 105 "parse.rl" */
+#line 105 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 	{ ragel_action_end_line; }
 	break;
-/* #line 1382 "parse.c" */
+#line 1204 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.c"
 	}
 	}
 
 	}
 
-/* #line 148 "parse.rl" */
+#line 146 "/mnt/c/Users/necep/repositories/drunk_snail/drunk_snail/drunk_snail_python/modules/drunk_snail_c/src/parse.rl"
 
 
 	template->lines.length -= 1;

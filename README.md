@@ -15,13 +15,13 @@
 Row:
 ```html
 <tr>
-    <td><!-- (strict)(param)cell --></td>
+    <td><!-- (param)cell --></td>
 </tr>
 ```
 Table:
 ```html
 <table>
-    <!-- (strict)(ref)Row -->
+    <!-- (ref)Row -->
 </table>
 ```
 Arguments:
@@ -101,13 +101,13 @@ from drunk_snail import Template
 
 Template('Row').register(
 '''<tr>
-    <td><!-- (strict)(param)cell --></td>
+    <td><!-- (param)cell --></td>
 </tr>'''
 )
 table = Template('Table')
 table.register(
 '''<table>
-    <!-- (strict)(ref)Row -->
+    <!-- (ref)Row -->
 </table>'''
 )
 
@@ -162,7 +162,7 @@ param = '(param)'
 ref = '(ref)'
 type = param | ref
 optional = '(optional)'
-strict = '(strict)'
+strict = ''
 flag = optional | strict
 name = ([a-zA-Z_][a-zA-Z_0-9]*)
 param_expression = (open ' '* flag? param name ' '* close)
@@ -180,8 +180,8 @@ main := template
 * `<!-- (param)some_param_name -->` includes param value(s)
 * `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
 * `<!-- (optional)(param)some_param_name -->` skips line if no param provided
-* `<!-- (strict)(ref)AnotherTemplateName -->` corresponding object must be list[dict]
-* `<!-- (strict)(param)some_param_name -->` corresponding object must be list[string]
+* `<!-- (ref)AnotherTemplateName -->` corresponding object must be list[dict]
+* `<!-- (param)some_param_name -->` corresponding object must be list[string]
 
 
 

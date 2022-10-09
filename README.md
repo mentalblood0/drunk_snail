@@ -66,19 +66,19 @@ Rendering 100x100 table (mean of 100-10000 experiments)
 
 | Engine | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| [django](https://github.com/django/django) | 25.63 | 39 | 7.84 |
-| [chevron](https://github.com/noahmorrison/chevron) | 23.47 | 42 | 8.56 |
-| [airspeed](https://github.com/purcell/airspeed) | 21.27 | 47 | 9.45 |
-| [TRender](https://github.com/cesbit/trender) | 7.56 | 132 | 26.59 |
-| [jinja](https://github.com/pallets/jinja) | 1.231 | 812 | 163.193 |
-| [mako](https://github.com/sqlalchemy/mako) | 1.227 | 814 | 163.77 |
-| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.117 | 8547 | 1722.86 |
+| [django](https://github.com/django/django) | 25.65 | 38 | 7.83 |
+| [chevron](https://github.com/noahmorrison/chevron) | 23.85 | 41 | 8.43 |
+| [airspeed](https://github.com/purcell/airspeed) | 21.41 | 46 | 9.38 |
+| [TRender](https://github.com/cesbit/trender) | 7.63 | 131 | 26.33 |
+| [jinja](https://github.com/pallets/jinja) | 1.262 | 792 | 159.217 |
+| [mako](https://github.com/sqlalchemy/mako) | 1.246 | 802 | 161.311 |
+| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.117 | 8547 | 1721.0104 |
 
 | Other | Time, ms  | dicts / s | output, MB / s |
 | -- | --: | --: | --: |
-| Arguments to JSON | 0.47 | 2127 | 127.52 |
-| Arguments to string | 0.37 | 2702 | 161.66 |
-| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.067 | 14925 | 743.78 |
+| Arguments to JSON | 0.48 | 2083 | 124.54 |
+| Arguments to string | 0.38 | 2631 | 158.05 |
+| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.069 | 14492 | 731.256 |
 
 
 Benchmarks done using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite) (see [`Benchmarking`](#benchmarking) section below)
@@ -162,6 +162,7 @@ param = '(param)'
 ref = '(ref)'
 type = param | ref
 optional = '(optional)'
+flag = optional
 name = ([a-zA-Z_][a-zA-Z_0-9]*)
 param_expression = (open ' '* flag? param name ' '* close)
 ref_expression = (open ' '* flag? ref name ' '* close)
@@ -178,8 +179,6 @@ main := template
 * `<!-- (param)some_param_name -->` includes param value(s)
 * `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
 * `<!-- (optional)(param)some_param_name -->` skips line if no param provided
-* `<!-- (ref)AnotherTemplateName -->` corresponding object must be list[dict]
-* `<!-- (param)some_param_name -->` corresponding object must be list[string]
 
 
 

@@ -42,28 +42,24 @@
 
 
 #define drunk_memcpy(target, source, length) {\
-	if (length) {\
-		switch (length) {\
-			case 1:\
-				*(target) = *(source);\
-				++target;\
-				break;\
-			case 2:\
-				*(target) = *(source);\
-				*(target+1) = *(source+1);\
-				target += 2;\
-				break;\
-			case 4:\
-				*(target) = *(source);\
-				*(target+1) = *(source+1);\
-				*(target+2) = *(source+2);\
-				*(target+3) = *(source+3);\
-				target += 4;\
-				break;\
-			default:\
-				memcpy(target, source, length);\
-				target += length;\
-				break;\
-		}\
+	switch (length) {\
+		case 0:\
+			break;\
+		case 1:\
+			*target++ = *source;\
+			break;\
+		case 2:\
+			*((uint16_t *restrict)target)++ = *(uint16_t *restrict)source;\
+			break;\
+		case 4:\
+			*((uint32_t *restrict)target)++ = *(uint32_t *restrict)source;\
+			break;\
+		case 8:\
+			*((uint64_t *restrict)target)++ = *(uint64_t *restrict)source;\
+			break;\
+		default:\
+			memcpy(target, source, length);\
+			target += length;\
+			break;\
 	}\
 }

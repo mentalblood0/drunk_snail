@@ -22,7 +22,7 @@
 			drunk_memcpy((target), other->start[i-1]->right.start, other->start[i-1]->right.length);\
 		}\
 	}\
-	*target = '\n'; ++target;\
+	*(target)++ = '\n';\
 };
 
 #define render__param(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
@@ -45,7 +45,7 @@
 			drunk_memcpy((target), other->start[i-1]->right.start, other->start[i-1]->right.length);\
 		}\
 	}\
-	*target = '\n'; ++target;\
+	*(target)++ = '\n';\
 };
 
 #define render__param_multi_first(target, OTHER_LEFT, OTHER_LEFT_length, ARG, ARG_length, OTHER_RIGHT, OTHER_RIGHT_length) {\
@@ -70,5 +70,5 @@
 			drunk_memcpy((target), other->start[i-1]->right.start, other->start[i-1]->right.length);\
 		}\
 	}\
-	*target = '\n'; ++target;\
+	*(target)++ = '\n';\
 };

@@ -126,7 +126,7 @@ typedef struct RenderResult {
 				render__param(\
 					*output_end,\
 					(_line).other.left.start, (_line).other.left.length,\
-					"", 0,\
+					value, 0,\
 					(_line).other.right.start, (_line).other.right.length\
 				);\
 			}\

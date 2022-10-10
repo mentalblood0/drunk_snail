@@ -8,7 +8,7 @@ if __name__ == '__main__':
 	setup(
 
 		name='drunk_snail',
-		version='7.1.0',
+		version='7.1.1',
 		python_requires='>=3.5',
 		keywords=['template-engine', 'ragel'],
 		url='https://github.com/MentalBlood/drunk_snail',

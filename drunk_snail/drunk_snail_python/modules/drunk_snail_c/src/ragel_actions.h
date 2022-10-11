@@ -78,7 +78,7 @@
 			}\
 		}\
 		listGetNew(*(line->param_expressions), Expression, current_expression, alloc_error);\
-		if (alloc_error || !current_expression) {\
+		if (!current_expression) {\
 			exit__parse();\
 		}\
 		initExpression(*current_expression);\

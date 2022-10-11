@@ -56,9 +56,6 @@
 
 #define allocNewLine(target, list, alloc_error) {\
 	listGetNew(list, Line, target, alloc_error);\
-	if (alloc_error) {\
-		exit__parse();\
-	}\
 	initLine(*target);\
 }
 

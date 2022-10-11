@@ -53,9 +53,6 @@ typedef struct RenderResult {
 #define addOther(_line) {\
 \
 	listSet(*other, Other*, depth, &((_line).other), alloc_error);\
-	if (alloc_error) {\
-		exit_render_();\
-	}\
 \
 }
 

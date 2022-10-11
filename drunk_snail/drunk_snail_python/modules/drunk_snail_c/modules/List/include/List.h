@@ -26,6 +26,7 @@
 	listExtend(target, TYPE, alloc_error);\
 	if (alloc_error) {\
 		result_target = NULL;\
+		exit__parse();\
 	} else {\
 		result_target = (target).start + (target).length - 1;\
 	}\
@@ -37,6 +38,8 @@
 		drunk_realloc_one((target).start, sizeof(TYPE) * (target).allocated, (target).temp, alloc_error);\
 		if (!alloc_error) {\
 			(target).length += 1;\
+		} else {\
+			exit__parse();\
 		}\
 	} else {\
 		(target).length += 1;\
@@ -50,6 +53,8 @@
 		if (!alloc_error) {\
 			(target).start[(target).length] = element;\
 			(target).length += 1;\
+		} else {\
+			exit_render_();\
 		}\
 	} else {\
 		(target).start[(target).length] = element;\

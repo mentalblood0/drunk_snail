@@ -94,8 +94,6 @@ typedef struct RenderResult {
 	}\
 }
 
-#define last_multiparam_line_expression(_line) (_line).param_expressions->start[(_line).param_expressions->length-1]
-
 #define renderLine(_line) {\
 \
 	switch ((_line).action) {\
@@ -182,50 +180,56 @@ typedef struct RenderResult {
 \
 		case ACTION_PARAM_MULTI:\
 \
-			required_buffer_size = ((*output_end) - render_result->result) + (_line).line.length + other_left_length + other_right_length + 1;\
-			for (expression = (_line).param_expressions->start; (expression - (_line).param_expressions->start) < (_line).param_expressions->length; expression++) {\
-				values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
-				if (values) {\
-					expression->value = DRUNK_AS_STRING_AND_LENGTH(values, &expression->value_size);\
-					if (!expression->value) {\
-						render_result->message = "Non-string value";\
-						exit_render_();\
-					}\
-					required_buffer_size += expression->value_size;\
-				} else {\
-					expression->value_size = 0;\
-				}\
-			}\
-			if (required_buffer_size >= *buffer_size) {\
-				(*buffer_size) = 2 * required_buffer_size;\
-				drunk_realloc_with_shifted(render_result->result, sizeof(char) * (*buffer_size), render_result->result_temp, *output_end, alloc_error);\
-				if (alloc_error) {\
+			expression = (_line).param_expressions->start;\
+\
+			values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
+			if (values) {\
+				value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
+				if (!value) {\
+					render_result->message = "Non-string value";\
 					exit_render_();\
 				}\
-			}\
-\
-			expression = (_line).param_expressions->start;\
-			render__param_multi_first(\
-				*output_end,\
-				(_line).other.left.start, (_line).other.left.length,\
-				expression->value, expression->value_size,\
-				expression->tokens.expression.end, (expression+1)->tokens.expression.start - expression->tokens.expression.end\
-			);\
-\
-			expression++;\
-			for (; (expression - (_line).param_expressions->start) < (_line).param_expressions->length-1; expression++) {\
-				render__param_multi_between(\
+				render__param_multi_first(\
 					*output_end,\
-					expression->value, expression->value_size,\
-					expression->tokens.expression.end, (expression+1)->tokens.expression.start - expression->tokens.expression.end\
+					(_line).other.left.start, (_line).other.left.length,\
+					value, value_size,\
+					expression->tokens.expression.end, (expression + 1)->tokens.expression.start - expression->tokens.expression.end\
 				);\
 			}\
 \
-			render__param_multi_last(\
-				*output_end,\
-				expression->value, expression->value_size,\
-				expression->tokens.expression.end, (_line).line.end - expression->tokens.expression.end\
-			);\
+			++expression;\
+\
+			for (; expression + 1 - ((_line).param_expressions->start + (_line).param_expressions->length); expression++) {\
+\
+				values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
+				if (values) {\
+					value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
+					if (!value) {\
+						render_result->message = "Non-string value";\
+						exit_render_();\
+					}\
+					render__param_multi_between(\
+						*output_end,\
+						value, value_size,\
+						expression->tokens.expression.end, (expression+1)->tokens.expression.start - expression->tokens.expression.end\
+					);\
+				}\
+\
+			}\
+\
+			values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
+			if (values) {\
+				value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
+				if (!value) {\
+					render_result->message = "Non-string value";\
+					exit_render_();\
+				}\
+				render__param_multi_last(\
+					*output_end,\
+					value, value_size,\
+					expression->tokens.expression.end, (_line).line.end - expression->tokens.expression.end\
+				);\
+			}\
 \
 			break;\
 \

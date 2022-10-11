@@ -35,8 +35,6 @@ typedef enum {
 typedef struct {
 	Tokens tokens;
 	Flags flags;
-	char* value;
-	DRUNK_STRING_LENGTH_TYPE value_size;
 } Expression;
 
 listDefine(Expression, ExpressionList);

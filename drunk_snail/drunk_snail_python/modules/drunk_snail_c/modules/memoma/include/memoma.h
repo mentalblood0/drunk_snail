@@ -6,7 +6,7 @@
 
 
 #define drunk_malloc_one(target, size, alloc_error) {\
-	target = malloc(size);\
+	target = malloc(size + (8 - (size % 8)));\
 	alloc_error = !target;\
 }
 
@@ -28,7 +28,7 @@
 
 #define drunk_realloc_with_shifted(target, size, temp, shifted, alloc_error) {\
 	if (size) {\
-		temp = realloc(target, size);\
+		temp = realloc(target, size + (8 - (size % 8)));\
 		if (!temp) {\
 			alloc_error = true;\
 			free(target);\
@@ -42,24 +42,20 @@
 
 
 #define drunk_memcpy(target, source, length) {\
-	switch (length) {\
-		case 0:\
-			break;\
-		case 1:\
+	if (length != 0) {\
+		if (length == 1) {\
 			*target++ = *source;\
-			break;\
-		case 2:\
+		} else if (length == 2) {\
 			*((uint16_t *restrict)target)++ = *(uint16_t *restrict)source;\
-			break;\
-		case 4:\
-			*((uint32_t *restrict)target)++ = *(uint32_t *restrict)source;\
-			break;\
-		case 8:\
-			*((uint64_t *restrict)target)++ = *(uint64_t *restrict)source;\
-			break;\
-		default:\
-			memcpy(target, source, length);\
+		} else if (length <= 4) {\
+			*(uint32_t *restrict)target = *(uint32_t *restrict)source;\
 			target += length;\
-			break;\
+		} else if (length <= 8) {\
+			*(uint64_t *restrict)target = *(uint64_t *restrict)source;\
+			target += length;\
+		} else {\
+			memcpy((uint64_t *restrict)target, (uint64_t *restrict)source, length);\
+			target += length;\
+		}\
 	}\
 }

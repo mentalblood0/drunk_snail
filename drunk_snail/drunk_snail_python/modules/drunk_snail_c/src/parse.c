@@ -44,21 +44,9 @@ static const int parse_python_en_main = 0;
 
 
 #define drunk_malloc_one__parse(target, size) {\
-	target = malloc(size);\
+	target = malloc(size + (8 - (size % 8)));\
 	if (!target) {\
 		exit__parse();\
-	}\
-}
-
-
-#define drunk_realloc_one__parse(target, size, temp) {\
-	if (size) {\
-		temp = realloc(target, size);\
-		if (!temp) {\
-			exit__parse();\
-		} else {\
-			target = temp;\
-		}\
 	}\
 }
 

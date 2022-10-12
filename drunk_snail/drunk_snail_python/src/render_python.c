@@ -44,7 +44,7 @@ PyObject *render_python (PyObject *self, PyObject *args) {
 		return NULL;
 	}
 
-	PyObject *result = PyUnicode_FromStringAndSize(render_result.result, output_end-render_result.result);
+	PyObject *result = PyBytes_FromStringAndSize(render_result.result, output_end-render_result.result);
 	free(render_result.result);
 	return result;
 

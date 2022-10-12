@@ -12,4 +12,4 @@ table.register(
 args = <!-- (param)table_arguments -->
 
 result = table(args)
-assert result == '''<!-- (param)table_result -->'''
+assert result == b'''<!-- (param)table_result -->'''

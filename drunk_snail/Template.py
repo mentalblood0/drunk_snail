@@ -8,7 +8,7 @@ class Template:
 		self.name = name
 
 	@property
-	def text(self) -> str:
+	def text(self) -> bytes:
 		return drunk_snail_python.getTemplate(self.name)
 
 	def register(self, text: str) -> None:
@@ -18,5 +18,5 @@ class Template:
 	def unregister(self) -> None:
 		drunk_snail_python.removeTemplate(self.name)
 
-	def __call__(self, parameters: dict = None) -> str:
+	def __call__(self, parameters: dict = None) -> bytes:
 		return drunk_snail_python.render(self.name, parameters or {})

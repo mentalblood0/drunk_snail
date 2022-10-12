@@ -29,11 +29,25 @@ class WithTableArgs:
 			"Row": [
 				{
 					"cell": [
-						str(x + y * self.config.kwargs['width'])
+						str(x + y * self.config.kwargs['width']).encode('utf8')
 						for x in range(self.config.kwargs['width'])
 					]
 				}
 				for y in range(self.config.kwargs['height'])
+			]
+		}
+
+	@functools.cached_property
+	def args_strings(self):
+		return {
+			"Row": [
+				{
+					"cell": [
+						text.decode()
+						for text in self.args["Row"][y]["cell"]
+					]
+				}
+				for y in range(len(self.args["Row"]))
 			]
 		}
 

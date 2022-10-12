@@ -17,20 +17,6 @@ class table_hardcoded(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
 	def prepare(self):
 		self.args
 
-	@functools.cached_property
-	def args(self):
-		return {
-			"Row": [
-				{
-					"cell": [
-						str(x + y * self.config.kwargs['width'])
-						for x in range(self.config.kwargs['width'])
-					]
-				}
-				for y in range(self.config.kwargs['height'])
-			]
-		}
-
 	def run(self):
 		return render_hardcoded(self.args)
 
@@ -71,10 +57,10 @@ class table_multiparam(Benchmark, WithOutputMetrics, WithName):
 				{
 					"cells": [
 						{
-							'a': str(4*x),
-							'b': str(4*x + 1),
-							'c': str(4*x + 2),
-							'd': str(4*x + 3)
+							'a': str(4*x).encode('utf8'),
+							'b': str(4*x + 1).encode('utf8'),
+							'c': str(4*x + 2).encode('utf8'),
+							'd': str(4*x + 3).encode('utf8')
 						}
 						for x in range(self.config.kwargs['width'])
 					]
@@ -98,18 +84,18 @@ class args_to_json(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
 	name = 'Arguments to JSON'
 	link = None
 	def run(self):
-		return json.dumps(self.args)
+		return json.dumps(self.args_strings)
 
 
 class args_to_json_using_orjson(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
 	name = 'Arguments to JSON using orjson'
 	link = 'https://github.com/ijl/orjson'
 	def run(self):
-		return orjson.dumps(self.args)
+		return orjson.dumps(self.args_strings)
 
 
 class args_to_json_with_indent(Benchmark, WithOutputMetrics, WithTableArgs):
 	name = 'Arguments to json with indent'
 	link = None
 	def run(self):
-		return json.dumps(self.args, indent=self.config.kwargs['indent'])
+		return json.dumps(self.args_strings, indent=self.config.kwargs['indent'])

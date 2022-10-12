@@ -6,7 +6,7 @@ from drunk_snail_python import addTemplate, removeTemplate, render
 
 @pytest.fixture
 def param_values():
-	return [str(i) for i in range(1024)]
+	return [str(i).encode('utf8') for i in range(1024)]
 
 
 def render_lambda(text, params={}, refs={}):

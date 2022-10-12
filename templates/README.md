@@ -19,7 +19,7 @@ Table:
 <!-- (param)table_template -->
 ```
 Arguments:
-```json
+```python
 <!-- (param)table_arguments -->
 ```
 Result:
@@ -79,12 +79,12 @@ Line may have:
 Template(name: str)
 
 Template.name: str
-Template.text: str
+Template.text: bytes
 
 Template.register(self, text: str) -> None
 Template.unregister(self) -> None
 
-Template.__call__(self, parameters: dict = None) -> str
+Template.__call__(self, parameters: dict = None) -> bytes
 ```
 
 

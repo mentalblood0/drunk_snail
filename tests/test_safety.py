@@ -12,7 +12,7 @@ def test_nonexistent_template():
 
 
 def test_nonexistent_param():
-	assert render_lambda('lalala<!-- (param)p -->lololo', {}) == 'lalalalololo\n'
+	assert render_lambda('lalala<!-- (param)p -->lololo', {}) == b'lalalalololo\n'
 
 
 def test_nonexistent_ref():
@@ -35,44 +35,42 @@ def test_buf_overflow():
 def test_other_overflow(param_values):
 
 	for name in param_values[:1]:
-		addTemplate(f'test_other_deep_inject_{name}', name)
+		addTemplate(f'test_other_deep_inject_{name.decode()}', name)
 
 	for i, name in enumerate(param_values[1:]):
 		addTemplate(
-			f'test_other_deep_inject_{name}',
-			f'{name}<!-- (ref)test_other_deep_inject_{param_values[i]} -->{name}'
+			f'test_other_deep_inject_{name.decode()}',
+			f'{name.decode()}<!-- (ref)test_other_deep_inject_{param_values[i].decode()} -->{name.decode()}'
 		)
 
-	result = render(
-		f'test_other_deep_inject_{param_values[-1]}',
+	assert render(
+		f'test_other_deep_inject_{param_values[-1].decode()}',
 		{}
-	)
-	correct = f"{''.join(reversed(param_values))[:-1]}{''.join(param_values)}\n"
-	assert result == correct
+	) == f"{b''.join(reversed(param_values))[:-1].decode()}{b''.join(param_values).decode()}\n".encode('utf8')
 
 
-def test_name_overflow(value='param'):
+def test_name_overflow(value=b'param'):
 	name = 'a' * 512
-	assert render_lambda(f'<!-- (param){name} -->', {name: value}) == f'{value}\n'
+	assert render_lambda(f'<!-- (param){name} -->', {name: value}) == f'{value.decode()}\n'.encode('utf8')
 
 
 def test_value_overflow():
-	value = 'a' * 512
-	assert render_lambda(f'<!-- (param)name -->', {'name': value}) == f'{value}\n'
+	value = b'a' * 512
+	assert render_lambda(f'<!-- (param)name -->', {'name': value}) == f'{value.decode()}\n'.encode('utf8')
 
 
 def test_stack_overflow(param_values):
 
 	for name in param_values[:1]:
-		addTemplate(f'o{name}', '')
+		addTemplate(f'o{name.decode()}', '')
 
 	for i, name in enumerate(param_values[1:]):
 		addTemplate(
-			f'o{name}',
-			f'<!-- (ref)o{param_values[i]} -->'
+			f'o{name.decode()}',
+			f'<!-- (ref)o{param_values[i].decode()} -->'
 		)
 
-	assert render(f'o{param_values[-1]}', {}) == ''
+	assert render(f'o{param_values[-1].decode()}', {}) == b''
 
 
 def test_memory_leak():
@@ -85,19 +83,19 @@ def test_memory_leak():
 
 
 def test_cyrillic_source():
-	assert render_lambda('ляляля') == 'ляляля\n'
+	assert render_lambda('ляляля') == 'ляляля\n'.encode('utf8')
 
 
 def test_cyrillic_name():
 	addTemplate('ляляля', 'lalala')
-	assert render('ляляля', {}) == 'lalala\n'
+	assert render('ляляля', {}) == b'lalala\n'
 
 
 def test_nonstring():
 	for template, params in (
 		('<!-- (param)x -->',                  {'x': 1}),
 		('<!-- (param)x -->',                  {'x': [1]}),
-		('<!-- (param)x --><!-- (param)y -->', {'x': '1', 'y': 1})
+		('<!-- (param)x --><!-- (param)y -->', {'x': b'1', 'y': 1})
 	):
 		with pytest.raises(Exception):
 			render_lambda(template, params)

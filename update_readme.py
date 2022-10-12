@@ -22,14 +22,32 @@ for name in [
 
 table_arguments = {
 	"Row": [
+		{"cell": [b"1", b"2"]},
+		{"cell": [b"3", b"4"]}
+	]
+}
+table_arguments_strings = {
+	"Row": [
 		{"cell": ["1", "2"]},
 		{"cell": ["3", "4"]}
 	]
 }
+table_arguments_text = json.dumps(
+	table_arguments_strings,
+	indent='    '
+).replace(
+	'"1', 'b"1'
+).replace(
+	'"2', 'b"2'
+).replace(
+	'"3', 'b"3'
+).replace(
+	'"4', 'b"4'
+).encode('utf8')
 usage_example_arguments = {
 	'row_template': Template('Row').text,
 	'table_template': Template('Table').text,
-	'table_arguments': json.dumps(table_arguments, indent='    '),
+	'table_arguments': table_arguments_text,
 	'table_result': Template('Table')(table_arguments)
 }
 exec(Template('UsageExample')(
@@ -81,57 +99,57 @@ with open(os.path.join(
 
 
 result = Template('README')({
-	'git_link': 'https://github.com/MentalBlood/drunk_snail',
+	'git_link': b'https://github.com/MentalBlood/drunk_snail',
 	'why': [
-		'Faster',
-		'Easy-readable syntax',
-		'Separation of business logic and data'
+		b'Faster',
+		b'Easy-readable syntax',
+		b'Separation of business logic and data'
 	],
 	'row_template': Template('Row').text,
 	'table_template': Template('Table').text,
-	'table_arguments': json.dumps(table_arguments, indent='    '),
+	'table_arguments': table_arguments_text,
 	'table_result': Template('Table')(table_arguments),
 	'UsageExample': usage_example_arguments,
-	'syntax': syntax,
+	'syntax': syntax.encode('utf8'),
 	'Example': [{
-		'code': '<!-- (ref)AnotherTemplateName -->',
-		'description': 'includes template(s) with name "AnotherTemplateName"'
+		'code': b'<!-- (ref)AnotherTemplateName -->',
+		'description': b'includes template(s) with name "AnotherTemplateName"'
 	},{
-		'code': '<!-- (param)some_param_name -->',
-		'description': 'includes param value(s)'
+		'code': b'<!-- (param)some_param_name -->',
+		'description': b'includes param value(s)'
 	},{
-		'code': '<!-- (optional)(ref)AnotherTemplateName -->',
-		'description': 'skips line if no template name is provided'
+		'code': b'<!-- (optional)(ref)AnotherTemplateName -->',
+		'description': b'skips line if no template name is provided'
 	},{
-		'code': '<!-- (optional)(param)some_param_name -->',
-		'description': 'skips line if no param provided'
+		'code': b'<!-- (optional)(param)some_param_name -->',
+		'description': b'skips line if no param provided'
 	}],
 	'TableRenderingResults': {
-		'size': str(table_size),
-		'experiments_number': f'{min(experiments_numbers)}-{max(experiments_numbers)}',
+		'size': str(table_size).encode('utf8'),
+		'experiments_number': f'{min(experiments_numbers)}-{max(experiments_numbers)}'.encode('utf8'),
 		'RenderingResults': [{
-			'type': 'Engine',
-			'output_type': 'template',
+			'type': b'Engine',
+			'output_type': b'template',
 			'RenderingResult': sorted([
 				{
-					'name': module['table']['name_markdown'],
-					'time': mean_time,
-					'templates_by_second': str(int(1000 // float(mean_time))),
-					'mb_by_second': module['table']['speed'].split(' ')[0]
+					'name': module['table']['name_markdown'].encode('utf8'),
+					'time': mean_time.encode('utf8'),
+					'templates_by_second': str(int(1000 // float(mean_time))).encode('utf8'),
+					'mb_by_second': module['table']['speed'].split(' ')[0].encode('utf8')
 				}
 				for module_name, module in benchmarks_result.items()
 				if module_name != 'other'
 				for mean_time in [module['table']['mean_time'].split(' ')[0]]
 			], key=lambda d: float(d['mb_by_second']))
 		}, {
-			'type': 'Other',
-			'output_type': 'dict',
+			'type': b'Other',
+			'output_type': b'dict',
 			'RenderingResult': sorted([
 				{
-					'name': benchmark['name_markdown'],
-					'time': mean_time,
-					'templates_by_second': str(int(1000 // float(mean_time))),
-					'mb_by_second': benchmark['speed'].split(' ')[0]
+					'name': benchmark['name_markdown'].encode('utf8'),
+					'time': mean_time.encode('utf8'),
+					'templates_by_second': str(int(1000 // float(mean_time))).encode('utf8'),
+					'mb_by_second': benchmark['speed'].split(' ')[0].encode('utf8')
 				}
 				for benchmark in benchmarks_result['other'].values()
 				for mean_time in [benchmark['mean_time'].split(' ')[0]]
@@ -141,5 +159,5 @@ result = Template('README')({
 })
 
 
-with open('README.md', 'w') as f:
+with open('README.md', 'wb') as f:
 	f.write(result)

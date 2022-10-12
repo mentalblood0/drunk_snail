@@ -72,14 +72,14 @@ def test_param_valid(value, other_left, gap_left, gap_right, other_right):
 		gap_right=gap_right,
 		other_right=other_right
 	)
-	assert render_lambda(param_line, {'p': value}) == (
-		f'{other_left}{value}{other_right}\n'
+	assert render_lambda(param_line, {'p': value.encode('utf8')}) == (
+		f'{other_left}{value}{other_right}\n'.encode('utf8')
 		if type(value) == str
 		else
 		''.join([
 			f'{other_left}{v}{other_right}\n'
 			for v in value
-		])
+		]).encode('utf8')
 	)
 
 
@@ -101,7 +101,7 @@ def test_param_invalid(value, open_tag, other_left, gap_left, name, gap_right, o
 		other_right=other_right,
 		close_tag=close_tag
 	)
-	assert render_lambda(param_line, {name: value}) == f'{param_line}\n'
+	assert render_lambda(param_line, {name: value.encode('utf8')}) == f'{param_line}\n'.encode('utf8')
 
 
 @pytest.mark.parametrize(
@@ -128,10 +128,10 @@ def test_multiple_param_valid(lines_args):
 		for i, a in enumerate(lines_args)
 	]
 	values = {
-		f'p{i}': a[0]
+		f'p{i}': a[0].encode('utf8')
 		for i, a in enumerate(lines_args)
 	}
-	assert render_lambda(''.join(params_sublines), values) == ''.join((f'{a[1]}{a[0]}{a[4]}' for a in lines_args)) + '\n'
+	assert render_lambda(''.join(params_sublines), values) == ''.join((f'{a[1]}{a[0]}{a[4]}' for a in lines_args)).encode('utf8') + b'\n'
 
 
 @pytest.mark.parametrize('ref', TestLists.Valid.ref)
@@ -147,12 +147,12 @@ def test_ref_valid(ref, value, other_left, gap_left, gap_right, other_right):
 		gap_right=gap_right,
 		other_right=other_right
 	)
-	assert render_lambda(ref_line, {'R': {'p': value}}, {'R': ref}) == (
-		f'{other_left}{value}{other_right}\n'
+	assert render_lambda(ref_line, {'R': {'p': value.encode('utf8')}}, {'R': ref.encode('utf8')}) == (
+		f'{other_left}{value}{other_right}\n'.encode('utf8')
 		if type(value) == str
 		else
 		''.join([
 			f'{other_left}{v}{other_right}\n'
 			for v in value
-		])
+		]).encode('utf8')
 	)

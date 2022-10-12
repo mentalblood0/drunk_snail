@@ -13,7 +13,7 @@ def param_name():
 
 @pytest.fixture
 def param_value():
-	return 'lalala'
+	return b'lalala'
 
 
 @pytest.fixture
@@ -28,19 +28,19 @@ def params_list(param_name, param_values):
 
 def test_basic(param_name, param_value, params_one):
 
-	assert render_lambda(f'<!-- (param){param_name} -->', params_one) == f'{param_value}\n'
-	assert render_lambda(f'<!-- (param){param_name} -->\n', params_one) == f'{param_value}\n'
-	assert render_lambda(f'{param_value}') == f'{param_value}\n'
+	assert render_lambda(f'<!-- (param){param_name} -->', params_one) == f'{param_value.decode()}\n'.encode('utf8')
+	assert render_lambda(f'<!-- (param){param_name} -->\n', params_one) == f'{param_value.decode()}\n'.encode('utf8')
+	assert render_lambda(f'{param_value}') == f'{param_value}\n'.encode('utf8')
 
 
 def test_empty_template():
-	assert render_lambda('') == ''
+	assert render_lambda('') == b''
 
 
 def test_list(param_name, param_values, params_list):
 
-	assert render_lambda(f'<!-- (param){param_name} -->', params_list) == ''.join([f'{i}\n' for i in param_values])
-	assert render_lambda(f'<!-- (param){param_name} -->\n', params_list) == ''.join([f'{i}\n' for i in param_values])
+	assert render_lambda(f'<!-- (param){param_name} -->', params_list) == ''.join([f'{i.decode()}\n' for i in param_values]).encode('utf8')
+	assert render_lambda(f'<!-- (param){param_name} -->\n', params_list) == ''.join([f'{i.decode()}\n' for i in param_values]).encode('utf8')
 
 
 def test_ref():
@@ -49,19 +49,19 @@ def test_ref():
 	addTemplate('greeting', 'Hello, <!-- (param)name -->!\n<!-- (ref)addition -->!\n')
 
 	assert render('greeting', {
-		'name': 'username',
+		'name': b'username',
 		'addition': {
-			'action': 'eat'
+			'action': b'eat'
 		}
-	}) == 'Hello, username!\nNice to eat you!\n'
+	}) == b'Hello, username!\nNice to eat you!\n'
 	assert render('greeting', {
-		'name': 'username',
+		'name': b'username',
 		'addition': [{
-			'action': 'meet'
+			'action': b'meet'
 		}, {
-			'action': 'eat'
+			'action': b'eat'
 		}]
-	}) == 'Hello, username!\nNice to meet you!\nNice to eat you!\n'
+	}) == b'Hello, username!\nNice to meet you!\nNice to eat you!\n'
 
 
 def test_consicutive_lines(number=2):
@@ -78,23 +78,23 @@ def test_consicutive_lines(number=2):
 	) == ''.join(
 		f'    {i}\n'
 		for i in range(number)
-	)
+	).encode('utf8')
 
 
 def test_optional_param():
-	assert render_lambda('<!-- (optional)(param)a -->') == ''
+	assert render_lambda('<!-- (optional)(param)a -->') == b''
 
 
 def test_optional_ref():
 
 	addTemplate('test_optional_ref_1', 'lalala')
-	assert render_lambda('<!-- (optional)(ref)test_optional_ref_1 -->') == ''
+	assert render_lambda('<!-- (optional)(ref)test_optional_ref_1 -->') == b''
 	assert render_lambda(
 		'<!-- (optional)(ref)test_optional_ref_1 -->',
 		{
 			'test_optional_ref_1': [None]
 		}
-	) == 'lalala\n'
+	) == b'lalala\n'
 
 
 def test_table():
@@ -111,29 +111,29 @@ def test_table():
 		'</table>\n',
 		{
 			"Row": [
-				{"cell": ["1.1", "2.1", "3.1"]},
-				{"cell": ["1.2", "2.2", "3.2"]},
-				{"cell": ["1.3", "2.3", "3.3"]}
+				{"cell": [b"1.1", b"2.1", b"3.1"]},
+				{"cell": [b"1.2", b"2.2", b"3.2"]},
+				{"cell": [b"1.3", b"2.3", b"3.3"]}
 			]
 		}
 	) == (
-		'<table>\n'
-		'	<tr>\n'
-		'		<td>1.1</td>\n'
-		'		<td>2.1</td>\n'
-		'		<td>3.1</td>\n'
-		'	</tr>\n'
-		'	<tr>\n'
-		'		<td>1.2</td>\n'
-		'		<td>2.2</td>\n'
-		'		<td>3.2</td>\n'
-		'	</tr>\n'
-		'	<tr>\n'
-		'		<td>1.3</td>\n'
-		'		<td>2.3</td>\n'
-		'		<td>3.3</td>\n'
-		'	</tr>\n'
-		'</table>\n'
+		b'<table>\n'
+		b'	<tr>\n'
+		b'		<td>1.1</td>\n'
+		b'		<td>2.1</td>\n'
+		b'		<td>3.1</td>\n'
+		b'	</tr>\n'
+		b'	<tr>\n'
+		b'		<td>1.2</td>\n'
+		b'		<td>2.2</td>\n'
+		b'		<td>3.2</td>\n'
+		b'	</tr>\n'
+		b'	<tr>\n'
+		b'		<td>1.3</td>\n'
+		b'		<td>2.3</td>\n'
+		b'		<td>3.3</td>\n'
+		b'	</tr>\n'
+		b'</table>\n'
 	)
 
 
@@ -141,18 +141,18 @@ def test_multiple_params():
 	assert render_lambda(
 		'before<!-- (param)a -->between1<!-- (param)b -->between2<!-- (param)c -->after',
 		 {
-			'a': '<a>',
-			'b': '<b>',
-			'c': '<c>'
+			'a': b'<a>',
+			'b': b'<b>',
+			'c': b'<c>'
 		 }
-	) == 'before<a>between1<b>between2<c>after\n'
+	) == b'before<a>between1<b>between2<c>after\n'
 
 
 def test_multiple_params_followed_by_empty_line():
 	assert render_lambda(
 		'Rendering <!-- (param)size -->x<!-- (param)size --> table (mean of <!-- (param)experiments_number --> experiments)\n\n',
 		{
-			'size': '10',
-			'experiments_number': '1000'
+			'size': b'10',
+			'experiments_number': b'1000'
 		}
-	) == 'Rendering 10x10 table (mean of 1000 experiments)\n\n'
+	) == b'Rendering 10x10 table (mean of 1000 experiments)\n\n'

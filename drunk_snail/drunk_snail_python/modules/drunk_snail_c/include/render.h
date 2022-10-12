@@ -59,9 +59,8 @@ typedef struct RenderResult {
 #define renderParamList(_line) {\
 	list_size = DRUNK_LIST_GET_LENGTH(values);\
 	for (j = 0; j < list_size; j++) {\
-		value = DRUNK_AS_STRING_AND_LENGTH(DRUNK_LIST_GET_ITEM(values, j), &value_size);\
-		if (!value) {\
-			render_result->message = "Non-string value";\
+		if (DRUNK_AS_STRING_AND_LENGTH(DRUNK_LIST_GET_ITEM(values, j), value, &value_size) == -1) {\
+			render_result->message = "Non-bytes value";\
 			exit_render_();\
 		}\
 		render__param(\
@@ -105,9 +104,8 @@ typedef struct RenderResult {
 				if (DRUNK_IS_LIST(values)) {\
 					renderParamList(_line);\
 				} else {\
-					value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
-					if (!value) {\
-						render_result->message = "Non-string value";\
+					if (DRUNK_AS_STRING_AND_LENGTH(values, value, &value_size) == -1) {\
+						render_result->message = "Non-bytes value";\
 						exit_render_();\
 					}\
 					render__param(\
@@ -184,9 +182,8 @@ typedef struct RenderResult {
 \
 			values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
 			if (values) {\
-				value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
-				if (!value) {\
-					render_result->message = "Non-string value";\
+				if (DRUNK_AS_STRING_AND_LENGTH(values, value, &value_size) == -1) {\
+					render_result->message = "Non-bytes value";\
 					exit_render_();\
 				}\
 				render__param_multi_first(\
@@ -203,9 +200,8 @@ typedef struct RenderResult {
 \
 				values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
 				if (values) {\
-					value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
-					if (!value) {\
-						render_result->message = "Non-string value";\
+					if (DRUNK_AS_STRING_AND_LENGTH(values, value, &value_size) == -1) {\
+						render_result->message = "Non-bytes value";\
 						exit_render_();\
 					}\
 					render__param_multi_between(\
@@ -219,9 +215,8 @@ typedef struct RenderResult {
 \
 			values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
 			if (values) {\
-				value = DRUNK_AS_STRING_AND_LENGTH(values, &value_size);\
-				if (!value) {\
-					render_result->message = "Non-string value";\
+				if (DRUNK_AS_STRING_AND_LENGTH(values, value, &value_size) == -1) {\
+					render_result->message = "Non-bytes value";\
 					exit_render_();\
 				}\
 				render__param_multi_last(\

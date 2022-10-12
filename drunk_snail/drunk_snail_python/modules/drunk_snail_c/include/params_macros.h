@@ -29,7 +29,7 @@
 #define DRUNK_LIST_GET_ITEM(list, n) PyList_GET_ITEM(list, n)
 
 // char* DRUNK_AS_STRING_AND_LENGTH(DRUNK_TYPE s, DRUNK_STRING_LENGTH_TYPE *length_pointer)
-#define DRUNK_AS_STRING_AND_LENGTH(s, length_pointer) PyUnicode_AsUTF8AndSize(s, length_pointer)
+#define DRUNK_AS_STRING_AND_LENGTH(s, target, length_pointer) PyBytes_AsStringAndSize(s, &(target), length_pointer)
 
 
 DRUNK_TYPE empty_dict;

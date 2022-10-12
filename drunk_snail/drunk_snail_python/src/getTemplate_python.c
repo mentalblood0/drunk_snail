@@ -22,6 +22,6 @@ PyObject *getTemplate_python (
 		return NULL;
 	}
 
-	return PyUnicode_FromStringAndSize(result.text, result.length);
+	return PyBytes_FromStringAndSize(result.text, result.length);
 
 }

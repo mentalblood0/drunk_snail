@@ -1,4 +1,4 @@
-# 🌪️ drunk snail
+# рџЊЄпёЏ drunk snail
 
 
 
@@ -25,19 +25,19 @@ Table:
 </table>
 ```
 Arguments:
-```json
+```python
 {
     "Row": [
         {
             "cell": [
-                "1",
-                "2"
+                b"1",
+                b"2"
             ]
         },
         {
             "cell": [
-                "3",
-                "4"
+                b"3",
+                b"4"
             ]
         }
     ]
@@ -66,19 +66,19 @@ Rendering 100x100 table (mean of 100-10000 experiments)
 
 | Engine | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| [django](https://github.com/django/django) | 33.6 | 29 | 6.57 |
-| [chevron](https://github.com/noahmorrison/chevron) | 30.92 | 32 | 7.141 |
-| [airspeed](https://github.com/purcell/airspeed) | 26.91 | 37 | 8.205 |
-| [TRender](https://github.com/cesbit/trender) | 9.48 | 105 | 23.298 |
-| [jinja](https://github.com/pallets/jinja) | 1.38 | 724 | 160.19 |
-| [mako](https://github.com/sqlalchemy/mako) | 1.32 | 757 | 167.67 |
-| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.107 | 9345 | 2056.71 |
+| [django](https://github.com/django/django) | 25.89 | 38 | 8.53 |
+| [chevron](https://github.com/noahmorrison/chevron) | 23.0236 | 43 | 9.59 |
+| [airspeed](https://github.com/purcell/airspeed) | 21.63 | 46 | 10.208 |
+| [TRender](https://github.com/cesbit/trender) | 7.64 | 130 | 28.91 |
+| [jinja](https://github.com/pallets/jinja) | 1.242 | 805 | 177.85 |
+| [mako](https://github.com/sqlalchemy/mako) | 1.232 | 811 | 179.264 |
+| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.091 | 10989 | 2421.73 |
 
 | Other | Time, ms  | dicts / s | output, MB / s |
 | -- | --: | --: | --: |
-| Arguments to string | 0.66 | 1515 | 121.291 |
-| Arguments to JSON | 0.49 | 2040 | 162.89 |
-| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.144 | 6944 | 487.48 |
+| Arguments to JSON | 0.52 | 1923 | 154.93 |
+| Arguments to string | 0.48 | 2083 | 187.84 |
+| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.094 | 10638 | 742.84 |
 
 
 Benchmarks done using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite) (see [`Benchmarking`](#benchmarking) section below)
@@ -115,21 +115,21 @@ args = {
     "Row": [
         {
             "cell": [
-                "1",
-                "2"
+                b"1",
+                b"2"
             ]
         },
         {
             "cell": [
-                "3",
-                "4"
+                b"3",
+                b"4"
             ]
         }
     ]
 }
 
 result = table(args)
-assert result == '''<table>
+assert result == b'''<table>
     <tr>
         <td>1</td>
         <td>2</td>
@@ -188,12 +188,12 @@ main := template
 Template(name: str)
 
 Template.name: str
-Template.text: str
+Template.text: bytes
 
 Template.register(self, text: str) -> None
 Template.unregister(self) -> None
 
-Template.__call__(self, parameters: dict = None) -> str
+Template.__call__(self, parameters: dict = None) -> bytes
 ```
 
 

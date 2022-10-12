@@ -12,14 +12,14 @@ def test_basic():
 		'<!-- (param)some_param -->'
 	)
 	assert t({
-		'some_param': 'lalala'
-	}) == 'lalala\n'
+		'some_param': b'lalala'
+	}) == b'lalala\n'
 
 	t.register('<!-- (param)x -->\n<!-- (param)y -->')
 	assert t({
-		'x': '1',
-		'y': '2'
-	}) == '1\n2\n'
+		'x': b'1',
+		'y': b'2'
+	}) == b'1\n2\n'
 
 
 def test_remove():
@@ -29,7 +29,7 @@ def test_remove():
 		t.text
 
 	t.register('lalala')
-	assert t.text == 'lalala'
+	assert t.text == b'lalala'
 
 	t.unregister()
 	with pytest.raises(KeyError):

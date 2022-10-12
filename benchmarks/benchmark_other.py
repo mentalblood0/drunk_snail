@@ -23,7 +23,7 @@ class table_hardcoded(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
 			"Row": [
 				{
 					"cell": [
-						str(x)
+						str(x + y * self.config.kwargs['width'])
 						for x in range(self.config.kwargs['width'])
 					]
 				}

@@ -20,7 +20,7 @@ class table(Benchmark, WithOutputMetrics, WithName):
 		return {
 			'table': [
 				[
-					str(x)
+					str(x + y * self.config.kwargs['width'])
 					for x in range(self.config.kwargs['height'])
 				]
 				for y in range(self.config.kwargs['width'])

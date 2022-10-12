@@ -29,7 +29,7 @@ class WithTableArgs:
 			"Row": [
 				{
 					"cell": [
-						str(x)
+						str(x + y * self.config.kwargs['width'])
 						for x in range(self.config.kwargs['width'])
 					]
 				}

@@ -34,7 +34,7 @@ class table(Benchmark, WithOutputMetrics, WithName):
 		return {
 			'rows':[
 				[
-					str(x)
+					str(x + y * self.config.kwargs['width'])
 					for x in range(self.config.kwargs['width'])
 				]
 				for y in range(self.config.kwargs['height'])

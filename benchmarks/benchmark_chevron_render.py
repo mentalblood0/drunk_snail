@@ -36,7 +36,7 @@ class table(Benchmark, WithOutputMetrics, WithName):
 				{
 					"cell": [
 						{
-							'value': str(x)
+							'value': str(x + y * self.config.kwargs['width'])
 						}
 						for x in range(self.config.kwargs['width'])
 					]

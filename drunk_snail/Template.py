@@ -18,5 +18,5 @@ class Template:
 	def unregister(self) -> None:
 		drunk_snail_python.removeTemplate(self.name)
 
-	def __call__(self, parameters: dict = None) -> bytes:
-		return drunk_snail_python.render(self.name, parameters or {})
+	def __call__(self, parameters: dict = None, detect_recursion: bool=False) -> bytes:
+		return drunk_snail_python.render(self.name, parameters or {}, detect_recursion)

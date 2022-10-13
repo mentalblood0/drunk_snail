@@ -193,7 +193,7 @@ Template.text: bytes
 Template.register(self, text: str) -> None
 Template.unregister(self) -> None
 
-Template.__call__(self, parameters: dict = None) -> bytes
+Template.__call__(self, parameters: dict = None, detect_recursion: bool = False) -> bytes
 ```
 
 

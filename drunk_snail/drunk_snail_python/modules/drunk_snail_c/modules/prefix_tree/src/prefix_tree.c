@@ -54,7 +54,6 @@ bool treeInsert(Tree* tree, char *key, void *value) {
 
 	}
 
-	free(node->value);
 	node->value = value;
 
 	return false;
@@ -81,19 +80,38 @@ void treeRemove(Tree* tree, char *key) {
 }
 
 
-void freeNodes(TreeNode *node) {
+void treeDetach(Tree* tree, char *key) {
+
+	TreeNode *node = &tree->root;
+	char *c = NULL;
+
+	for (c = key; *c; c++) {
+
+		node = node->children[(unsigned char)(*c)];
+		if (!node)
+			return;
+
+	}
+
+	node->value = NULL;
+
+}
+
+
+void freeNodes(TreeNode *node, bool free_value) {
 
 	if (node == NULL)
 		return;
 	
-	free(node->value);
+	if (free_value)
+		free(node->value);
 	
 	TreeNode **children = node->children;
 
 	int i;
 	for (i = 0; i < ALPHABET_SIZE; i++)
 		if (children[i] != NULL)
-			freeNodes(children[i]);
+			freeNodes(children[i], free_value);
 
 	free(children);
 	free(node);
@@ -101,15 +119,21 @@ void freeNodes(TreeNode *node) {
 }
 
 
-void clearTree(Tree *tree) {
+void clearTree(Tree *tree, bool free_values) {
 
 	int i;
 	for (i = 0; i < ALPHABET_SIZE; i++)
 		if (tree->root.children[i] != NULL) {
-			freeNodes(tree->root.children[i]);
+			freeNodes(tree->root.children[i], free_values);
 			tree->root.children[i] = NULL;
 		}
 
+}
+
+
+void removeTree(Tree *tree, bool free_values) {
+	clearTree(tree, free_values);
+	free(tree);
 }
 
 

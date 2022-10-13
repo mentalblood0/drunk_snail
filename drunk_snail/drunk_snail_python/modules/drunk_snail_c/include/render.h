@@ -6,6 +6,7 @@
 
 #include "params_macros.h"
 #include "../modules/memoma/include/memoma.h"
+#include "../modules/prefix_tree/include/prefix_tree.h"
 
 #include "Other.h"
 #include "print_macros.h"
@@ -85,7 +86,8 @@ typedef struct RenderResult {
 			other,\
 			other_left_length + (_line).other.left.length,\
 			other_right_length + (_line).other.right.length,\
-			DRUNK_LIST_GET_ITEM(values, j)\
+			DRUNK_LIST_GET_ITEM(values, j),\
+			templates_stack\
 		);\
 		if (!render_result->result) {\
 			return;\
@@ -147,7 +149,8 @@ typedef struct RenderResult {
 						other,\
 						other_left_length + (_line).other.left.length,\
 						other_right_length + (_line).other.right.length,\
-						values\
+						values,\
+						templates_stack\
 					);\
 					if (!render_result->result) {\
 						return;\
@@ -166,7 +169,8 @@ typedef struct RenderResult {
 					other,\
 					other_left_length + (_line).other.left.length,\
 					other_right_length + (_line).other.right.length,\
-					empty_dict\
+					empty_dict,\
+					templates_stack\
 				);\
 				if (!render_result->result) {\
 					return;\
@@ -247,5 +251,6 @@ void render(
 	OtherPointerList *other,
 	size_t other_left_length,
 	size_t other_right_length,
-	DRUNK_TYPE params
+	DRUNK_TYPE params,
+	Tree *templates_stack
 );

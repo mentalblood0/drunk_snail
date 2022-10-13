@@ -91,7 +91,7 @@ def test_cyrillic_name():
 	assert render('ляляля', {}) == b'lalala\n'
 
 
-def test_nonstring():
+def test_nonbytes():
 	for template, params in (
 		('<!-- (param)x -->',                  {'x': 1}),
 		('<!-- (param)x -->',                  {'x': [1]}),
@@ -99,3 +99,18 @@ def test_nonstring():
 	):
 		with pytest.raises(Exception):
 			render_lambda(template, params)
+
+
+def test_recursion():
+	addTemplate('test_recursion', '<!-- (ref)test_recursion -->')
+	with pytest.raises(Exception):
+		render('test_recursion', {}, True)
+
+
+def test_recursion_deep():
+	addTemplate('test_recursion_deep_1', '<!-- (ref)test_recursion_2 -->')
+	addTemplate('test_recursion_deep_2', '<!-- (ref)test_recursion_1 -->')
+	with pytest.raises(Exception):
+		render('test_recursion_deep_1', {}, True)
+	with pytest.raises(Exception):
+		render('test_recursion_deep_2', {}, True)

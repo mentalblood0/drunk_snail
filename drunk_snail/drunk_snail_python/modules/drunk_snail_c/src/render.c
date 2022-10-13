@@ -24,9 +24,22 @@ void render(
 	OtherPointerList *other,
 	size_t other_left_length,
 	size_t other_right_length,
-	DRUNK_TYPE params
+	DRUNK_TYPE params,
+	Tree *templates_stack
 )
 {
+
+	if (templates_stack) {
+		if (dictionaryLookupUnterminated(templates_stack, template_name, template_name_length)) {
+			if (render_result->result) {
+				render_result->result = NULL;
+			}
+			drunk_malloc_one_render_(render_result->message, sizeof(char) * (template_name_length + 1));
+			memcpy(render_result->message, template_name, template_name_length);
+			render_result->message[template_name_length] = 0;
+			return;
+		}
+	}
 
 	Template *template = dictionaryLookupUnterminated(templates, template_name, template_name_length);
 	if ((template == NULL) || (!template->lines.length && template->length)) {
@@ -37,6 +50,10 @@ void render(
 		memcpy(render_result->message, template_name, template_name_length);
 		render_result->message[template_name_length] = 0;
 		return;
+	}
+
+	if (templates_stack) {
+		treeInsert(templates_stack, template_name, template);
 	}
 
 	bool alloc_error = false;
@@ -78,6 +95,10 @@ void render(
 	if (!depth) {
 		listFree(*other);
 		free(other);
+	}
+
+	if (templates_stack) {
+		treeDetach(templates_stack, template_name);
 	}
 
 };

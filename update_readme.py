@@ -159,5 +159,5 @@ result = Template('README')({
 })
 
 
-with open('README.md', 'wb') as f:
-	f.write(result)
+with open('README.md', 'w') as f:
+	f.write(result.decode())

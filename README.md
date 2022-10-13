@@ -1,4 +1,4 @@
-# рџЊЄпёЏ drunk snail
+# 🌪️ drunk snail
 
 
 

@@ -114,3 +114,24 @@ def test_recursion_deep():
 		render('test_recursion_deep_1', {}, True)
 	with pytest.raises(Exception):
 		render('test_recursion_deep_2', {}, True)
+
+
+def test_different_lengths_empty_line():
+	for l in range(1, 10 ** 4):
+		text = b' ' * l + b'\n'
+		assert render_lambda(text) == text
+
+
+def test_different_lengths_param_name():
+	addTemplate('l', '<!-- (param)p -->')
+	for l in range(1, 10 ** 4):
+		name = 'n' * l
+		assert render_lambda(f'<!-- (param){name} -->', {name: b' '}) == b' \n'
+
+
+def test_different_lengths_param_value():
+	addTemplate('l', '<!-- (param)p -->')
+	params = {'p': None}
+	for l in range(1, 10 ** 4):
+		params['p'] = b' ' * l
+		assert render('l', params) == params['p'] + b'\n'

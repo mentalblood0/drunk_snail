@@ -29,18 +29,6 @@ void render(
 )
 {
 
-	if (templates_stack) {
-		if (dictionaryLookupUnterminated(templates_stack, template_name, template_name_length)) {
-			if (render_result->result) {
-				render_result->result = NULL;
-			}
-			drunk_malloc_one_render_(render_result->message, sizeof(char) * (template_name_length + 1));
-			memcpy(render_result->message, template_name, template_name_length);
-			render_result->message[template_name_length] = 0;
-			return;
-		}
-	}
-
 	Template *template = dictionaryLookupUnterminated(templates, template_name, template_name_length);
 	if ((template == NULL) || (!template->lines.length && template->length)) {
 		if (render_result->result) {
@@ -53,6 +41,15 @@ void render(
 	}
 
 	if (templates_stack) {
+		if (dictionaryLookupUnterminated(templates_stack, template_name, template_name_length)) {
+			if (render_result->result) {
+				render_result->result = NULL;
+			}
+			drunk_malloc_one_render_(render_result->message, sizeof(char) * (template_name_length + 1));
+			memcpy(render_result->message, template_name, template_name_length);
+			render_result->message[template_name_length] = 0;
+			return;
+		}
 		treeInsert(templates_stack, template_name, template);
 	}
 

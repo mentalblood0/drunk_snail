@@ -35,7 +35,7 @@
 
 
 #define drunk_malloc_one__parse(target, size) {\
-	target = malloc(size + (8 - (size % 8)));\
+	target = malloc(size);\
 	if (!target) {\
 		exit__parse();\
 	}\

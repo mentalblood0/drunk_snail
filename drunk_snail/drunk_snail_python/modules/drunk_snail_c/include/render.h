@@ -34,7 +34,7 @@ typedef struct RenderResult {
 }
 
 #define drunk_malloc_one_render_(target, size) {\
-	target = malloc(size + (8 - (size % 8)));\
+	target = malloc(size);\
 	if (!target) {\
 		exit_render_();\
 	}\

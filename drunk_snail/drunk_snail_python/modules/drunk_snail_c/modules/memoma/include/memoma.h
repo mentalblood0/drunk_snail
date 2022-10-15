@@ -6,7 +6,7 @@
 
 
 #define drunk_malloc_one(target, size, alloc_error) {\
-	target = malloc(size + (8 - (size % 8)));\
+	target = malloc(size);\
 	alloc_error = !target;\
 }
 
@@ -28,7 +28,7 @@
 
 #define drunk_realloc_with_shifted(target, size, temp, shifted, alloc_error) {\
 	if (size) {\
-		temp = realloc(target, size + (8 - (size % 8)));\
+		temp = realloc(target, size);\
 		if (!temp) {\
 			alloc_error = true;\
 			free(target);\

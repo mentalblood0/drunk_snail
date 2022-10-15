@@ -82,11 +82,10 @@ void render(
 	size_t required_buffer_size;
 	Expression *expression;
 
-	size_t i_line = 0;
-	Line line;
-	for (; i_line < template->lines.length; i_line++) {
-		line = template->lines.start[i_line];
-		renderLine(line);
+	Line* line = template->lines.start;
+	Line* end = line + template->lines.length;
+	for (; line != end; line++) {
+		renderLine((*line));
 	}
 
 	if (!depth) {

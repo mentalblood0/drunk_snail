@@ -59,7 +59,7 @@ typedef struct RenderResult {
 
 #define renderParamList(_line) {\
 	list_size = DRUNK_LIST_GET_LENGTH(values);\
-	for (j = 0; j < list_size; j++) {\
+	for (j = 0; j != list_size; j++) {\
 		if (DRUNK_AS_STRING_AND_LENGTH(DRUNK_LIST_GET_ITEM(values, j), value, &value_size) == -1) {\
 			render_result->message = "Non-bytes value";\
 			exit_render_();\
@@ -75,7 +75,7 @@ typedef struct RenderResult {
 
 #define renderRefList(_line) {\
 	list_size = DRUNK_LIST_GET_LENGTH(values);\
-	for (j = 0; j < list_size; j++) {\
+	for (j = 0; j != list_size; j++) {\
 		render(\
 			render_result,\
 			(_line).single_expression.tokens.name.start,\

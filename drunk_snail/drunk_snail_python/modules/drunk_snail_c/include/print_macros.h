@@ -13,7 +13,7 @@
 			exit_render_();\
 		}\
 	}\
-	for (i = 0; i < depth; i++) {\
+	for (i = 0; i != depth; i++) {\
 		drunk_memcpy((target), other->start[i]->left.start, other->start[i]->left.length);\
 	}\
 	drunk_memcpy((target), LINE, LINE_length);\
@@ -34,7 +34,7 @@
 			exit_render_();\
 		}\
 	}\
-	for (i = 0; i < depth; i++) {\
+	for (i = 0; i != depth; i++) {\
 		drunk_memcpy((target), other->start[i]->left.start, other->start[i]->left.length);\
 	}\
 	drunk_memcpy((target), OTHER_LEFT, OTHER_LEFT_length);\
@@ -57,7 +57,7 @@
 			exit_render_();\
 		}\
 	}\
-	for (i = 0; i < depth; i++) {\
+	for (i = 0; i != depth; i++) {\
 		drunk_memcpy((target), other->start[i]->left.start, other->start[i]->left.length);\
 	}\
 	drunk_memcpy((target), OTHER_LEFT, OTHER_LEFT_length);\

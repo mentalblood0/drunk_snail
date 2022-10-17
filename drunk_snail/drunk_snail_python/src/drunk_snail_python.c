@@ -7,7 +7,6 @@
 #include "addTemplate_python.h"
 #include "getTemplate_python.h"
 #include "removeTemplate_python.h"
-#include "render_hardcoded_python.h"
 
 
 
@@ -35,12 +34,6 @@ PyMethodDef methods[6] = {
 		render_python,
 		METH_VARARGS,
 		"Render parsed template"
-	},
-	{
-		"render_hardcoded",
-		render_hardcoded_python,
-		METH_VARARGS,
-		"Render hardcoded table template template"
 	},
 	{NULL, NULL, 0, NULL}
 };

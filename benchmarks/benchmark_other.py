@@ -4,21 +4,8 @@ import functools
 from sharpener_lite import Benchmark
 
 from drunk_snail import Template
-from drunk_snail_python import render_hardcoded
 from benchmarks.common import WithOutputMetrics, WithTableArgs, WithName
 
-
-
-class table_hardcoded(Benchmark, WithOutputMetrics, WithTableArgs, WithName):
-
-	name = 'hardcoded'
-	link = None
-
-	def prepare(self):
-		self.args
-
-	def run(self):
-		return render_hardcoded(self.args)
 
 
 class table_multiparam(Benchmark, WithOutputMetrics, WithName):

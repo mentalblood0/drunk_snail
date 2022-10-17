@@ -66,19 +66,19 @@ Rendering 100x100 table (mean of 100-10000 experiments)
 
 | Engine | Time, ms  | templates / s | output, MB / s |
 | -- | --: | --: | --: |
-| [django](https://github.com/django/django) | 32.134 | 31 | 6.872 |
-| [chevron](https://github.com/noahmorrison/chevron) | 29.223 | 34 | 7.556 |
-| [airspeed](https://github.com/purcell/airspeed) | 26.554 | 37 | 8.315 |
-| [TRender](https://github.com/cesbit/trender) | 9.209 | 108 | 23.976 |
-| [jinja](https://github.com/pallets/jinja) | 1.428 | 700 | 154.593 |
-| [mako](https://github.com/sqlalchemy/mako) | 1.360 | 735 | 162.402 |
-| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.093 | 10752 | 2362.171 |
+| [django](https://github.com/django/django) | 31.757 | 31 | 6.953 |
+| [chevron](https://github.com/noahmorrison/chevron) | 28.670 | 34 | 7.702 |
+| [airspeed](https://github.com/purcell/airspeed) | 25.946 | 38 | 8.510 |
+| [TRender](https://github.com/cesbit/trender) | 9.015 | 110 | 24.492 |
+| [jinja](https://github.com/pallets/jinja) | 1.414 | 707 | 156.184 |
+| [mako](https://github.com/sqlalchemy/mako) | 1.301 | 768 | 169.657 |
+| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.087 | 11494 | 2537.914 |
 
 | Other | Time, ms  | dicts / s | output, MB / s |
 | -- | --: | --: | --: |
-| Arguments to JSON | 0.498 | 2008 | 160.824 |
-| Arguments to string | 0.538 | 1858 | 167.582 |
-| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.142 | 7042 | 493.279 |
+| Arguments to JSON | 0.490 | 2040 | 163.553 |
+| Arguments to string | 0.528 | 1893 | 170.654 |
+| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.141 | 7092 | 497.307 |
 
 
 Benchmarks done using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite) (see [`Benchmarking`](#benchmarking) section below)

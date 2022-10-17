@@ -42,20 +42,30 @@
 
 
 #define drunk_memcpy(target, source, length) {\
-	if (length != 0) {\
-		if (length == 1) {\
+	switch (length) {\
+		case 0:\
+			break;\
+		case 1:\
 			*target++ = *source;\
-		} else if (length == 2) {\
+			break;\
+		case 2:\
 			*((uint16_t *restrict)target)++ = *(uint16_t *restrict)source;\
-		} else if (length <= 4) {\
+			break;\
+		case 3:\
+		case 4:\
 			*(uint32_t *restrict)target = *(uint32_t *restrict)source;\
 			target += length;\
-		} else if (length <= 8) {\
+			break;\
+		case 5:\
+		case 6:\
+		case 7:\
+		case 8:\
 			*(uint64_t *restrict)target = *(uint64_t *restrict)source;\
 			target += length;\
-		} else {\
+			break;\
+		default:\
 			memcpy((uint64_t *restrict)target, (uint64_t *restrict)source, length);\
 			target += length;\
-		}\
+			break;\
 	}\
 }

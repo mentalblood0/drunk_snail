@@ -23,7 +23,7 @@ void treeDetach(Tree* tree, char *key);
 
 void freeNodes(TreeNode *node);
 void clearTree(Tree *tree);
-void removeTree(Tree *tree);
+void removeTree(Tree *tree, bool free_values);
 
 void* treeGet(TreeNode *node, char *key);
 void* treeGetUnterminated(TreeNode *node, char *key, size_t length);

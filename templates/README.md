@@ -31,10 +31,10 @@ Result:
 
 ## Performance
 
-System info:
-
 OS: <!-- (param)os --> <!-- (param)os_version -->
+
 CPU: <!-- (param)cpu -->
+
 Python: <!-- (param)python_version -->
 
 <!-- (ref)TableRenderingResults -->

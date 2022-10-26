@@ -62,10 +62,10 @@ Result:
 
 ## Performance
 
-System info:
-
 OS: Windows 10.0.22000
+
 CPU: AMD64 Family 25 Model 33 Stepping 2, AuthenticAMD
+
 Python: 3.11.0
 
 Rendering 100x100 table (mean of 100-10000 experiments)

@@ -31,6 +31,12 @@ Result:
 
 ## Performance
 
+System info:
+
+OS: <!-- (param)os --> <!-- (param)os_version -->
+CPU: <!-- (param)cpu -->
+Python: <!-- (param)python_version -->
+
 <!-- (ref)TableRenderingResults -->
 
 Benchmarks done using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite) (see [`Benchmarking`](#benchmarking) section below)

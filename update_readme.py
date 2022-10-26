@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import platform
 from drunk_snail import Template
 from sharpener_lite.Session import Session
 
@@ -124,6 +125,10 @@ result = Template('README')({
 		'code': b'<!-- (optional)(param)some_param_name -->',
 		'description': b'skips line if no param provided'
 	}],
+	'os': platform.uname().system.encode(),
+	'os_version': platform.uname().version.encode(),
+	'cpu': platform.uname().processor.encode(),
+	'python_version': platform.python_version().encode(),
 	'TableRenderingResults': {
 		'size': str(table_size).encode('utf8'),
 		'experiments_number': f'{min(experiments_numbers)}-{max(experiments_numbers)}'.encode('utf8'),

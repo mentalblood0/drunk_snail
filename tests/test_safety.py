@@ -135,3 +135,21 @@ def test_different_lengths_param_value():
 	for l in range(1, 10 ** 4):
 		params['p'] = b' ' * l
 		assert render('l', params) == params['p'] + b'\n'
+
+
+@pytest.mark.parametrize(
+	('name', 'text'),
+	(
+		(1, b''),
+		(1.0, b''),
+		([], b''),
+		({}, b''),
+		('name', 1),
+		('name', 1.0),
+		('name', []),
+		('name', {})
+	)
+)
+def test_bad_arguments(name, text):
+	with pytest.raises(TypeError):
+		addTemplate({}, b'')

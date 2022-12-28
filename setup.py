@@ -1,4 +1,4 @@
-import glob
+import pathlib
 from setuptools import setup, Extension, find_packages
 
 
@@ -10,11 +10,11 @@ if __name__ == '__main__':
 		name='drunk_snail',
 		version='7.2.4',
 		python_requires='>=3.5',
-		keywords=['template-engine', 'ragel'],
+		keywords=['template-engine', 'ragel', 'fast'],
 		url='https://github.com/MentalBlood/drunk_snail',
 
 		description='Template engine. Faster than you think',
-		long_description=open('README.md').read(),
+		long_description=(pathlib.Path(__file__).parent / 'README.md').read_text(),
 		long_description_content_type='text/markdown',
 
 		classifiers=[
@@ -27,6 +27,12 @@ if __name__ == '__main__':
 			'Operating System :: OS Independent',
 			'Programming Language :: C',
 			'Programming Language :: Python :: 3.5',
+			'Programming Language :: Python :: 3.6',
+			'Programming Language :: Python :: 3.7',
+			'Programming Language :: Python :: 3.8',
+			'Programming Language :: Python :: 3.9',
+			'Programming Language :: Python :: 3.10',
+			'Programming Language :: Python :: 3.11',
 			'License :: OSI Approved :: BSD License'
 		],
 
@@ -39,7 +45,10 @@ if __name__ == '__main__':
 		ext_modules=[
 			Extension(
 				name='drunk_snail_python',
-				sources=glob.glob(f'drunk_snail/drunk_snail_python/**/*.c', recursive=True),
+				sources=[
+					str(p)
+					for p in (pathlib.Path('drunk_snail') / 'drunk_snail_python').rglob('*.c')
+				],
 				extra_compile_args=['-O3']
 			)
 		]

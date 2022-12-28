@@ -1,1 +1,0 @@
-| <!-- (param)name --> | <!-- (param)time --> | <!-- (param)templates_by_second --> | <!-- (param)mb_by_second --> |

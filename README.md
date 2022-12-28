@@ -87,7 +87,7 @@ Rendering 100x100 table (mean of 100-10000 experiments)
 | [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.099 | 10101 | 709.556 |
 
 
-Benchmarks done using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite) (see [`Benchmarking`](#benchmarking) section below)
+See [`Testing/Benchmarking`](#testingbenchmarking) section to reproduce
 
 
 
@@ -204,9 +204,9 @@ Template.__call__(self, parameters: dict = None, detect_recursion: bool = False)
 
 
 
-## Testing
+## Testing/Benchmarking
 
-Using [pytest](https://pypi.org/project/pytest/):
+Using [pytest](https://pypi.org/project/pytest/) and [pytest-benchmarking](https://github.com/ionelmc/pytest-benchmark):
 
 ```bash
 pip install --upgrade git+https://github.com/MentalBlood/drunk_snail
@@ -214,21 +214,6 @@ git clone https://github.com/MentalBlood/drunk_snail
 cd drunk_snail
 pytest
 ```
-
-
-
-## Benchmarking
-
-Using [sharpener_lite](https://github.com/MentalBlood/sharpener_lite):
-
-```bash
-pip install --upgrade git+https://github.com/MentalBlood/drunk_snail
-git clone https://github.com/MentalBlood/drunk_snail drunk_snail
-cd drunk_snail
-python -m sharpener_lite
-```
-
-Config is [here](benchmarks/benchmark_default.json)
 
 
 

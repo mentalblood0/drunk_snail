@@ -5,8 +5,8 @@
 ## Why?
 
 * Faster
-* Easy-readable syntax
-* Separation of business logic and data
+* Easy syntax
+* Separates logic and data
 
 
 
@@ -206,7 +206,7 @@ Template.__call__(self, parameters: dict = None, detect_recursion: bool = False)
 
 ## Testing/Benchmarking
 
-Using [pytest](https://pypi.org/project/pytest/) and [pytest-benchmarking](https://github.com/ionelmc/pytest-benchmark):
+Using [pytest](https://pypi.org/project/pytest/) and [pytest-benchmark](https://github.com/ionelmc/pytest-benchmark):
 
 ```bash
 pip install --upgrade git+https://github.com/MentalBlood/drunk_snail

@@ -40,5 +40,6 @@ def args(table_width: int, table_height: int) -> Args:
 	}
 
 
+@pytest.mark.benchmark(group='render')
 def test_chevron(benchmark, table: str, args: Args):
 	benchmark(chevron.render, table, args)

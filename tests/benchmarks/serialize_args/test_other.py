@@ -24,17 +24,21 @@ def args(table_width: int, table_height: int) -> Args:
 	}
 
 
+@pytest.mark.benchmark(group='serialize')
 def test_args_to_str(benchmark, args: Args):
 	benchmark(str, args)
 
 
+@pytest.mark.benchmark(group='serialize')
 def test_args_to_json(benchmark, args: Args):
 	benchmark(json.dumps, args)
 
 
+@pytest.mark.benchmark(group='serialize')
 def test_args_to_json_with_indent(benchmark, args: Args):
 	benchmark(functools.partial(json.dumps, indent=4), args)
 
 
+@pytest.mark.benchmark(group='serialize')
 def test_args_to_json_using_orjson(benchmark, args: Args):
 	benchmark(orjson.dumps, args)

@@ -25,5 +25,7 @@ def args(table_width: int, table_height: int) -> Args:
 		]
 	}
 
+
+@pytest.mark.benchmark(group='render')
 def test_mako(benchmark, table: mako.template.Template, args: Args):
 	benchmark(table.render, **args)

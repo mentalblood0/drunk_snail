@@ -37,5 +37,6 @@ def args(table_width: int, table_height: int) -> Args:
 	}
 
 
+@pytest.mark.benchmark(group='render')
 def test_drunk_snail(benchmark, row: Template, table: Template, args: Args):
 	benchmark(table, args)

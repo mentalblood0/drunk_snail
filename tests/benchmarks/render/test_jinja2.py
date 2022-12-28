@@ -34,5 +34,7 @@ def args(table_width: int, table_height: int) -> Args:
 		]
 	}
 
+
+@pytest.mark.benchmark(group='render')
 def test_jinja2(benchmark, table: jinja2.Template, args: Args):
 	benchmark(table.render, **args)

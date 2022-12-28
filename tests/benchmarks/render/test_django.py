@@ -41,5 +41,6 @@ def args(table_width: int, table_height: int) -> django.template.Context:
 	})
 
 
+@pytest.mark.benchmark(group='render')
 def test_django(benchmark, table: django.template.Template, args: django.template.Context):
 	benchmark(table.render, args)

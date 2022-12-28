@@ -7,16 +7,16 @@ from ..common import *
 
 
 @pytest.fixture
-def row():
+def row(templates: pathlib.Path) -> Template:
 	t = Template('Row')
-	t.register(pathlib.Path('templates/Row.xml').read_text())
+	t.register((templates / 'Row.xml').read_text())
 	return t
 
 
 @pytest.fixture
-def table():
+def table(templates: pathlib.Path) -> Template:
 	t = Template('Table')
-	t.register(pathlib.Path('templates/Table.xml').read_text())
+	t.register((templates / 'Table.xml').read_text())
 	return t
 
 

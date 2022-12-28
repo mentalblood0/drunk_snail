@@ -7,8 +7,8 @@ from ..common import *
 
 
 @pytest.fixture
-def table() -> mako.template.Template:
-	return mako.template.Template(pathlib.Path('templates/mako_template.xml').read_text())
+def table(templates: pathlib.Path) -> mako.template.Template:
+	return mako.template.Template((templates / 'mako_template.xml').read_text())
 
 
 Args = dict[str, list[list[str]]]

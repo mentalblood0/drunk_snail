@@ -73,15 +73,6 @@ def test_stack_overflow(param_values):
 	assert render(f'o{param_values[-1].decode()}', {}) == b''
 
 
-def test_memory_leak():
-
-	text = ' ' * 1024 * 1024 # 1MB
-
-	for i in range(1024 * 32):
-		addTemplate('big', text)
-		removeTemplate('big')
-
-
 def test_cyrillic_source():
 	assert render_lambda('ляляля') == 'ляляля\n'.encode('utf8')
 

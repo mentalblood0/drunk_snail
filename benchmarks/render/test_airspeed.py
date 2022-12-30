@@ -23,7 +23,7 @@ def table():
 Args = dict[str, list[list[str]]]
 
 @pytest.fixture
-def args(table_width: int, table_height: int) -> Args:
+def args(table_width: int, table_height: int, cell_value: typing.Callable[[int, int], str]) -> Args:
 	return {
 		'table': [
 			[

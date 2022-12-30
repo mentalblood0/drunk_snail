@@ -29,11 +29,11 @@ def table() -> django.template.Template:
 
 
 @pytest.fixture
-def args(table_width: int, table_height: int) -> django.template.Context:
+def args(table_width: int, table_height: int, cell_value: typing.Callable[[int, int], str]) -> django.template.Context:
 	return django.template.Context({
 		'table': [
 			[
-				str(x + y * table_width)
+				cell_value(x, y)
 				for x in range(table_width)
 			]
 			for y in range(table_height)

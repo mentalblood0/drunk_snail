@@ -24,13 +24,13 @@ def table() -> str:
 Args = dict[str, list[dict[str, list[dict[str, str]]]]]
 
 @pytest.fixture
-def args(table_width: int, table_height: int) -> Args:
+def args(table_width: int, table_height: int, cell_value: typing.Callable[[int, int], str]) -> Args:
 	return {
 		"Row": [
 			{
 				"cell": [
 					{
-						'value': str(x + y * table_width)
+						'value': cell_value(x, y)
 					}
 					for x in range(table_width)
 				]

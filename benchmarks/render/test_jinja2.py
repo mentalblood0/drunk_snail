@@ -23,11 +23,11 @@ def table() -> jinja2.Template:
 Args = dict[str, list[list[str]]]
 
 @pytest.fixture
-def args(table_width: int, table_height: int) -> Args:
+def args(table_width: int, table_height: int, cell_value: typing.Callable[[int, int], str]) -> Args:
 	return {
 		'rows':[
 			[
-				str(x + y * table_width)
+				cell_value(x, y)
 				for x in range(table_width)
 			]
 			for y in range(table_height)

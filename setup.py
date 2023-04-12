@@ -1,23 +1,25 @@
 import pathlib
-from setuptools import setup, Extension, find_packages
+import setuptools
 
 
 
 if __name__ == '__main__':
 
-	setup(
+	packages = setuptools.find_packages(exclude = ['tests'])
 
-		name='drunk_snail',
-		version='7.2.5',
-		python_requires='>=3.5',
-		keywords=['template-engine', 'ragel', 'fast'],
-		url='https://github.com/MentalBlood/drunk_snail',
+	setuptools.setup(
 
-		description='Template engine. Faster than you think',
-		long_description=(pathlib.Path(__file__).parent / 'README.md').read_text(),
-		long_description_content_type='text/markdown',
+		name                          = 'drunk_snail',
+		version                       = '7.2.6',
+		python_requires               = '>=3.5',
+		keywords                      = ['template-engine', 'ragel', 'fast'],
+		url                           = 'https://github.com/MentalBlood/drunk_snail',
 
-		classifiers=[
+		description                   = 'Template engine. Faster than you think',
+		long_description              = (pathlib.Path(__file__).parent / 'README.md').read_text(),
+		long_description_content_type = 'text/markdown',
+
+		classifiers                   = [
 			'Development Status :: 5 - Production/Stable',
 			'Intended Audience :: Developers',
 			'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
@@ -36,20 +38,24 @@ if __name__ == '__main__':
 			'License :: OSI Approved :: BSD License'
 		],
 
-		author='mentalblood',
-		author_email='neceporenkostepan@gmail.com',
-		maintainer='mentalblood',
-		maintainer_email='neceporenkostepan@gmail.com',
+		author                        = 'mentalblood',
+		author_email                  = 'neceporenkostepan@gmail.com',
+		maintainer                    = 'mentalblood',
+		maintainer_email              = 'neceporenkostepan@gmail.com',
 
-		packages=find_packages(exclude=['tests']),
-		ext_modules=[
-			Extension(
-				name='drunk_snail_python',
-				sources=[
+		packages                      = packages,
+		package_data                  = {
+			name: ['py.typed']
+			for name in packages
+		},
+		ext_modules                   = [
+			setuptools.Extension(
+				name               = 'drunk_snail_python',
+				sources            = [
 					str(p)
 					for p in (pathlib.Path('drunk_snail') / 'drunk_snail_python').rglob('*.c')
 				],
-				extra_compile_args=['-O3']
+				extra_compile_args = ['-O3']
 			)
 		]
 

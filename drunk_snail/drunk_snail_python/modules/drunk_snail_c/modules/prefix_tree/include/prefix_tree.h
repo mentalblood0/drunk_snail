@@ -21,8 +21,8 @@ bool treeInsert(Tree* tree, char *key, void *value);
 void treeRemove(Tree* tree, char *key);
 void treeDetach(Tree* tree, char *key);
 
-void freeNodes(TreeNode *node);
-void clearTree(Tree *tree);
+void freeNodes(TreeNode *node, bool free_value);
+void clearTree(Tree *tree, bool free_value);
 void removeTree(Tree *tree, bool free_values);
 
 void* treeGet(TreeNode *node, char *key);

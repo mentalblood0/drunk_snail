@@ -46,10 +46,12 @@
 		case 0:\
 			break;\
 		case 1:\
-			*target++ = *source;\
+			*target = *source;\
+			target += 1;\
 			break;\
 		case 2:\
-			*((uint16_t *restrict)target)++ = *(uint16_t *restrict)source;\
+			*((uint16_t *restrict)target) = *(uint16_t *restrict)source;\
+			target += 2;\
 			break;\
 		case 3:\
 		case 4:\

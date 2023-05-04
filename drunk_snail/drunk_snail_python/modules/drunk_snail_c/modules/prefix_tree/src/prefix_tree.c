@@ -32,7 +32,7 @@ bool treeInsert(Tree* tree, char *key, void *value) {
 
 	TreeNode *node = &tree->root;
 	char *c = NULL;
-	
+
 	for (c = key; *c; c++) {
 
 		TreeNode *parent = node;
@@ -62,7 +62,7 @@ bool treeInsert(Tree* tree, char *key, void *value) {
 
 
 void treeRemove(Tree* tree, char *key) {
-	
+
 	TreeNode *node = &tree->root;
 	char *c = NULL;
 
@@ -102,10 +102,10 @@ void freeNodes(TreeNode *node, bool free_value) {
 
 	if (node == NULL)
 		return;
-	
+
 	if (free_value)
 		free(node->value);
-	
+
 	TreeNode **children = node->children;
 
 	int i;

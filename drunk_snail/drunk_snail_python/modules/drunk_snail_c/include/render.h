@@ -61,7 +61,14 @@ typedef struct RenderResult {
 	list_size = DRUNK_LIST_GET_LENGTH(values);\
 	for (j = 0; j != list_size; j++) {\
 		if (DRUNK_AS_STRING_AND_LENGTH(DRUNK_LIST_GET_ITEM(values, j), value, &value_size) == -1) {\
-			render_result->message = "Non-bytes value";\
+			render_result->message = malloc(sizeof(char) * (48 + template_name_length + 1));\
+			if (!render_result->message) {\
+				exit_render_();\
+			}\
+			char *_message = render_result->message;\
+			drunk_memcpy(_message, "Non-bytes value in list when rendering template ", 48);\
+			drunk_memcpy(_message, template_name,                                      template_name_length);\
+			*_message = 0;\
 			exit_render_();\
 		}\
 		render__param(\
@@ -107,7 +114,16 @@ typedef struct RenderResult {
 					renderParamList(_line);\
 				} else {\
 					if (DRUNK_AS_STRING_AND_LENGTH(values, value, &value_size) == -1) {\
-						render_result->message = "Non-bytes value";\
+						render_result->message = malloc(sizeof(char) * (23 + (_line).single_expression.tokens.name.length + 25 + template_name_length + 1));\
+						if (!render_result->message) {\
+							exit_render_();\
+						}\
+						char* _message = render_result->message;\
+						drunk_memcpy(_message, "Non-bytes value at key ",                  23);\
+						drunk_memcpy(_message, (_line).single_expression.tokens.name.copy, (_line).single_expression.tokens.name.length);\
+						drunk_memcpy(_message, " when rendering template ",                25);\
+						drunk_memcpy(_message, template_name,                              template_name_length);\
+						*_message = 0;\
 						exit_render_();\
 					}\
 					render__param(\
@@ -187,7 +203,16 @@ typedef struct RenderResult {
 			values = DRUNK_PARAMS_GET_ITEM(params, expression->tokens.name.copy);\
 			if (values) {\
 				if (DRUNK_AS_STRING_AND_LENGTH(values, value, &value_size) == -1) {\
-					render_result->message = "Non-bytes value";\
+					render_result->message = malloc(sizeof(char) * (23 + expression->tokens.name.length + 25 + template_name_length + 1));\
+					if (!render_result->message) {\
+						exit_render_();\
+					}\
+					char* _message = render_result->message;\
+					drunk_memcpy(_message, "Non-bytes value at key ",    23);\
+					drunk_memcpy(_message, expression->tokens.name.copy, expression->tokens.name.length + 1);\
+					drunk_memcpy(_message, " when rendering template ",  25);\
+					drunk_memcpy(_message, template_name,                template_name_length);\
+					*_message = 0;\
 					exit_render_();\
 				}\
 				render__param_multi_first(\

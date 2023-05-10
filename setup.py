@@ -10,7 +10,7 @@ if __name__ == '__main__':
 	setuptools.setup(
 
 		name                          = 'drunk_snail',
-		version                       = '7.2.7',
+		version                       = '7.2.16',
 		python_requires               = '>=3.5',
 		keywords                      = ['template-engine', 'ragel', 'fast'],
 		url                           = 'https://github.com/MentalBlood/drunk_snail',

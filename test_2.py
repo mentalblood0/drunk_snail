@@ -1,7 +1,6 @@
 import re
 import typing
 import functools
-import itertools
 import dataclasses
 
 
@@ -49,6 +48,10 @@ class Pattern:
 		if not (result := match.groupdict()):
 			raise ValueError
 		return result
+
+	@functools.cached_property
+	def specified(self):
+		return self
 
 	@classmethod
 	def extracted(cls, source: 'Pattern'):
@@ -103,8 +106,7 @@ class Other(Pattern):
 
 	expression = re.compile('.*')
 
-	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template'], left: str = '', right: str = ''):
-		print(f'rendered {self}')
+	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
 		return self.value
 
 
@@ -167,46 +169,38 @@ class Expression(Pattern):
 
 @dataclasses.dataclass(frozen = True, kw_only = False)
 class Parameter(Expression):
-	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template'], left: str = '', right: str = ''):
-		print(f'rendered {self}')
+	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
 		match (result := parameters[self.name.value]):
-			case str() | list():
-				return str(result)
+			case str():
+				yield result
+			case list():
+				for r in result:
+					match r:
+						case str():
+							yield r
+						case _:
+							raise ValueError
 			case _:
 				raise ValueError
 
 @dataclasses.dataclass(frozen = True, kw_only = False)
 class Reference(Expression):
-	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template'], left: str = '', right: str = '') -> str:
-		print(f'rendered {self}, templates are {templates}, parameters are {parameters}')
+	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
 		match (inner := parameters[self.name.value]):
 			case str():
 				raise ValueError
 			case list():
-				return Delimiter.expression.pattern.join(
-					templates[self.name.value].rendered(p, templates, left, right)
+				return (
+					templates[self.name.value].rendered(p, templates)
 					for p in inner
 					if not isinstance(p, str)
 				)
 			case _:
-				return templates[self.name.value].rendered(inner, templates, left, right)
+				yield templates[self.name.value].rendered(inner, templates)
 
 
 @dataclasses.dataclass(frozen = True, kw_only = False)
 class Line(Pattern):
-
-	@dataclasses.dataclass(frozen = True, kw_only = False)
-	class WithParameters(Pattern):
-		...
-
-	@dataclasses.dataclass(frozen = True, kw_only = False)
-	class WithReferences(Pattern):
-		...
-
-	@dataclasses.dataclass(frozen = True, kw_only = False)
-	class Empty(Pattern):
-		def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template'], left: str = '', right: str = ''):
-			return self.value
 
 	@functools.cached_property
 	def specified(self):
@@ -221,10 +215,10 @@ class Line(Pattern):
 		if parameters and references:
 			raise ValueError
 		if parameters:
-			return Line.WithParameters(self.value)
+			return WithParameters(self.value)
 		if references:
-			return Line.WithReferences(self.value)
-		return Line.Empty(self.value)
+			return WithReferences(self.value)
+		return Empty(self.value)
 
 	@property
 	def expressions(self):
@@ -240,12 +234,44 @@ class Line(Pattern):
 			for e in Expression.highlighted(self)
 		)
 
-	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template'], left: str = '', right: str = '') -> str:
-		print(f'rendered {self} -> {[*self.parsed]}')
+@dataclasses.dataclass(frozen = True, kw_only = False)
+class WithParameters(Line):
+
+	def _rendered(self, inner: tuple[str]):
+		current = iter(inner)
+		for _e in Parameter.highlighted(self):
+			match (e := _e.specified):
+				case Other():
+					yield e.value
+				case Parameter():
+					result = next(current)
+					yield result
+				case _:
+					raise ValueError
+
+	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
+		return Delimiter.expression.pattern.join(
+			''.join(self._rendered(inner))
+			for inner in zip(
+				*(
+					(*p.rendered(parameters, templates),)
+					for p in Parameter.extracted(self)
+				)
+			)
+		)
+
+@dataclasses.dataclass(frozen = True, kw_only = False)
+class WithReferences(Line):
+	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
 		return ''.join(
-			o.rendered(parameters, templates, left, right)
+			o.rendered(parameters, templates)
 			for o in self.parsed
 		)
+
+@dataclasses.dataclass(frozen = True, kw_only = False)
+class Empty(Line):
+	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
+		return self.value
 
 
 @dataclasses.dataclass(frozen = True, kw_only = False)
@@ -262,12 +288,21 @@ class Template(Pattern):
 			for l in self.value.split(Delimiter.expression.pattern)
 		)
 
-	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template'], left: str = '', right: str = ''):
+	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
 		return Delimiter.expression.pattern.join(
-			l.rendered(parameters, templates, left, right)
+			l.specified.rendered(parameters, templates)
 			for l in self.lines
 		)
 
+
+template = Template('start<!-- (param)p1 -->after p1<!-- (param)p2 -->end')
+result =template.rendered({
+	'p1' : ['v1', 'lalala'],
+	'p2' : ['v2', 'lololo']
+}, {})
+print(result)
+assert result == 'startv1after p1v2end'
+exit()
 
 template = Template('<!-- (param)parameter -->\nstart<!-- (param)p1 -->after p1<!-- (param)p2 -->end')
 print(

@@ -203,24 +203,6 @@ class Reference(Expression):
 @dataclasses.dataclass(frozen = True, kw_only = False)
 class Line(Pattern):
 
-	@functools.cached_property
-	def specified(self):
-		parameters = any(
-			isinstance(e, Parameter)
-			for e in self.parsed
-		)
-		references = any(
-			isinstance(e, Reference)
-			for e in self.parsed
-		)
-		if parameters and references:
-			raise ValueError
-		if parameters:
-			return With(value = self.value, T = Parameter)
-		if references:
-			return With(value = self.value, T = Reference)
-		return Empty(self.value)
-
 	@property
 	def expressions(self):
 		return (
@@ -235,28 +217,22 @@ class Line(Pattern):
 			for e in Expression.highlighted(self)
 		)
 
-@dataclasses.dataclass(frozen = True, kw_only = False)
-class With(Line):
-
-	T: type[Parameter] | type[Reference]
-
 	def _rendered(self, inner: tuple[str]):
 		current = iter(inner)
-		for _e in self.T.highlighted(self):
+		for _e in Expression.highlighted(self):
 			match (e := _e.specified):
 				case Other():
 					yield e.value
 				case Parameter() | Reference():
-					result = next(current)
-					yield result
+					yield next(current)
 
 	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
 		return Delimiter.expression.pattern.join(
 			''.join(self._rendered(inner))
 			for inner in zip(
 				*(
-					p.rendered(parameters, templates)
-					for p in self.T.extracted(self)
+					p.specified.rendered(parameters, templates)
+					for p in Expression.extracted(self)
 				)
 			)
 		)
@@ -283,7 +259,7 @@ class Template(Pattern):
 
 	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
 		return Delimiter.expression.pattern.join(
-			l.specified.rendered(parameters, templates)
+			l.rendered(parameters, templates)
 			for l in self.lines
 		)
 

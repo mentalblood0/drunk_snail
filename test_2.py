@@ -216,9 +216,9 @@ class Line(Pattern):
 		if parameters and references:
 			raise ValueError
 		if parameters:
-			return WithParameters(self.value)
+			return With(value = self.value, T = Parameter)
 		if references:
-			return WithReferences(self.value)
+			return With(value = self.value, T = Reference)
 		return Empty(self.value)
 
 	@property
@@ -236,19 +236,19 @@ class Line(Pattern):
 		)
 
 @dataclasses.dataclass(frozen = True, kw_only = False)
-class WithParameters(Line):
+class With(Line):
+
+	T: type[Parameter] | type[Reference]
 
 	def _rendered(self, inner: tuple[str]):
 		current = iter(inner)
-		for _e in Parameter.highlighted(self):
+		for _e in self.T.highlighted(self):
 			match (e := _e.specified):
 				case Other():
 					yield e.value
-				case Parameter():
+				case Parameter() | Reference():
 					result = next(current)
 					yield result
-				case _:
-					raise ValueError
 
 	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
 		return Delimiter.expression.pattern.join(
@@ -256,33 +256,7 @@ class WithParameters(Line):
 			for inner in zip(
 				*(
 					p.rendered(parameters, templates)
-					for p in Parameter.extracted(self)
-				)
-			)
-		)
-
-@dataclasses.dataclass(frozen = True, kw_only = False)
-class WithReferences(Line):
-
-	def _rendered(self, inner: tuple[str]):
-		current = iter(inner)
-		for _e in Reference.highlighted(self):
-			match (e := _e.specified):
-				case Other():
-					yield e.value
-				case Reference():
-					result = next(current)
-					yield result
-				case _:
-					raise ValueError
-
-	def rendered(self, parameters: 'Template.Parameters', templates: dict[str, 'Template']):
-		return Delimiter.expression.pattern.join(
-			''.join(self._rendered(inner))
-			for inner in zip(
-				*(
-					p.rendered(parameters, templates)
-					for p in Reference.extracted(self)
+					for p in self.T.extracted(self)
 				)
 			)
 		)
@@ -314,52 +288,27 @@ class Template(Pattern):
 		)
 
 
-# template = Template('start<!-- (param)p1 -->after p1<!-- (param)p2 -->end')
-# result =template.rendered({
-# 	'p1' : ['v1', 'lalala'],
-# 	'p2' : ['v2', 'lololo']
-# }, {})
-# print(result)
-# assert result == 'startv1after p1v2end'
-# exit()
-
-# template = Template('<!-- (param)parameter -->\nstart<!-- (param)p1 -->after p1<!-- (param)p2 -->end')
-# print(
-# 	template.rendered({
-# 		'parameter' : 'value',
-# 		'p1'        : 'v1',
-# 		'p2'        : 'v2'
-# 	}, {})
-# )
-
-row = Template(
-'''<tr>
-    <td><!-- (param)cell --></td>
-</tr>'''
-)
-table = Template(
-'''<table>
-    <!-- (ref)Row -->
-</table>'''
-)
-
 print(
-	table.rendered({
-		"Row": [
+	Template(
+		'<table>\n'
+		'    <!-- (ref)Row -->\n'
+		'</table>'
+	).rendered({
+		'Row': [
 			{
-				"cell": [
-					"1",
-					"2"
-				]
+				'cell1': ['1', '2'],
+				'cell2': ['3', '4']
 			},
 			{
-				"cell": [
-					"3",
-					"4"
-				]
+				'cell1': ['5', '6'],
+				'cell2': ['7', '8']
 			}
 		]
 	}, {
-		'Row': row
+		'Row': Template(
+			'<tr>\n'
+			'    <td><!-- (param)cell1 --></td><td><!-- (param)cell2 --></td>\n'
+			'</tr>'
+		)
 	})
 )

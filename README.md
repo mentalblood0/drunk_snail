@@ -1,30 +1,31 @@
 # 🌪️ drunk snail
 
-
-
 ## Why?
 
-* Faster
-* Easy syntax
-* Separates logic and data
-
-
+- Faster
+- Easy syntax
+- Separates logic and data
 
 ## Example
 
 Row:
+
 ```html
 <tr>
-    <td><!-- (param)cell --></td>
+  <td><!-- (param)cell --></td>
 </tr>
 ```
+
 Table:
+
 ```html
 <table>
-    <!-- (ref)Row -->
+  <!-- (ref)Row -->
 </table>
 ```
+
 Arguments:
+
 ```python
 {
     "Row": [
@@ -43,22 +44,21 @@ Arguments:
     ]
 }
 ```
+
 Result:
+
 ```html
 <table>
-    <tr>
-        <td>1</td>
-        <td>2</td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>4</td>
-    </tr>
+  <tr>
+    <td>1</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>4</td>
+  </tr>
 </table>
-
 ```
-
-
 
 ## Performance
 
@@ -70,34 +70,29 @@ Python: 3.11.0
 
 Rendering 100x100 table (mean of 100-10000 experiments)
 
-| Engine | Time, ms  | templates / s | output, MB / s |
-| -- | --: | --: | --: |
-| [chevron](https://github.com/noahmorrison/chevron) | 24.139 | 41 | 9.147 |
-| [django](https://github.com/django/django) | 20.549 | 48 | 10.745 |
-| [airspeed](https://github.com/purcell/airspeed) | 17.258 | 57 | 12.795 |
-| [TRender](https://github.com/cesbit/trender) | 6.470 | 154 | 34.126 |
-| [jinja](https://github.com/pallets/jinja) | 1.127 | 887 | 195.930 |
-| [mako](https://github.com/sqlalchemy/mako) | 1.058 | 945 | 208.622 |
-| [drunk_snail](https://github.com/MentalBlood/drunk_snail) | 0.089 | 11235 | 2494.516 |
+| Engine                                                      | Time, ms | templates / s | output, MB / s |
+| ----------------------------------------------------------- | -------: | ------------: | -------------: |
+| [chevron](https://github.com/noahmorrison/chevron)          |   24.139 |            41 |          9.147 |
+| [django](https://github.com/django/django)                  |   20.549 |            48 |         10.745 |
+| [airspeed](https://github.com/purcell/airspeed)             |   17.258 |            57 |         12.795 |
+| [TRender](https://github.com/cesbit/trender)                |    6.470 |           154 |         34.126 |
+| [jinja](https://github.com/pallets/jinja)                   |    1.127 |           887 |        195.930 |
+| [mako](https://github.com/sqlalchemy/mako)                  |    1.058 |           945 |        208.622 |
+| [drunk_snail](https://codeberg.org/mentalblood/drunk_snail) |    0.089 |         11235 |       2494.516 |
 
-| Other | Time, ms  | dicts / s | output, MB / s |
-| -- | --: | --: | --: |
-| Arguments to JSON | 0.507 | 1972 | 158.070 |
-| Arguments to string | 0.379 | 2638 | 237.625 |
-| [Arguments to JSON using orjson](https://github.com/ijl/orjson) | 0.099 | 10101 | 709.556 |
-
+| Other                                                           | Time, ms | dicts / s | output, MB / s |
+| --------------------------------------------------------------- | -------: | --------: | -------------: |
+| Arguments to JSON                                               |    0.507 |      1972 |        158.070 |
+| Arguments to string                                             |    0.379 |      2638 |        237.625 |
+| [Arguments to JSON using orjson](https://github.com/ijl/orjson) |    0.099 |     10101 |        709.556 |
 
 See [`Testing/Benchmarking`](#testingbenchmarking) section to reproduce
-
-
 
 ## Installation
 
 ```bash
-pip install git+https://github.com/MentalBlood/drunk_snail
+pip install git+https://codeberg.org/mentalblood/drunk_snail
 ```
-
-
 
 ## Usage
 
@@ -148,15 +143,13 @@ assert result == b'''<table>
 '''
 ```
 
-
-
 ## Syntax
 
 Line may have:
 
 | parameters | references |
 | ---------- | ---------- |
-| *          | 0          |
+| \*         | 0          |
 | 0          | 1          |
 
 ```
@@ -178,15 +171,12 @@ template = (line delimeter)* (line - zlen)?
 main := template
 ```
 
-
 ### Examples
 
-* `<!-- (ref)AnotherTemplateName -->` includes template(s) with name "AnotherTemplateName"
-* `<!-- (param)some_param_name -->` includes param value(s)
-* `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
-* `<!-- (optional)(param)some_param_name -->` skips line if no param provided
-
-
+- `<!-- (ref)AnotherTemplateName -->` includes template(s) with name "AnotherTemplateName"
+- `<!-- (param)some_param_name -->` includes param value(s)
+- `<!-- (optional)(ref)AnotherTemplateName -->` skips line if no template name is provided
+- `<!-- (optional)(param)some_param_name -->` skips line if no param provided
 
 ## Interface
 
@@ -202,20 +192,16 @@ Template.unregister(self) -> None
 Template.__call__(self, parameters: dict = None, detect_recursion: bool = False) -> bytes
 ```
 
-
-
 ## Testing/Benchmarking
 
 Using [pytest](https://pypi.org/project/pytest/) and [pytest-benchmark](https://github.com/ionelmc/pytest-benchmark):
 
 ```bash
-pip install --upgrade git+https://github.com/MentalBlood/drunk_snail
-git clone https://github.com/MentalBlood/drunk_snail
+pip install --upgrade git+https://codeberg.org/mentalblood/drunk_snail
+git clone https://codeberg.org/mentalblood/drunk_snail
 cd drunk_snail
 pytest
 ```
-
-
 
 ## Binding to other languages
 
